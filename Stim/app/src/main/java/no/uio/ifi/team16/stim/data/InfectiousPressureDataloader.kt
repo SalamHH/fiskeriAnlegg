@@ -2,94 +2,95 @@ package no.uio.ifi.team16.stim.data
 
 import android.util.Log
 import java.io.IOException;
-
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import ucar.ma2.Array;
-import ucar.ma2.InvalidRangeException;
-import ucar.nc2.NetcdfFile;
-import ucar.nc2.Variable;
-import ucar.nc2.dataset.NetcdfDatasets;
-import ucar.nc2.dt.GridCoordSystem;
-import ucar.nc2.dt.GridDataset;
-import ucar.nc2.dt.GridDatatype;
-import ucar.nc2.write.Ncdump;
-import ucar.unidata.util.Format.d
-
-/**
- * DATA FORMAT:
- * Dataset {
-Grid {
-ARRAY:
-Float32 C10[time = 1][eta_rho = 902][xi_rho = 2602];
-MAPS:
-Float64 time[time = 1];
-Float32 eta_rho[eta_rho = 902];
-Float32 xi_rho[xi_rho = 2602];
-} C10;
-Float32 eta_rho[eta_rho = 902];
-Int32 grid_mapping;
-Grid {
-ARRAY:
-Float32 lat[eta_rho = 902][xi_rho = 2602];
-MAPS:
-Float32 eta_rho[eta_rho = 902];
-Float32 xi_rho[xi_rho = 2602];
-} lat;
-Grid {
-ARRAY:
-Float32 lon[eta_rho = 902][xi_rho = 2602];
-MAPS:
-Float32 eta_rho[eta_rho = 902];
-Float32 xi_rho[xi_rho = 2602];
-} lon;
-Float64 time[time = 1];
-Float32 xi_rho[xi_rho = 2602];
-} smittepress_new2018/agg_OPR_2022_9.nc;
- */
+import ucar.ma2.ArrayFloat
+import ucar.ma2.InvalidRangeException
+import ucar.nc2.Variable
+import ucar.nc2.dataset.NetcdfDataset
 
 /*
 * Dataloader for infectious pressure data.
-*
-* Non-functional. The examples on mets coursepage DONT WORK!
-*
-* Not using the prefix gives a NoSuchFieldError. Seems to be an error in httpsrequest
-*
-* Using the prefix requires url with a catalog.xml#<id> in it, which the urls we use dont have
+* TODO: further documentation
+* TODO: refactor to gridDataset(throws same errors as original solution...)
 * */
 class InfectiousPressureDataloader {
-    protected val logger = LoggerFactory.getLogger(this.javaClass)
-    //TODO: the url is not correct, and might need the 'thredds:' prefix.
-    protected val url : String = "thredds://thredds.met.no/thredds/catalog/fou-hi/norkyst800m-1h/catalog.xml#norkyst800m_1h_files/NorKyst-800m_ZDEPTHS_his.fc.2022031000.nc"
-                               //"thredds:thredds.met.no/thredds/dodsC/fou-hi/norkyst800m-1h/NorKyst-800m_ZDEPTHS_his.fc.2022031000.nc.ascii?X%5B0:1:10%5D,Y%5B0:1:10%5D"
+    private val TAG          = "InfectiousPressureDataloader"
+    private val logger       = LoggerFactory.getLogger(this.javaClass)
+    private val url : String = "http://thredds.nodc.no:8080/thredds/fileServer/smittepress_new2018/agg_OPR_2022_9.nc"
 
+    protected val maxX       = 902  //TODO: read from data
+    protected val maxY       = 2602 // -..-
+    protected val separation = 800  //separation(in meters) between points(in real life)
+    protected val steps      = 100  //increment between datapoints TODO: supply by user
+
+    protected val startX = 0
+    protected val stopX  = maxX
+    protected val stepX  = steps
+
+    protected val startY = 0
+    protected val stopY  = maxY
+    protected val stepY  = steps
+
+    /**
+     * load infectious pressure
+     *
+     * OUT:
+     * if data was successfully loaded, a InfectiousPressure object, otherwise null
+     */
     fun load() : InfectiousPressure? {
+        var out : InfectiousPressure? = null //TODO: clean up nulls
         Log.d("TRYING TO OPEN", url)
-        try {
-            NetcdfDatasets.openFile(url, null).use { ncfile ->
-                Log.d("SUCCESS","OPENDAP URL OPENED")
-                Log.d("GOT:", ncfile.toString())
+            try {
+                    Log.d("OPENING", url)
+                    val ncfile = NetcdfDataset.openDataset(url).let { ncfile ->
+                        // Do cool stuff here
+                        println("SUCCESS - OPENDAP URL OPENED")
+                        println(ncfile)
 
-                //val v: Variable = ncfile.findVariable("temperature")
-                //if (v == null) return
-                // direct indexing (ranges)
-                // note that this way of reading does not apply scale or offset
-                // see variable attributes "scale_factor" and "add_offset"
-                // the argument for read(...) is specifying a range of data per dimension (order is t, z, y, x)
-                //val data: Array = v.read("2,0:2,200:203,199")
-                //val arrayStr: String = Ncdump.printArray(data, "temperature_selection", null)
-                //println(arrayStr)
+                        //lets make some infectious pressure
+                        //Variables are data that are NOT READ YET
+                        val concentrations: Variable = ncfile.findVariable("C10")?:return null
+                        val eta_rhos: Variable = ncfile.findVariable("eta_rho")?:return null
+                        val xi_rhos: Variable = ncfile.findVariable("xi_rho")?:return null
+                        val lat: Variable = ncfile.findVariable("lat")?:return null
+                        val lon: Variable = ncfile.findVariable("lon")?:return null
+                        val time : Variable = ncfile.findVariable("time")?:return null
+                        val gridMapping: Variable = ncfile.findVariable("grid_mapping")?:return null
 
-                ncfile.close()
+                        //ranges have format start:END:STEP (which of course, is different from opendap:))
+                        val readRangeX = "${startX}:${stopX}:${stepX}"
+                        val readRangeY = "${startY}:${stopY}:${stepY}"
+                        val readRange2 = "$readRangeX,$readRangeY"
+                        val readRange3 = "0,$readRange2"
+
+                        // note that this way of reading does not apply scale or offset
+                        // see variable attributes "scale_factor" and "add_offset"
+                        //TODO: change unsafe casts
+                        out = InfectiousPressure(
+                            concentrations.read(readRange3) as ArrayFloat,
+                            eta_rhos.read(readRangeX) as ArrayFloat,
+                            xi_rhos.read(readRangeY) as ArrayFloat,
+                            lat.read(readRange2) as ArrayFloat,
+                            lon.read(readRange2) as ArrayFloat,
+                            time.readScalarFloat(),
+                            gridMapping.readScalarInt()
+                        )
+
+                        ncfile.close()
+                        Log.d("DONE", url)
+                    }
+            } catch (e: IOException) {
+                // Handle less-cool exceptions here
+                logger.error("ERROR", e)
+            } catch (e: InvalidRangeException) {
+                logger.error("ERROR", e)
+            } catch (e : NullPointerException) {
+                Log.e(TAG, "ERROR: a Variable might be read as null, are you sure you are using the cirrect url/dataset?")
+                logger.error("ERROR", e)
             }
-        } catch (e: IOException) {
-            // Handle less-cool exceptions here
-            logger.error("ERROR", e)
-        } catch (e: InvalidRangeException) {
-            logger.error("ERROR", e)
-        }
-        NetcdfDatasets.shutdown()
-        return null
+
+            NetcdfDataset.shutdown()
+            Log.d(TAG, " load - DONE")
+            return out
     }
 }
