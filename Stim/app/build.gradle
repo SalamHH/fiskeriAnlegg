@@ -30,7 +30,6 @@ android {
         jvmTarget = '1.8'
     }
 
-    //TODO: this might be bad, but needed to build. Otherwise we get META-INF error from cdm-core(THREDDS)
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/NOTICE'
@@ -42,6 +41,7 @@ android {
 }
 
 dependencies {
+
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'com.google.android.material:material:1.5.0'
