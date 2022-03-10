@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    //id for actions in speedDial
+    <item name="test_fish" type="id" />
+    <item name="test_wave" type="id" />
+</resources>
