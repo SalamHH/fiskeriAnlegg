@@ -18,7 +18,8 @@ class MainActivity : AppCompatActivity() {
          *************/
         //observe parties
         viewModel.getInfectiousPressureData().observe(this){ infectiousPressure ->
-            Log.d("INVOKED: ", "observer of infectiousPressure")
+            Log.d("INVOKED", "observer of infectiousPressure")
+            Log.d("MADE", infectiousPressure.toString() )
         }
 
         //initial load of data

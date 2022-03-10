@@ -37,6 +37,7 @@ android {
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/INDEX.LIST'
     }
 }
 
@@ -51,7 +52,7 @@ dependencies {
 
     // ViewModel implementation
     def lifecycle_version = "2.5.0-alpha03"
-    implementation               "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
     // LiveData implementation
@@ -59,12 +60,13 @@ dependencies {
     implementation "androidx.activity:activity-ktx:1.5.0-alpha03"
 
     //netcdf (for loading THREDDS)
-    def netcdfJavaVersion = '5.5.3'
-    def slf4jVersion = '1.7.36'
-    implementation "edu.ucar:cdm-core:${netcdfJavaVersion}"
-    def netcdfAllVersion = '4.8.1'
-    runtimeOnly "org.slf4j:slf4j-jdk14:${slf4jVersion}"
+    // https://mvnrepository.com/artifact/edu.ucar/netcdf
+    implementation 'edu.ucar:netcdf:4.3.22'
 
     //kotlin coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2")
+
+    //slf4j, for logging THREDDS
+    def slf4jVersion = '1.7.36'
+    runtimeOnly "org.slf4j:slf4j-jdk14:${slf4jVersion}"
 }
