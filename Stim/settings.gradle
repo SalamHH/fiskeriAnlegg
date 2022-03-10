@@ -3,6 +3,9 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven{
+            url = uri("https://artifacts.unidata.ucar.edu/repository/unidata-all/")
+        }
         jcenter() // Warning: this repository is going to shut down soon
     }
 }

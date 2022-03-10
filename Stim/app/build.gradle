@@ -29,10 +29,18 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
+    //TODO: this might be bad, but needed to build. Otherewise we get META-INF error from cdm-core(THREDDS)
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
 }
 
 dependencies {
-
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'com.google.android.material:material:1.5.0'
@@ -40,4 +48,23 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+    // ViewModel implementation
+    def lifecycle_version = "2.5.0-alpha03"
+    implementation               "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+
+    // LiveData implementation
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+    implementation "androidx.activity:activity-ktx:1.5.0-alpha03"
+
+    //netcdf (for loading THREDDS)
+    def netcdfJavaVersion = '5.5.3'
+    def slf4jVersion = '1.7.36'
+    implementation "edu.ucar:cdm-core:${netcdfJavaVersion}"
+    def netcdfAllVersion = '4.8.1'
+    runtimeOnly "org.slf4j:slf4j-jdk14:${slf4jVersion}"
+
+    //kotlin coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2")
 }
