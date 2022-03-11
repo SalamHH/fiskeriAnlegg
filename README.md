@@ -1,4 +1,5 @@
-# Stim
+# Speed dial :-)
+Bare en enkel speed dial
 
 ## Hvordan bruke dette repoet
 Repoet kan klones direkte fra Android Studio med knappen "Get from VCS" på oppstartsskjermen.
