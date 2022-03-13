@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import no.uio.ifi.team16.stim.data.InfectiousPressure
-import no.uio.ifi.team16.stim.data.InfectiousPressureRepository
+import no.uio.ifi.team16.stim.data.repository.InfectiousPressureRepository
 
 class MainActivityViewModel : ViewModel() {
     private val TAG = "MainActivityViewModel"
