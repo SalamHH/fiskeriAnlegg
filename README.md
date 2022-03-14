@@ -1,3 +1,8 @@
+# Recycleview
+
+prøvde meg på noe layout og lagde et veldig simpelt recycleview som tar inn infectious pressure 
+D er en start på noe kanskje lol!
+
 # Stim
 
 ## Hvordan bruke dette repoet
