@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         //observe infectious pressure
         viewModel.getInfectiousPressureData().observe(this) { infectiousPressure ->
             Log.d("INVOKED", "observer of infectiousPressure")
-            Log.d(TAG, "THE INFECTIOUS PRESSURE OBSERVED IS \n" + infectiousPressure.toString())
+            println("THE INFECTIOUS PRESSURE OBSERVED IS \n" + infectiousPressure.toString())
 
             //do something with the infectious pressure data.
         }
