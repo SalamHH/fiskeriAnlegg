@@ -4,6 +4,9 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
+import no.uio.ifi.team16.stim.model.viewModel.MainActivityViewModel
+import no.uio.ifi.team16.stim.model.viewModel.RecycleViewAdapter
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 
 class MainActivity : AppCompatActivity() {
@@ -12,7 +15,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+
+        /********************
+         * TEST RECYCLEVIEW *
+         ********************/
+
+        setContentView(R.layout.recycleview)
+        val recycleview = findViewById<RecyclerView>(R.id.recyclerview)
+        recycleview.adapter = RecycleViewAdapter(null)
 
         /*************
          * OBSERVERS *
@@ -23,6 +33,12 @@ class MainActivity : AppCompatActivity() {
             println("THE INFECTIOUS PRESSURE OBSERVED IS \n" + infectiousPressure.toString())
 
             //do something with the infectious pressure data.
+
+            //RECYCLEVIEWTEST
+            Log.d("RECYCLEVIEW_TEST :", "Trying to add adapter")
+            recycleview.adapter = RecycleViewAdapter(infectiousPressure)
+            Log.d("RECYCLEVIEW_TEST: ", "Adapter added")
+
         }
 
         //initial load of data
