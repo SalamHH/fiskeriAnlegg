@@ -1,4 +1,4 @@
-package no.uio.ifi.team16.stim.model.viewModel
+package no.uio.ifi.team16.stim.io.viewModel
 
 import android.util.Log
 import android.view.LayoutInflater
