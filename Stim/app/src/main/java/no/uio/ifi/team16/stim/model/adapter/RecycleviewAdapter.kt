@@ -7,16 +7,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import no.uio.ifi.team16.stim.R
-import no.uio.ifi.team16.stim.data.InfectiousPressure
-import ucar.nc2.NCdumpW
 
-class RecycleViewAdapter(var infectpressDataset: InfectiousPressure?) :
+class RecycleViewAdapter() :
     RecyclerView.Adapter<RecycleViewAdapter.ViewHolder>() {
 
     /**
-     * Recycleview som (til nå) tar inn InfectiousPressure
-     *
-     * For å vise info fra flere anlegg i en liste
+     * Recycleview som skal ta inn en liste over alle anlegg
+     * TODO - vurdere om alle anlegg har plass (?)
      *
      * Benytter seg av layoutene:
      * Recycleview_element.xml
@@ -26,14 +23,37 @@ class RecycleViewAdapter(var infectpressDataset: InfectiousPressure?) :
     private val TAG = "RECYCLEVIEW_TEST: "
 
     /**
+     * Dummy data for å teste å ta inn kordinater fra et oppdrettsanlegg
+     */
+
+    private data class DummyAnlegg(
+        var nr: Int,
+        var name: String,
+        var latitude: Double,
+        var longitude: Double
+    )
+
+    private val dummyAnlegg1 = DummyAnlegg(0, "TUHOLMANE Ø", 59.371233, 5.216333)
+    private val dummyAnlegg2 = DummyAnlegg(1, "TJAJNELUOKTA", 67.892433, 16.236718)
+    private val dummyAnlegg3 = DummyAnlegg(2, "JØRSTADSKJERA", 59.2955, 5.938617)
+
+    private val dummyList: List<DummyAnlegg> = listOf(dummyAnlegg1, dummyAnlegg2, dummyAnlegg3)
+
+
+    /**
      * Oppretter viewholder. Bruker bare textview for å gjøre d enkelt (for nå)
      */
+
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val textViewTest: TextView
+        val nameView: TextView
+        val longitudeView: TextView
+        val latitudeView: TextView
 
         init {
             // Define click listener for the ViewHolder's View.
-            textViewTest = view.findViewById(R.id.textView_test)
+            nameView = view.findViewById(R.id.textView_name)
+            longitudeView = view.findViewById(R.id.textView_longitude)
+            latitudeView = view.findViewById(R.id.textView_latitude)
         }
     }
 
@@ -46,39 +66,20 @@ class RecycleViewAdapter(var infectpressDataset: InfectiousPressure?) :
     }
 
     /**
-     * Dummy data for å teste å ta inn kordinater fra et oppdrettsanlegg og vise smittetallet derifra
+     * Setter data inn i view
+     * //TODO - endre fra dummy data når ekte data er tilgjenlig
      */
 
-    data class DummyAnlegg(
-        var nr: Int,
-        var navn: String,
-        var latitude: Double,
-        var longitude: Double
-    )
-
-    val dummyAnlegg1 = DummyAnlegg(0, "TUHOLMANE Ø", 59.371233, 5.216333)
-    val dummyAnlegg2 = DummyAnlegg(1, "TJAJNELUOKTA", 67.892433, 16.236718)
-    val dummyAnlegg3 = DummyAnlegg(2, "JØRSTADSKJERA", 59.2955, 5.938617)
-
-    val dummyList: List<DummyAnlegg> = listOf(dummyAnlegg1, dummyAnlegg2, dummyAnlegg3)
-
-    /**
-     * Metode som setter inn data
-     *
-     * /TODO - metode tar inn kordinater til hvilke grids den skal vise
-     * /TODO - metoder i InfectiousPressurse som returnerer info (mer enn toString)
-     */
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
 
+        viewHolder.nameView.text = dummyList.get(position).name
+        viewHolder.latitudeView.text = dummyList.get(position).latitude.toString()
+        viewHolder.longitudeView.text = dummyList.get(position).longitude.toString()
 
         Log.d(TAG, "data lagt inn")
     }
 
     // Return the size of your dataset (invoked by the layout manager)
-    override fun getItemCount(): Int {
-        if (infectpressDataset?.concentration?.size == null) {
-            return 0
-        }
-        return infectpressDataset!!.concentration.size.toInt()
-    }
+    //TODO - endre fra dummy data når ekte data er tilgjenlig
+    override fun getItemCount() = dummyList.size
 }
