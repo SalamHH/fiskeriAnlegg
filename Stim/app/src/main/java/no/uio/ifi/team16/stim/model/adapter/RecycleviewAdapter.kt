@@ -46,6 +46,23 @@ class RecycleViewAdapter(var infectpressDataset: InfectiousPressure?) :
     }
 
     /**
+     * Dummy data for å teste å ta inn kordinater fra et oppdrettsanlegg og vise smittetallet derifra
+     */
+
+    data class DummyAnlegg(
+        var nr: Int,
+        var navn: String,
+        var latitude: Double,
+        var longitude: Double
+    )
+
+    val dummyAnlegg1 = DummyAnlegg(0, "TUHOLMANE Ø", 59.371233, 5.216333)
+    val dummyAnlegg2 = DummyAnlegg(1, "TJAJNELUOKTA", 67.892433, 16.236718)
+    val dummyAnlegg3 = DummyAnlegg(2, "JØRSTADSKJERA", 59.2955, 5.938617)
+
+    val dummyList: List<DummyAnlegg> = listOf(dummyAnlegg1, dummyAnlegg2, dummyAnlegg3)
+
+    /**
      * Metode som setter inn data
      *
      * /TODO - metode tar inn kordinater til hvilke grids den skal vise
@@ -53,8 +70,6 @@ class RecycleViewAdapter(var infectpressDataset: InfectiousPressure?) :
      */
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
 
-        //Setter til consentration
-        viewHolder.textViewTest.text = NCdumpW.toString(infectpressDataset?.concentration)
 
         Log.d(TAG, "data lagt inn")
     }
