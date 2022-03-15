@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.recycleview)
         val recycleview = findViewById<RecyclerView>(R.id.recyclerview)
+
         //kjører recycleview med dummy data
         recycleview.adapter = RecycleViewAdapter()
 
