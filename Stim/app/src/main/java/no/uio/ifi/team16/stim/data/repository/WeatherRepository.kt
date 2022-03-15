@@ -2,26 +2,25 @@ package no.uio.ifi.team16.stim.data.repository
 
 import no.uio.ifi.team16.stim.data.Weather
 import no.uio.ifi.team16.stim.data.dataLoader.WeatherDataLoader
+import no.uio.ifi.team16.stim.util.LatLng
 
 class WeatherRepository : Repository<Weather, WeatherDataLoader>() {
+
     private val TAG = "WeatherRepository"
     override val dataSource = WeatherDataLoader()
+    private val cache: MutableMap<LatLng, Weather> = mutableMapOf()
 
-    //load the data from the datasource
-    //see Repository.getData()
-    fun getData(): Weather? {
-        throw NotImplementedError()
-        /*
-        Log.d(TAG, "loading weatherdata from repository")
-        if (!mocked) {
-            if (dirty) {
-                cache = dataSource.load()
-                dirty = false
-            }
+    /**
+     * Load the data from the datasource
+     */
+    suspend fun getData(position: LatLng): Weather? {
+        return cache.getOrPut(position) {
+            return dataSource.load(position)
         }
-        Log.d(TAG, "loading weatherdata from repository - DONE")
+    }
 
-        return cache
-        */
+    override fun getData(): Weather? {
+        // todo kan ikke ha denne som abstrakt metode pga. trenger parametre
+        return null
     }
 }

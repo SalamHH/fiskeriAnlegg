@@ -20,23 +20,21 @@ package no.uio.ifi.team16.stim.data.repository
  */
 abstract class Repository<D, S> {
     private val TAG = "Repository"
-    protected abstract val dataSource: S //must be set in subclass
-    protected var cache: D? = null       //hold data if loaded before
-    protected var dirty: Boolean         //whether the data in cache is "dirty"/not up-to-date
-    protected val mocked: Boolean
 
-    constructor() {
-        mocked = false
-        dirty = true
-    }
+    /**
+     * The data source, must be set in subclass
+     */
+    protected abstract val dataSource: S //
 
-    //make a mocked repository
-    constructor(mockedData: D?) {
-        mocked = true
-        dirty = false
-        cache = mockedData
-    }
+    /**
+     * Whether the data in cache is "dirty"/not up-to-date
+     */
+    protected var dirty: Boolean = true
 
+    /**
+     * Whether the data is mocked or not
+     */
+    protected val mocked: Boolean = false
 
     /**
      * get the data.

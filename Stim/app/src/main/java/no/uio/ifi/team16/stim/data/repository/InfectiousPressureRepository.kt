@@ -22,6 +22,7 @@ class InfectiousPressureRepository :
     Repository<InfectiousPressure, InfectiousPressureDataLoader>() {
     private val TAG = "InfectiousPressureRepository"
     override val dataSource = InfectiousPressureDataLoader()
+    private var cache: InfectiousPressure? = null
 
     /**
      * get SOME of the data.

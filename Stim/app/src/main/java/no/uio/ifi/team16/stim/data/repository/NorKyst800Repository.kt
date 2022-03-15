@@ -7,6 +7,7 @@ import no.uio.ifi.team16.stim.data.dataLoader.NorKyst800DataLoader
 class NorKyst800Repository : Repository<NorKyst800, NorKyst800DataLoader>() {
     private val TAG = "NorKyst800Repository"
     override val dataSource = NorKyst800DataLoader()
+    private var cache: NorKyst800? = null
 
     /**
      * get the data.
