@@ -35,15 +35,4 @@ abstract class Repository<D, S> {
      * Whether the data is mocked or not
      */
     protected val mocked: Boolean = false
-
-    /**
-     * get the data.
-     * If in testmode(mocked data), return the testdata
-     * otherwise;
-     * if the cache is not up to date(dirty), load the data anew,
-     * otherwise just return the data in the cache.
-     *
-     * @return mocked, cached or newly loaded data.
-     */
-    //abstract fun getData(): D?
 }

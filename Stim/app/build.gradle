@@ -30,7 +30,7 @@ android {
         jvmTarget = '1.8'
     }
 
-    //TODO: this might be bad, but needed to build. Otherewise we get META-INF error from cdm-core(THREDDS)
+    //TODO: this might be bad, but needed to build. Otherwise we get META-INF error from cdm-core(THREDDS)
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/NOTICE'

@@ -1,5 +1,7 @@
 package no.uio.ifi.team16.stim.data
 
+import no.uio.ifi.team16.stim.util.LatLng
+
 data class Sites(val sites: List<Site>)
 
 /* schema from fiskeridirektoratet
@@ -42,6 +44,6 @@ data class SiteBorder(val points: List<BorderPoint>)
 data class Site(
     val id: Int,
     val name: String,
-    val latitude: Double,
-    val longitude: Double
-) // val placement : AreaPlacement)
+    val latlng: LatLng
+)
+// val placement : AreaPlacement)
