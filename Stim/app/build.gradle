@@ -66,8 +66,4 @@ dependencies {
 
     //kotlin coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2")
-
-    //slf4j, for logging THREDDS
-    def slf4jVersion = '1.7.36'
-    runtimeOnly "org.slf4j:slf4j-jdk14:${slf4jVersion}"
 }
