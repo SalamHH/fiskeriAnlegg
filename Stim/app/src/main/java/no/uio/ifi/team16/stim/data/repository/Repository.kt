@@ -47,5 +47,5 @@ abstract class Repository<D, S> {
      *
      * @return mocked, cached or newly loaded data.
      */
-    abstract fun getData(): D?
+    //abstract fun getData(): D?
 }

@@ -1,6 +1,6 @@
 package no.uio.ifi.team16.stim.data
 
-class Sites
+data class Sites(val sites: List<Site>)
 
 /* schema from fiskeridirektoratet
 Site {

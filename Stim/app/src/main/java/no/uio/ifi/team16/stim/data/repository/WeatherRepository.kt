@@ -9,7 +9,7 @@ class WeatherRepository : Repository<Weather, WeatherDataLoader>() {
 
     //load the data from the datasource
     //see Repository.getData()
-    override fun getData(): Weather? {
+    fun getData(): Weather? {
         throw NotImplementedError()
         /*
         Log.d(TAG, "loading weatherdata from repository")

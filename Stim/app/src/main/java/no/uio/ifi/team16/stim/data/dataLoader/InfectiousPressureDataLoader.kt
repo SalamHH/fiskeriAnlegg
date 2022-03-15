@@ -69,6 +69,17 @@ class InfectiousPressureDataLoader : THREDDSDataLoader() {
                 val lon: Variable = ncfile.findVariable("lon") ?: return null
                 val time: Variable = ncfile.findVariable("time") ?: return null
                 val gridMapping: Variable = ncfile.findVariable("grid_mapping") ?: return null
+                //Stereographic(double latt, double lont, double scale, double false_easting, double false_northing, double radius)
+                /**
+                 *
+                 *     latt - tangent point of projection, also origin of projection coord system
+                lont - tangent point of projection, also origin of projection coord system
+                scale - scale factor at tangent point, "normally 1.0 but may be reduced"
+                false_easting - false easting in units of x coords
+                false_northing - false northing in units of y coords
+                radius - earth radius in km
+                 */
+                //Stereographic(double latt, double lont, double scale, double false_easting, double false_northing)
                 //make some extra ranges to access data
                 val range2 = "$rangeX,$rangeY"
                 val range3 = "0,$range2"

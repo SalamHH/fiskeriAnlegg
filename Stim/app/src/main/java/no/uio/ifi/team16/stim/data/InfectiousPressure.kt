@@ -1,6 +1,7 @@
 package no.uio.ifi.team16.stim.data
 
 import ucar.ma2.ArrayFloat
+import ucar.ma2.Index3D
 import ucar.nc2.NCdumpW
 import java.util.*
 
@@ -18,6 +19,15 @@ class InfectiousPressure(
     val toDate: Date,
     val gridMapping: Int           //grid mapping  (???)
 ) {
+    var idx: Index3D = Index3D(concentration.shape)
+
+    /*fun getConcentration(latlon : LatLon) {
+        throw NotImplementedError()
+    }*/
+
+    fun getConcentration(row: Int, column: Int): Float {
+        return concentration.getFloat(idx.set(0, row, column))
+    }
 
     override fun toString() = "InfectiousPressure:" +
             "\nFrom: ${fromDate}, to: $toDate" +

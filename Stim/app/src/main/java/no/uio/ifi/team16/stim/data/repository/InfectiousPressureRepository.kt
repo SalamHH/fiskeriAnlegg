@@ -24,7 +24,7 @@ class InfectiousPressureRepository :
     override val dataSource = InfectiousPressureDataLoader()
 
     /**
-     * get the data.
+     * get SOME of the data.
      * If in testmode(mocked data), return the testdata
      * otherwise;
      * if the cache is not up to date(dirty), load the data anew,
@@ -32,16 +32,13 @@ class InfectiousPressureRepository :
      *
      * @return mocked, cached or newly loaded data.
      */
-    override fun getData(): InfectiousPressure? {
+    fun getSomeData(): InfectiousPressure? {
         Log.d(TAG, "loading infectiousdata from repository")
-        if (!mocked) {
-            if (dirty) {
-                cache = dataSource.load()
-                dirty = false
-            }
+        if (!mocked && dirty) {
+            cache = dataSource.load()
+            dirty = false
         }
         Log.d(TAG, "loading infectiousdata from repository - DONE")
-
         return cache
     }
 }

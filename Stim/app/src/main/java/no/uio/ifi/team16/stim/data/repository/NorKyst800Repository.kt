@@ -17,7 +17,7 @@ class NorKyst800Repository : Repository<NorKyst800, NorKyst800DataLoader>() {
      *
      * @return mocked, cached or newly loaded data.
      */
-    override fun getData(): NorKyst800? {
+    fun getData(): NorKyst800? {
         Log.d(TAG, "loading infectiousdata from repository")
         if (!mocked) {
             if (dirty) {

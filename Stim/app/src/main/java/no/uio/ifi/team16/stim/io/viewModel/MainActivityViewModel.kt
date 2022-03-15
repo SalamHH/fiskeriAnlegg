@@ -1,4 +1,4 @@
-package no.uio.ifi.team16.stim.model.viewModel
+package no.uio.ifi.team16.stim.io.viewModel
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
@@ -50,7 +50,7 @@ class MainActivityViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             Log.d(TAG, "loading infectiousdata to viewmodel")
             val loaded =
-                infectiousPressureRepository.getData() //either loaded, retrieved from cache or faked
+                infectiousPressureRepository.getSomeData() //either loaded, retrieved from cache or faked
             Log.d(TAG, "loading infectiousdata to viewmodel - DONE")
             //invokes the observer
             infectiousPressureData.postValue(loaded)
