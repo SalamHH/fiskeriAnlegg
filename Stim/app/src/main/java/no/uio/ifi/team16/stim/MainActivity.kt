@@ -5,9 +5,8 @@ import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import no.uio.ifi.team16.stim.model.viewModel.MainActivityViewModel
-import no.uio.ifi.team16.stim.model.viewModel.RecycleViewAdapter
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
+import no.uio.ifi.team16.stim.io.viewModel.RecycleViewAdapter
 
 class MainActivity : AppCompatActivity() {
     val TAG = "MainActivity"
