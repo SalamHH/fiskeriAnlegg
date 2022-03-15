@@ -13,7 +13,7 @@ class RecycleViewAdapter() :
 
     /**
      * Recycleview som skal ta inn en liste over alle anlegg
-     * TODO - vurdere om alle anlegg har plass (?)
+     * TODO - vurdere om alle anlegg har plass (?) evt legge til range/neste side eln
      *
      * Benytter seg av layoutene:
      * Recycleview_element.xml
@@ -23,25 +23,25 @@ class RecycleViewAdapter() :
     private val TAG = "RECYCLEVIEW_TEST: "
 
     /**
-     * Dummy data for å teste å ta inn kordinater fra et oppdrettsanlegg
+     * Dummy data for å teste
      */
 
-    private data class DummyAnlegg(
+    private data class DummySite(
         var nr: Int,
         var name: String,
         var latitude: Double,
         var longitude: Double
     )
 
-    private val dummyAnlegg1 = DummyAnlegg(0, "TUHOLMANE Ø", 59.371233, 5.216333)
-    private val dummyAnlegg2 = DummyAnlegg(1, "TJAJNELUOKTA", 67.892433, 16.236718)
-    private val dummyAnlegg3 = DummyAnlegg(2, "JØRSTADSKJERA", 59.2955, 5.938617)
+    private val dummyAnlegg1 = DummySite(0, "TUHOLMANE Ø", 59.371233, 5.216333)
+    private val dummyAnlegg2 = DummySite(1, "TJAJNELUOKTA", 67.892433, 16.236718)
+    private val dummyAnlegg3 = DummySite(2, "JØRSTADSKJERA", 59.2955, 5.938617)
 
-    private val dummyList: List<DummyAnlegg> = listOf(dummyAnlegg1, dummyAnlegg2, dummyAnlegg3)
+    private val dummyList: List<DummySite> = listOf(dummyAnlegg1, dummyAnlegg2, dummyAnlegg3)
 
 
     /**
-     * Oppretter viewholder. Bruker bare textview for å gjøre d enkelt (for nå)
+     * Oppretter viewholder med alle views i element
      */
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
