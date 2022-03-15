@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import no.uio.ifi.team16.stim.model.viewModel.MainActivityViewModel
+import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 
 class MainActivity : AppCompatActivity() {
     val TAG = "MainActivity"
