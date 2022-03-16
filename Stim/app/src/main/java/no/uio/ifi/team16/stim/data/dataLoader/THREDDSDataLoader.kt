@@ -3,6 +3,7 @@ package no.uio.ifi.team16.stim.data.dataLoader
 import android.util.Log
 import ucar.ma2.InvalidRangeException
 import ucar.nc2.dataset.NetcdfDataset
+//import ucar.nc2.dataset.NetcdfDatasets
 import java.io.IOException
 import java.util.*
 import kotlin.math.max
@@ -85,7 +86,7 @@ abstract class THREDDSDataLoader {
         NetcdfDataset.openDataset(url).let { ncfile ->
             Log.d(TAG, "checking if data is up to date")
             try {
-                parseDate(ncfile.findGlobalAttribute("fromdate").stringValue) == currentDate
+                parseDate(ncfile.findGlobalAttribute("fromdate")!!.stringValue!!) == currentDate
             } catch (e: IOException) {
                 Log.e("ERROR", e.toString())
                 null

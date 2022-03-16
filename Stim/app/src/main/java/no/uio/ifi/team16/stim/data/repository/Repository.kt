@@ -20,6 +20,7 @@ package no.uio.ifi.team16.stim.data.repository
  */
 abstract class Repository<D, S> {
     private val TAG = "Repository"
+    //protected var cache : D? = null
 
     /**
      * The data source, must be set in subclass

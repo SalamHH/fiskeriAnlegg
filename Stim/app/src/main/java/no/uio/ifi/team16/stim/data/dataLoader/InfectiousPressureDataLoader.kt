@@ -1,11 +1,14 @@
 package no.uio.ifi.team16.stim.data.dataLoader
 
+//import ucar.nc2.dataset.NetcdfDatasets
 import android.util.Log
 import no.uio.ifi.team16.stim.data.InfectiousPressure
 import ucar.ma2.ArrayFloat
 import ucar.ma2.InvalidRangeException
 import ucar.nc2.Variable
 import ucar.nc2.dataset.NetcdfDataset
+import ucar.unidata.geoloc.Earth
+import ucar.unidata.geoloc.projection.proj4.StereographicAzimuthalProjection
 import java.io.IOException
 
 /**
@@ -18,6 +21,7 @@ class InfectiousPressureDataLoader : THREDDSDataLoader() {
     private val TAG = "InfectiousPressureDataLoader"
     override val url =
         "http://thredds.nodc.no:8080/thredds/fileServer/smittepress_new2018/agg_OPR_2022_9.nc"
+    //"https://thredds.met.no/thredds/dodsC/fou-hi/norkyst800m-1h/NorKyst-800m_ZDEPTHS_his.an.2022020900.nc"
 
     /**
      * load the entire dataset
@@ -85,6 +89,10 @@ class InfectiousPressureDataLoader : THREDDSDataLoader() {
                 val range3 = "0,$range2"
                 // note that this way of reading does not apply scale or offset
                 // see variable attributes "scale_factor" and "add_offset"
+                Log.d("FALSE NORTHING", gridMapping.attributes.toString())
+                Log.d("FALSE NORTHING", gridMapping.findAttribute("false_northing").toString())
+                //.findAttribute("grid_mapping.false_northing").toString())
+
                 val infectiousPressure = InfectiousPressure(
                     concentrations.read(range3) as ArrayFloat,
                     eta_rhos.read(rangeX) as ArrayFloat,
@@ -92,9 +100,20 @@ class InfectiousPressureDataLoader : THREDDSDataLoader() {
                     lat.read(range2) as ArrayFloat,
                     lon.read(range2) as ArrayFloat,
                     time.readScalarFloat(),
-                    parseDate(ncfile.findGlobalAttribute("fromdate").stringValue),
-                    parseDate(ncfile.findGlobalAttribute("todate").stringValue),
-                    gridMapping.readScalarInt()
+                    parseDate(ncfile.findGlobalAttribute("fromdate")!!.stringValue!!),
+                    parseDate(ncfile.findGlobalAttribute("todate")!!.stringValue!!),
+                    //StereographicAzimuthalProjection(double latt, double lont, double scale, double trueScaleLat, double false_easting, double false_northing, Earth earth)
+                    StereographicAzimuthalProjection(
+                        gridMapping.findAttribute("latitude_of_projection_origin")!!.numericValue!!.toDouble(),
+                        gridMapping.findAttribute("straight_vertical_longitude_from_pole")!!.numericValue!!.toDouble(),
+                        1.0,
+                        1.0,
+                        gridMapping.findAttribute("false_easting")!!.numericValue!!.toDouble(),
+                        gridMapping.findAttribute("false_northing")!!.numericValue!!.toDouble(),
+                        Earth()
+                        //gridMapping.findAttribute("semi_major_axis").numericValue.toDouble())
+                    ),
+                    gridMapping.findAttribute("dx")!!.numericValue as Double
                 )
                 ncfile.close()
                 infectiousPressure //returned from let-, and then try-black

@@ -18,9 +18,4 @@ class WeatherRepository : Repository<Weather, WeatherDataLoader>() {
             return dataSource.load(position)
         }
     }
-
-    override fun getData(): Weather? {
-        // todo kan ikke ha denne som abstrakt metode pga. trenger parametre
-        return null
-    }
 }
