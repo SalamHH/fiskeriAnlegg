@@ -7,8 +7,10 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import no.uio.ifi.team16.stim.data.InfectiousPressure
+import no.uio.ifi.team16.stim.data.NorKyst800
 import no.uio.ifi.team16.stim.data.Sites
 import no.uio.ifi.team16.stim.data.repository.InfectiousPressureRepository
+import no.uio.ifi.team16.stim.data.repository.NorKyst800Repository
 import no.uio.ifi.team16.stim.data.repository.SitesRepository
 
 class MainActivityViewModel : ViewModel() {
@@ -19,9 +21,9 @@ class MainActivityViewModel : ViewModel() {
     private val sitesRepository = SitesRepository()
     private val sitesData = MutableLiveData<Sites?>()
 
-    //NOT YET IMPLEMENTED
-    //private val NorKyst800Repository = NorKyst800Repository()
-    //private val NorKyst800Data  = MutableLiveData<NorKyst800>()
+    private val norKyst800Repository = NorKyst800Repository()
+    private val norKyst800Data = MutableLiveData<NorKyst800?>()
+
     //
     //private val WeatherRepository = WeatherRepository()
     //private val WeatherData  = MutableLiveData<Weather>()
@@ -33,8 +35,8 @@ class MainActivityViewModel : ViewModel() {
         return infectiousPressureData
     }
 
-    fun getNorKyst800Data() {
-        throw NotImplementedError()
+    fun getNorKyst800Data(): MutableLiveData<NorKyst800?> {
+        return norKyst800Data
     }
 
     fun getSitesData(): MutableLiveData<Sites?> {
@@ -63,7 +65,15 @@ class MainActivityViewModel : ViewModel() {
     }
 
     fun loadNorKyst800() {
-        throw NotImplementedError()
+        viewModelScope.launch(Dispatchers.IO) {
+            //runBlocking {
+            Log.d(TAG, "loading infectiousdata to viewmodel")
+            val loaded =
+                norKyst800Repository.getData() //either loaded, retrieved from cache or faked
+            Log.d(TAG, "loading infectiousdata to viewmodel - DONE")
+            //invokes the observer
+            norKyst800Data.postValue(loaded)
+        }
     }
 
     fun loadSites() {

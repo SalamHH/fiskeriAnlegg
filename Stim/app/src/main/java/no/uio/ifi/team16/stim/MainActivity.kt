@@ -34,23 +34,39 @@ class MainActivity : AppCompatActivity() {
             recycleview.adapter = RecycleViewAdapter(
                 this,
                 viewModel.getSitesData().value ?: Sites(listOf()),
-                infectiousPressure
+                infectiousPressure,
+                viewModel.getNorKyst800Data().value
+            )
+        }
+
+        //observe norKyst800
+        viewModel.getNorKyst800Data().observe(this) { norKyst800 ->
+            Log.d("INVOKED", "observer of norkystPressure")
+            println("THE NORKYST800 OBSERVED IS \n" + norKyst800.toString())
+            //set adapter of recyclerview
+            recycleview.adapter = RecycleViewAdapter(
+                this,
+                viewModel.getSitesData().value ?: Sites(listOf()),
+                viewModel.getInfectiousPressureData().value,
+                norKyst800
             )
         }
 
         //observe sites
         viewModel.getSitesData().observe(this) { sites ->
-            Log.d("INVOKED", "observer of infectiousPressure")
+            Log.d("INVOKED", "observer of sites")
             println("THE SITES OBSERVED ARE \n" + sites.toString())
-            
+
             recycleview.adapter = RecycleViewAdapter(
                 this,
                 sites ?: Sites(listOf()),
-                viewModel.getInfectiousPressureData().value
+                viewModel.getInfectiousPressureData().value,
+                viewModel.getNorKyst800Data().value
             )
         }
 
         //initial load of data
+        viewModel.loadNorKyst800()
         viewModel.loadInfectiousPressure()
         viewModel.loadSites()
     }

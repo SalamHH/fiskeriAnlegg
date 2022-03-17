@@ -9,12 +9,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import no.uio.ifi.team16.stim.R
 import no.uio.ifi.team16.stim.data.InfectiousPressure
+import no.uio.ifi.team16.stim.data.NorKyst800
 import no.uio.ifi.team16.stim.data.Sites
 
 class RecycleViewAdapter(
     private val context: Context,
     private var sites: Sites,
-    private val infectiousPressure: InfectiousPressure?
+    private val infectiousPressure: InfectiousPressure?,
+    private val norKyst800: NorKyst800?
 ) : RecyclerView.Adapter<RecycleViewAdapter.ViewHolder>() {
 
     /**
@@ -56,6 +58,8 @@ class RecycleViewAdapter(
         val longitudeView: TextView
         val latitudeView: TextView
         val infectiousPressureView: TextView
+        val velocityView: TextView
+        val salinityView: TextView
 
         init {
             // Define click listener for the ViewHolder's View.
@@ -63,6 +67,8 @@ class RecycleViewAdapter(
             longitudeView = view.findViewById(R.id.textView_longitude)
             latitudeView = view.findViewById(R.id.textView_latitude)
             infectiousPressureView = view.findViewById(R.id.textView_infectiousPressure)
+            velocityView = view.findViewById(R.id.textView_velocity)
+            salinityView = view.findViewById(R.id.textView_salinity)
         }
     }
 
@@ -86,6 +92,10 @@ class RecycleViewAdapter(
         viewHolder.longitudeView.text = latLng.lng.toString()
         viewHolder.infectiousPressureView.text =
             infectiousPressure?.getConcentration(latLng).toString()
+        viewHolder.velocityView.text =
+            norKyst800?.getVelocity(latLng)?.first.toString() //TODO second, third in other views
+        viewHolder.salinityView.text =
+            norKyst800?.getSalinity(latLng).toString()
 
         Log.d(TAG, "data lagt inn")
     }
