@@ -5,7 +5,6 @@ import ucar.ma2.ArrayFloat
 import ucar.ma2.Index3D
 import ucar.nc2.NCdumpW
 import java.util.*
-import kotlin.math.pow
 
 /*extend ucars arrayfloat with better getters, as thers are very unpractical*/
 //fun ArrayFloat.get
@@ -70,8 +69,12 @@ class InfectiousPressure(
             for (j in 1 until shape.second) {
                 /*we dont need to use squareroot, since min of distance with squareroot has the same
                 minimum as without(since squareroot is an ascending function)*/
-                distance = (latitude.get(i, j) - latLng.lat).pow(2.0) +
-                        (longitude.get(i, j) - latLng.lng).pow(2.0)
+                distance = latLng.haversine(
+                    LatLng(
+                        latitude.get(i, j).toDouble(),
+                        longitude.get(i, j).toDouble()
+                    )
+                )
                 if (distance < minDistance) {
                     row = i
                     column = j
