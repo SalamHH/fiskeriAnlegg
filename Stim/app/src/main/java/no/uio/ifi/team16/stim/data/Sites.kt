@@ -44,6 +44,6 @@ data class SiteBorder(val points: List<BorderPoint>)
 data class Site(
     val id: Int,
     val name: String,
-    val latlng: LatLng
+    val latLng: LatLng
 )
 // val placement : AreaPlacement)

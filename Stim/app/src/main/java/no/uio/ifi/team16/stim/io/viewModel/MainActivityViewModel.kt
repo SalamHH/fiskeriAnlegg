@@ -52,6 +52,7 @@ class MainActivityViewModel : ViewModel() {
         //InfectiousPressure can be loaded asynchronously(probably),
         //if not use runblocking { }
         viewModelScope.launch(Dispatchers.IO) {
+            //runBlocking {
             Log.d(TAG, "loading infectiousdata to viewmodel")
             val loaded =
                 infectiousPressureRepository.getSomeData() //either loaded, retrieved from cache or faked
