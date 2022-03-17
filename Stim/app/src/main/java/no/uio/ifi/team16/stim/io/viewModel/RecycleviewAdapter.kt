@@ -4,11 +4,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import no.uio.ifi.team16.stim.R
+import no.uio.ifi.team16.stim.data.Site
 
-class RecycleViewAdapter() :
+class RecycleViewAdapter(val sites: List<Site>) :
     RecyclerView.Adapter<RecycleViewAdapter.ViewHolder>() {
 
     /**
@@ -16,70 +18,51 @@ class RecycleViewAdapter() :
      * TODO - vurdere om alle anlegg har plass (?) evt legge til range/neste side eln
      *
      * Benytter seg av layoutene:
-     * Recycleview_element.xml
+     * Recycleview_element_overview.xml
      * Recycleview.xml
      */
 
     private val TAG = "RECYCLEVIEW_TEST: "
 
     /**
-     * Dummy data for å teste
-     */
-
-    private data class DummySite(
-        var nr: Int,
-        var name: String,
-        var latitude: Double,
-        var longitude: Double
-    )
-
-    private val dummyAnlegg1 = DummySite(0, "TUHOLMANE Ø", 59.371233, 5.216333)
-    private val dummyAnlegg2 = DummySite(1, "TJAJNELUOKTA", 67.892433, 16.236718)
-    private val dummyAnlegg3 = DummySite(2, "JØRSTADSKJERA", 59.2955, 5.938617)
-
-    private val dummyList: List<DummySite> = listOf(dummyAnlegg1, dummyAnlegg2, dummyAnlegg3)
-
-
-    /**
      * Oppretter viewholder med alle views i element
+     * TODO - sette inn location i textview når det er implementert
      */
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val nameView: TextView
-        val longitudeView: TextView
-        val latitudeView: TextView
+        val name: TextView
+
+        //val location: TextView
+        val image: ImageView
 
         init {
-            // Define click listener for the ViewHolder's View.
-            nameView = view.findViewById(R.id.textView_name)
-            longitudeView = view.findViewById(R.id.textView_longitude)
-            latitudeView = view.findViewById(R.id.textView_latitude)
+            name = view.findViewById(R.id.textview_name)
+            image = view.findViewById(R.id.imageView_overview)
         }
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         // Create a new view, which defines the UI of the list item
         val view = LayoutInflater.from(viewGroup.context)
-            .inflate(R.layout.recycleview_element, viewGroup, false)
+            .inflate(R.layout.recycleview_element_overview, viewGroup, false)
 
         return ViewHolder(view)
     }
 
     /**
      * Setter data inn i view
-     * //TODO - endre fra dummy data når ekte data er tilgjenlig
+     * //TODO - legge inn location i dataklassen
      */
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
 
-        viewHolder.nameView.text = dummyList.get(position).name
-        viewHolder.latitudeView.text = dummyList.get(position).latitude.toString()
-        viewHolder.longitudeView.text = dummyList.get(position).longitude.toString()
+        viewHolder.name.text = sites.get(position).name
+        //viewHolder.location.text = dummyList.get(position).location
 
         Log.d(TAG, "data lagt inn")
     }
 
     // Return the size of your dataset (invoked by the layout manager)
-    //TODO - endre fra dummy data når ekte data er tilgjenlig
-    override fun getItemCount() = dummyList.size
+
+    override fun getItemCount() = sites.size
 }
