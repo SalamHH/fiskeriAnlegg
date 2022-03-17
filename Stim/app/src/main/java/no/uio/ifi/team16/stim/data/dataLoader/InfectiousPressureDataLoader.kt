@@ -7,8 +7,6 @@ import ucar.ma2.ArrayFloat
 import ucar.ma2.InvalidRangeException
 import ucar.nc2.Variable
 import ucar.nc2.dataset.NetcdfDataset
-import ucar.unidata.geoloc.Earth
-import ucar.unidata.geoloc.projection.proj4.StereographicAzimuthalProjection
 import java.io.IOException
 
 /**
@@ -73,26 +71,11 @@ class InfectiousPressureDataLoader : THREDDSDataLoader() {
                 val lon: Variable = ncfile.findVariable("lon") ?: return null
                 val time: Variable = ncfile.findVariable("time") ?: return null
                 val gridMapping: Variable = ncfile.findVariable("grid_mapping") ?: return null
-                //Stereographic(double latt, double lont, double scale, double false_easting, double false_northing, double radius)
-                /**
-                 *
-                 *     latt - tangent point of projection, also origin of projection coord system
-                lont - tangent point of projection, also origin of projection coord system
-                scale - scale factor at tangent point, "normally 1.0 but may be reduced"
-                false_easting - false easting in units of x coords
-                false_northing - false northing in units of y coords
-                radius - earth radius in km
-                 */
-                //Stereographic(double latt, double lont, double scale, double false_easting, double false_northing)
                 //make some extra ranges to access data
                 val range2 = "$rangeX,$rangeY"
                 val range3 = "0,$range2"
                 // note that this way of reading does not apply scale or offset
-                // see variable attributes "scale_factor" and "add_offset"
-                Log.d("FALSE NORTHING", gridMapping.attributes.toString())
-                Log.d("FALSE NORTHING", gridMapping.findAttribute("false_northing").toString())
-                //.findAttribute("grid_mapping.false_northing").toString())
-
+                // see variable attributes "scale_factor" and "add_offset".
                 val infectiousPressure = InfectiousPressure(
                     concentrations.read(range3) as ArrayFloat,
                     eta_rhos.read(rangeX) as ArrayFloat,
@@ -101,8 +84,8 @@ class InfectiousPressureDataLoader : THREDDSDataLoader() {
                     lon.read(range2) as ArrayFloat,
                     time.readScalarFloat(),
                     parseDate(ncfile.findGlobalAttribute("fromdate")!!.stringValue!!),
-                    parseDate(ncfile.findGlobalAttribute("todate")!!.stringValue!!),
-                    //StereographicAzimuthalProjection(double latt, double lont, double scale, double trueScaleLat, double false_easting, double false_northing, Earth earth)
+                    parseDate(ncfile.findGlobalAttribute("todate")!!.stringValue!!)
+                    /* projection, kept in comments to implement correctly later!
                     StereographicAzimuthalProjection(
                         gridMapping.findAttribute("latitude_of_projection_origin")!!.numericValue!!.toDouble(),
                         gridMapping.findAttribute("straight_vertical_longitude_from_pole")!!.numericValue!!.toDouble(),
@@ -112,8 +95,8 @@ class InfectiousPressureDataLoader : THREDDSDataLoader() {
                         gridMapping.findAttribute("false_northing")!!.numericValue!!.toDouble(),
                         Earth()
                         //gridMapping.findAttribute("semi_major_axis").numericValue.toDouble())
-                    ),
-                    gridMapping.findAttribute("dx")!!.numericValue as Double
+                    ),*/
+                    //gridMapping.findAttribute("dx")!!.numericValue as Double
                 )
                 ncfile.close()
                 infectiousPressure //returned from let-, and then try-black

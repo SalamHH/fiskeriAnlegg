@@ -4,10 +4,12 @@ import no.uio.ifi.team16.stim.util.LatLng
 import ucar.ma2.ArrayFloat
 import ucar.ma2.Index3D
 import ucar.nc2.NCdumpW
-import ucar.unidata.geoloc.LatLonPointImpl
-import ucar.unidata.geoloc.ProjectionPoint
-import ucar.unidata.geoloc.projection.proj4.StereographicAzimuthalProjection
 import java.util.*
+import kotlin.math.pow
+
+/*extend ucars arrayfloat with better getters, as thers are very unpractical*/
+//fun ArrayFloat.get
+
 
 /**
  * Class representing infectious pressure over a grid at a given time.
@@ -20,10 +22,9 @@ class InfectiousPressure(
     val longitude: ArrayFloat,
     val time: Float,               //seconds since 2000-01-01 00:00:00
     val fromDate: Date,
-    val toDate: Date,
-    val projection: StereographicAzimuthalProjection,
-    val separation: Double
+    val toDate: Date
 ) {
+    val shape: Pair<Int, Int> = Pair(concentration.shape[1], concentration.shape[2])
     var idx: Index3D = Index3D(concentration.shape)
 
     /**
@@ -33,36 +34,72 @@ class InfectiousPressure(
      * of earth), so we first map the latlng to eta and xi(points on the projection) from which we
      * can find the closest projection coordinate easier(there is no curvature, so finding closest is "easy")
      *
+     * However, since stereographcprojection does not work, we use a searching algorithm,
+     * which is much slower and might be incorrect in some border cases
+     *
      * concentration is defined inside a bounded grid, so coordinates outside this will not return
      * valid results
      * TODO: decide appropriate output, null? closest border concentration?
      *
-     * @param latlon latitude-longitude coordinate we want to find concentration at
+     * @param latLng latitude-longitude coordinate we want to find concentration at
      * @return concentration at specified lat long coordinate
      */
-    fun getConcentration(latlng: LatLng) {
-        latLngToProjectionPoint(latlng).let { point ->
-            //fin
+    fun getConcentration(latLng: LatLng): Float {
+        /*find the concentrationgrid closest to our latlongpoint,
+        we use euclidean distance, or technically L1, to measure distance between latlngs.*/
+        val index = getClosestIndex(latLng)
+        return concentration.get(index.first, index.second)
+    }
 
+    /**
+     * Use L1 distance to find the index in the array closest to a given LatLng
+     *
+     * There are some possible hand-tuned optimization that can be made, but nothing close
+     * to using projection
+     *
+     * Is currently O(n^2) (n = grid size), can be made O(1) with stereographicprojection
+     * TODO: make version with stereographic projection, is faster and correct
+     */
+    private fun getClosestIndex(latLng: LatLng): Pair<Int, Int> {
+        var row = 0
+        var column = 0
+        var minDistance = 1000.0
+        var distance: Double
+        //find row from latitude
+        for (i in 1 until shape.first) {
+            for (j in 1 until shape.second) {
+                /*we dont need to use squareroot, since min of distance with squareroot has the same
+                minimum as without(since squareroot is an ascending function)*/
+                distance = (latitude.get(i, j) - latLng.lat).pow(2.0) +
+                        (longitude.get(i, j) - latLng.lng).pow(2.0)
+                if (distance < minDistance) {
+                    row = i
+                    column = j
+                    minDistance = distance
+                }
+            }
         }
+        return Pair(row, column)
     }
 
-    fun getConcentration(row: Int, column: Int): Float {
-        return concentration.getFloat(idx.set(0, row, column))
-    }
+    //extend arrayFloat with a getter since thiers is very impractical
+    private fun ArrayFloat.get(row: Int, column: Int): Float =
+        this.getFloat(idx.set(0, row, column))
 
-    /** map from eta xi(ProjectionPoint) to LatLng */
+    //TODO: stereographicprojection solution:
+    /*/** map from eta xi(ProjectionPoint) to LatLng */
     fun projectionPointToLatLng(point: ProjectionPoint): LatLng =
         projection.projToLatLon(point).let { latLongPoint ->
             LatLng(
                 latLongPoint.latitude,
                 latLongPoint.longitude
             )
-        }
+        }*/
 
-    /** map from latitude longitude to eta xi(ProjectionPoint) */
+    //TODO: stereographicprojection solution:
+    /*/** map from latitude longitude to eta xi(ProjectionPoint) */
     fun latLngToProjectionPoint(latlng: LatLng): ProjectionPoint =
-        projection.latLonToProj(LatLonPointImpl(latlng.lat, latlng.lng))
+        projection.latLonToProj(LatLonPointImpl(latlng.lat, latlng.lng))*/
 
     override fun toString() = "InfectiousPressure:" +
             "\nFrom: ${fromDate}, to: $toDate" +
