@@ -65,6 +65,14 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
+        //observe sites
+        viewModel.getSitesData().observe(this) { sites ->
+            Log.d("INVOKED", "observer of infectiousPressure")
+            println("THE SITES OBSERVED ARE \n" + sites.toString())
+
+            //do something with the sites data.
+        }
+
         //initial load of data
         viewModel.loadNorKyst800()
         viewModel.loadInfectiousPressure()
