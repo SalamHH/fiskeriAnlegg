@@ -1,5 +1,6 @@
 package no.uio.ifi.team16.stim.data
 
+import android.util.Log
 import no.uio.ifi.team16.stim.util.LatLng
 import ucar.ma2.*
 
@@ -8,8 +9,8 @@ import ucar.ma2.*
  */
 data class NorKyst800(
     val depth: ArrayDouble,
-    val latitude: ArrayDouble,
     val longitude: ArrayDouble,
+    val latitude: ArrayDouble,
     val salinity: ArrayInt,
     val temperature: ArrayInt,
     val time: ArrayDouble,
@@ -17,6 +18,7 @@ data class NorKyst800(
     val v: ArrayInt,
     val w: ArrayInt
 ) {
+    val TAG = "NORKYTS800"
     var latLonShape = Pair(latitude.shape[0], latitude.shape[1])
     val tdll = u.shape //tdll = time, depth, latitude, longitude
     var idxt = Index1D(time.shape) //index for time
@@ -35,6 +37,7 @@ data class NorKyst800(
     fun getSalinity(latLng: LatLng, time: Int, depth: Int): Double {
         /*find the concentrationgrid closest to our latlongpoint,
         we use euclidean distance, or technically L1, to measure distance between latlngs.*/
+        Log.d(TAG, "finding closest point to " + latLng.toString())
         val index = getClosestIndex(latLng)
         return salinity.get(time, depth, index.first, index.second) //TODO: WRONG! NOT SCALED
     }
@@ -90,7 +93,7 @@ data class NorKyst800(
     private fun getClosestIndex(latLng: LatLng): Pair<Int, Int> {
         var row = 0
         var column = 0
-        var minDistance = 1000.0
+        var minDistance = 1000000.0
         var distance: Double
         //find row from latitude
         for (i in 0 until latLonShape.first) {
@@ -102,6 +105,15 @@ data class NorKyst800(
                         latitude.get(i, j).toDouble(),
                         longitude.get(i, j).toDouble()
                     )
+                )
+                Log.d(
+                    TAG,
+                    "d(" + latLng.toString() + ",LatLng(${latitude.get(i, j)}, ${
+                        longitude.get(
+                            i,
+                            j
+                        )
+                    }) = $distance"
                 )
                 if (distance < minDistance) {
                     row = i

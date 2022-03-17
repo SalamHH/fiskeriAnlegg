@@ -1,14 +1,8 @@
 package no.uio.ifi.team16.stim.data.dataLoader
 
-import android.util.Log
 import no.uio.ifi.team16.stim.data.NorKyst800
 import ucar.ma2.ArrayDouble
 import ucar.ma2.ArrayInt
-import ucar.ma2.InvalidRangeException
-import ucar.nc2.Variable
-import ucar.nc2.dataset.NetcdfDataset
-import java.io.IOException
-import java.net.URI
 
 /**
  * DataLoader for data related tot he norkyst800 model.
@@ -71,52 +65,111 @@ class NorKyst800DataLoader : THREDDSDataLoader() {
         longitudeFrom: Float,
         longitudeTo: Float,
         longitudeResolution: Float
-    ): NorKyst800? = NetcdfDataset.openInMemory(URI(url)).let { ncfile ->
-        Log.d(TAG, "OPENING $url")
-        try {
-            Log.d(TAG, "OPENDAP URL OPENED")
-            val depth: Variable = ncfile.findVariable("depth") ?: return null
-            val lat: Variable = ncfile.findVariable("lat") ?: return null
-            val lon: Variable = ncfile.findVariable("lon") ?: return null
-            val salinity: Variable = ncfile.findVariable("salinity") ?: return null
-            val temperature: Variable = ncfile.findVariable("temperature") ?: return null
-            val time: Variable = ncfile.findVariable("time") ?: return null
-            val u: Variable = ncfile.findVariable("u") ?: return null
-            val v: Variable = ncfile.findVariable("v") ?: return null
-            val w: Variable = ncfile.findVariable("w") ?: return null
+    ): NorKyst800? = NorKyst800(
+        //depth
+        ArrayDouble.factory(
+            doubleArrayOf(
+                0.0, 5.0
+            )
+        ) as ArrayDouble,
+        //latitude
+        ArrayDouble.factory(
+            doubleArrayOf(
+                5.216333, 4.96755,
+                5.102933, 5.090733
+            )
+        ).reshape(intArrayOf(2, 2)) as ArrayDouble,
+        //logitude
+        ArrayDouble.factory(
+            doubleArrayOf(
+                59.371233, 60.339883,
+                59.88065, 60.054317
+            )
+        ).reshape(intArrayOf(2, 2)) as ArrayDouble,
+        //salinitiy
+        ArrayInt.factory(
+            intArrayOf(
+                1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
+            )
+        ).reshape(intArrayOf(2, 2, 2, 2)) as ArrayInt,
+        //temp
+        ArrayInt.factory(
+            intArrayOf(
+                32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47
+            )
+        ).reshape(intArrayOf(2, 2, 2, 2)) as ArrayInt,
+        //time
+        ArrayDouble.factory(
+            doubleArrayOf(
+                100.0, 200.0
+            )
+        ).reshape(intArrayOf(2)) as ArrayDouble,
+        //u
+        ArrayInt.factory(
+            intArrayOf(
+                64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79
+            )
+        ).reshape(intArrayOf(2, 2, 2, 2)) as ArrayInt,
+        //v
+        ArrayInt.factory(
+            intArrayOf(
+                80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95
+            )
+        ).reshape(intArrayOf(2, 2, 2, 2)) as ArrayInt,
+        //w
+        ArrayInt.factory(
+            intArrayOf(
+                96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111
+            )
+        ).reshape(intArrayOf(2, 2, 2, 2)) as ArrayInt
+    )
 
-            // note that this way of reading does not apply scale or offset
-            // see variable attributes "scale_factor" and "add_offset".
-            val norKyst800 = NorKyst800(
-                depth.read() as ArrayDouble,
-                lat.read() as ArrayDouble,
-                lon.read() as ArrayDouble,
-                salinity.read() as ArrayInt,
-                temperature.read() as ArrayInt,
-                time.read() as ArrayDouble,
-                u.read() as ArrayInt,
-                v.read() as ArrayInt,
-                w.read() as ArrayInt
-            )
-            ncfile.close()
-            norKyst800 //returned from let-, and then try-black
-        } catch (e: IOException) {
-            Log.e("ERROR", e.toString())
-            null
-        } catch (e: InvalidRangeException) {
-            Log.e("ERROR", e.toString())
-            null
-        } catch (e: NullPointerException) {
-            Log.e(
-                TAG,
-                "ERROR: a Variable might be read as null, are you sure you are using the correct url/dataset?"
-            )
-            Log.e("ERROR", e.toString())
-            null
-        } finally {
-            //NetcdfDataset.shutdown() TODO should be called on application shutdown!
-            Log.d(TAG, " load - DONE")
-            ncfile.close()
-        }
-    }
+
+    /*NetcdfDataset.openInMemory(URI(url)).let { ncfile ->
+    Log.d(TAG, "OPENING $url")
+    try {
+        Log.d(TAG, "OPENDAP URL OPENED")
+        val depth: Variable = ncfile.findVariable("depth") ?: return null
+        val lat: Variable = ncfile.findVariable("lat") ?: return null
+        val lon: Variable = ncfile.findVariable("lon") ?: return null
+        val salinity: Variable = ncfile.findVariable("salinity") ?: return null
+        val temperature: Variable = ncfile.findVariable("temperature") ?: return null
+        val time: Variable = ncfile.findVariable("time") ?: return null
+        val u: Variable = ncfile.findVariable("u") ?: return null
+        val v: Variable = ncfile.findVariable("v") ?: return null
+        val w: Variable = ncfile.findVariable("w") ?: return null
+
+        // note that this way of reading does not apply scale or offset
+        // see variable attributes "scale_factor" and "add_offset".
+        val norKyst800 = NorKyst800(
+            depth.read() as ArrayDouble,
+            lat.read() as ArrayDouble,
+            lon.read() as ArrayDouble,
+            salinity.read() as ArrayInt,
+            temperature.read() as ArrayInt,
+            time.read() as ArrayDouble,
+            u.read() as ArrayInt,
+            v.read() as ArrayInt,
+            w.read() as ArrayInt
+        )
+        ncfile.close()
+        norKyst800 //returned from let-, and then try-black
+    } catch (e: IOException) {
+        Log.e("ERROR", e.toString())
+        null
+    } catch (e: InvalidRangeException) {
+        Log.e("ERROR", e.toString())
+        null
+    } catch (e: NullPointerException) {
+        Log.e(
+            TAG,
+            "ERROR: a Variable might be read as null, are you sure you are using the correct url/dataset?"
+        )
+        Log.e("ERROR", e.toString())
+        null
+    } finally {
+        //NetcdfDataset.shutdown() TODO should be called on application shutdown!
+        Log.d(TAG, " load - DONE")
+        ncfile.close()
+    }*/
 }
