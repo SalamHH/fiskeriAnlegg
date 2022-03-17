@@ -7,18 +7,22 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import no.uio.ifi.team16.stim.data.InfectiousPressure
+import no.uio.ifi.team16.stim.data.Sites
 import no.uio.ifi.team16.stim.data.repository.InfectiousPressureRepository
+import no.uio.ifi.team16.stim.data.repository.SitesRepository
 
 class MainActivityViewModel : ViewModel() {
     private val TAG = "MainActivityViewModel"
     private val infectiousPressureRepository = InfectiousPressureRepository()
     private val infectiousPressureData = MutableLiveData<InfectiousPressure?>()
 
+    private val sitesRepository = SitesRepository()
+    private val sitesData = MutableLiveData<Sites?>()
+
     //NOT YET IMPLEMENTED
     //private val NorKyst800Repository = NorKyst800Repository()
     //private val NorKyst800Data  = MutableLiveData<NorKyst800>()
-    //private val SitesRepository = SitesRepository()
-    //private val SitesData  = MutableLiveData<Sites>()
+    //
     //private val WeatherRepository = WeatherRepository()
     //private val WeatherData  = MutableLiveData<Weather>()
 
@@ -33,8 +37,8 @@ class MainActivityViewModel : ViewModel() {
         throw NotImplementedError()
     }
 
-    fun getSitesData() {
-        throw NotImplementedError()
+    fun getSitesData(): MutableLiveData<Sites?> {
+        return sitesData
     }
 
     fun getWeatherData() {
@@ -57,15 +61,22 @@ class MainActivityViewModel : ViewModel() {
         }
     }
 
-    fun loadNorKyst800Data() {
+    fun loadNorKyst800() {
         throw NotImplementedError()
     }
 
-    fun loadSitesData() {
-        throw NotImplementedError()
+    fun loadSites() {
+        viewModelScope.launch(Dispatchers.Main) {
+            Log.d(TAG, "loading sites to viewmodel")
+            val loaded =
+                sitesRepository.getData() //either loaded, retrieved from cache or faked
+            Log.d(TAG, "loading sites to viewmodel - DONE")
+            //invokes the observer
+            sitesData.postValue(loaded)
+        }
     }
 
-    fun loadWeatherData() {
+    fun loadWeather() {
         throw NotImplementedError()
     }
 }

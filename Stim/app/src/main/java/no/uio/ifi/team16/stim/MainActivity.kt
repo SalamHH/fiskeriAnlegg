@@ -51,7 +51,16 @@ class MainActivity : AppCompatActivity() {
             //do something with the infectious pressure data.
         }
 
+        //observe sites
+        viewModel.getSitesData().observe(this) { sites ->
+            Log.d("INVOKED", "observer of infectiousPressure")
+            println("THE SITES OBSERVED ARE \n" + sites.toString())
+
+            //do something with the sites data.
+        }
+
         //initial load of data
         viewModel.loadInfectiousPressure()
+        viewModel.loadSites()
     }
 }

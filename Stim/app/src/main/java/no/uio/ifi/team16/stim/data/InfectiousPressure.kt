@@ -6,10 +6,6 @@ import ucar.ma2.Index3D
 import ucar.nc2.NCdumpW
 import java.util.*
 
-/*extend ucars arrayfloat with better getters, as thers are very unpractical*/
-//fun ArrayFloat.get
-
-
 /**
  * Class representing infectious pressure over a grid at a given time.
  */
@@ -65,8 +61,8 @@ class InfectiousPressure(
         var minDistance = 1000.0
         var distance: Double
         //find row from latitude
-        for (i in 1 until shape.first) {
-            for (j in 1 until shape.second) {
+        for (i in 0 until shape.first) {
+            for (j in 0 until shape.second) {
                 /*we dont need to use squareroot, since min of distance with squareroot has the same
                 minimum as without(since squareroot is an ascending function)*/
                 distance = latLng.haversine(
