@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardCornerRadius="2dp"
-    app:cardElevation="10dp">
+    app:cardElevation="10dp"
+    android:layout_marginBottom="4dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -17,23 +19,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
             android:background="@color/cardview_dark_background"
             android:contentDescription="@string/visual_of_the_location_of_the_site"
-            android:minHeight="100dp"
+            android:minHeight="150dp"
             app:srcCompat="@android:drawable/ic_menu_gallery" />
 
         <LinearLayout
             android:id="@+id/infoTextbox"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_below="@id/imageView_overview"
-            android:layout_alignParentEnd="true"
-            android:layout_margin="10dp">
+            android:layout_marginStart="5dp"
+            android:layout_marginBottom="5dp">
 
             <TextView
                 android:id="@+id/textview_name"
@@ -41,7 +43,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="end"
                 android:text="@string/site_name"
-                android:textSize="30sp" />
+                android:textSize="25sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/textview_location"
@@ -52,14 +55,35 @@
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/favoriteButton"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:layout_below="@id/imageView_overview"
-            android:layout_alignEnd="@id/infoTextbox"
-            android:layout_margin="10dp"
-            android:text="@string/favorite" />
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp">
+
+            <Button
+                android:id="@+id/informationButton"
+                style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/information_button"
+                app:icon="@android:drawable/ic_dialog_info"
+                app:iconTint="@color/black"
+                tools:ignore="DuplicateClickableBoundsCheck,DuplicateClickableBoundsCheck" />
+
+            <Button
+                android:id="@+id/favoriteButton"
+                style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/Favorite_button"
+                app:icon="@android:drawable/ic_input_add"
+                app:iconTint="@color/black" />
+
+        </LinearLayout>
 
     </RelativeLayout>
 

@@ -6,6 +6,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import no.uio.ifi.team16.stim.data.Site
+import no.uio.ifi.team16.stim.data.Sites
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 import no.uio.ifi.team16.stim.io.viewModel.RecycleViewAdapter
 
@@ -23,17 +24,21 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.recycleview)
         val recycleview = findViewById<RecyclerView>(R.id.recyclerview)
 
-        //kjører recycleview med dummy data
         /**
-         * Dummy data for å teste
+         *  Tester Recycleview med dummy data
          */
         val dummySite1 = Site(0, "TUHOLMANE Ø", 59.371233, 5.216333)
         val dummySite2 = Site(1, "TJAJNELUOKTA", 67.892433, 16.236718)
         val dummySite3 = Site(2, "JØRSTADSKJERA", 59.2955, 5.938617)
+        val dummySite4 = Site(2, "ORHOLMBUKTA", 58.66277, 5.938221)
+        val dummySite5 = Site(2, "DIESELSTAD", 59.1134, 5.9383444)
 
-        val dummyList: List<Site> = listOf(dummySite1, dummySite2, dummySite3)
+        val dummyList: List<Site> =
+            listOf(dummySite1, dummySite2, dummySite3, dummySite4, dummySite5)
+        val dummySites = Sites(dummyList)
 
-        recycleview.adapter = RecycleViewAdapter(dummyList)
+        //Loading adapter med Dummydata
+        recycleview.adapter = RecycleViewAdapter(dummySites)
 
         /*************
          * OBSERVERS *

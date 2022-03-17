@@ -4,6 +4,7 @@
     //recycleview_overview
     <string name="site_name">Site_name</string>
     <string name="site_location">Site_location</string>
-    <string name="favorite">Favorite</string>
-    <string name="visual_of_the_location_of_the_site">Visual of the location of the site</string>
+    <string name="visual_of_the_location_of_the_site">Visual of the site location</string>
+    <string name="Favorite_button">Favorites</string>
+    <string name="information_button">Information</string>
 </resources>
