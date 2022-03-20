@@ -33,4 +33,8 @@ data class LatLng(val lat: Double, val lng: Double) {
         val c = 2 * Math.asin(Math.sqrt(a));
         return earthRadiusKm * c;
     }
+
+    override fun toString(): String {
+        return "Latitude: ${lat}, longitude: ${lng}"
+    }
 }
