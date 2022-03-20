@@ -3,6 +3,9 @@ package no.uio.ifi.team16.stim.data.dataLoader
 //import ucar.nc2.dataset.NetcdfDatasets
 import android.util.Log
 import no.uio.ifi.team16.stim.data.InfectiousPressure
+import org.locationtech.proj4j.CRSFactory
+import org.locationtech.proj4j.CoordinateTransform
+import org.locationtech.proj4j.CoordinateTransformFactory
 import ucar.ma2.ArrayFloat
 import ucar.ma2.InvalidRangeException
 import ucar.nc2.Variable
@@ -24,7 +27,7 @@ class InfectiousPressureDataLoader : THREDDSDataLoader() {
     /**
      * load the entire dataset
      */
-    fun load(): InfectiousPressure? = load(-90f, 90f, 0.001f, -90f, 90f, 0.001f)
+    fun load(): InfectiousPressure? = load(-90f, 90f, 0.0001f, -90f, 90f, 0.0001f)
 
     /**
      * return data between latitude from/to, and latitude from/to, with given resolution.
@@ -74,6 +77,18 @@ class InfectiousPressureDataLoader : THREDDSDataLoader() {
                 //make some extra ranges to access data
                 val range2 = "$rangeX,$rangeY"
                 val range3 = "0,$range2"
+
+                //make the projection
+                val crsFactory = CRSFactory()
+                val stereoCRT = crsFactory.createFromParameters(
+                    null,
+                    gridMapping.findAttribute("proj4string")!!.stringValue!!
+                )
+                val latLngCRT = stereoCRT.createGeographic()
+                val ctFactory = CoordinateTransformFactory()
+                val latLngToStereo: CoordinateTransform =
+                    ctFactory.createTransform(latLngCRT, stereoCRT)
+
                 // note that this way of reading does not apply scale or offset
                 // see variable attributes "scale_factor" and "add_offset".
                 val infectiousPressure = InfectiousPressure(
@@ -83,6 +98,7 @@ class InfectiousPressureDataLoader : THREDDSDataLoader() {
                     lat.read(range2) as ArrayFloat,
                     lon.read(range2) as ArrayFloat,
                     time.readScalarFloat(),
+                    latLngToStereo,
                     parseDate(ncfile.findGlobalAttribute("fromdate")!!.stringValue!!),
                     parseDate(ncfile.findGlobalAttribute("todate")!!.stringValue!!)
                     /* projection, kept in comments to implement correctly later!

@@ -35,5 +35,7 @@ abstract class Repository<D, S> {
     /**
      * Whether the data is mocked or not
      */
-    protected val mocked: Boolean = false
+    protected var mocked: Boolean = false
+
+
 }

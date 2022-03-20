@@ -53,10 +53,10 @@ abstract class THREDDSDataLoader {
         //TODO: if data points are INSIDE the grid, rounding is appropriate, but if it is in a corner we have to use floor or ceil.
         val startX = max(round(min(longitudeFrom - minLongitude, 0f) / longitudeDiff).toInt(), 0)
         val stopX = max(round(min(longitudeTo / maxLongitude, 1f) * maxX).toInt(), 0)
-        val stepX = 100 //kotlin.math.max(latitudeResolution,1)
+        val stepX = 500 //kotlin.math.max(latitudeResolution,1)
         val startY = max(round(min(latitudeFrom - minLatitude, 0f) / latitudeDiff).toInt(), 0)
         val stopY = max(round(min(latitudeTo / maxLatitude, 1f) * maxY).toInt(), 0)
-        val stepY = 100 //kotlin.math.max(latitudeResolution,1)
+        val stepY = 1350 //kotlin.math.max(latitudeResolution,1)
         Log.d(
             TAG,
             "loading from ranges ${startX}:${stopX}:${stepX}\",\"${startY}:${stopY}:${stepY}"

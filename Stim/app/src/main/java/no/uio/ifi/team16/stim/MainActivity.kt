@@ -8,6 +8,11 @@ import androidx.recyclerview.widget.RecyclerView
 import no.uio.ifi.team16.stim.data.Sites
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 import no.uio.ifi.team16.stim.io.viewModel.RecycleViewAdapter
+import org.locationtech.proj4j.CRSFactory
+import org.locationtech.proj4j.CoordinateTransform
+import org.locationtech.proj4j.CoordinateTransformFactory
+import org.locationtech.proj4j.ProjCoordinate
+
 
 class MainActivity : AppCompatActivity() {
     val TAG = "MainActivity"
@@ -37,6 +42,29 @@ class MainActivity : AppCompatActivity() {
                 infectiousPressure,
                 viewModel.getNorKyst800Data().value
             )
+
+            //Log.d(TAG, infectiousPressure?.getLatitude(4,4).toString())
+            Log.d(TAG, infectiousPressure?.getLatitude(4, 4).toString())
+            Log.d(TAG, infectiousPressure?.getLongitude(4, 4).toString())
+            val lat = infectiousPressure!!.getLatitude(4, 4)
+            val lng = infectiousPressure!!.getLongitude(4, 4)
+            Log.d(TAG, infectiousPressure?.getEtaRho(4).toString())
+            Log.d(TAG, infectiousPressure?.getXiRho(4).toString())
+            Log.d(TAG, infectiousPressure.project(lat, lng).toString())
+            val crsFactory = CRSFactory()
+            val stereographicProjection = crsFactory.createFromParameters(
+                null,
+                "+proj=stere +ellps=WGS84 +lat_0=90.0 +lat_ts=60.0 +x_0=3192800 +y_0=1784000 +lon_0=70"
+            )
+            val latLngCRT = stereographicProjection.createGeographic()
+            val ctFactory = CoordinateTransformFactory()
+            val latLngToStereo: CoordinateTransform =
+                ctFactory.createTransform(latLngCRT, stereographicProjection)
+            // `result` is an output parameter to `transform()`
+            // `result` is an output parameter to `transform()`
+            val result = ProjCoordinate()
+            latLngToStereo.transform(ProjCoordinate(lng.toDouble(), lat.toDouble()), result)
+            Log.d(TAG, "\n\n\n" + result.toString() + "\n\n\n")
         }
 
         //observe norKyst800

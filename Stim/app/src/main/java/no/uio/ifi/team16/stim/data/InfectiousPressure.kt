@@ -1,7 +1,10 @@
 package no.uio.ifi.team16.stim.data
 
 import no.uio.ifi.team16.stim.util.LatLng
+import org.locationtech.proj4j.CoordinateTransform
+import org.locationtech.proj4j.ProjCoordinate
 import ucar.ma2.ArrayFloat
+import ucar.ma2.Index1D
 import ucar.ma2.Index3D
 import ucar.nc2.NCdumpW
 import java.util.*
@@ -17,11 +20,14 @@ class InfectiousPressure(
     val latitude: ArrayFloat,
     val longitude: ArrayFloat,
     val time: Float,               //seconds since 2000-01-01 00:00:00
+    val projection: CoordinateTransform, //transforms between latlong and projection coordinates
     val fromDate: Date,
     val toDate: Date
 ) {
     val shape: Pair<Int, Int> = Pair(concentration.shape[1], concentration.shape[2])
     var idx: Index3D = Index3D(concentration.shape)
+    var ideta: Index1D = Index1D(intArrayOf(concentration.shape[1]))
+    var idxi: Index1D = Index1D(intArrayOf(concentration.shape[2]))
 
     /**
      * get cconcentration at the given latlong coordinate
@@ -45,6 +51,21 @@ class InfectiousPressure(
         we use euclidean distance, or technically L1, to measure distance between latlngs.*/
         val index = getClosestIndex(latLng)
         return concentration.get(index.first, index.second)
+    }
+
+    fun getLatitude(row: Int, column: Int): Float = latitude.get(row, column)
+    fun getLongitude(row: Int, column: Int): Float = longitude.get(row, column)
+    fun getEtaRho(i: Int): Float = eta_rho.getFloat(ideta.set(i))
+    fun getXiRho(i: Int): Float = xi_rho.getFloat(idxi.set(i))
+
+    fun getConcentration(latLng: LatLng, weeksFromNow: Int): Float {
+        /*find the concentrationgrid closest to our latlongpoint,
+        we use euclidean distance, or technically L1, to measure distance between latlngs.*/
+        val index = getClosestIndex(latLng)
+        return concentration.get(
+            index.first,
+            index.second
+        ) * cos(weeksFromNow.toFloat() / 2 * 3.141592f)
     }
 
     /**
@@ -100,7 +121,7 @@ class InfectiousPressure(
     }
 
     //extend arrayFloat with a getter since thiers is very impractical
-    private fun ArrayFloat.get(row: Int, column: Int): Float =
+    fun ArrayFloat.get(row: Int, column: Int): Float =
         this.getFloat(idx.set(0, row, column))
 
     //TODO: stereographicprojection solution:
@@ -131,4 +152,36 @@ class InfectiousPressure(
             NCdumpW.toString(eta_rho) +
             "\nXi_rho:\n" +
             NCdumpW.toString(xi_rho) + "\n"
+
+    /**
+     * project a latlng point to a point on the projection.
+     * in the thredds dataset, maps from latlong to eps, xi.
+     */
+    fun project(lat: Float, lng: Float): Pair<Float, Float> =
+        ProjCoordinate(0.0, 0.0).let { p ->
+            projection.transform(ProjCoordinate(lng.toDouble(), lat.toDouble()), p)
+        }.let { p ->
+            Pair(p.y.toFloat(), p.x.toFloat())
+        }
+
+    /*companion object Projection {
+        val lat0 = 90f
+        val lng0 = 0f
+
+        fun project(lat: Float, lng: Float) : Pair<Float, Float> {
+            val xi = 2* atan(
+                tan(
+                (1/4* PI +1/2*lat)*
+                        ((1- exp(1f) * sin(lat))/(1+ exp(1f) * sin(lat))).pow(exp(1f) /2)
+            )
+            ) - PI /2
+            val Re = 6378000f
+            val R  = Re*cos(lat)/(1- exp(2f) * sin(lat) * sin(lat))*cos(xi)
+            val k  = 2*R/(1+lat0* sin(lat) +cos(lat0)*cos(lat)*cos(lng-lng0))
+
+            val x = k*cos(lat)* sin(lng-lng0)
+            val y = k*(cos(lat0)* sin(lat) - sin(lat0) *cos(lat)*cos(lng-lng0))
+            return Pair(x.toFloat(),y.toFloat())
+        }*/
+
 }
