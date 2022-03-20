@@ -1,5 +1,6 @@
 package no.uio.ifi.team16.stim.data.dataLoader
 
+//import thredds.catalog.ThreddsMetadata
 import no.uio.ifi.team16.stim.data.NorKyst800
 import ucar.ma2.ArrayDouble
 import ucar.ma2.ArrayInt
@@ -20,7 +21,11 @@ class NorKyst800DataLoader : THREDDSDataLoader() {
 
     //                 "https://thredds.met.no/thredds/fileServer/fou-hi/norkyst800m-1h/NorKyst-800m_ZDEPTHS_his.fc.2022031000.nc"
     override val url =
-        "https://thredds.met.no/thredds/fileServer/fou-hi/norkyst800m-1h/NorKyst-800m_ZDEPTHS_his.fc.2022031700.nc?" +
+        "dods://thredds.met.no/thredds/dodsC/fou-hi/norkyst800m-1h/NorKyst-800m_ZDEPTHS_his.an.2022031700.nc"
+    //"thredds:resolve:https://thredds.met.no/thredds/catalog/fou-hi/norkyst800m-1h/catalog.xml#" +
+    //"norkyst800m_1h_files/NorKyst-800m_ZDEPTHS_his.an.2022031700.nc"
+    //"http://thredds.met.no/thredds/fileServer/fou-hi/norkyst800m-1h/NorKyst-800m_ZDEPTHS_his.an.2022031700.nc"
+    /*"https://thredds.met.no/thredds/fileServer/fou-hi/norkyst800m-1h/NorKyst-800m_ZDEPTHS_his.fc.2022031700.nc?" +
                 "depth[${depthRange}]," +
                 "lat[${yRange}][${xRange}]," +
                 "lon[${yRange}][${xRange}]," +
@@ -29,7 +34,7 @@ class NorKyst800DataLoader : THREDDSDataLoader() {
                 "time[${timeRange}]," +
                 "u[${timeRange}][${depthRange}][${yRange}][${xRange}]," +
                 "v[${timeRange}][${depthRange}][${yRange}][${xRange}]," +
-                "w[${timeRange}][${depthRange}][${yRange}][${xRange}]"
+                "w[${timeRange}][${depthRange}][${yRange}][${xRange}]"*/
 
     /**
      * load the "entire" dataset
@@ -124,52 +129,66 @@ class NorKyst800DataLoader : THREDDSDataLoader() {
         ).reshape(intArrayOf(2, 2, 2, 2)) as ArrayInt
     )
 
+/*
+    fun load(
+        latitudeFrom: Float,
+        latitudeTo: Float,
+        latitudeResolution: Float,
+        longitudeFrom: Float,
+        longitudeTo: Float,
+        longitudeResolution: Float
+    ): NorKyst800? {
+        System.setProperty( "ssl.TrustManagerFactory.algorithm", javax.net.ssl.KeyManagerFactory.getDefaultAlgorithm())
+        try {
+        NetcdfDataset.openDataset(url).let { ncfile ->
+        Log.d(TAG, "OPENING $url")
+        return try {
+            Log.d(TAG, "OPENDAP URL OPENED")
+            val depth: Variable = ncfile.findVariable("depth") ?: return null
+            val lat: Variable = ncfile.findVariable("lat") ?: return null
+            val lon: Variable = ncfile.findVariable("lon") ?: return null
+            val salinity: Variable = ncfile.findVariable("salinity") ?: return null
+            val temperature: Variable = ncfile.findVariable("temperature") ?: return null
+            val time: Variable = ncfile.findVariable("time") ?: return null
+            val u: Variable = ncfile.findVariable("u") ?: return null
+            val v: Variable = ncfile.findVariable("v") ?: return null
+            val w: Variable = ncfile.findVariable("w") ?: return null
 
-    /*NetcdfDataset.openInMemory(URI(url)).let { ncfile ->
-    Log.d(TAG, "OPENING $url")
-    try {
-        Log.d(TAG, "OPENDAP URL OPENED")
-        val depth: Variable = ncfile.findVariable("depth") ?: return null
-        val lat: Variable = ncfile.findVariable("lat") ?: return null
-        val lon: Variable = ncfile.findVariable("lon") ?: return null
-        val salinity: Variable = ncfile.findVariable("salinity") ?: return null
-        val temperature: Variable = ncfile.findVariable("temperature") ?: return null
-        val time: Variable = ncfile.findVariable("time") ?: return null
-        val u: Variable = ncfile.findVariable("u") ?: return null
-        val v: Variable = ncfile.findVariable("v") ?: return null
-        val w: Variable = ncfile.findVariable("w") ?: return null
-
-        // note that this way of reading does not apply scale or offset
-        // see variable attributes "scale_factor" and "add_offset".
-        val norKyst800 = NorKyst800(
-            depth.read() as ArrayDouble,
-            lat.read() as ArrayDouble,
-            lon.read() as ArrayDouble,
-            salinity.read() as ArrayInt,
-            temperature.read() as ArrayInt,
-            time.read() as ArrayDouble,
-            u.read() as ArrayInt,
-            v.read() as ArrayInt,
-            w.read() as ArrayInt
-        )
-        ncfile.close()
-        norKyst800 //returned from let-, and then try-black
-    } catch (e: IOException) {
-        Log.e("ERROR", e.toString())
-        null
-    } catch (e: InvalidRangeException) {
-        Log.e("ERROR", e.toString())
-        null
-    } catch (e: NullPointerException) {
-        Log.e(
-            TAG,
-            "ERROR: a Variable might be read as null, are you sure you are using the correct url/dataset?"
-        )
-        Log.e("ERROR", e.toString())
-        null
-    } finally {
-        //NetcdfDataset.shutdown() TODO should be called on application shutdown!
-        Log.d(TAG, " load - DONE")
-        ncfile.close()
+            // note that this way of reading does not apply scale or offset
+            // see variable attributes "scale_factor" and "add_offset".
+            val norKyst800 = NorKyst800(
+                depth.read() as ArrayDouble,
+                lat.read() as ArrayDouble,
+                lon.read() as ArrayDouble,
+                salinity.read() as ArrayInt,
+                temperature.read() as ArrayInt,
+                time.read() as ArrayDouble,
+                u.read() as ArrayInt,
+                v.read() as ArrayInt,
+                w.read() as ArrayInt
+            )
+            ncfile.close()
+            norKyst800 //returned from let-, and then try-black
+        } catch (e: IOException) {
+            Log.e("ERROR", e.toString())
+            null
+        } catch (e: InvalidRangeException) {
+            Log.e("ERROR", e.toString())
+            null
+        } catch (e: NullPointerException) {
+            Log.e(
+                TAG,
+                "ERROR: a Variable might be read as null, are you sure you are using the correct url/dataset?"
+            )
+            Log.e("ERROR", e.toString())
+            null
+        } finally {
+            //NetcdfDataset.shutdown() TODO should be called on application shutdown!
+            Log.d(TAG, " load - DONE")
+            ncfile.close()
+        }}} catch (e : Exception) {
+            Log.e("ERROR", e.toString())
+            return null
+        }
     }*/
 }

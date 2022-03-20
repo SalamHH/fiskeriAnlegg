@@ -88,7 +88,7 @@ data class NorKyst800(
         this.getDouble(idx4.set(time, depth, row, column))
 
     private fun ArrayInt.get(time: Int, depth: Int, row: Int, column: Int): Double =
-        this.getDouble(idx4.set(time, depth, row, column)) //TODO: SCALE!
+        this.getDouble(idx4.set(time, depth, row, column))
 
     private fun getClosestIndex(latLng: LatLng): Pair<Int, Int> {
         var row = 0
@@ -98,8 +98,6 @@ data class NorKyst800(
         //find row from latitude
         for (i in 0 until latLonShape.first) {
             for (j in 0 until latLonShape.second) {
-                /*we dont need to use squareroot, since min of distance with squareroot has the same
-                minimum as without(since squareroot is an ascending function)*/
                 distance = latLng.haversine(
                     LatLng(
                         latitude.get(i, j).toDouble(),

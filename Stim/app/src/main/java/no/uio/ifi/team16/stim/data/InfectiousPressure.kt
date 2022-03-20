@@ -5,6 +5,7 @@ import ucar.ma2.ArrayFloat
 import ucar.ma2.Index3D
 import ucar.nc2.NCdumpW
 import java.util.*
+import kotlin.math.cos
 
 /**
  * Class representing infectious pressure over a grid at a given time.
@@ -44,6 +45,23 @@ class InfectiousPressure(
         we use euclidean distance, or technically L1, to measure distance between latlngs.*/
         val index = getClosestIndex(latLng)
         return concentration.get(index.first, index.second)
+    }
+
+    /**
+     * get concentration at a latitude a given amount of weeks from now
+     *
+     * TODO: this is just a mock-function, shapes the data from this week so it makes a "nice" curve
+     *
+     * @see getConcentration(L atLng)
+     */
+    fun getConcentration(latLng: LatLng, weeksFromNow: Int): Float {
+        /*find the concentrationgrid closest to our latlongpoint,
+        we use euclidean distance, or technically L1, to measure distance between latlngs.*/
+        val index = getClosestIndex(latLng)
+        return concentration.get(
+            index.first,
+            index.second
+        ) * cos(weeksFromNow.toFloat() / 2f * 3.141592f)
     }
 
     /**

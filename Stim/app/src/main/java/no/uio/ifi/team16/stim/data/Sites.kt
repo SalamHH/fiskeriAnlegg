@@ -29,7 +29,6 @@ Site {
 }
 */
 
-
 /*BorderPoint{
     id	integer($int64)
     index	integer($int32)
@@ -45,5 +44,18 @@ data class Site(
     val id: Int,
     val name: String,
     val latLng: LatLng
-)
-// val placement : AreaPlacement)
+) {
+    /**
+     * @see InfectiousPressure.getConcentration(LatLng)
+     */
+    fun getInfectiousPressure(infectiousPressure: InfectiousPressure): Float {
+        return infectiousPressure.getConcentration(latLng)
+    }
+
+    /**
+     * @see InfectiousPressure.getConcentration(LatLng, Int)
+     */
+    fun getInfectiousPressure(infectiousPressure: InfectiousPressure, weeksFromNow: Int): Float {
+        return infectiousPressure.getConcentration(latLng, weeksFromNow)
+    }
+}
