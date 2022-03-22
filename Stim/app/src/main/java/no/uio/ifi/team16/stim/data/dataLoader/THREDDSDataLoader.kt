@@ -54,10 +54,10 @@ abstract class THREDDSDataLoader {
         //TODO: determine if ranges will be used at all! depends on use cases
         val startX = max(round(min(longitudeFrom - minLongitude, 0f) / longitudeDiff).toInt(), 0)
         val stopX = max(round(min(longitudeTo / maxLongitude, 1f) * maxX).toInt(), 0)
-        val stepX = 1 //kotlin.math.max(latitudeResolution,1)
+        val stepX = 50 //kotlin.math.max(latitudeResolution,1)
         val startY = max(round(min(latitudeFrom - minLatitude, 0f) / latitudeDiff).toInt(), 0)
         val stopY = max(round(min(latitudeTo / maxLatitude, 1f) * maxY).toInt(), 0)
-        val stepY = 1 //kotlin.math.max(latitudeResolution,1)
+        val stepY = 50 //kotlin.math.max(latitudeResolution,1)
         Log.d(
             TAG,
             "loading from ranges ${startX}:${stopX}:${stepX}\",\"${startY}:${stopY}:${stepY}"
