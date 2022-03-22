@@ -3,7 +3,6 @@ package no.uio.ifi.team16.stim
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import no.uio.ifi.team16.stim.data.Sites
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
@@ -14,7 +13,7 @@ import org.locationtech.proj4j.CoordinateTransformFactory
 import org.locationtech.proj4j.ProjCoordinate
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : StimActivity() {
     val TAG = "MainActivity"
     private val viewModel: MainActivityViewModel by viewModels()
 
