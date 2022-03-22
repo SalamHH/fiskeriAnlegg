@@ -1,9 +1,16 @@
 package no.uio.ifi.team16.stim.data.repository
 
-class AddressRepository {
+import no.uio.ifi.team16.stim.data.dataLoader.AddressDataLoader
+import no.uio.ifi.team16.stim.util.LatLng
 
-    // todo bruk latlng
-    fun getMunicipalityNr(lat: Double, lng: Double) {
+class AddressRepository : Repository<String, AddressDataLoader>() {
 
+    override val dataSource = AddressDataLoader()
+    private val cache: MutableMap<LatLng, String> = mutableMapOf()
+
+    suspend fun getMunicipalityNr(latLng: LatLng): String? {
+        return cache.getOrPut(latLng) {
+            return dataSource.getMunicipalityNr(latLng)
+        }
     }
 }
