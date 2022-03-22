@@ -35,6 +35,20 @@ Site {
     latitude	number($double)
     longitude	number($double)
 }*/
+data class ProdArea(
+    val prodAreaCode: Int,
+    val prodAreaName: String,
+    val prodAreaStatus: ProdAreaStatus
+)
+
+enum class ProdAreaStatus { Red, Yellow, Green }
+
+data class AreaPlacement(
+    val municipalityCode: Int,
+    val municipalityName: String,
+    val countyCode: Int,
+    val prodArea: ProdArea?
+)
 
 data class BorderPoint(val id: Int, val index: Int, val longitude: Double, val latitude: Double)
 
@@ -43,7 +57,8 @@ data class SiteBorder(val points: List<BorderPoint>)
 data class Site(
     val id: Int,
     val name: String,
-    val latLng: LatLng
+    val latLng: LatLng,
+    val placement: AreaPlacement?
 ) {
     /**
      * @see InfectiousPressure.getConcentration(LatLng)
