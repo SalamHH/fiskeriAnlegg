@@ -16,16 +16,16 @@ import kotlin.math.round
  */
 class InfectiousPressure(
     val concentration: ArrayFloat, //Particle concentration, aggregated number of particles in grid cell
-    val eta_rho: ArrayFloat,       //projection_y_coordinate
     val xi_rho: ArrayFloat,        //projection_x_coordinate
+    val eta_rho: ArrayFloat,       //projection_y_coordinate
     val latitude: ArrayFloat,
     val longitude: ArrayFloat,
     val time: Float,               //seconds since 2000-01-01 00:00:00
     val projection: CoordinateTransform, //transforms between latlong and projection coordinates
     val fromDate: Date?,
     val toDate: Date?,
-    val dx: Float,
-    val dy: Float
+    val dx: Float, //x separation, in projection meters, between points
+    val dy: Float  //y separation, in projection meters, between points
 ) {
     val shape: Pair<Int, Int> = Pair(concentration.shape[1], concentration.shape[2])
     var idx: Index3D = Index3D(concentration.shape)

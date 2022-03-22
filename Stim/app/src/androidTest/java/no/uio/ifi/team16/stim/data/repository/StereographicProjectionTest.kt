@@ -24,16 +24,16 @@ class stereographicProjectionTest {
                     0.3f, 0.4f,
                 )
             ).reshape(intArrayOf(1, 2, 2)) as ArrayFloat,
-            //eta
-            ArrayFloat.factory(
-                floatArrayOf(
-                    0f, 400000f
-                )
-            ).reshape(intArrayOf(2)) as ArrayFloat,
-            //xi
+            //xi, projection x
             ArrayFloat.factory(
                 floatArrayOf(
                     0f, 1080000f
+                )
+            ).reshape(intArrayOf(2)) as ArrayFloat,
+            //eta, projection y
+            ArrayFloat.factory(
+                floatArrayOf(
+                    0f, 400000f
                 )
             ).reshape(intArrayOf(2)) as ArrayFloat,
             //latitude
@@ -71,16 +71,12 @@ class stereographicProjectionTest {
     @Test
     fun testProjection() {
         val infectiousPressure: InfectiousPressure =
-            repository.getSomeData()!! //returns the above mock data from cache
+            repository.getSomeData()!! //returns the above mock data from cache, guaranteed
         Log.d("", infectiousPressure.projection.toString())
         fun checkAtIndex(i: Int, j: Int) {
             var lat = infectiousPressure.getLatitude(i, j)
             var lng = infectiousPressure.getLongitude(i, j)
             var etaxi = infectiousPressure.project(lat, lng)
-            /*assertEquals(
-                Pair(infectiousPressure.getEtaRho(i), infectiousPressure.getXiRho(j)),
-                etaxi
-            )*/
 
             assertEquals(
                 infectiousPressure.getEtaRho(i),
