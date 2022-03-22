@@ -58,16 +58,6 @@ class InfectiousPressure(
     fun getEtaRho(i: Int): Float = eta_rho.getFloat(ideta.set(i))
     fun getXiRho(i: Int): Float = xi_rho.getFloat(idxi.set(i))
 
-    fun getConcentration(latLng: LatLng, weeksFromNow: Int): Float {
-        /*find the concentrationgrid closest to our latlongpoint,
-        we use euclidean distance, or technically L1, to measure distance between latlngs.*/
-        val index = getClosestIndex(latLng)
-        return concentration.get(
-            index.first,
-            index.second
-        ) * cos(weeksFromNow.toFloat() / 2 * 3.141592f)
-    }
-
     /**
      * get concentration at a latitude a given amount of weeks from now
      *
