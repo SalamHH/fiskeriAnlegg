@@ -6,7 +6,6 @@ import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.data.Sites
 import no.uio.ifi.team16.stim.util.LatLng
 import org.json.JSONArray
-import org.json.JSONObject
 
 /**
  * Load Sites
@@ -17,11 +16,6 @@ class SitesDataLoader {
      * URL to the API
      */
     private val url: String = "https://api.fiskeridir.no/pub-aqua/api/v1/sites"
-
-    //extend JSONArray with an iterator(extend to iterable -> use map?)
-    @Suppress("UNCHECKED_CAST")
-    operator fun JSONArray.iterator(): Iterator<JSONObject> =
-        (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
 
     /**
      * Loads the 10 first sites from the url
@@ -39,17 +33,19 @@ class SitesDataLoader {
             return null
         }
 
-
         val sites = JSONArray(responseStr)
         var out: MutableList<Site> = mutableListOf()
-        for (site in sites) {
-            out.add(
-                Site(
-                    site.getInt("siteId"),
-                    site.getString("name"),
-                    LatLng(site.getDouble("latitude"), site.getDouble("longitude"))
+        for (i in 0 until sites.length()) {
+            //try to parse, if succesfull add to out
+            sites.getJSONObject(i)?.runCatching {
+                out.add(
+                    Site(
+                        this.getInt("siteId"),
+                        this.getString("name"),
+                        LatLng(this.getDouble("latitude"), this.getDouble("longitude"))
+                    )
                 )
-            )
+            }
         }
         return Sites(out.toList())
     }

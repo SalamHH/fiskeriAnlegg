@@ -21,8 +21,8 @@ class InfectiousPressure(
     val longitude: ArrayFloat,
     val time: Float,               //seconds since 2000-01-01 00:00:00
     val projection: CoordinateTransform, //transforms between latlong and projection coordinates
-    val fromDate: Date,
-    val toDate: Date
+    val fromDate: Date?,
+    val toDate: Date?
 ) {
     val shape: Pair<Int, Int> = Pair(concentration.shape[1], concentration.shape[2])
     var idx: Index3D = Index3D(concentration.shape)

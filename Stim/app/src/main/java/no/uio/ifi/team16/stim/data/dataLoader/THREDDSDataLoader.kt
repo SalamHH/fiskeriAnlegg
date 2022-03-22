@@ -51,12 +51,13 @@ abstract class THREDDSDataLoader {
     ): Pair<String, String> {
         //interpret as ranges
         //TODO: if data points are INSIDE the grid, rounding is appropriate, but if it is in a corner we have to use floor or ceil.
+        //TODO: determine if ranges will be used at all! depends on use cases
         val startX = max(round(min(longitudeFrom - minLongitude, 0f) / longitudeDiff).toInt(), 0)
         val stopX = max(round(min(longitudeTo / maxLongitude, 1f) * maxX).toInt(), 0)
-        val stepX = 500 //kotlin.math.max(latitudeResolution,1)
+        val stepX = 1 //kotlin.math.max(latitudeResolution,1)
         val startY = max(round(min(latitudeFrom - minLatitude, 0f) / latitudeDiff).toInt(), 0)
         val stopY = max(round(min(latitudeTo / maxLatitude, 1f) * maxY).toInt(), 0)
-        val stepY = 1350 //kotlin.math.max(latitudeResolution,1)
+        val stepY = 1 //kotlin.math.max(latitudeResolution,1)
         Log.d(
             TAG,
             "loading from ranges ${startX}:${stopX}:${stepX}\",\"${startY}:${stopY}:${stepY}"
@@ -86,7 +87,10 @@ abstract class THREDDSDataLoader {
         NetcdfDataset.openDataset(url).let { ncfile ->
             Log.d(TAG, "checking if data is up to date")
             try {
-                parseDate(ncfile.findGlobalAttribute("fromdate")!!.stringValue!!) == currentDate
+                //TODO: compare weeknumber global parameter to this week, but counting from wednesdays?
+                ncfile.findGlobalAttribute("fromdate")?.run {
+                    parseDate(this.stringValue)
+                } == currentDate
             } catch (e: IOException) {
                 Log.e("ERROR", e.toString())
                 null
@@ -101,4 +105,14 @@ abstract class THREDDSDataLoader {
                 ncfile.close()
             }
         }
+
+    /*fun <D> openTHREDDSDataset(url: String, action: NetcdfDataset.(D) -> D) : D =
+        action(NetcdfDataset.openDataset(url))
+        /*let {
+
+            var ncfile =
+            action(ncfile)
+        }*/
+
+     */
 }
