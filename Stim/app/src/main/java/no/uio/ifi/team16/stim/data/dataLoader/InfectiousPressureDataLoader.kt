@@ -9,6 +9,8 @@ import org.locationtech.proj4j.CoordinateTransformFactory
 import ucar.ma2.ArrayFloat
 import ucar.nc2.Variable
 import ucar.nc2.dataset.NetcdfDataset
+import kotlin.math.max
+import kotlin.math.round
 
 /**
  * DataLoader for infectious pressure data.
@@ -72,6 +74,7 @@ class InfectiousPressureDataLoader : THREDDSDataLoader() {
             val lon: Variable = ncfile.findVariable("lon") ?: return null
             val time: Variable = ncfile.findVariable("time") ?: return null
             val gridMapping: Variable = ncfile.findVariable("grid_mapping") ?: return null
+            val dx = ncfile.findGlobalAttribute("dx")?.numericValue?.toFloat() ?: return null
             //make some extra ranges to access data
             val range2 = "$rangeX,$rangeY"
             val range3 = "0,$range2"
@@ -102,7 +105,9 @@ class InfectiousPressureDataLoader : THREDDSDataLoader() {
                 },
                 ncfile.findGlobalAttribute("todate")?.run {
                     parseDate(this.stringValue)
-                }
+                },
+                dx * round(1 / max(latitudeResolution, 1f)),
+                dx * round(1 / max(longitudeResolution, 1f))
             )
             return infectiousPressure
         }

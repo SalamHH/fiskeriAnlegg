@@ -22,7 +22,9 @@ class InfectiousPressure(
     val time: Float,               //seconds since 2000-01-01 00:00:00
     val projection: CoordinateTransform, //transforms between latlong and projection coordinates
     val fromDate: Date?,
-    val toDate: Date?
+    val toDate: Date?,
+    val dx: Float,
+    val dy: Float
 ) {
     val shape: Pair<Int, Int> = Pair(concentration.shape[1], concentration.shape[2])
     var idx: Index3D = Index3D(concentration.shape)
@@ -114,21 +116,6 @@ class InfectiousPressure(
     fun ArrayFloat.get(row: Int, column: Int): Float =
         this.getFloat(idx.set(0, row, column))
 
-    //TODO: stereographicprojection solution:
-    /*/** map from eta xi(ProjectionPoint) to LatLng */
-    fun projectionPointToLatLng(point: ProjectionPoint): LatLng =
-        projection.projToLatLon(point).let { latLongPoint ->
-            LatLng(
-                latLongPoint.latitude,
-                latLongPoint.longitude
-            )
-        }*/
-
-    //TODO: stereographicprojection solution:
-    /*/** map from latitude longitude to eta xi(ProjectionPoint) */
-    fun latLngToProjectionPoint(latlng: LatLng): ProjectionPoint =
-        projection.latLonToProj(LatLonPointImpl(latlng.lat, latlng.lng))*/
-
     override fun toString() = "InfectiousPressure:" +
             "\nFrom: ${fromDate}, to: $toDate" +
             "\nTime since 2000-01-01: ${time}, GridMapping: -----" +
@@ -153,25 +140,4 @@ class InfectiousPressure(
         }.let { p ->
             Pair(p.y.toFloat(), p.x.toFloat())
         }
-
-    /*companion object Projection {
-        val lat0 = 90f
-        val lng0 = 0f
-
-        fun project(lat: Float, lng: Float) : Pair<Float, Float> {
-            val xi = 2* atan(
-                tan(
-                (1/4* PI +1/2*lat)*
-                        ((1- exp(1f) * sin(lat))/(1+ exp(1f) * sin(lat))).pow(exp(1f) /2)
-            )
-            ) - PI /2
-            val Re = 6378000f
-            val R  = Re*cos(lat)/(1- exp(2f) * sin(lat) * sin(lat))*cos(xi)
-            val k  = 2*R/(1+lat0* sin(lat) +cos(lat0)*cos(lat)*cos(lng-lng0))
-
-            val x = k*cos(lat)* sin(lng-lng0)
-            val y = k*(cos(lat0)* sin(lat) - sin(lat0) *cos(lat)*cos(lng-lng0))
-            return Pair(x.toFloat(),y.toFloat())
-        }*/
-
 }
