@@ -7,8 +7,10 @@ import org.locationtech.proj4j.CRSFactory
 import org.locationtech.proj4j.CoordinateTransform
 import org.locationtech.proj4j.CoordinateTransformFactory
 import ucar.ma2.ArrayFloat
+import ucar.ma2.InvalidRangeException
 import ucar.nc2.Variable
 import ucar.nc2.dataset.NetcdfDataset
+import java.io.IOException
 import kotlin.math.max
 import kotlin.math.round
 
@@ -56,9 +58,12 @@ class InfectiousPressureDataLoader : THREDDSDataLoader() {
         longitudeFrom: Float,
         longitudeTo: Float,
         longitudeResolution: Float
-    ): InfectiousPressure? = //TODO: proper try catch!
-        NetcdfDataset.open(url).let { ncfile ->
+    ): InfectiousPressure? {
+        var ncfile: NetcdfDataset? = null
+        var infectiousPressure: InfectiousPressure? = null
+        try {
             Log.d(TAG, "OPENING $url")
+            ncfile = NetcdfDataset.openDataset(url)
             Log.d(TAG, "OPENDAP URL OPENED")
             //convert parameters to ranges
             val (rangeX, rangeY) = geographicCoordinateToRange(
@@ -92,7 +97,7 @@ class InfectiousPressureDataLoader : THREDDSDataLoader() {
 
             // note that this way of reading does not apply scale or offset
             // see variable attributes "scale_factor" and "add_offset".
-            val infectiousPressure = InfectiousPressure(
+            infectiousPressure = InfectiousPressure(
                 concentrations.read(range3) as ArrayFloat,
                 eta_rhos.read(rangeX) as ArrayFloat,
                 xi_rhos.read(rangeY) as ArrayFloat,
@@ -109,6 +114,22 @@ class InfectiousPressureDataLoader : THREDDSDataLoader() {
                 dx * round(1 / max(latitudeResolution, 1f)),
                 dx * round(1 / max(longitudeResolution, 1f))
             )
-            return infectiousPressure
+        } catch (e: IOException) {
+            Log.e("ERROR", e.toString())
+            null
+        } catch (e: InvalidRangeException) {
+            Log.e("ERROR", e.toString())
+            null
+        } catch (e: NullPointerException) {
+            Log.e(
+                TAG,
+                "ERROR: a Variable might be read as null, are you sure you are using the correct url/dataset?"
+            )
+            Log.e("ERROR", e.toString())
+            null
+        } finally {
+            ncfile?.close()
         }
+        return infectiousPressure
+    }
 }
