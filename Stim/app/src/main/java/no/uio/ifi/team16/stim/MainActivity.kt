@@ -1,10 +1,14 @@
 package no.uio.ifi.team16.stim
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.RecyclerView
+import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.data.Sites
+import no.uio.ifi.team16.stim.databinding.ActivityMainBinding
+import no.uio.ifi.team16.stim.databinding.RecycleviewBinding
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 import no.uio.ifi.team16.stim.io.viewModel.RecycleViewAdapter
 import org.locationtech.proj4j.CRSFactory
@@ -14,18 +18,28 @@ import org.locationtech.proj4j.ProjCoordinate
 
 
 class MainActivity : StimActivity() {
-    val TAG = "MainActivity"
+
+    private val TAG = "MainActivity"
     private val viewModel: MainActivityViewModel by viewModels()
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var recyclerBinding: RecycleviewBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        recyclerBinding = RecycleviewBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        /********************
-         *  RECYCLEVIEW *
-         ********************/
+        val recycleview = recyclerBinding.recyclerview
+        binding.recyclerViewBtn.setOnClickListener {
+            setContentView(recyclerBinding.root)
+        }
 
-        setContentView(R.layout.recycleview)
-        val recycleview = findViewById<RecyclerView>(R.id.recyclerview)
+        // Map button
+        binding.mapButton.setOnClickListener {
+            val intent = Intent(applicationContext, MapActivity::class.java)
+            startActivity(intent)
+        }
 
         /*************
          * OBSERVERS *

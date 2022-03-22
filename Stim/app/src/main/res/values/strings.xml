@@ -7,4 +7,6 @@
     <string name="visual_of_the_location_of_the_site">Visual of the site location</string>
     <string name="Favorite_button">Favorites</string>
     <string name="information_button">Information</string>
+    <string name="map_content_description">Map view</string>
+    <string name="map_button">Open map</string>
 </resources>
