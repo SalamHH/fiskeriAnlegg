@@ -9,6 +9,7 @@ import ucar.ma2.Index3D
 import ucar.nc2.NCdumpW
 import java.util.*
 import kotlin.math.cos
+import kotlin.math.round
 
 /**
  * Class representing infectious pressure over a grid at a given time.
@@ -60,13 +61,6 @@ class InfectiousPressure(
     fun getEtaRho(i: Int): Float = eta_rho.getFloat(ideta.set(i))
     fun getXiRho(i: Int): Float = xi_rho.getFloat(idxi.set(i))
 
-    /**
-     * get concentration at a latitude a given amount of weeks from now
-     *
-     * TODO: this is just a mock-function, shapes the data from this week so it makes a "nice" curve
-     *
-     * @see getConcentration(L atLng)
-     */
     fun getConcentration(latLng: LatLng, weeksFromNow: Int): Float {
         /*find the concentrationgrid closest to our latlongpoint,
         we use euclidean distance, or technically L1, to measure distance between latlngs.*/
@@ -74,7 +68,7 @@ class InfectiousPressure(
         return concentration.get(
             index.first,
             index.second
-        ) * cos(weeksFromNow.toFloat() / 2f * 3.141592f)
+        ) * cos(weeksFromNow.toFloat() / 2 * 3.141592f)
     }
 
     /**
@@ -86,7 +80,7 @@ class InfectiousPressure(
      * Is currently O(n^2) (n = grid size), can be made O(1) with stereographicprojection
      * TODO: make version with stereographic projection, is faster and correct
      */
-    private fun getClosestIndex(latLng: LatLng): Pair<Int, Int> {
+    fun getClosestIndex(latLng: LatLng): Pair<Int, Int> {
         var row = 0
         var column = 0
         var minDistance = 1000.0
@@ -112,7 +106,14 @@ class InfectiousPressure(
         return Pair(row, column)
     }
 
-    //extend arrayFloat with a getter since thiers is very impractical
+    fun getClosestIndexWithProjection(latLng: LatLng): Pair<Int, Int> {
+        //map latLng to projection coordinates(eta, xi)
+        val (eta, xi) = project(latLng)
+        //divide by length between points, then round to get correct index
+        return Pair(round(eta / dy).toInt(), round(xi / dx).toInt())
+    }
+
+    //extend arrayFloat with a getter since theirs is very impractical
     fun ArrayFloat.get(row: Int, column: Int): Float =
         this.getFloat(idx.set(0, row, column))
 
@@ -140,4 +141,7 @@ class InfectiousPressure(
         }.let { p ->
             Pair(p.y.toFloat(), p.x.toFloat())
         }
+
+    fun project(latLng: LatLng): Pair<Float, Float> =
+        project(latLng.lat.toFloat(), latLng.lng.toFloat())
 }
