@@ -2,6 +2,7 @@ package no.uio.ifi.team16.stim.data.dataLoader
 
 import android.util.Log
 import com.github.kittinunf.fuel.Fuel
+import com.github.kittinunf.fuel.core.Parameters
 import com.github.kittinunf.fuel.coroutines.awaitString
 import no.uio.ifi.team16.stim.data.*
 import no.uio.ifi.team16.stim.util.LatLng
@@ -9,7 +10,11 @@ import org.json.JSONArray
 
 /**
  * Load Sites
- * TODO figure out slicing
+ *
+ * Shortcomings:
+ * The sites API can only respond with at moost 100 sites at a time,
+ * hopefully we will not need more than that, but otherwise we will have to merge
+ * several responses into a single response
  */
 class SitesDataLoader {
     val TAG = "SitesDataLoader"
@@ -20,15 +25,17 @@ class SitesDataLoader {
     private val url: String = "https://api.fiskeridir.no/pub-aqua/api/v1/sites"
 
     /**
-     * Loads the 100 first sites from the url
+     * Loads the 100 first sites from the url, with the given query
      *
-     * @param position a position
+     * See the sites-API parameters banner for all parameters.
+     * https://api.fiskeridir.no/pub-aqua/api/swagger-ui/index.html?configUrl=/pub-aqua/api/api-docs/swagger-config#/site-resource/sites
+     *
+     * @param parameters list of parameters to the query, can be in the form of List<Pair<String,Any?>>,
+     * or using Fules own syntax, listof(param1string to param1, ...)
      */
-    suspend fun load(): Sites? {
+    suspend fun loadWithParameters(parameters: Parameters?): Sites? {
         val responseStr = Fuel.get(
-            url, listOf(
-                "range" to "0-99" //parameters to query, more parameters after a ","
-            )
+            url, parameters
         ).awaitString()
 
         if (responseStr.isEmpty()) {
@@ -68,5 +75,49 @@ class SitesDataLoader {
         }
         return Sites(out.toList())
     }
+
+    /**
+     * @see loadWithParameters
+     */
+    suspend fun loadDataByMunicipalityCode(municipalityCode: Int): Sites? =
+        loadWithParameters(
+            listOf(
+                "range" to "0-99",
+                "municipality-code" to municipalityCode.toString()
+            )
+        )
+
+    /**
+     * @see loadWithParameters
+     */
+    suspend fun loadDataByCountyCode(countyCode: Int): Sites? =
+        loadWithParameters(
+            listOf(
+                "range" to "0-99",
+                "countyy-code" to countyCode.toString()
+            )
+        )
+
+    /**
+     * @see loadWithParameters
+     */
+    suspend fun loadDataByProductionAreaCode(paCode: Int): Sites? =
+        loadWithParameters(
+            listOf(
+                "range" to "0-99",
+                "production-area-code" to paCode.toString()
+            )
+        )
+
+    /**
+     * Loads the 100 first sites from the url
+     * @see loadWithParameters
+     */
+    suspend fun loadSomeData(): Sites? =
+        loadWithParameters(
+            listOf(
+                "range" to "0-99"
+            )
+        )
 }
 

@@ -15,7 +15,7 @@ class SitesRepository : Repository<Sites, SitesDataLoader>() {
         Log.d(TAG, "loading sitesdata from repository")
         if (!mocked) {
             if (dirty) {
-                cache = dataSource.load()
+                cache = dataSource.loadSomeData()
                 dirty = false
             }
         }
