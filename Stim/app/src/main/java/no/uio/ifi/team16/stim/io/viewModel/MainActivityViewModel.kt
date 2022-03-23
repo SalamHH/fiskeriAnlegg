@@ -78,11 +78,16 @@ class MainActivityViewModel : ViewModel() {
         }
     }
 
+    /**
+     * NB! only loads the first 100 sites.
+     *
+     * to load from a given municipality use getData(municipalityCode:Int)
+     */
     fun loadSites() {
         viewModelScope.launch(Dispatchers.Main) {
             Log.d(TAG, "loading sites to viewmodel")
             val loaded =
-                sitesRepository.getData() //either loaded, retrieved from cache or faked
+                sitesRepository.getSomeData() //either loaded, retrieved from cache or faked
             Log.d(TAG, "loading sites to viewmodel - DONE")
             //invokes the observer
             sitesData.postValue(loaded)
