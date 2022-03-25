@@ -64,6 +64,10 @@
             android:layout_marginEnd="5dp"
             android:layout_marginBottom="5dp">
 
+
+            <!-- Trengs ikke lenger? Siden vi valgte at vi skal trykke på hele viewet?
+
+
             <Button
                 android:id="@+id/informationButton"
                 style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
@@ -73,6 +77,8 @@
                 app:icon="@android:drawable/ic_dialog_info"
                 app:iconTint="@color/black"
                 tools:ignore="DuplicateClickableBoundsCheck,DuplicateClickableBoundsCheck" />
+
+            -->
 
             <Button
                 android:id="@+id/favoriteButton"

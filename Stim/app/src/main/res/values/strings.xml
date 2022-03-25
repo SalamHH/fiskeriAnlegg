@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Stim</string>
 
-    //recycleview_overview
+    //recycleview_element_overview+
     <string name="site_name">Site_name</string>
     <string name="site_location">Site_location</string>
     <string name="visual_of_the_location_of_the_site">Visual of the site location</string>
@@ -9,4 +9,9 @@
     <string name="information_button">Information</string>
     <string name="map_content_description">Map view</string>
     <string name="map_button">Open map</string>
+
+    //fragment_site_info
+    <string name="weather">weather</string>
+    <string name="salt">salt</string>
+    <string name="infection">infection</string>
 </resources>

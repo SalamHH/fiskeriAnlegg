@@ -8,10 +8,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import no.uio.ifi.team16.stim.data.InfectiousPressure
 import no.uio.ifi.team16.stim.data.NorKyst800
+import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.data.Sites
 import no.uio.ifi.team16.stim.data.repository.InfectiousPressureRepository
 import no.uio.ifi.team16.stim.data.repository.NorKyst800Repository
 import no.uio.ifi.team16.stim.data.repository.SitesRepository
+import no.uio.ifi.team16.stim.util.LatLng
 
 class MainActivityViewModel : ViewModel() {
     private val TAG = "MainActivityViewModel"
@@ -90,4 +92,17 @@ class MainActivityViewModel : ViewModel() {
     fun loadWeather() {
         throw NotImplementedError()
     }
+
+    //Methods for communicating chosen Site between fragments
+
+    private var site = Site(0,"Test", LatLng(0.0, 0.0)) //In case setCurrentSite fails
+
+    fun setCurrentSite(new : Site) {
+        site = new
+    }
+
+    fun getCurrentSite() : Site {
+        return site
+    }
+
 }

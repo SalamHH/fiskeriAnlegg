@@ -1,16 +1,12 @@
 package no.uio.ifi.team16.stim
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
-import androidx.recyclerview.widget.RecyclerView
-import no.uio.ifi.team16.stim.data.Site
-import no.uio.ifi.team16.stim.data.Sites
+import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
 import no.uio.ifi.team16.stim.databinding.ActivityMainBinding
-import no.uio.ifi.team16.stim.databinding.RecycleviewBinding
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
-import no.uio.ifi.team16.stim.io.viewModel.RecycleViewAdapter
 import org.locationtech.proj4j.CRSFactory
 import org.locationtech.proj4j.CoordinateTransform
 import org.locationtech.proj4j.CoordinateTransformFactory
@@ -22,28 +18,26 @@ class MainActivity : StimActivity() {
     private val TAG = "MainActivity"
     private val viewModel: MainActivityViewModel by viewModels()
     private lateinit var binding: ActivityMainBinding
-    private lateinit var recyclerBinding: RecycleviewBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        recyclerBinding = RecycleviewBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val recycleview = recyclerBinding.recyclerview
-        binding.recyclerViewBtn.setOnClickListener {
-            setContentView(recyclerBinding.root)
-        }
 
-        // Map button
-        binding.mapButton.setOnClickListener {
-            val intent = Intent(applicationContext, MapActivity::class.java)
-            startActivity(intent)
-        }
+        // Navigation control for fragments
+        val navController = this.findNavController(R.id.myNavHostFragment)
+        NavigationUI.setupActionBarWithNavController(this,navController)
 
-        /*************
-         * OBSERVERS *
-         *************/
+        //initial load of data
+        viewModel.loadNorKyst800()
+        viewModel.loadInfectiousPressure()
+        viewModel.loadSites()
+
+        /**
+         * DISSE METODENE TRENGS IKKE FOR RECYCLEVIEW MEN KANSKJE NOE ANNET??
+         */
+        /*
         //observe infectious pressure
         viewModel.getInfectiousPressureData().observe(this) { infectiousPressure ->
             Log.d("INVOKED", "observer of infectiousPressure")
@@ -80,6 +74,8 @@ class MainActivity : StimActivity() {
             Log.d(TAG, "\n\n\n" + result.toString() + "\n\n\n")
         }
 
+
+
         //observe norKyst800
         viewModel.getNorKyst800Data().observe(this) { norKyst800 ->
             Log.d("INVOKED", "observer of norkystPressure")
@@ -93,30 +89,11 @@ class MainActivity : StimActivity() {
             )
         }
 
-        //observe sites
-        viewModel.getSitesData().observe(this) { sites ->
-            Log.d("INVOKED", "observer of sites")
-            println("THE SITES OBSERVED ARE \n" + sites.toString())
+         */
+    }
 
-            recycleview.adapter = RecycleViewAdapter(
-                this,
-                sites ?: Sites(listOf()),
-                viewModel.getInfectiousPressureData().value,
-                viewModel.getNorKyst800Data().value
-            )
-        }
-
-        //observe sites
-        viewModel.getSitesData().observe(this) { sites ->
-            Log.d("INVOKED", "observer of infectiousPressure")
-            println("THE SITES OBSERVED ARE \n" + sites.toString())
-
-            //do something with the sites data.
-        }
-
-        //initial load of data
-        viewModel.loadNorKyst800()
-        viewModel.loadInfectiousPressure()
-        viewModel.loadSites()
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = this.findNavController(R.id.myNavHostFragment)
+        return navController.navigateUp()
     }
 }

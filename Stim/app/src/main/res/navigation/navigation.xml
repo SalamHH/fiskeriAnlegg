@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/startPageFragment">
+
+    <fragment
+        android:id="@+id/startPageFragment"
+        android:name="no.uio.ifi.team16.stim.StartPageFragment"
+        android:label="STIM"
+        tools:layout="@layout/fragment_start_page" >
+        <action
+            android:id="@+id/action_startPageFragment_to_mapActivity"
+            app:destination="@id/mapActivity" />
+        <action
+            android:id="@+id/action_startPageFragment_to_siteListFragment"
+            app:destination="@id/siteListFragment" />
+    </fragment>
+
+    <activity
+        android:id="@+id/mapActivity"
+        android:name="no.uio.ifi.team16.stim.MapActivity"
+        android:label="activity_map"
+        tools:layout="@layout/activity_map" />
+
+    <fragment
+        android:id="@+id/siteListFragment"
+        android:name="no.uio.ifi.team16.stim.SiteListFragment"
+        android:label="All sites" >
+        <action
+            android:id="@+id/action_siteListFragment_to_siteInfoFragment"
+            app:destination="@id/siteInfoFragment"
+            app:enterAnim="@android:anim/slide_in_left" />
+    </fragment>
+    <fragment
+        android:id="@+id/siteInfoFragment"
+        android:name="no.uio.ifi.team16.stim.SiteInfoFragment"
+        android:label=""
+        tools:layout="@layout/fragment_site_info" />
+
+
+</navigation>
