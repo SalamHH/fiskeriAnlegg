@@ -18,11 +18,12 @@ import no.uio.ifi.team16.stim.data.dataLoader.InfectiousPressureDataLoader
  *
  * TODO: implement system to check if cache is not up-to-date
  */
-class InfectiousPressureRepository() :
-    Repository<InfectiousPressure, InfectiousPressureDataLoader>() {
+class InfectiousPressureRepository() {
     private val TAG = "InfectiousPressureRepository"
-    override val dataSource = InfectiousPressureDataLoader()
+    val dataSource = InfectiousPressureDataLoader()
     private var cache: InfectiousPressure? = null
+    var mocked: Boolean = false
+    var dirty: Boolean = true
 
     constructor(infectiousPressure: InfectiousPressure) : this() {
         mocked = true
@@ -42,7 +43,7 @@ class InfectiousPressureRepository() :
     fun getSomeData(): InfectiousPressure? {
         Log.d(TAG, "loading some infectiousdata from repository")
         if (!mocked && dirty) {
-            cache = dataSource.load()
+            cache = dataSource.loadSomeData()
             dirty = false
         }
         Log.d(TAG, "loading some infectiousdata from repository - DONE")

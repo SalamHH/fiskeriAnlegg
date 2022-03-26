@@ -4,10 +4,12 @@ import android.util.Log
 import no.uio.ifi.team16.stim.data.NorKyst800
 import no.uio.ifi.team16.stim.data.dataLoader.NorKyst800DataLoader
 
-class NorKyst800Repository : Repository<NorKyst800, NorKyst800DataLoader>() {
+class NorKyst800Repository {
     private val TAG = "NorKyst800Repository"
-    override val dataSource = NorKyst800DataLoader()
+    val dataSource = NorKyst800DataLoader()
     private var cache: NorKyst800? = null
+    var mocked: Boolean = false
+    var dirty: Boolean = true
 
     /**
      * get the data.
@@ -22,7 +24,7 @@ class NorKyst800Repository : Repository<NorKyst800, NorKyst800DataLoader>() {
         Log.d(TAG, "loading infectiousdata from repository")
         if (!mocked) {
             if (dirty) {
-                cache = dataSource.load()
+                cache = dataSource.load() //TODO: currently mocked, only a 2x2x2x2 grid
                 dirty = false
             }
         }

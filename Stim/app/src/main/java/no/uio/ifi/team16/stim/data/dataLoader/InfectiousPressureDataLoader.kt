@@ -1,7 +1,5 @@
 package no.uio.ifi.team16.stim.data.dataLoader
 
-//import ucar.nc2.dataset.NetcdfDatasets
-import android.util.Log
 import no.uio.ifi.team16.stim.data.InfectiousPressure
 import org.locationtech.proj4j.CRSFactory
 import org.locationtech.proj4j.CoordinateTransform
@@ -25,12 +23,18 @@ class InfectiousPressureDataLoader : THREDDSDataLoader() {
     /**
      * load the (almost!) entire dataset
      */
-    fun load(): InfectiousPressure? = load(-90f, 90f, 10, -90f, 90f, 10)
+    fun loadSomeData(): InfectiousPressure? = load(-90f, 90f, 10, -90f, 90f, 10)
+
+    /**
+     * load the entire current data
+     */
+    fun load(): InfectiousPressure? = load(-90f, 90f, 1, -90f, 90f, 1)
 
     /**
      * return the year and week of the given data in yyyy_w format
      */
     fun yearAndWeek(date: Date): String {
+        //TODO: this MIGHT be wrong, datasets are made on wednesdays, but published... some time after that?
         val week = ((date.getTime() - Date(date.year, 0, 0).getTime()) / 1000 / 60 / 60 / 24 / 7)
         return date.year.toString() +
                 "_" +
@@ -100,7 +104,6 @@ class InfectiousPressureDataLoader : THREDDSDataLoader() {
         val latLngToStereo: CoordinateTransform =
             ctFactory.createTransform(latLngCRT, stereoCRT)
 
-        Log.d(TAG, (dx * latitudeResolution).toString())
         //make the infectiousPressure
         InfectiousPressure(
             concentrations.read(range3) as ArrayFloat,

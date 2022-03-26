@@ -20,7 +20,7 @@ class NorKyst800DataLoader : THREDDSDataLoader() {
     val timeRange = "0:${timeResolution}:42"
 
     //                 "https://thredds.met.no/thredds/fileServer/fou-hi/norkyst800m-1h/NorKyst-800m_ZDEPTHS_his.fc.2022031000.nc"
-    override val url =
+    val url =
         "dods://thredds.met.no/thredds/dodsC/fou-hi/norkyst800m-1h/NorKyst-800m_ZDEPTHS_his.an.2022031700.nc"
     //"thredds:resolve:https://thredds.met.no/thredds/catalog/fou-hi/norkyst800m-1h/catalog.xml#" +
     //"norkyst800m_1h_files/NorKyst-800m_ZDEPTHS_his.an.2022031700.nc"
