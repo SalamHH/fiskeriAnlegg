@@ -1,5 +1,6 @@
 package no.uio.ifi.team16.stim.data
 
+import android.util.Log
 import no.uio.ifi.team16.stim.util.LatLng
 import org.locationtech.proj4j.CoordinateTransform
 import org.locationtech.proj4j.ProjCoordinate
@@ -23,6 +24,7 @@ class InfectiousPressure(
     val dx: Float, //x separation, in projection meters, between points
     val dy: Float  //y separation, in projection meters, between points
 ) {
+    val TAG = "InfectiousPressure"
     val shape: Pair<Int, Int> = Pair(concentration.shape[1], concentration.shape[2])
     var idx: Index3D = Index3D(concentration.shape)
     var ideta: Index1D = Index1D(intArrayOf(concentration.shape[1]))
@@ -44,6 +46,8 @@ class InfectiousPressure(
      */
     fun getConcentration(latLng: LatLng): Float {
         val index = getClosestIndex(latLng)
+        Log.d(TAG, "INDEX: " + index)
+        Log.d(TAG, idx.toStringDebug())
         return concentration.get(index.first, index.second)
     }
 

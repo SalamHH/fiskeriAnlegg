@@ -7,12 +7,9 @@ import org.locationtech.proj4j.CRSFactory
 import org.locationtech.proj4j.CoordinateTransform
 import org.locationtech.proj4j.CoordinateTransformFactory
 import ucar.ma2.ArrayFloat
-import ucar.ma2.InvalidRangeException
 import ucar.nc2.Variable
-import ucar.nc2.dataset.NetcdfDataset
-import java.io.IOException
+import java.util.*
 import kotlin.math.max
-import kotlin.math.round
 
 /**
  * DataLoader for infectious pressure data.
@@ -26,21 +23,32 @@ class InfectiousPressureDataLoader : THREDDSDataLoader() {
     //TODO: parametrize URL
     override val url =
         "http://thredds.nodc.no:8080/thredds/fileServer/smittepress_new2018/agg_OPR_2022_9.nc"
+    val baseUrl = "http://thredds.nodc.no:8080/thredds/fileServer/smittepress_new2018/agg_OPR_"
+    //override val url = "http://thredds.nodc.no:8080/thredds/fileServer/smittepress_new2018/agg_OPR_"
+    //    "http://thredds.nodc.no:8080/thredds/fileServer/smittepress_new2018/agg_OPR_2022_9.nc"
 
     /**
      * load the entire dataset
      */
-    fun load(): InfectiousPressure? = load(-90f, 90f, 0.0001f, -90f, 90f, 0.0001f)
+    fun load(): InfectiousPressure? = load(-90f, 90f, 10, -90f, 90f, 10)
+
+    fun yearAndWeek(date: Date): String {
+        val week = ((date.getTime() - Date(date.year, 0, 0).getTime()) / 1000 / 60 / 60 / 24 / 7)
+
+        return date.year.toString() +
+                "_" +
+                (if (week == 0L) 52 else week).toString()
+    }
+
+    fun currentDate(): Date {
+        val cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+        return Date(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH))
+    }
 
     /**
      * return data between latitude from/to, and latitude from/to, with given resolution.
      * Uses minimum of given and possible resolution.
      * crops to dataset if latitudes or longitudes exceed the dataset.
-     *
-     * TODO:
-     * in general, finding the distance between two points of latitude/longitude is "hard",
-     * need to find a library(netcdf probably has it) for doing this.
-     * until then resolution is set to max(ie uses every datapoint between range)
      *
      * @param latitudeFrom smallest latitude to get data from
      * @param latitudeTo largest latitude to get data from
@@ -54,82 +62,56 @@ class InfectiousPressureDataLoader : THREDDSDataLoader() {
     fun load(
         latitudeFrom: Float,
         latitudeTo: Float,
-        latitudeResolution: Float,
+        latitudeResolution: Int,
         longitudeFrom: Float,
         longitudeTo: Float,
-        longitudeResolution: Float
-    ): InfectiousPressure? {
-        var ncfile: NetcdfDataset? = null
-        var infectiousPressure: InfectiousPressure? = null
-        try {
-            Log.d(TAG, "OPENING $url")
-            ncfile = NetcdfDataset.openDataset(url)
-            Log.d(TAG, "OPENDAP URL OPENED")
-            //convert parameters to ranges
-            val (rangeX, rangeY) = geographicCoordinateToRange(
-                latitudeFrom, latitudeTo,
-                latitudeResolution, longitudeFrom, longitudeTo, longitudeResolution
-            )
-            //lets make some infectious pressure
-            //Variables are data that are NOT READ YET. findVariable() is not null-safe
-            val concentrations: Variable = ncfile.findVariable("C10") ?: return null
-            val eta_rhos: Variable = ncfile.findVariable("eta_rho") ?: return null
-            val xi_rhos: Variable = ncfile.findVariable("xi_rho") ?: return null
-            val lat: Variable = ncfile.findVariable("lat") ?: return null
-            val lon: Variable = ncfile.findVariable("lon") ?: return null
-            val time: Variable = ncfile.findVariable("time") ?: return null
-            val gridMapping: Variable = ncfile.findVariable("grid_mapping") ?: return null
-            val dx = ncfile.findGlobalAttribute("dx")?.numericValue?.toFloat() ?: return null
-            //make some extra ranges to access data
-            val range2 = "$rangeX,$rangeY"
-            val range3 = "0,$range2"
+        longitudeResolution: Int
+    ): InfectiousPressure? = THREDDSLoad(baseUrl + yearAndWeek(currentDate()) + ".nc") { ncfile ->
+        //convert parameters to ranges
+        val (rangeX, rangeY) = geographicCoordinateToRange(
+            latitudeFrom, latitudeTo,
+            latitudeResolution, longitudeFrom, longitudeTo, longitudeResolution
+        )
+        //lets make some infectious pressure
+        //Variables are data that are NOT READ YET. findVariable() is not null-safe
+        val concentrations: Variable = ncfile.findVariable("C10")
+            ?: throw NullPointerException("Failed to read variable <C10> from infectiousPressure")
+        val time: Variable = ncfile.findVariable("time")
+            ?: throw NullPointerException("Failed to read variable <time> from infectiousPressure")
+        val gridMapping: Variable = ncfile.findVariable("grid_mapping")
+            ?: throw NullPointerException("Failed to read variable <gridMapping> from infectiousPressure")
+        val dx = gridMapping.findAttribute("dx")?.numericValue?.toFloat()
+            ?: throw NullPointerException("Failed to read attribute <dx> from <gridMapping> from infectiousPressure")
+        //make some extra ranges to access data
+        val range2 = "$rangeX,$rangeY"
+        val range3 = "0,$range2"
 
-            //make the projection
-            val crsFactory = CRSFactory()
-            val stereoCRT = crsFactory.createFromParameters(
-                null,
-                gridMapping.findAttribute("proj4string")?.stringValue ?: return null
-            )
-            val latLngCRT = stereoCRT.createGeographic()
-            val ctFactory = CoordinateTransformFactory()
-            val latLngToStereo: CoordinateTransform =
-                ctFactory.createTransform(latLngCRT, stereoCRT)
+        //make the projection
+        val crsFactory = CRSFactory()
+        val stereoCRT = crsFactory.createFromParameters(
+            null,
+            gridMapping.findAttribute("proj4string")?.stringValue
+                ?: throw NullPointerException("Failed to read attribute <proj4string> from <gridMapping> from infectiousPressure")
+        )
+        val latLngCRT = stereoCRT.createGeographic()
+        val ctFactory = CoordinateTransformFactory()
+        val latLngToStereo: CoordinateTransform =
+            ctFactory.createTransform(latLngCRT, stereoCRT)
 
-            // note that this way of reading does not apply scale or offset
-            // see variable attributes "scale_factor" and "add_offset".
-            infectiousPressure = InfectiousPressure(
-                concentrations.read(range3) as ArrayFloat,
-                eta_rhos.read(rangeX) as ArrayFloat,
-                xi_rhos.read(rangeY) as ArrayFloat,
-                lat.read(range2) as ArrayFloat,
-                lon.read(range2) as ArrayFloat,
-                time.readScalarFloat(),
-                latLngToStereo,
-                ncfile.findGlobalAttribute("fromdate")?.run {
-                    parseDate(this.stringValue)
-                },
-                ncfile.findGlobalAttribute("todate")?.run {
-                    parseDate(this.stringValue)
-                },
-                dx * round(1 / max(latitudeResolution, 1f)),
-                dx * round(1 / max(longitudeResolution, 1f))
-            )
-        } catch (e: IOException) {
-            Log.e("ERROR", e.toString())
-            null
-        } catch (e: InvalidRangeException) {
-            Log.e("ERROR", e.toString())
-            null
-        } catch (e: NullPointerException) {
-            Log.e(
-                TAG,
-                "ERROR: a Variable might be read as null, are you sure you are using the correct url/dataset?"
-            )
-            Log.e("ERROR", e.toString())
-            null
-        } finally {
-            ncfile?.close()
-        }
-        return infectiousPressure
+        Log.d(TAG, (dx * latitudeResolution).toString())
+        //make the infectiousPressure
+        InfectiousPressure(
+            concentrations.read(range3) as ArrayFloat,
+            time.readScalarFloat(),
+            latLngToStereo,
+            ncfile.findGlobalAttribute("fromdate")?.run {
+                parseDate(this.stringValue)
+            },
+            ncfile.findGlobalAttribute("todate")?.run {
+                parseDate(this.stringValue)
+            },
+            dx * max(latitudeResolution, 1).toFloat(),
+            dx * max(longitudeResolution, 1).toFloat()
+        )
     }
 }
