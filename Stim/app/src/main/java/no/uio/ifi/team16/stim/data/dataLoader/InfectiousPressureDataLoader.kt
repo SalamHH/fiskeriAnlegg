@@ -20,26 +20,26 @@ import kotlin.math.max
 class InfectiousPressureDataLoader : THREDDSDataLoader() {
     private val TAG = "InfectiousPressureDataLoader"
 
-    //TODO: parametrize URL
-    override val url =
-        "http://thredds.nodc.no:8080/thredds/fileServer/smittepress_new2018/agg_OPR_2022_9.nc"
     val baseUrl = "http://thredds.nodc.no:8080/thredds/fileServer/smittepress_new2018/agg_OPR_"
-    //override val url = "http://thredds.nodc.no:8080/thredds/fileServer/smittepress_new2018/agg_OPR_"
-    //    "http://thredds.nodc.no:8080/thredds/fileServer/smittepress_new2018/agg_OPR_2022_9.nc"
 
     /**
-     * load the entire dataset
+     * load the (almost!) entire dataset
      */
     fun load(): InfectiousPressure? = load(-90f, 90f, 10, -90f, 90f, 10)
 
+    /**
+     * return the year and week of the given data in yyyy_w format
+     */
     fun yearAndWeek(date: Date): String {
         val week = ((date.getTime() - Date(date.year, 0, 0).getTime()) / 1000 / 60 / 60 / 24 / 7)
-
         return date.year.toString() +
                 "_" +
                 (if (week == 0L) 52 else week).toString()
     }
 
+    /**
+     * return the current date
+     */
     fun currentDate(): Date {
         val cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
         return Date(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH))
@@ -58,6 +58,8 @@ class InfectiousPressureDataLoader : THREDDSDataLoader() {
      * @param longitudeTo largest longitude to get data from
      * @param latitudeResolution resolution of longitude.
      * @return data of infectious pressure in the prescribed data range.
+     *
+     * @see THREDDSDataLoader.THREDDSLoad()
      */
     fun load(
         latitudeFrom: Float,

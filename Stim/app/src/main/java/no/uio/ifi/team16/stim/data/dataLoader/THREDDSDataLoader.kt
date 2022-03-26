@@ -20,7 +20,6 @@ import kotlin.math.round
  */
 abstract class THREDDSDataLoader {
     private val TAG = "THREDDSDataLoader"
-    protected abstract val url: String //the url the data is read from, must be overriden in subclass.
     private val maxX = 901
     private val maxY = 2601
     protected val separation = 800  //separation(in meters) between points(in real life)
@@ -50,14 +49,12 @@ abstract class THREDDSDataLoader {
         longitudeFrom: Float, longitudeTo: Float, longitudeResolution: Int
     ): Pair<String, String> {
         //interpret as ranges
-        //TODO: if data points are INSIDE the grid, rounding is appropriate, but if it is in a corner we have to use floor or ceil.
-        //TODO: determine if ranges will be used at all! depends on use cases
         val startX = max(round(min(longitudeFrom - minLongitude, 0f) / longitudeDiff).toInt(), 0)
         val stopX = max(round(min(longitudeTo / maxLongitude, 1f) * maxX).toInt(), 0)
-        val stepX = kotlin.math.max(latitudeResolution, 1)
+        val stepX = max(latitudeResolution, 1)
         val startY = max(round(min(latitudeFrom - minLatitude, 0f) / latitudeDiff).toInt(), 0)
         val stopY = max(round(min(latitudeTo / maxLatitude, 1f) * maxY).toInt(), 0)
-        val stepY = kotlin.math.max(latitudeResolution, 1)
+        val stepY = max(latitudeResolution, 1)
         Log.d(
             TAG,
             "loading from ranges ${startX}:${stopX}:${stepX}\",\"${startY}:${stopY}:${stepY}"
@@ -83,29 +80,18 @@ abstract class THREDDSDataLoader {
      * @param currentDate date to check if dataset agrees with(date has minimum esolution on a day)
      * @return whether the data is up to date or not. Or null if request failed.
      */
-    fun isUpToDate(currentDate: Date): Boolean? =
-        NetcdfDataset.openDataset(url).let { ncfile ->
-            Log.d(TAG, "checking if data is up to date")
-            try {
-                //TODO: compare weeknumber global parameter to this week, but counting from wednesdays?
-                ncfile.findGlobalAttribute("fromdate")?.run {
-                    parseDate(this.stringValue)
-                } == currentDate
-            } catch (e: IOException) {
-                Log.e("ERROR", e.toString())
-                null
-            } catch (e: InvalidRangeException) {
-                Log.e("ERROR", e.toString())
-                null
-            } catch (e: NullPointerException) {
-                Log.e("ERROR", e.toString())
-                null
-            } finally {
-                Log.d(TAG, " load - DONE")
-                ncfile.close()
-            }
-        }
+    fun isUpToDate(currentDate: Date, url: String): Boolean? = THREDDSLoad(url) { ncfile ->
+        ncfile.findGlobalAttribute("fromdate")?.run {
+            parseDate(this.stringValue)
+        } == currentDate
+    }
 
+    /**
+     * general method for opening THREDDS file.
+     * @param url: url of data to open
+     * @param action: action to perform on the opened file, must return a representation of the data
+     * @return the result of the action on the netcdf file, f.ex. an infectiousPressure-object
+     */
     fun <D> THREDDSLoad(url: String, action: (NetcdfDataset) -> D?): D? {
         var ncfile: NetcdfDataset? = null
         var data: D? = null
