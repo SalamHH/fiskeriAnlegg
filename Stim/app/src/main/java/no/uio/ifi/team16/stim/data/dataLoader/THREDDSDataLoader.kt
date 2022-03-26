@@ -106,13 +106,30 @@ abstract class THREDDSDataLoader {
             }
         }
 
-    /*fun <D> openTHREDDSDataset(url: String, action: NetcdfDataset.(D) -> D) : D =
-        action(NetcdfDataset.openDataset(url))
-        /*let {
-
-            var ncfile =
-            action(ncfile)
-        }*/
-
-     */
+    fun <D> THREDDSLoad(url: String, action: (NetcdfDataset) -> D?): D? {
+        var ncfile: NetcdfDataset? = null
+        var data: D? = null
+        try {
+            Log.d(TAG, "OPENING $url")
+            ncfile = NetcdfDataset.openDataset(url)
+            Log.d(TAG, "OPENDAP URL OPENED")
+            data = action(ncfile)
+            Log.d(TAG, "OPENDAP URL PARSED")
+        } catch (e: IOException) {
+            Log.e("ERROR", e.toString())
+        } catch (e: InvalidRangeException) {
+            Log.e("ERROR", e.toString())
+        } catch (e: NullPointerException) {
+            Log.e(
+                TAG,
+                "ERROR: a Variable might be read as null, are you sure you are using the correct url/dataset?"
+            )
+            Log.e("ERROR", e.toString())
+        } catch (e: Exception) {
+            Log.e(TAG, "didnt catch this one! $e")
+        } finally {
+            ncfile?.close()
+        }
+        return data
+    }
 }

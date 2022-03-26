@@ -1,10 +1,6 @@
 package no.uio.ifi.team16.stim.data.repository
 
-import android.util.Log
 import no.uio.ifi.team16.stim.data.InfectiousPressure
-import no.uio.ifi.team16.stim.util.LatLng
-import org.junit.Assert.assertEquals
-import org.junit.Test
 import org.locationtech.proj4j.CRSFactory
 import org.locationtech.proj4j.CoordinateTransformFactory
 import ucar.ma2.ArrayFloat
@@ -24,32 +20,6 @@ class stereographicProjectionTest {
                     0.3f, 0.4f,
                 )
             ).reshape(intArrayOf(1, 2, 2)) as ArrayFloat,
-            //xi, projection x
-            ArrayFloat.factory(
-                floatArrayOf(
-                    0f, 1080000f
-                )
-            ).reshape(intArrayOf(2)) as ArrayFloat,
-            //eta, projection y
-            ArrayFloat.factory(
-                floatArrayOf(
-                    0f, 400000f
-                )
-            ).reshape(intArrayOf(2)) as ArrayFloat,
-            //latitude
-            ArrayFloat.factory(
-                floatArrayOf(
-                    55.90837f, 63.908974f,
-                    57.47694f, 66.10339f
-                )
-            ).reshape(intArrayOf(2, 2)) as ArrayFloat,
-            //longitude
-            ArrayFloat.factory(
-                floatArrayOf(
-                    9.194591f, 20.176983f,
-                    3.4355416f, 13.227f
-                )
-            ).reshape(intArrayOf(2, 2)) as ArrayFloat,
             //time
             987654321f,
             CRSFactory().createFromParameters(
@@ -68,6 +38,12 @@ class stereographicProjectionTest {
         )
     )
 
+
+    /**
+     * These tests are not valid after commit 886a6e71d1bcb3d1de21ff5af674a0f4f61de112,
+     * since from then on we rely solely on projection.
+     */
+    /*
     @Test
     fun testProjection() {
         val infectiousPressure: InfectiousPressure =
@@ -122,4 +98,6 @@ class stereographicProjectionTest {
         checkAtIndex(1, 0)
         checkAtIndex(1, 1)
     }
+    */
+
 }

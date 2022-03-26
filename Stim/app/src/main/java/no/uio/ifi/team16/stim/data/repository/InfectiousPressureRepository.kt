@@ -28,7 +28,6 @@ class InfectiousPressureRepository() :
         mocked = true
         cache = infectiousPressure
         dirty = false
-
     }
 
     /**
@@ -41,12 +40,32 @@ class InfectiousPressureRepository() :
      * @return mocked, cached or newly loaded data.
      */
     fun getSomeData(): InfectiousPressure? {
-        Log.d(TAG, "loading infectiousdata from repository")
+        Log.d(TAG, "loading some infectiousdata from repository")
         if (!mocked && dirty) {
             cache = dataSource.load()
             dirty = false
         }
-        Log.d(TAG, "loading infectiousdata from repository - DONE")
+        Log.d(TAG, "loading some infectiousdata from repository - DONE")
+        return cache
+    }
+
+    /**
+     * get the most recent data from the infectious pressure catalog
+     *
+     * If in testmode(mocked data), return the testdata
+     * otherwise;
+     * if the cache is not up to date(dirty), load the data anew,
+     * otherwise just return the data in the cache.
+     *
+     * @return mocked, cached or newly loaded data.
+     */
+    fun getCurrentData(): InfectiousPressure? {
+        Log.d(TAG, "loading current infectiousdata from repository")
+        if (!mocked && dirty) {
+            cache = dataSource.load()
+            dirty = false
+        }
+        Log.d(TAG, "loading current infectiousdata from repository - DONE")
         return cache
     }
 }
