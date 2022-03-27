@@ -1,6 +1,6 @@
 package no.uio.ifi.team16.stim.data
 
-typealias FloatArray2D = Array<Array<Float>>
+typealias FloatArray2D = Array<FloatArray>
 typealias FloatArray3D = Array<FloatArray2D>
 
 /**
@@ -23,7 +23,7 @@ data class InfectiousPressureTimeSeries(
     val TAG = "InfectiousPressureTimeSeries"
 
     //how concentrations at a given time are aggregated to a single float
-    val aggregation: (FloatArray2D) -> Float = { arr -> sumAggregation(arr) }
+    val aggregation: (FloatArray2D) -> Float = { arr -> meanAggregation(arr) }
 
     /////////////////
     // AGGREGATORS //
@@ -43,7 +43,7 @@ data class InfectiousPressureTimeSeries(
      */
     private fun meanAggregation(array: FloatArray2D): Float =
         array.fold(0f) { sum, concentrationRow ->
-            sum + concentrationRow.fold(sum) { rowSum, concentration ->
+            sum + concentrationRow.fold(0f) { rowSum, concentration ->
                 rowSum + concentration
             } / concentrationRow.size
         } / array.size
@@ -53,7 +53,7 @@ data class InfectiousPressureTimeSeries(
      */
     private fun sumAggregation(array: FloatArray2D): Float =
         array.fold(0f) { sum, concentrationRow ->
-            sum + concentrationRow.fold(sum) { rowSum, concentration ->
+            sum + concentrationRow.fold(0f) { rowSum, concentration ->
                 rowSum + concentration
             }
         }
@@ -93,10 +93,18 @@ data class InfectiousPressureTimeSeries(
     // UTILITIES //
     ///////////////
     override fun toString() =
-        "InfectiousPressureTimeSeries:" +
-                concentrations.fold("\n", { prev, (date, concentration) ->
-                    prev + "${date.toString()}): ${concentration.toString()}\n"
-                })
+        "InfectiousPressureTimeSeries:\n" +
+                concentrations.fold("\n") { acc, (date, concentration2D) ->
+                    acc + "${date.toString()}): " +
+                            concentration2D.fold("") { acc2, concentrationRow ->
+                                "$acc2: " + concentrationRow.fold("") { acc3, concentration ->
+                                    "$acc3,$concentration"
+                                }
+                            } +
+                            " -> " +
+                            aggregation(concentration2D).toString() +
+                            "\n"
+                }
 
     /**
      * map each arrayFloat2D over time
@@ -105,4 +113,22 @@ data class InfectiousPressureTimeSeries(
         concentrations.map { (week, arr) ->
             Pair(week, reduction(arr))
         }.toTypedArray()
+
+    ////////////////////
+    // AUTO-GENERATED //
+    ////////////////////
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as InfectiousPressureTimeSeries
+
+        if (siteId != other.siteId) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return siteId
+    }
 }

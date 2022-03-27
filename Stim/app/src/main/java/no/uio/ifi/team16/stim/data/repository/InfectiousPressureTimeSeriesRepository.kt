@@ -17,13 +17,13 @@ import no.uio.ifi.team16.stim.data.dataLoader.InfectiousPressureTimeSeriesDataLo
  * If constructed with a InfectiousPressureTimeSeries object it uses test behaviour; always returning
  * the given data for every query
  */
-class InfectiousPressureTimeSeriesRepository {
+class InfectiousPressureTimeSeriesRepository() {
     private val TAG = "InfectiousPressureTimeSeriesRepository"
-    val dataSource = InfectiousPressureTimeSeriesDataLoader()
+    private val dataSource = InfectiousPressureTimeSeriesDataLoader()
     private var cache: MutableMap<Int, InfectiousPressureTimeSeries> = mutableMapOf()
     var mocked: Boolean = false
 
-    constructor(infectiousPressureTimeSeries: Map<Int, InfectiousPressureTimeSeries>) {
+    constructor(infectiousPressureTimeSeries: Map<Int, InfectiousPressureTimeSeries>) : this() {
         mocked = true
         cache = infectiousPressureTimeSeries.toMutableMap()
     }
@@ -38,7 +38,7 @@ class InfectiousPressureTimeSeriesRepository {
      *
      * @return mocked, cached or newly loaded data.
      */
-    fun getDataAtSite(site: Site, weeksFromNow: Int): InfectiousPressureTimeSeries? {
+    fun getDataAtSite(site: Site, weeksFromNow: Int): Map<Int, InfectiousPressureTimeSeries> {
         Log.d(TAG, "loading infectioustimeseriesdata from repository")
         if (!mocked) {
             cache.getOrPutOrPass(site.id) {
@@ -46,7 +46,7 @@ class InfectiousPressureTimeSeriesRepository {
             }
         }
         Log.d(TAG, "loading current infectioustimeseriesdata from repository - DONE")
-        return cache[site.id]
+        return cache
     }
 
     ///////////////

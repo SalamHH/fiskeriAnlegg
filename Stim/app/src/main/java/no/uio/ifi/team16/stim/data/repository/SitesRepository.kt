@@ -1,12 +1,16 @@
 package no.uio.ifi.team16.stim.data.repository
 
-import android.util.Log
 import no.uio.ifi.team16.stim.data.Sites
 import no.uio.ifi.team16.stim.data.dataLoader.SitesDataLoader
 
-class SitesRepository : Repository<Sites, SitesDataLoader>() {
+/**
+ * Repository for sites.
+ *
+ * The cache maps a municipalitynumber to a collection of sites
+ */
+class SitesRepository {
     private val TAG = "SitesRepository"
-    override val dataSource = SitesDataLoader()
+    val dataSource = SitesDataLoader()
 
     //cache maps a municipalitynr to a list of sites
     var cache: MutableMap<Int, Sites?> = mutableMapOf()
@@ -17,25 +21,21 @@ class SitesRepository : Repository<Sites, SitesDataLoader>() {
     /**
      * load the sites at the given municipalitycode
      */
-    suspend fun getData(municipalityCode: Int): Sites? {
-        Log.d(TAG, "loading sitesdata at municipalitycode $municipalityCode from repository")
-
-        Log.d(TAG, "loading sitesdata at municipalitycode $municipalityCode from repository - DONE")
-        return cache.put(
-            municipalityCode,
+    suspend fun getData(municipalityCode: Int): Sites? =
+        cache.getOrPut(municipalityCode) {
             dataSource.loadDataByMunicipalityCode(municipalityCode)
-        ) //TODO: reimplement putifabsent...
-    }
+        }
+
 
     /**
      * Load some data, the 100 first sites.
      * used initially to just get some placeholder data,
      * does not properly cache
      */
-    suspend fun getSomeData(): Sites? {
+    /*suspend fun getSomeData(): Sites? {
         Log.d(TAG, "loading 100 first sitesdata from repository")
         someData = dataSource.loadSomeData()
         Log.d(TAG, "loading 100 first sitesdata from repository - DONE")
         return someData
-    }
+    }*/
 }

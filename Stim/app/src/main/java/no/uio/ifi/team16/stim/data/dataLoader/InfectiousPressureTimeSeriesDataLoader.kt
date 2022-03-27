@@ -1,5 +1,6 @@
 package no.uio.ifi.team16.stim.data.dataLoader
 
+import no.uio.ifi.team16.stim.data.FloatArray2D
 import no.uio.ifi.team16.stim.data.InfectiousPressureTimeSeries
 import no.uio.ifi.team16.stim.data.Site
 import org.locationtech.proj4j.CRSFactory
@@ -28,7 +29,7 @@ class InfectiousPressureTimeSeriesDataLoader : THREDDSDataLoader() {
     private val TAG = "InfectiousPressureTimeSeriesDataLoader"
 
     val baseUrl = "http://thredds.nodc.no:8080/thredds/fileServer/smittepress_new2018/agg_OPR_"
-    val radius = 2 //amount of grid cells around the specified one to collect data from.
+    val radius = 1 //amount of grid cells around the specified one to collect data from.
 
     /**
      * return the year and week of the given data in yyyy_w format
@@ -74,7 +75,7 @@ class InfectiousPressureTimeSeriesDataLoader : THREDDSDataLoader() {
         site: Site,
         weeksFromNow: Int
     ): InfectiousPressureTimeSeries? {
-        var out: MutableList<Pair<Int, ArrayFloat>> = mutableListOf()
+        var out: MutableList<Pair<Int, FloatArray2D>> = mutableListOf()
         var dx: Float = 0f
         var dy: Float = 0f
         var shape: Pair<Int, Int> = Pair(0, 0)
@@ -93,7 +94,7 @@ class InfectiousPressureTimeSeriesDataLoader : THREDDSDataLoader() {
                 dx = gridMapping.findAttribute("dx")?.numericValue?.toFloat()
                     ?: throw NullPointerException("Failed to read attribute <dx> from <gridMapping> from infectiousPressure")
                 dy = dx
-                shape = Pair(concentrations.getShape(0), concentrations.getShape(1))
+                shape = Pair(concentrations.getShape(1), concentrations.getShape(2))
 
                 //make the projection
                 val crsFactory = CRSFactory()
@@ -114,21 +115,26 @@ class InfectiousPressureTimeSeriesDataLoader : THREDDSDataLoader() {
                     Pair(round(p.y / dy), round(p.x / dx))
                 }
 
-                //make valid range around the point
-                val minX = max(x - radius, 0.0)
-                val maxX = min(x + radius, concentrations.getShape(1).toDouble())
-                val minY = max(y - radius, 0.0)
-                val maxY = min(y + radius, concentrations.getShape(0).toDouble())
+                //make valid range around the point, minimum 0, not larger than bounds
+                val minX = round(max(x - radius, 0.0)).toInt()
+                val maxX =
+                    round(min(max(x + radius, 0.0), concentrations.getShape(2).toDouble())).toInt()
+                val minY = round(max(y - radius, 0.0)).toInt()
+                val maxY =
+                    round(min(max(y + radius, 0.0), concentrations.getShape(1).toDouble())).toInt()
+
+                //Log.d(TAG, "0,${minY}:${maxY},${minX}:${maxX}")
 
                 //take out the arrayfloat
                 out.add(
                     Pair(
-                        ncfile.findGlobalAttribute("week")!!.numericValue.toInt(), //global week always exists
-                        concentrations.read("${minY}:${maxY},${minX}:${maxX}") as ArrayFloat
+                        ncfile.findGlobalAttribute("weeknumber")!!.numericValue.toInt(), //global attribute week always exists
+                        ((concentrations.read("0,${minY}:${maxY},${minX}:${maxX}")
+                            .reduce(0) as ArrayFloat).to2DFloatArray())
                     )
                 )
             }
         }
-        return InfectiousPressureTimeSeries(site.id, out.toList(), shape, dx, dy)
+        return InfectiousPressureTimeSeries(site.id, out.toTypedArray(), shape, dx, dy)
     }
 }

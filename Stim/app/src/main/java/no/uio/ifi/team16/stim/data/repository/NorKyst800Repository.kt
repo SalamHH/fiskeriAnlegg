@@ -6,7 +6,7 @@ import no.uio.ifi.team16.stim.data.dataLoader.NorKyst800DataLoader
 
 class NorKyst800Repository {
     private val TAG = "NorKyst800Repository"
-    val dataSource = NorKyst800DataLoader()
+    private val dataSource = NorKyst800DataLoader()
     private var cache: NorKyst800? = null
     var mocked: Boolean = false
     var dirty: Boolean = true

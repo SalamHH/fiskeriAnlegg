@@ -6,11 +6,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import no.uio.ifi.team16.stim.data.*
 import no.uio.ifi.team16.stim.data.InfectiousPressure
 import no.uio.ifi.team16.stim.data.NorKyst800
 import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.data.Sites
 import no.uio.ifi.team16.stim.data.repository.InfectiousPressureRepository
+import no.uio.ifi.team16.stim.data.repository.InfectiousPressureTimeSeriesRepository
 import no.uio.ifi.team16.stim.data.repository.NorKyst800Repository
 import no.uio.ifi.team16.stim.data.repository.SitesRepository
 import no.uio.ifi.team16.stim.util.LatLng
@@ -19,6 +21,10 @@ class MainActivityViewModel : ViewModel() {
     private val TAG = "MainActivityViewModel"
     private val infectiousPressureRepository = InfectiousPressureRepository()
     private val infectiousPressureData = MutableLiveData<InfectiousPressure?>()
+
+    private val infectiousPressureTimeSeriesRepository = InfectiousPressureTimeSeriesRepository()
+    private val infectiousPressureTimeSeriesData =
+        MutableLiveData<Map<Int, InfectiousPressureTimeSeries>>()
 
     private val sitesRepository = SitesRepository()
     private val sitesData = MutableLiveData<Sites?>()
@@ -66,6 +72,24 @@ class MainActivityViewModel : ViewModel() {
         }
     }
 
+    fun loadInfectiousPressureTimeSeriesAtSite(site: Site) {
+        //InfectiousPressure can be loaded asynchronously(probably),
+        //if not use runblocking { }
+        viewModelScope.launch(Dispatchers.IO) {
+            //runBlocking {
+            Log.d(TAG, "loading infectioustimeseriesdata to viewmodel")
+            val loaded =
+                infectiousPressureTimeSeriesRepository.getDataAtSite(
+                    site,
+                    8
+                ) //either loaded, retrieved from cache or faked
+            Log.d(TAG, "loading infectioustimeseriesdata to viewmodel - DONE")
+            //invokes the observer
+            infectiousPressureTimeSeriesData.postValue(loaded)
+            Log.d(TAG, loaded[site.id].toString())
+        }
+    }
+
     fun loadNorKyst800() {
         viewModelScope.launch(Dispatchers.IO) {
             //runBlocking {
@@ -79,15 +103,13 @@ class MainActivityViewModel : ViewModel() {
     }
 
     /**
-     * NB! only loads the first 100 sites.
-     *
-     * to load from a given municipality use getData(municipalityCode:Int)
+     * Load the 100 first sited from the given municipality
      */
-    fun loadSites() {
-        viewModelScope.launch(Dispatchers.Main) {
+    fun loadSites(municipalityCode: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
             Log.d(TAG, "loading sites to viewmodel")
             val loaded =
-                sitesRepository.getSomeData() //either loaded, retrieved from cache or faked
+                sitesRepository.getData(municipalityCode) //either loaded, retrieved from cache or faked
             Log.d(TAG, "loading sites to viewmodel - DONE")
             //invokes the observer
             sitesData.postValue(loaded)

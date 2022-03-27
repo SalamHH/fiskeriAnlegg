@@ -6,6 +6,7 @@ import com.github.kittinunf.fuel.core.Parameters
 import com.github.kittinunf.fuel.coroutines.awaitString
 import no.uio.ifi.team16.stim.data.*
 import no.uio.ifi.team16.stim.util.LatLng
+import no.uio.ifi.team16.stim.util.Options
 import org.json.JSONArray
 
 /**
@@ -82,7 +83,7 @@ class SitesDataLoader {
     suspend fun loadDataByMunicipalityCode(municipalityCode: Int): Sites? =
         loadWithParameters(
             listOf(
-                "range" to "0-99",
+                "range" to Options.sitesRange,
                 "municipality-code" to municipalityCode.toString()
             )
         )
@@ -93,8 +94,8 @@ class SitesDataLoader {
     suspend fun loadDataByCountyCode(countyCode: Int): Sites? =
         loadWithParameters(
             listOf(
-                "range" to "0-99",
-                "countyy-code" to countyCode.toString()
+                "range" to Options.sitesRange,
+                "county-code" to countyCode.toString()
             )
         )
 
@@ -104,7 +105,7 @@ class SitesDataLoader {
     suspend fun loadDataByProductionAreaCode(paCode: Int): Sites? =
         loadWithParameters(
             listOf(
-                "range" to "0-99",
+                "range" to Options.sitesRange,
                 "production-area-code" to paCode.toString()
             )
         )
@@ -116,7 +117,7 @@ class SitesDataLoader {
     suspend fun loadSomeData(): Sites? =
         loadWithParameters(
             listOf(
-                "range" to "0-99"
+                "range" to Options.sitesRange
             )
         )
 }

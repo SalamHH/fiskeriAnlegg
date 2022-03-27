@@ -1,6 +1,9 @@
 package no.uio.ifi.team16.stim.data.dataLoader
 
 import android.util.Log
+import no.uio.ifi.team16.stim.data.FloatArray2D
+import no.uio.ifi.team16.stim.util.Options
+import ucar.ma2.ArrayFloat
 import ucar.ma2.InvalidRangeException
 import ucar.nc2.dataset.NetcdfDataset
 //import ucar.nc2.dataset.NetcdfDatasets
@@ -51,10 +54,10 @@ abstract class THREDDSDataLoader {
         //interpret as ranges
         val startX = max(round(min(longitudeFrom - minLongitude, 0f) / longitudeDiff).toInt(), 0)
         val stopX = max(round(min(longitudeTo / maxLongitude, 1f) * maxX).toInt(), 0)
-        val stepX = max(latitudeResolution, 1)
+        val stepX = Options.infectiousPressureStepX //max(latitudeResolution, 1)
         val startY = max(round(min(latitudeFrom - minLatitude, 0f) / latitudeDiff).toInt(), 0)
         val stopY = max(round(min(latitudeTo / maxLatitude, 1f) * maxY).toInt(), 0)
-        val stepY = max(latitudeResolution, 1)
+        val stepY = Options.infectiousPressureStepY //max(latitudeResolution, 1)
         Log.d(
             TAG,
             "loading from ranges ${startX}:${stopX}:${stepX}\",\"${startY}:${stopY}:${stepY}"
@@ -117,5 +120,9 @@ abstract class THREDDSDataLoader {
             ncfile?.close()
         }
         return data
+    }
+
+    fun ArrayFloat.to2DFloatArray(): FloatArray2D {
+        return this.copyToNDJavaArray() as FloatArray2D
     }
 }

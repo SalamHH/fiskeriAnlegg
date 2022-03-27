@@ -4,10 +4,10 @@ import no.uio.ifi.team16.stim.data.Weather
 import no.uio.ifi.team16.stim.data.dataLoader.WeatherDataLoader
 import no.uio.ifi.team16.stim.util.LatLng
 
-class WeatherRepository : Repository<Weather, WeatherDataLoader>() {
+class WeatherRepository {
 
     private val TAG = "WeatherRepository"
-    override val dataSource = WeatherDataLoader()
+    val dataSource = WeatherDataLoader()
     private val cache: MutableMap<LatLng, Weather> = mutableMapOf()
 
     /**

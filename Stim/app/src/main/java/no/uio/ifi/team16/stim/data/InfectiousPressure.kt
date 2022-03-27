@@ -51,6 +51,11 @@ class InfectiousPressure(
         return concentration.get(index.first, index.second)
     }
 
+    /**
+     * DEPRECATED! use InfectiousPressureTimeSeries, get from InfectiousPressureTimeSeriesRepository
+     * will be removed in a future commit
+     */
+    @Deprecated("use InfectiousPressureTimeSeries, get from InfectiousPressureTimeSeriesRepository")
     fun getConcentration(latLng: LatLng, weeksFromNow: Int): Float {
         /*find the concentrationgrid closest to our latlongpoint,
         we use euclidean distance, or technically L1, to measure distance between latlngs.*/
@@ -61,7 +66,7 @@ class InfectiousPressure(
         ) * cos(weeksFromNow.toFloat() / 2 * 3.141592f)
     }
 
-    fun getClosestIndex(latLng: LatLng): Pair<Int, Int> {
+    private fun getClosestIndex(latLng: LatLng): Pair<Int, Int> {
         //map latLng to projection coordinates(eta, xi)
         val (eta, xi) = project(latLng)
         //divide by length between points, then round to get correct index

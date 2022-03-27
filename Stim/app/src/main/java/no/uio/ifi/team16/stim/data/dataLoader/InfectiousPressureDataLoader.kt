@@ -1,6 +1,7 @@
 package no.uio.ifi.team16.stim.data.dataLoader
 
 import no.uio.ifi.team16.stim.data.InfectiousPressure
+import no.uio.ifi.team16.stim.util.Options
 import org.locationtech.proj4j.CRSFactory
 import org.locationtech.proj4j.CoordinateTransform
 import org.locationtech.proj4j.CoordinateTransformFactory
@@ -115,8 +116,8 @@ class InfectiousPressureDataLoader : THREDDSDataLoader() {
             ncfile.findGlobalAttribute("todate")?.run {
                 parseDate(this.stringValue)
             },
-            dx * max(latitudeResolution, 1).toFloat(),
-            dx * max(longitudeResolution, 1).toFloat()
+            dx * max(Options.infectiousPressureStepX, 1).toFloat(),
+            dx * max(Options.infectiousPressureStepY, 1).toFloat()
         )
     }
 }
