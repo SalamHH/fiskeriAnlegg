@@ -107,7 +107,7 @@ class InfectiousPressureDataLoader : THREDDSDataLoader() {
 
         //make the infectiousPressure
         InfectiousPressure(
-            concentrations.read(range3) as ArrayFloat,
+            (concentrations.read(range3).reduce(0) as ArrayFloat).to2DFloatArray(),
             time.readScalarFloat(),
             latLngToStereo,
             ncfile.findGlobalAttribute("fromdate")?.run {

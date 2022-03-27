@@ -1,7 +1,7 @@
 package no.uio.ifi.team16.stim.data
 
-typealias FloatArray2D = Array<FloatArray>
-typealias FloatArray3D = Array<FloatArray2D>
+import no.uio.ifi.team16.stim.util.FloatArray2D
+
 
 /**
  * Class representing infectious pressure over a grid at a given time.
