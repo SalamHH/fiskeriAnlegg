@@ -1,8 +1,8 @@
 package no.uio.ifi.team16.stim.data.dataLoader
 
-import no.uio.ifi.team16.stim.data.FloatArray2D
 import no.uio.ifi.team16.stim.data.InfectiousPressureTimeSeries
 import no.uio.ifi.team16.stim.data.Site
+import no.uio.ifi.team16.stim.util.FloatArray2D
 import org.locationtech.proj4j.CRSFactory
 import org.locationtech.proj4j.CoordinateTransform
 import org.locationtech.proj4j.CoordinateTransformFactory
