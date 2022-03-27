@@ -1,35 +1,108 @@
 package no.uio.ifi.team16.stim.data
 
-import ucar.ma2.ArrayFloat
-import ucar.ma2.Index3D
+typealias FloatArray2D = Array<Array<Float>>
+typealias FloatArray3D = Array<FloatArray2D>
 
 /**
  * Class representing infectious pressure over a grid at a given time.
+ *
+ * note the aggregation-function. Since infectiousPressuretimeseries is not just a single grid cell over time,
+ * but several neighbors, the aggregate function makes all the cells at a single moment in time into
+ * a single datapoint.
+ *
+ * In most cases the most appropriate type of aggregation might be mean, max or sum.
+ * currently using sum
  */
-
 data class InfectiousPressureTimeSeries(
     val siteId: Int,
-    val concentrations: List<Pair<Int, ArrayFloat>>,
-    val concentrationShape: Pair<Int, Int>,
-    val dx: Float,
-    val dy: Float
+    val concentrations: Array<Pair<Int, FloatArray2D>>, //array of 2D arrays of concentration and their associated week
+    val concentrationShape: Pair<Int, Int>,             //shape of each 2D array. Can be inferred from concentrations, but unsafe
+    val dx: Float,                                      //separation between points in x-direction
+    val dy: Float                                       //separation between points in y-direction, usually dx
 ) {
     val TAG = "InfectiousPressureTimeSeries"
-    var idx: Index3D = Index3D(
-        intArrayOf(
-            concentrations.size,
-            concentrationShape.first,
-            concentrationShape.second
-        )
-    )
 
-    //extend arrayFloat with a getter since theirs is very impractical
-    fun ArrayFloat.get(row: Int, column: Int): Float =
-        this.getFloat(idx.set(0, row, column))
+    //how concentrations at a given time are aggregated to a single float
+    val aggregation: (FloatArray2D) -> Float = { arr -> sumAggregation(arr) }
 
+    /////////////////
+    // AGGREGATORS //
+    /////////////////
+    /**
+     * return max value of a 2D array
+     */
+    private fun maxAggregation(array: FloatArray2D): Float =
+        array.maxOf { concentrationRow ->
+            concentrationRow.maxOf { concentration ->
+                concentration
+            }
+        }
+
+    /**
+     * return mean value of a 2D array
+     */
+    private fun meanAggregation(array: FloatArray2D): Float =
+        array.fold(0f) { sum, concentrationRow ->
+            sum + concentrationRow.fold(sum) { rowSum, concentration ->
+                rowSum + concentration
+            } / concentrationRow.size
+        } / array.size
+
+    /**
+     * return sum of a 2D array
+     */
+    private fun sumAggregation(array: FloatArray2D): Float =
+        array.fold(0f) { sum, concentrationRow ->
+            sum + concentrationRow.fold(sum) { rowSum, concentration ->
+                rowSum + concentration
+            }
+        }
+
+    /////////////////////////
+    // CONVENIENCE-GETTERS //
+    /////////////////////////
+    /**
+     * get concentration(aggregated) at a given index, 0 being the most recent
+     */
+    fun getConcentration(index: Int): Float? =
+        concentrations.getOrNull(index)?.second?.let { arr ->
+            aggregation(arr)
+        }
+
+    /**
+     * get concentration(aggregated) at all times
+     *
+     * includes time
+     */
+    fun getAllConcentrations(): Array<Pair<Int, Float>> = mapOverTime(aggregation)
+
+    /**
+     * get concentration(aggregated) at all times
+     *
+     * includes time in a separate array
+     */
+    fun getAllConcentrationsUnzipped(): Pair<Array<Int>, Array<Float>> =
+        mapOverTime(aggregation).unzip().let { (timeList, concentrationList) ->
+            Pair(
+                timeList.toTypedArray(),
+                concentrationList.toTypedArray()
+            )
+        }
+
+    ///////////////
+    // UTILITIES //
+    ///////////////
     override fun toString() =
         "InfectiousPressureTimeSeries:" +
                 concentrations.fold("\n", { prev, (date, concentration) ->
                     prev + "${date.toString()}): ${concentration.toString()}\n"
                 })
+
+    /**
+     * map each arrayFloat2D over time
+     */
+    private fun <T> mapOverTime(reduction: (FloatArray2D) -> T): Array<Pair<Int, T>> =
+        concentrations.map { (week, arr) ->
+            Pair(week, reduction(arr))
+        }.toTypedArray()
 }

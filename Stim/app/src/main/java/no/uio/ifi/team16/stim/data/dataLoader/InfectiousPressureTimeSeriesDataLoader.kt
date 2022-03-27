@@ -1,7 +1,7 @@
 package no.uio.ifi.team16.stim.data.dataLoader
 
 import no.uio.ifi.team16.stim.data.InfectiousPressureTimeSeries
-import no.uio.ifi.team16.stim.util.LatLng
+import no.uio.ifi.team16.stim.data.Site
 import org.locationtech.proj4j.CRSFactory
 import org.locationtech.proj4j.CoordinateTransform
 import org.locationtech.proj4j.CoordinateTransformFactory
@@ -71,13 +71,14 @@ class InfectiousPressureTimeSeriesDataLoader : THREDDSDataLoader() {
      * @see THREDDSDataLoader.THREDDSLoad()
      */
     fun load(
-        latLng: LatLng,
+        site: Site,
         weeksFromNow: Int
     ): InfectiousPressureTimeSeries? {
         var out: MutableList<Pair<Int, ArrayFloat>> = mutableListOf()
         var dx: Float = 0f
         var dy: Float = 0f
         var shape: Pair<Int, Int> = Pair(0, 0)
+        val latLng = site.latLng
         for (week in 0 until weeksFromNow) {
             THREDDSLoad(baseUrl + yearAndWeek(currentDate(), week) + ".nc") { ncfile ->
                 //lets make some infectious pressure
@@ -128,6 +129,6 @@ class InfectiousPressureTimeSeriesDataLoader : THREDDSDataLoader() {
                 )
             }
         }
-        return InfectiousPressureTimeSeries(1, out.toList(), shape, dx, dy)
+        return InfectiousPressureTimeSeries(site.id, out.toList(), shape, dx, dy)
     }
 }
