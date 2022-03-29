@@ -2,36 +2,51 @@ package no.uio.ifi.team16.stim
 
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.viewModels
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
-import no.uio.ifi.team16.stim.databinding.ActivityMapBinding
+import no.uio.ifi.team16.stim.databinding.FragmentMapBinding
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 
-class MapActivity : StimActivity(), OnMapReadyCallback, GoogleMap.OnCameraMoveListener {
+/**
+ * Map fragment
+ */
+class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveListener {
 
-    private val TAG = "MapActivity"
+    private val TAG = "MapFragment"
     private lateinit var map: GoogleMap
-    private lateinit var binding: ActivityMapBinding
+    private lateinit var binding: FragmentMapBinding
     private val viewModel: MainActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMapBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
-        val mapFragment = supportFragmentManager.findFragmentById(R.id.mapView) as SupportMapFragment
+        binding = FragmentMapBinding.inflate(layoutInflater)
+
+        val mapFragment = activity?.supportFragmentManager?.findFragmentById(R.id.mapView) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
         viewModel.getMunicipalityNr().observe(this) { nr ->
             if (nr != null) {
-                binding.nrView.text = "Kommunenr: $nr"
+                //binding.nrView.text = "Kommunenr: $nr"
             }
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_map, container, false)
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
