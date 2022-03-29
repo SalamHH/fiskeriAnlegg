@@ -1,6 +1,5 @@
 package no.uio.ifi.team16.stim.data.repository
 
-import android.util.Log
 import no.uio.ifi.team16.stim.data.Sites
 import no.uio.ifi.team16.stim.data.dataLoader.SitesDataLoader
 
@@ -11,7 +10,7 @@ import no.uio.ifi.team16.stim.data.dataLoader.SitesDataLoader
  */
 class SitesRepository {
     private val TAG = "SitesRepository"
-    val dataSource = SitesDataLoader()
+    private val dataSource = SitesDataLoader()
 
     //cache maps a municipalitynr to a list of sites
     var cache: MutableMap<String, Sites?> = mutableMapOf()
@@ -22,11 +21,15 @@ class SitesRepository {
     /**
      * load the sites at the given municipalitycode
      */
-    suspend fun getData(municipalityCode: String): Sites? =
-        cache.getOrPut(municipalityCode) {
-            Log.e(TAG, "Henter sites på kommunenr: $municipalityCode")
-            return dataSource.loadDataByMunicipalityCode(municipalityCode)
+    suspend fun getData(municipalityCode: String): Sites? {
+        var sites = cache[municipalityCode]
+        if (sites != null) {
+            return sites
         }
+        sites = dataSource.loadDataByMunicipalityCode(municipalityCode)
+        cache[municipalityCode] = sites
+        return sites
+    }
 
 
     /**

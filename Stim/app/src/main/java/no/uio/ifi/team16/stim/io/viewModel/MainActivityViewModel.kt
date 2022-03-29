@@ -122,7 +122,7 @@ class MainActivityViewModel : ViewModel() {
         throw NotImplementedError()
     }
 
-    fun load(latLong: LatLong) {
+    fun loadMunicipalityNumber(latLong: LatLong) {
         viewModelScope.launch(Dispatchers.IO) {
             val nr = addressRepository.getMunicipalityNr(latLong)
             addressData.postValue(nr)

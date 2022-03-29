@@ -1,13 +1,10 @@
 package no.uio.ifi.team16.stim
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.findNavController
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -15,13 +12,16 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.MarkerOptions
+import no.uio.ifi.team16.stim.data.Sites
 import no.uio.ifi.team16.stim.databinding.FragmentMapBinding
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
+import no.uio.ifi.team16.stim.util.LatLong
 
 /**
  * Map fragment
  */
-class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveListener {
+class MapFragment : StimFragment(), OnMapReadyCallback {
 
     private val TAG = "MapFragment"
     private lateinit var map: GoogleMap
@@ -37,20 +37,18 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
 
         mapFragment.getMapAsync(this)
 
-        // todo sjekk om dette er nødvending
-        val owner: LifecycleOwner = if (activity != null) {
-            activity as FragmentActivity
-        } else {
-            viewLifecycleOwner
-        }
-        viewModel.getMunicipalityNr().observe(owner) { nr ->
-            if (nr != null) {
-                viewModel.loadSites(nr)
-            }
-        }
+        // Observe municipality number
+        viewModel.getMunicipalityNr().observe(getLifecycleOwner(), this::onMunicipalityUpdate)
+
+        // Observe sites and place them on the map
+        viewModel.getSitesData().observe(getLifecycleOwner(), this::onSiteUpdate)
 
         binding.toSitesBtn.setOnClickListener {
             view?.findNavController()?.navigate(R.id.action_mapFragment_to_sitesFromMapFragment)
+        }
+
+        binding.syncBtn.setOnClickListener {
+            onRefresh()
         }
 
         return binding.root
@@ -58,16 +56,32 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
-        map.setOnCameraMoveListener(this)
         val bounds = LatLngBounds(LatLng(60.0, 10.0), LatLng(60.5, 10.5))
         val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 10)
         map.moveCamera(cameraUpdate)
     }
 
-    override fun onCameraMove() {
-        Log.d(TAG, "camera moved to ${map.cameraPosition}")
-        val center =
-            no.uio.ifi.team16.stim.util.LatLong(map.cameraPosition.target.latitude, map.cameraPosition.target.longitude)
-        viewModel.load(center)
+    private fun onMunicipalityUpdate(nr: String?) {
+        if (nr != null) {
+            viewModel.loadSites(nr)
+        }
+    }
+
+    private fun onSiteUpdate(sites: Sites?) {
+        if (sites != null) {
+            binding.numSites.text = "Antall anlegg: ${sites.sites.size}"
+
+            for (site in sites.sites) {
+                val markerOptions = MarkerOptions()
+                markerOptions.title(site.name)
+                markerOptions.position(site.latLong.toGoogle())
+                map.addMarker(markerOptions)
+            }
+        }
+    }
+
+    private fun onRefresh() {
+        val center = LatLong.fromGoogle(map.cameraPosition.target)
+        viewModel.loadMunicipalityNumber(center)
     }
 }

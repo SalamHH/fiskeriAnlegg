@@ -1,5 +1,6 @@
 package no.uio.ifi.team16.stim.data.dataLoader
 
+import android.util.Log
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.coroutines.awaitString
 import no.uio.ifi.team16.stim.util.LatLong
@@ -7,6 +8,7 @@ import org.json.JSONObject
 
 class AddressDataLoader {
 
+    private val TAG = "AddressDataLoader"
     private val BASE_URL = "https://ws.geonorge.no/adresser/v1/punktsok"
     private val RADIUS = 1000
 
@@ -20,7 +22,13 @@ class AddressDataLoader {
         val lon = "lon" to latLong.lng
 
         val params = listOf<Pair<String, Any>>(side, radius, utkoordsys, koordsys, lat, lon)
-        val result = Fuel.get(BASE_URL, params).awaitString()
+
+        var result = ""
+        try {
+            result = Fuel.get(BASE_URL, params).awaitString()
+        } catch (e: Exception) {
+            Log.e(TAG, "Kunne ikke hente kommune for latlng: $latLong", e)
+        }
 
         if (result.isBlank()) {
             return null
