@@ -1,7 +1,7 @@
 package no.uio.ifi.team16.stim.data.dataLoader
 
 import android.util.Log
-import no.uio.ifi.team16.stim.data.FloatArray2D
+import no.uio.ifi.team16.stim.util.FloatArray2D
 import no.uio.ifi.team16.stim.util.Options
 import ucar.ma2.ArrayFloat
 import ucar.ma2.InvalidRangeException

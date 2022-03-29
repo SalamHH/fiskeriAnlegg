@@ -7,10 +7,6 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import no.uio.ifi.team16.stim.data.*
-import no.uio.ifi.team16.stim.data.InfectiousPressure
-import no.uio.ifi.team16.stim.data.NorKyst800
-import no.uio.ifi.team16.stim.data.Site
-import no.uio.ifi.team16.stim.data.Sites
 import no.uio.ifi.team16.stim.data.repository.InfectiousPressureRepository
 import no.uio.ifi.team16.stim.data.repository.InfectiousPressureTimeSeriesRepository
 import no.uio.ifi.team16.stim.data.repository.NorKyst800Repository
@@ -122,7 +118,7 @@ class MainActivityViewModel : ViewModel() {
 
     //Methods for communicating chosen Site between fragments
 
-    private var site = Site(0,"Test", LatLng(0.0, 0.0)) //In case setCurrentSite fails
+    private var site = Site(0, "Test", LatLng(0.0, 0.0), null) //In case setCurrentSite fails
 
     fun setCurrentSite(new : Site) {
         site = new
