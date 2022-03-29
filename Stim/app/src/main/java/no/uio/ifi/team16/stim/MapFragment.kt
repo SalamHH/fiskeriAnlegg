@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleOwner
@@ -22,16 +21,14 @@ import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 /**
  * Map fragment
  */
-class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveListener {
+class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveListener {
 
     private val TAG = "MapFragment"
     private lateinit var map: GoogleMap
     private lateinit var binding: FragmentMapBinding
     private val viewModel: MainActivityViewModel by viewModels()
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
         binding = FragmentMapBinding.inflate(layoutInflater)
 
@@ -48,7 +45,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveListen
         }
         viewModel.getMunicipalityNr().observe(owner) { nr ->
             if (nr != null) {
-                binding.nrView.text = "Kommunenr: $nr"
                 viewModel.loadSites(nr)
             }
         }

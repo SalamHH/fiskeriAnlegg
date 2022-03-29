@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import no.uio.ifi.team16.stim.databinding.FragmentStartPageBinding
 
@@ -12,8 +11,7 @@ import no.uio.ifi.team16.stim.databinding.FragmentStartPageBinding
 MIDLERTIDIG FRAGMENT!!
 Dette er et fragment som viser valg mellom MAP og RECYCLERVIEW
  */
-
-class StartPageFragment : Fragment() {
+class StartPageFragment : StimFragment() {
 
     private lateinit var binding: FragmentStartPageBinding
 

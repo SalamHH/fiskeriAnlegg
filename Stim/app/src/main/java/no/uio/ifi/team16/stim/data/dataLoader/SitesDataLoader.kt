@@ -47,7 +47,7 @@ class SitesDataLoader {
         }
 
         val sites = JSONArray(responseStr)
-        var out: MutableList<Site> = mutableListOf()
+        val out: MutableList<Site> = mutableListOf()
 
         for (i in 0 until sites.length()) {
             //try to parse, if succesfull add to out, otherwise just try next

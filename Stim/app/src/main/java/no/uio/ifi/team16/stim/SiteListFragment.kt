@@ -1,11 +1,11 @@
 package no.uio.ifi.team16.stim
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import no.uio.ifi.team16.stim.data.Site
@@ -14,12 +14,13 @@ import no.uio.ifi.team16.stim.databinding.FragmentSiteListBinding
 import no.uio.ifi.team16.stim.io.adapter.RecycleViewAdapter
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 
-class SiteListFragment : Fragment() {
+class SiteListFragment : StimFragment() {
 
     private lateinit var binding: FragmentSiteListBinding
     private val viewModel: MainActivityViewModel by activityViewModels()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    @SuppressLint("NotifyDataSetChanged")
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentSiteListBinding.inflate(inflater, container, false)
 
         /********************

@@ -1,5 +1,6 @@
 package no.uio.ifi.team16.stim
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -21,7 +22,8 @@ class SitesFromMapFragment : Fragment() {
     private lateinit var binding: FragmentSitesFromMapBinding
     private val viewModel: MainActivityViewModel by activityViewModels()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    @SuppressLint("NotifyDataSetChanged")
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentSitesFromMapBinding.inflate(inflater, container, false)
 
         /********************

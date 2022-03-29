@@ -1,5 +1,6 @@
 package no.uio.ifi.team16.stim.data.repository
 
+import android.util.Log
 import no.uio.ifi.team16.stim.data.Sites
 import no.uio.ifi.team16.stim.data.dataLoader.SitesDataLoader
 
@@ -23,6 +24,7 @@ class SitesRepository {
      */
     suspend fun getData(municipalityCode: String): Sites? =
         cache.getOrPut(municipalityCode) {
+            Log.e(TAG, "Henter sites på kommunenr: $municipalityCode")
             return dataSource.loadDataByMunicipalityCode(municipalityCode)
         }
 
