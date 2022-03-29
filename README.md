@@ -6,7 +6,7 @@ Repoet kan klones direkte fra Android Studio med knappen "Get from VCS" på opps
 ### Prosedyre for å gjøre endringer i prosjektet:
 1. Lag en branch og commit endringene dine
 2. Opprett en ny pull request med "main" som target branch
-3. Når din PR er godkjent av 2 andre kan den merges inn i main :)
+3. Når din PR er godkjent av 1 annen kan den merges inn i main :)
 
 ## Lenker
 - Discord: https://discord.gg/pMwgCmGPrH
