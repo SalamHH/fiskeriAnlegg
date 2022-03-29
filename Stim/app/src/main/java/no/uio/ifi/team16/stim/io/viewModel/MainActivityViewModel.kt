@@ -2,16 +2,14 @@ package no.uio.ifi.team16.stim.io.viewModel
 
 import android.graphics.BitmapFactory
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import no.uio.ifi.team16.stim.data.*
-import no.uio.ifi.team16.stim.data.repository.InfectiousPressureRepository
-import no.uio.ifi.team16.stim.data.repository.InfectiousPressureTimeSeriesRepository
-import no.uio.ifi.team16.stim.data.repository.NorKyst800Repository
-import no.uio.ifi.team16.stim.data.repository.SitesRepository
+import no.uio.ifi.team16.stim.data.repository.*
 import no.uio.ifi.team16.stim.util.LatLng
 import no.uio.ifi.team16.stim.util.Options
 
@@ -29,6 +27,9 @@ class MainActivityViewModel : ViewModel() {
 
     private val norKyst800Repository = NorKyst800Repository()
     private val norKyst800Data = MutableLiveData<NorKyst800?>()
+
+    private val addressRepository = AddressRepository()
+    private val addressData = MutableLiveData<String?>()
 
     //
     //private val WeatherRepository = WeatherRepository()
@@ -51,6 +52,10 @@ class MainActivityViewModel : ViewModel() {
 
     fun getWeatherData() {
         throw NotImplementedError()
+    }
+
+    fun getMunicipalityNr(): LiveData<String?> {
+        return addressData
     }
 
     ///////////// used to load the data from its source, does ot return the data but puts it
@@ -118,15 +123,22 @@ class MainActivityViewModel : ViewModel() {
         throw NotImplementedError()
     }
 
+    fun load(latLng: LatLng) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val nr = addressRepository.getMunicipalityNr(latLng)
+            addressData.postValue(nr)
+        }
+    }
+
     //Methods for communicating chosen Site between fragments
 
     private var site = Options.fakeSite
 
-    fun setCurrentSite(new : Site) {
+    fun setCurrentSite(new: Site) {
         site = new
     }
 
-    fun getCurrentSite() : Site {
+    fun getCurrentSite(): Site {
         return site
     }
 }

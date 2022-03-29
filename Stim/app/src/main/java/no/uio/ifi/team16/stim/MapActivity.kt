@@ -10,14 +10,14 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import no.uio.ifi.team16.stim.databinding.ActivityMapBinding
-import no.uio.ifi.team16.stim.io.viewModel.MapActivityViewModel
+import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 
 class MapActivity : StimActivity(), OnMapReadyCallback, GoogleMap.OnCameraMoveListener {
 
     private val TAG = "MapActivity"
     private lateinit var map: GoogleMap
     private lateinit var binding: ActivityMapBinding
-    private val viewModel: MapActivityViewModel by viewModels()
+    private val viewModel: MainActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
