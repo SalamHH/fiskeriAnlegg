@@ -14,4 +14,6 @@
     <string name="weather">weather</string>
     <string name="salt">salt</string>
     <string name="infection">infection</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

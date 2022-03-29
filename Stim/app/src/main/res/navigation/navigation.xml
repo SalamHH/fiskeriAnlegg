@@ -37,7 +37,32 @@
         android:id="@+id/siteInfoFragment"
         android:name="no.uio.ifi.team16.stim.SiteInfoFragment"
         android:label=""
-        tools:layout="@layout/fragment_site_info" />
+        tools:layout="@layout/fragment_site_info" >
+        <action
+            android:id="@+id/action_siteInfoFragment_to_weatherFragment"
+            app:destination="@id/weatherFragment"
+            app:enterAnim="@android:anim/slide_in_left" />
+        <action
+            android:id="@+id/action_siteInfoFragment_to_saltFragment"
+            app:destination="@id/saltFragment"
+            app:enterAnim="@android:anim/slide_in_left" />
+        <action
+            android:id="@+id/action_siteInfoFragment_to_infectionFragment"
+            app:destination="@id/infectionFragment"
+            app:enterAnim="@android:anim/slide_in_left" />
+    </fragment>
+    <fragment
+        android:id="@+id/infectionFragment"
+        android:name="no.uio.ifi.team16.stim.InfectionFragment"
+        tools:layout="@layout/fragment_infection" />
+    <fragment
+        android:id="@+id/saltFragment"
+        android:name="no.uio.ifi.team16.stim.SaltFragment"
+        tools:layout="@layout/fragment_salt" />
+    <fragment
+        android:id="@+id/weatherFragment"
+        android:name="no.uio.ifi.team16.stim.WeatherFragment"
+        tools:layout="@layout/fragment_weather" />
 
 
 </navigation>

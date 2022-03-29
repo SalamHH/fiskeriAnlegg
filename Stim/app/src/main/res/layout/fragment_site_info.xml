@@ -45,6 +45,7 @@
 
         <!-- Weather info card-->
         <androidx.cardview.widget.CardView
+            android:id="@+id/weatherInfoCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardBackgroundColor="@color/white"
@@ -85,6 +86,7 @@
 
         <!-- Salt info card-->
         <androidx.cardview.widget.CardView
+            android:id="@+id/saltInfoCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardBackgroundColor="@color/white"
@@ -125,6 +127,7 @@
 
         <!-- Infection card -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/infectionInfoCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardBackgroundColor="@color/white"
