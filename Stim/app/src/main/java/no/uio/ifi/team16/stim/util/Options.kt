@@ -14,7 +14,7 @@ class Options {
         const val sitesRange = "0-99"
 
         //MAINACTIVITY
-        const val fakeMunicipality = 4615
+        const val fakeMunicipality = "4615"
         val fakeSite = Site(0, "bingbong", LatLng(61.12341234, 4.23), null)
     }
 }

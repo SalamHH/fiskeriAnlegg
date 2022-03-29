@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -26,27 +27,29 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveListen
     private lateinit var binding: FragmentMapBinding
     private val viewModel: MainActivityViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
 
         binding = FragmentMapBinding.inflate(layoutInflater)
 
-        val mapFragment = activity?.supportFragmentManager?.findFragmentById(R.id.mapView) as SupportMapFragment
+        val mapFragment = SupportMapFragment.newInstance()
+        activity?.supportFragmentManager?.beginTransaction()?.add(R.id.mapView, mapFragment)?.commit()
+
         mapFragment.getMapAsync(this)
 
-        viewModel.getMunicipalityNr().observe(this) { nr ->
+        viewModel.getMunicipalityNr().observe(viewLifecycleOwner) { nr ->
             if (nr != null) {
-                //binding.nrView.text = "Kommunenr: $nr"
+                binding.nrView.text = "Kommunenr: $nr"
+                viewModel.loadSites(nr)
             }
         }
-    }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_map, container, false)
+        binding.toSitesBtn.setOnClickListener {
+            view?.findNavController()?.navigate(R.id.action_mapFragment_to_sitesFromMapFragment)
+        }
+
+        return binding.root
     }
 
     override fun onMapReady(googleMap: GoogleMap) {

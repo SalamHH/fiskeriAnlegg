@@ -35,9 +35,12 @@ class SitesDataLoader {
      * or using Fules own syntax, listof(param1string to param1, ...)
      */
     suspend fun loadWithParameters(parameters: Parameters?): Sites? {
-        val responseStr = Fuel.get(
-            url, parameters
-        ).awaitString()
+        var responseStr = ""
+        try {
+            responseStr = Fuel.get(url, parameters).awaitString()
+        } catch (e: Exception) {
+            Log.wtf(TAG, "Kunne ikke hente sites!! :(", e)
+        }
 
         if (responseStr.isEmpty()) {
             return null
@@ -80,11 +83,11 @@ class SitesDataLoader {
     /**
      * @see loadWithParameters
      */
-    suspend fun loadDataByMunicipalityCode(municipalityCode: Int): Sites? =
+    suspend fun loadDataByMunicipalityCode(municipalityCode: String): Sites? =
         loadWithParameters(
             listOf(
                 "range" to Options.sitesRange,
-                "municipality-code" to municipalityCode.toString()
+                "municipality-code" to municipalityCode
             )
         )
 

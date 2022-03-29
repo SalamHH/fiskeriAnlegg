@@ -10,7 +10,7 @@ import no.uio.ifi.team16.stim.R
 import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.data.Sites
 
-class RecycleViewAdapter(sites: Sites, private val onClick: (Site) -> Unit) :
+class RecycleViewAdapter(var sites: Sites, private val onClick: (Site) -> Unit) :
     RecyclerView.Adapter<RecycleViewAdapter.ViewHolder>() {
 
     /**
@@ -23,7 +23,6 @@ class RecycleViewAdapter(sites: Sites, private val onClick: (Site) -> Unit) :
      */
 
     private val TAG = "_RECYCLERVIEW"
-    private val sites: List<Site> = sites.sites
 
     /**
      * Oppretter viewholder med alle views i element
@@ -57,7 +56,7 @@ class RecycleViewAdapter(sites: Sites, private val onClick: (Site) -> Unit) :
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
 
-        val site = sites[position]
+        val site = sites.sites[position]
 
         viewHolder.bind(site)
         viewHolder.nameView.text = site.name
@@ -67,5 +66,5 @@ class RecycleViewAdapter(sites: Sites, private val onClick: (Site) -> Unit) :
     }
 
     // Return the size of your dataset (invoked by the layout manager)
-    override fun getItemCount() = sites.size
+    override fun getItemCount() = sites.sites.size
 }

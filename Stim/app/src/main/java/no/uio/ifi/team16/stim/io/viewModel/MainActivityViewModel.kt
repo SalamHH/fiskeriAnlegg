@@ -1,6 +1,5 @@
 package no.uio.ifi.team16.stim.io.viewModel
 
-import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -108,7 +107,7 @@ class MainActivityViewModel : ViewModel() {
     /**
      * Load the 100 first sited from the given municipality
      */
-    fun loadSites(municipalityCode: Int) {
+    fun loadSites(municipalityCode: String) {
         viewModelScope.launch(Dispatchers.IO) {
             Log.d(TAG, "loading sites to viewmodel")
             val loaded =

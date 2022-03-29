@@ -13,7 +13,7 @@ class SitesRepository {
     val dataSource = SitesDataLoader()
 
     //cache maps a municipalitynr to a list of sites
-    var cache: MutableMap<Int, Sites?> = mutableMapOf()
+    var cache: MutableMap<String, Sites?> = mutableMapOf()
 
     //some sites, prefferably we will use the above cache, but not all municipalities have Sites
     var someData: Sites? = null
@@ -21,7 +21,7 @@ class SitesRepository {
     /**
      * load the sites at the given municipalitycode
      */
-    suspend fun getData(municipalityCode: Int): Sites? =
+    suspend fun getData(municipalityCode: String): Sites? =
         cache.getOrPut(municipalityCode) {
             dataSource.loadDataByMunicipalityCode(municipalityCode)
         }
