@@ -63,6 +63,14 @@
         android:id="@+id/weatherFragment"
         android:name="no.uio.ifi.team16.stim.WeatherFragment"
         tools:layout="@layout/fragment_weather" />
+    <fragment
+        android:id="@+id/sitesFromMapFragment"
+        android:name="no.uio.ifi.team16.stim.SitesFromMapFragment"
+        android:label="SitesFromMapFragment" >
+        <action
+            android:id="@+id/action_sitesFromMapFragment_to_siteInfoFragment"
+            app:destination="@id/siteInfoFragment" />
+    </fragment>
 
 
 </navigation>

@@ -1,5 +1,6 @@
 package no.uio.ifi.team16.stim.io.viewModel
 
+import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,6 +13,7 @@ import no.uio.ifi.team16.stim.data.repository.InfectiousPressureTimeSeriesReposi
 import no.uio.ifi.team16.stim.data.repository.NorKyst800Repository
 import no.uio.ifi.team16.stim.data.repository.SitesRepository
 import no.uio.ifi.team16.stim.util.LatLng
+import no.uio.ifi.team16.stim.util.Options
 
 class MainActivityViewModel : ViewModel() {
     private val TAG = "MainActivityViewModel"
@@ -118,7 +120,7 @@ class MainActivityViewModel : ViewModel() {
 
     //Methods for communicating chosen Site between fragments
 
-    private var site = Site(0, "Test", LatLng(0.0, 0.0), null) //In case setCurrentSite fails
+    private var site = Options.fakeSite
 
     fun setCurrentSite(new : Site) {
         site = new
@@ -127,5 +129,4 @@ class MainActivityViewModel : ViewModel() {
     fun getCurrentSite() : Site {
         return site
     }
-
 }
