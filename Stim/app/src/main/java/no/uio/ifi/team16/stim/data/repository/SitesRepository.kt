@@ -23,7 +23,7 @@ class SitesRepository {
      */
     suspend fun getData(municipalityCode: String): Sites? =
         cache.getOrPut(municipalityCode) {
-            dataSource.loadDataByMunicipalityCode(municipalityCode)
+            return dataSource.loadDataByMunicipalityCode(municipalityCode)
         }
 
 

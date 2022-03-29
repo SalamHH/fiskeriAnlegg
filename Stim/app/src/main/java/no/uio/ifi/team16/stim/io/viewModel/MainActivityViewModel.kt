@@ -110,8 +110,8 @@ class MainActivityViewModel : ViewModel() {
     fun loadSites(municipalityCode: String) {
         viewModelScope.launch(Dispatchers.IO) {
             Log.d(TAG, "loading sites to viewmodel")
-            val loaded =
-                sitesRepository.getData(municipalityCode) //either loaded, retrieved from cache or faked
+            //either loaded, retrieved from cache or faked
+            val loaded = sitesRepository.getData(municipalityCode)
             Log.d(TAG, "loading sites to viewmodel - DONE")
             //invokes the observer
             sitesData.postValue(loaded)

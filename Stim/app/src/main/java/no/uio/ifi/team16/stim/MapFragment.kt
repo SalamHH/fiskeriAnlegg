@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.findNavController
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -38,7 +40,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveListen
 
         mapFragment.getMapAsync(this)
 
-        viewModel.getMunicipalityNr().observe(viewLifecycleOwner) { nr ->
+        // todo sjekk om dette er nødvending
+        val owner: LifecycleOwner = if (activity != null) {
+            activity as FragmentActivity
+        } else {
+            viewLifecycleOwner
+        }
+        viewModel.getMunicipalityNr().observe(owner) { nr ->
             if (nr != null) {
                 binding.nrView.text = "Kommunenr: $nr"
                 viewModel.loadSites(nr)

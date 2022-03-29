@@ -39,7 +39,7 @@ class SitesDataLoader {
         try {
             responseStr = Fuel.get(url, parameters).awaitString()
         } catch (e: Exception) {
-            Log.wtf(TAG, "Kunne ikke hente sites!! :(", e)
+            Log.e(TAG, "Kunne ikke hente sites med params: $parameters", e)
         }
 
         if (responseStr.isEmpty()) {
@@ -48,6 +48,7 @@ class SitesDataLoader {
 
         val sites = JSONArray(responseStr)
         var out: MutableList<Site> = mutableListOf()
+
         for (i in 0 until sites.length()) {
             //try to parse, if succesfull add to out, otherwise just try next
             sites.getJSONObject(i)?.runCatching {
@@ -73,7 +74,7 @@ class SitesDataLoader {
                         }
                     )
                 )
-            }?.onFailure() { failure ->
+            }?.onFailure { failure ->
                 Log.w(TAG, "Failed to create a site due to: $failure")
             }
         }
