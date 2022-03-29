@@ -3,7 +3,7 @@ package no.uio.ifi.team16.stim.data.dataLoader
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.coroutines.awaitString
 import no.uio.ifi.team16.stim.data.Weather
-import no.uio.ifi.team16.stim.util.LatLng
+import no.uio.ifi.team16.stim.util.LatLong
 import org.json.JSONObject
 
 /**
@@ -21,7 +21,7 @@ class WeatherDataLoader {
      *
      * @param position a position
      */
-    suspend fun load(position: LatLng): Weather? {
+    suspend fun load(position: LatLong): Weather? {
 
         val lat = "lat" to position.lat
         val lon = "lon" to position.lng

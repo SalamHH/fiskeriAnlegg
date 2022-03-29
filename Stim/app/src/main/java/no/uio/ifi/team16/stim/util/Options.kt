@@ -15,6 +15,6 @@ class Options {
 
         //MAINACTIVITY
         const val fakeMunicipality = "4615"
-        val fakeSite = Site(0, "bingbong", LatLng(61.12341234, 4.23), null)
+        val fakeSite = Site(0, "bingbong", LatLong(61.12341234, 4.23), null)
     }
 }

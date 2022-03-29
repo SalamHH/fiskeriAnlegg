@@ -5,7 +5,7 @@ import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.Parameters
 import com.github.kittinunf.fuel.coroutines.awaitString
 import no.uio.ifi.team16.stim.data.*
-import no.uio.ifi.team16.stim.util.LatLng
+import no.uio.ifi.team16.stim.util.LatLong
 import no.uio.ifi.team16.stim.util.Options
 import org.json.JSONArray
 
@@ -56,7 +56,7 @@ class SitesDataLoader {
                     Site(
                         this.getInt("siteId"),
                         this.getString("name"),
-                        LatLng(this.getDouble("latitude"), this.getDouble("longitude")),
+                        LatLong(this.getDouble("latitude"), this.getDouble("longitude")),
                         //a site might not have an areaplacement(?)
                         this.getJSONObject("placement")?.let { APJSON ->
                             AreaPlacement(

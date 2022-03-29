@@ -79,7 +79,7 @@ class InfectiousPressureTimeSeriesDataLoader : THREDDSDataLoader() {
         var dx: Float = 0f
         var dy: Float = 0f
         var shape: Pair<Int, Int> = Pair(0, 0)
-        val latLng = site.latLng
+        val latLng = site.latLong
         for (week in 0 until weeksFromNow) {
             THREDDSLoad(baseUrl + yearAndWeek(currentDate(), week) + ".nc") { ncfile ->
                 //lets make some infectious pressure

@@ -20,7 +20,7 @@ class SiteInfoFragment : StimFragment() {
         val site = viewModel.getCurrentSite()
 
         binding.siteName.text = site.name
-        binding.sitelocation.text = site.latLng.toString()
+        binding.sitelocation.text = site.latLong.toString()
 
         binding.weatherInfoCard.setOnClickListener {
             view?.findNavController()?.navigate(R.id.action_siteInfoFragment_to_weatherFragment)

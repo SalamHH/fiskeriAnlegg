@@ -1,7 +1,7 @@
 package no.uio.ifi.team16.stim.data
 
 import no.uio.ifi.team16.stim.util.FloatArray2D
-import no.uio.ifi.team16.stim.util.LatLng
+import no.uio.ifi.team16.stim.util.LatLong
 import no.uio.ifi.team16.stim.util.get
 import org.locationtech.proj4j.CoordinateTransform
 import org.locationtech.proj4j.ProjCoordinate
@@ -37,11 +37,11 @@ class InfectiousPressure(
      * valid results
      * TODO: decide appropriate output, null? closest border concentration?
      *
-     * @param latLng latitude-longitude coordinate we want to find concentration at
+     * @param latLong latitude-longitude coordinate we want to find concentration at
      * @return concentration at specified lat long coordinate
      */
-    fun getConcentration(latLng: LatLng): Float {
-        val (row, column) = getClosestIndex(latLng)
+    fun getConcentration(latLong: LatLong): Float {
+        val (row, column) = getClosestIndex(latLong)
         return concentration.get(row, column)
     }
 
@@ -50,19 +50,19 @@ class InfectiousPressure(
      * will be removed in a future commit
      */
     @Deprecated("use InfectiousPressureTimeSeries, get from InfectiousPressureTimeSeriesRepository")
-    fun getConcentration(latLng: LatLng, weeksFromNow: Int): Float {
+    fun getConcentration(latLong: LatLong, weeksFromNow: Int): Float {
         /*find the concentrationgrid closest to our latlongpoint,
         we use euclidean distance, or technically L1, to measure distance between latlngs.*/
-        val (row, column) = getClosestIndex(latLng)
+        val (row, column) = getClosestIndex(latLong)
         return concentration[row][column] * cos(weeksFromNow.toFloat() / 2 * 3.141592f)
     }
 
     ///////////////
     // UTILITIES //
     ///////////////
-    private fun getClosestIndex(latLng: LatLng): Pair<Int, Int> {
+    private fun getClosestIndex(latLong: LatLong): Pair<Int, Int> {
         //map latLng to projection coordinates(eta, xi)
-        val (eta, xi) = project(latLng)
+        val (eta, xi) = project(latLong)
         //divide by length between points, then round to get correct index
         return Pair(round(eta / dy).toInt(), round(xi / dx).toInt())
     }
@@ -80,8 +80,8 @@ class InfectiousPressure(
             Pair(p.y.toFloat(), p.x.toFloat())
         }
 
-    fun project(latLng: LatLng): Pair<Float, Float> =
-        project(latLng.lat.toFloat(), latLng.lng.toFloat())
+    fun project(latLong: LatLong): Pair<Float, Float> =
+        project(latLong.lat.toFloat(), latLong.lng.toFloat())
 
     override fun toString() = "InfectiousPressure:" +
             "\nFrom: ${fromDate}, to: $toDate" +

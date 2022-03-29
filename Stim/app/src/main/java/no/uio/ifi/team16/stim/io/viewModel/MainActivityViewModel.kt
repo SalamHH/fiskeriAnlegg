@@ -9,7 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import no.uio.ifi.team16.stim.data.*
 import no.uio.ifi.team16.stim.data.repository.*
-import no.uio.ifi.team16.stim.util.LatLng
+import no.uio.ifi.team16.stim.util.LatLong
 import no.uio.ifi.team16.stim.util.Options
 
 class MainActivityViewModel : ViewModel() {
@@ -122,9 +122,9 @@ class MainActivityViewModel : ViewModel() {
         throw NotImplementedError()
     }
 
-    fun load(latLng: LatLng) {
+    fun load(latLong: LatLong) {
         viewModelScope.launch(Dispatchers.IO) {
-            val nr = addressRepository.getMunicipalityNr(latLng)
+            val nr = addressRepository.getMunicipalityNr(latLong)
             addressData.postValue(nr)
         }
     }

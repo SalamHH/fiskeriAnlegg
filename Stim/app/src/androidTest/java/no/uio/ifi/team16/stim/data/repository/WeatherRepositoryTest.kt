@@ -1,7 +1,7 @@
 package no.uio.ifi.team16.stim.data.repository
 
 import kotlinx.coroutines.runBlocking
-import no.uio.ifi.team16.stim.util.LatLng
+import no.uio.ifi.team16.stim.util.LatLong
 import org.junit.Assert.assertNotNull
 import org.junit.Test
 
@@ -12,7 +12,7 @@ class WeatherRepositoryTest {
     @Test
     fun getData() {
         runBlocking {
-            val position = LatLng(60.0, 10.0)
+            val position = LatLong(60.0, 10.0)
             val weather = repository.getData(position)
             assertNotNull(weather)
         }

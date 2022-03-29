@@ -1,7 +1,7 @@
 package no.uio.ifi.team16.stim.data
 
 import android.util.Log
-import no.uio.ifi.team16.stim.util.LatLng
+import no.uio.ifi.team16.stim.util.LatLong
 import ucar.ma2.*
 
 /**
@@ -34,39 +34,39 @@ data class NorKyst800(
      * Get salinity closest to given coordinates at given time and depth.
      * See time and depth explanation in class definition
      */
-    fun getSalinity(latLng: LatLng, time: Int, depth: Int): Double {
+    fun getSalinity(latLong: LatLong, time: Int, depth: Int): Double {
         /*find the concentrationgrid closest to our latlongpoint,
         we use euclidean distance, or technically L1, to measure distance between latlngs.*/
-        Log.d(TAG, "finding closest point to " + latLng.toString())
-        val index = getClosestIndex(latLng)
+        Log.d(TAG, "finding closest point to " + latLong.toString())
+        val index = getClosestIndex(latLong)
         return salinity.get(time, depth, index.first, index.second) //TODO: WRONG! NOT SCALED
     }
 
     //wrapper, get at "smallest" time and at surface
-    fun getSalinity(latLng: LatLng) = getSalinity(latLng, 0, 0)
+    fun getSalinity(latLong: LatLong) = getSalinity(latLong, 0, 0)
 
     /**
      * Get temperature closest to given coordinates at given time and depth.
      * See time and depth explanation in class definition
      */
-    fun getTemperature(latLng: LatLng, time: Int, depth: Int): Double {
+    fun getTemperature(latLong: LatLong, time: Int, depth: Int): Double {
         /*find the concentrationgrid closest to our latlongpoint,
         we use euclidean distance, or technically L1, to measure distance between latlngs.*/
-        val index = getClosestIndex(latLng)
+        val index = getClosestIndex(latLong)
         return temperature.get(time, depth, index.first, index.second) //TODO: WRONG! NOT SCALED
     }
 
     //wrapper, get at "smallest" time and at surface
-    fun getTemperature(latLng: LatLng) = getTemperature(latLng, 0, 0)
+    fun getTemperature(latLong: LatLong) = getTemperature(latLong, 0, 0)
 
     /**
      * Get velocity in all three directions(xyz) closest to given coordinates at given time and depth.
      * See time and depth explanation in class definition
      */
-    fun getVelocity(latLng: LatLng, time: Int, depth: Int): Triple<Double, Double, Double> {
+    fun getVelocity(latLong: LatLong, time: Int, depth: Int): Triple<Double, Double, Double> {
         /*find the concentrationgrid closest to our latlongpoint,
         we use euclidean distance, or technically L1, to measure distance between latlngs.*/
-        val index = getClosestIndex(latLng)
+        val index = getClosestIndex(latLong)
         return Triple(
             u.get(time, depth, index.first, index.second),
             v.get(time, depth, index.first, index.second),
@@ -75,7 +75,7 @@ data class NorKyst800(
     }
 
     //wrapper, get at "smallest" time and at surface
-    fun getVelocity(latLng: LatLng) = getVelocity(latLng, 0, 0)
+    fun getVelocity(latLong: LatLong) = getVelocity(latLong, 0, 0)
 
     //////////////////////
     // HELPER FUNCTIONS //
@@ -90,7 +90,7 @@ data class NorKyst800(
     private fun ArrayInt.get(time: Int, depth: Int, row: Int, column: Int): Double =
         this.getDouble(idx4.set(time, depth, row, column))
 
-    private fun getClosestIndex(latLng: LatLng): Pair<Int, Int> {
+    private fun getClosestIndex(latLong: LatLong): Pair<Int, Int> {
         var row = 0
         var column = 0
         var minDistance = 1000000.0
@@ -98,15 +98,15 @@ data class NorKyst800(
         //find row from latitude
         for (i in 0 until latLonShape.first) {
             for (j in 0 until latLonShape.second) {
-                distance = latLng.haversine(
-                    LatLng(
+                distance = latLong.haversine(
+                    LatLong(
                         latitude.get(i, j).toDouble(),
                         longitude.get(i, j).toDouble()
                     )
                 )
                 Log.d(
                     TAG,
-                    "d(" + latLng.toString() + ",LatLng(${latitude.get(i, j)}, ${
+                    "d(" + latLong.toString() + ",LatLng(${latitude.get(i, j)}, ${
                         longitude.get(
                             i,
                             j

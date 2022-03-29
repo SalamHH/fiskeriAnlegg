@@ -60,7 +60,7 @@ class RecycleViewAdapter(var sites: Sites, private val onClick: (Site) -> Unit) 
 
         viewHolder.bind(site)
         viewHolder.nameView.text = site.name
-        viewHolder.locationView.text = site.latLng.toString()
+        viewHolder.locationView.text = site.latLong.toString()
 
         Log.d(TAG, "data lagt inn")
     }

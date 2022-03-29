@@ -67,7 +67,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
     override fun onCameraMove() {
         Log.d(TAG, "camera moved to ${map.cameraPosition}")
         val center =
-            no.uio.ifi.team16.stim.util.LatLng(map.cameraPosition.target.latitude, map.cameraPosition.target.longitude)
+            no.uio.ifi.team16.stim.util.LatLong(map.cameraPosition.target.latitude, map.cameraPosition.target.longitude)
         viewModel.load(center)
     }
 }

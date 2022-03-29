@@ -3,7 +3,7 @@ package no.uio.ifi.team16.stim.util
 /**
  * A latitude/longitude-pair
  */
-data class LatLng(val lat: Double, val lng: Double) {
+data class LatLong(val lat: Double, val lng: Double) {
 
     companion object {
         const val earthRadiusKm: Double = 6372.8
@@ -20,7 +20,7 @@ data class LatLng(val lat: Double, val lng: Double) {
      *
      * @return Distance in kilometers
      */
-    fun haversine(destination: LatLng): Double {
+    fun haversine(destination: LatLong): Double {
         val dLat = Math.toRadians(destination.lat - this.lat);
         val dLon = Math.toRadians(destination.lng - this.lng);
         val originLat = Math.toRadians(this.lat);

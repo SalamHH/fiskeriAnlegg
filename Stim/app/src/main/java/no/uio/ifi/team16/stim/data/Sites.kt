@@ -1,6 +1,6 @@
 package no.uio.ifi.team16.stim.data
 
-import no.uio.ifi.team16.stim.util.LatLng
+import no.uio.ifi.team16.stim.util.LatLong
 
 data class Sites(val sites: List<Site>)
 
@@ -57,20 +57,20 @@ data class SiteBorder(val points: List<BorderPoint>)
 data class Site(
     val id: Int,
     val name: String,
-    val latLng: LatLng,
+    val latLong: LatLong,
     val placement: AreaPlacement?
 ) {
     /**
      * @see InfectiousPressure.getConcentration(LatLng)
      */
     fun getInfectiousPressure(infectiousPressure: InfectiousPressure): Float {
-        return infectiousPressure.getConcentration(latLng)
+        return infectiousPressure.getConcentration(latLong)
     }
 
     /**
      * @see InfectiousPressure.getConcentration(LatLng, Int)
      */
     fun getInfectiousPressure(infectiousPressure: InfectiousPressure, weeksFromNow: Int): Float {
-        return infectiousPressure.getConcentration(latLng, weeksFromNow)
+        return infectiousPressure.getConcentration(latLong, weeksFromNow)
     }
 }
