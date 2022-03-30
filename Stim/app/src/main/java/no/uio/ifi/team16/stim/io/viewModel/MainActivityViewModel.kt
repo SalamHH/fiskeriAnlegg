@@ -13,6 +13,7 @@ import no.uio.ifi.team16.stim.util.LatLong
 import no.uio.ifi.team16.stim.util.Options
 
 class MainActivityViewModel : ViewModel() {
+
     private val TAG = "MainActivityViewModel"
     private val infectiousPressureRepository = InfectiousPressureRepository()
     private val infectiousPressureData = MutableLiveData<InfectiousPressure?>()

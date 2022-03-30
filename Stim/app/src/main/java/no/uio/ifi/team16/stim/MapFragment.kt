@@ -38,10 +38,10 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
 
         // Observe municipality number
-        viewModel.getMunicipalityNr().observe(getLifecycleOwner(), this::onMunicipalityUpdate)
+        viewModel.getMunicipalityNr().observe(viewLifecycleOwner, this::onMunicipalityUpdate)
 
         // Observe sites and place them on the map
-        viewModel.getSitesData().observe(getLifecycleOwner(), this::onSiteUpdate)
+        viewModel.getSitesData().observe(viewLifecycleOwner, this::onSiteUpdate)
 
         binding.toSitesBtn.setOnClickListener {
             view?.findNavController()?.navigate(R.id.action_mapFragment_to_sitesFromMapFragment)
@@ -63,6 +63,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
 
     private fun onMunicipalityUpdate(nr: String?) {
         if (nr != null) {
+            currentMunicipalityNr = nr
             viewModel.loadSites(nr)
         }
     }
