@@ -1,6 +1,7 @@
 package no.uio.ifi.team16.stim.util
 
 import no.uio.ifi.team16.stim.data.Site
+import no.uio.ifi.team16.stim.data.Sites
 
 class Options {
     companion object {
@@ -16,5 +17,6 @@ class Options {
         //MAINACTIVITY
         const val fakeMunicipality = "4615"
         val fakeSite = Site(0, "bingbong", LatLong(61.12341234, 4.23), null)
+        val fakeSites = Sites(listOf(fakeSite, fakeSite, fakeSite, fakeSite))
     }
 }

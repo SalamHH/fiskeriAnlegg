@@ -4,8 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import androidx.fragment.app.viewModels
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -14,10 +17,15 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.data.Sites
 import no.uio.ifi.team16.stim.databinding.FragmentMapBinding
+import no.uio.ifi.team16.stim.io.adapter.RecycleViewAdapter
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 import no.uio.ifi.team16.stim.util.LatLong
+import no.uio.ifi.team16.stim.util.Options
 
 /**
  * Map fragment
@@ -31,7 +39,13 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
     private var mapReady = false
     private var mapBounds: CameraPosition? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
 
         binding = FragmentMapBinding.inflate(layoutInflater)
 
@@ -50,6 +64,16 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
         binding.syncBtn.setOnClickListener {
             onRefresh()
         }
+
+        //Bottom Sheet behavior
+        bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet)
+        bottomSheetBehavior.setPeekHeight(200, true)
+        bottomSheetBehavior.isDraggable = true
+        bottomSheetBehavior.isHideable = false
+
+        binding.recyclerView.layoutManager = LinearLayoutManager(context)
+        val adapter = RecycleViewAdapter(Options.fakeSites, this::adapterOnClick)
+        binding.recyclerView.adapter = adapter
 
         return binding.root
     }
@@ -100,5 +124,12 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
     private fun onRefresh() {
         val center = LatLong.fromGoogle(map.cameraPosition.target)
         viewModel.loadMunicipalityNumber(center)
+    }
+
+    /*
+   When an item in the RecyclerView is clicked it updates the viewModels currentSite to the Site that was clicked
+   and then it navigates to the fragment that fetches this Site and displays information about it */
+    private fun adapterOnClick(site: Site) {
+        //TODO
     }
 }
