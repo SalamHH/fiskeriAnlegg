@@ -69,7 +69,7 @@
             android:id="@+id/toolbar_btmSheet"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/purple_500">
+            android:background="@color/primary">
 
             <ImageView
                 android:id="@+id/icon_pull"
