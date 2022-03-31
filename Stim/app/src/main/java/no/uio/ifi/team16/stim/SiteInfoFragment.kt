@@ -31,17 +31,7 @@ class SiteInfoFragment : StimFragment() {
         binding.GeneralInfoCard.setOnClickListener {
             view?.findNavController()?.navigate(R.id.action_siteInfoFragment_to_generalInfoFragment)
         }
-        //Vanntemperatur og saltholdighet
-
-        viewModel.loadNorKyst800()
-
-        viewModel.getNorKyst800Data().observe(viewLifecycleOwner) {
-            if (it != null) {
-                binding.temperatureTextview.text = "${it.getTemperature(site.latLong).toString()}°"
-                binding.saltTextview.text = it.getSalinity(site.latLong).toString()
-            }
-        }
-
+        
         binding.infectionInfoCard.setOnClickListener {
             val extras = FragmentNavigatorExtras(binding.infectionIcon to "image_big")
             view?.findNavController()?.navigate(

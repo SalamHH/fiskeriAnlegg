@@ -1,8 +1,10 @@
 package no.uio.ifi.team16.stim
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.MenuItem
 import android.util.Log
+import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.navigation.findNavController
 import androidx.navigation.ui.*
@@ -22,6 +24,7 @@ class MainActivity : StimActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
 
         // Navigation control for fragments
         setSupportActionBar(binding.toolbar)

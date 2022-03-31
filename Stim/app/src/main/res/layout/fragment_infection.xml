@@ -1,33 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    tools:context=".InfectionFragment">
+    tools:context=".WeatherFragment">
 
 
     <!-- INFECTION-->
+
     <TextView
-        app:layout_constraintTop_toTopOf="parent"
-        android:id="@+id/infectionText"
+        android:id="@+id/contaminationText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/smittedata"
+        android:layout_marginTop="144dp"
+        android:fontFamily="@font/montserrat_bold"
+        android:gravity="center"
+        android:text="SMITTEDATA"
+        android:textColor="@color/textColor"
         android:textSize="30sp"
-        android:layout_marginTop="30dp"
-        android:gravity="center" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="0dp" />
 
     <ImageView
-        app:layout_constraintTop_toBottomOf="@id/infectionText"
+        android:id="@+id/weatherIcon"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:transitionName="image_big"
+        app:layout_constraintBottom_toTopOf="@+id/contaminationText"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:id="@+id/infectionIcon"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_gravity="center"
-        android:layout_marginBottom="10dp"
-        app:srcCompat="@drawable/virus" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/mdi___virus_outline" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
