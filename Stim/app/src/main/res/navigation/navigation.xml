@@ -58,20 +58,12 @@
         android:name="no.uio.ifi.team16.stim.WeatherFragment"
         tools:layout="@layout/fragment_weather" />
     <fragment
-        android:id="@+id/sitesFromMapFragment"
-        android:name="no.uio.ifi.team16.stim.SitesFromMapFragment"
-        android:label="SitesFromMapFragment">
-        <action
-            android:id="@+id/action_sitesFromMapFragment_to_siteInfoFragment"
-            app:destination="@id/siteInfoFragment" />
-    </fragment>
-    <fragment
         android:id="@+id/mapFragment"
         android:name="no.uio.ifi.team16.stim.MapFragment"
         android:label="MapFragment">
         <action
-            android:id="@+id/action_mapFragment_to_sitesFromMapFragment"
-            app:destination="@id/sitesFromMapFragment" />
+            android:id="@+id/action_mapFragment_to_siteInfoFragment"
+            app:destination="@id/siteInfoFragment" />
     </fragment>
 
 

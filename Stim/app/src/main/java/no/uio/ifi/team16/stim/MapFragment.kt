@@ -57,10 +57,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
         // Observe municipality number
         viewModel.getMunicipalityNr().observe(viewLifecycleOwner, this::onMunicipalityUpdate)
 
-        binding.toSitesBtn.setOnClickListener {
-            view?.findNavController()?.navigate(R.id.action_mapFragment_to_sitesFromMapFragment)
-        }
-
         binding.syncBtn.setOnClickListener {
             onRefresh()
         }
@@ -72,7 +68,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
         bottomSheetBehavior.isHideable = false
 
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
-        val adapter = RecycleViewAdapter(Options.fakeSites, this::adapterOnClick, requireActivity())
+        val adapter = RecycleViewAdapter(Sites(listOf()), this::adapterOnClick, requireActivity)
         binding.recyclerView.adapter = adapter
 
         return binding.root
@@ -106,6 +102,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
         if (nr != null) {
             viewModel.loadSites(nr)
         }
+        //todo - update headertext in bottomsheet to kommunenavn/nr
     }
 
     private fun onSiteUpdate(sites: Sites?) {
@@ -118,6 +115,10 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
                 markerOptions.position(site.latLong.toGoogle())
                 map.addMarker(markerOptions)
             }
+
+            //update sites in bottomsheet
+            val adapter = RecycleViewAdapter(sites, this::adapterOnClick)
+            binding.recyclerView.adapter = adapter
         }
     }
 
@@ -130,6 +131,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
    When an item in the RecyclerView is clicked it updates the viewModels currentSite to the Site that was clicked
    and then it navigates to the fragment that fetches this Site and displays information about it */
     private fun adapterOnClick(site: Site) {
-        //TODO
+        viewModel.setCurrentSite(site)
+        view?.findNavController()?.navigate(R.id.action_mapFragment_to_siteInfoFragment)
     }
 }
