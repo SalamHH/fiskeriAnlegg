@@ -16,5 +16,8 @@
     <string name="infection">SMITTE</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="vanndata">VANNDATA</string>
+    <string name="smittedata">SMITTEDATA</string>
+    <string name="v_rdata">VÆRDATA</string>
     <string name="blank">-----</string>
 </resources>
