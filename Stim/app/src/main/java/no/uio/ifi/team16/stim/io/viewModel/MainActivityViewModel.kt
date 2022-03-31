@@ -1,11 +1,14 @@
 package no.uio.ifi.team16.stim.io.viewModel
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineDataSet
 import com.google.android.gms.common.api.internal.ActivityLifecycleObserver
@@ -147,30 +150,15 @@ class MainActivityViewModel : ViewModel() {
         return site
     }
 
-    /*fun loadSiteContamination() {
-        Log.d(TAG, "loading timeSeriesData to viewmodel")
-        loadInfectiousPressureTimeSeriesAtSite(getCurrentSite())
-        Log.d(TAG, "loading timeSeriesData to viewmodel - DONE")
-        val loaded = infectiousPressureTimeSeriesData.value
-        Log.d("load TS", loaded?.get(getCurrentSite().id)?.siteId.toString())
-        Log.d(TAG, "got timeSeriesData from viewmodel - DONE")
-        //infectionData.add(Entry(loaded.value))
-    }*/
-
 
     companion object {
         const val CHART_LABEL = "INFECTION_CHART"
     }
 
     private val infectionData = mutableListOf<Entry>()
-    private var _lineDataSet = MutableLiveData(LineDataSet(infectionData, CHART_LABEL))
-    private var lineDataSet: LiveData<LineDataSet> = _lineDataSet
+    private val _lineDataSet = MutableLiveData(LineDataSet(infectionData, CHART_LABEL))
+    val lineDataSet: LiveData<LineDataSet> = _lineDataSet
 
-    fun setLineDataSet(lDataSet: MutableLiveData<LineDataSet>) {
-        lineDataSet = lDataSet
-    }
-
-    /*
     init {
         infectionData.add(Entry(0f, 5f))
         infectionData.add(Entry(1f, 4f))
@@ -180,6 +168,6 @@ class MainActivityViewModel : ViewModel() {
 
         _lineDataSet.value = LineDataSet(infectionData, CHART_LABEL)
 
-    }*/
+    }
 
 }
