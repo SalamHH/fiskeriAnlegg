@@ -5,8 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineDataSet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import no.uio.ifi.team16.stim.InfectionFragment
 import no.uio.ifi.team16.stim.data.*
 import no.uio.ifi.team16.stim.data.repository.*
 import no.uio.ifi.team16.stim.util.LatLong
@@ -141,4 +144,25 @@ class MainActivityViewModel : ViewModel() {
     fun getCurrentSite(): Site {
         return site
     }
+
+
+    companion object {
+        const val CHART_LABEL = "INFECTION_CHART"
+    }
+
+    private val infectionData = mutableListOf<Entry>()
+    private val _lineDataSet = MutableLiveData(LineDataSet(infectionData, CHART_LABEL))
+    val lineDataSet: LiveData<LineDataSet> = _lineDataSet
+
+    init {
+        infectionData.add(Entry(0f, 5f))
+        infectionData.add(Entry(1f, 4f))
+        infectionData.add(Entry(2f, 7f))
+        infectionData.add(Entry(3f, 8f))
+        infectionData.add(Entry(4f, 6f))
+
+        _lineDataSet.value = LineDataSet(infectionData, CHART_LABEL)
+
+    }
+
 }
