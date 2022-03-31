@@ -42,6 +42,34 @@ android {
         exclude 'META-INF/NOTICE.txt'
         exclude 'META-INF/INDEX.LIST'
     }
+
+    // Encapsulates external native build(fimexdataloader) configurations.
+    externalNativeBuild {
+        // Encapsulates the CMake build configurations.
+        cmake {
+            // Provides a relative path to the CMake build script of fimexLoader.
+            path = file("CMakeLists.txt")
+            // Passes optional arguments to CMake.
+            /*arguments += listOf(
+                    "-GUnix Makefiles",
+                    "-DBUILD_SHARED_LIBS=ON",
+                    "-DENABLE_GRIBAPI=YES -Dgrib_api_DIR=/path/to/grib_api",
+                    "-DENABLE_THIS=YES",
+                    "-DENABLE_THAT=NO",
+                    "-DCMAKE_INSTALL_PREFIX=fimex/install"
+            )*/
+            //        "-DANDROID_ARM_NEON=TRUE", "-DANDROID_TOOLCHAIN=clang")
+            // Sets a flag to enable format macro constants for the C compiler.
+            //cFlags += listOf("-D__STDC_FORMAT_MACROS")
+            // Sets optional flags for the C++ compiler.
+            //cppFlags += listOf("-fexceptions", "-frtti")
+            //if using flags, move to inside defaultCongfig! then do
+            //
+            //here instead
+
+        }
+    }
+
 }
 
 dependencies {

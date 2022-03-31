@@ -1,0 +1,10 @@
+//
+// Created by christian on 30.03.2022.
+//
+
+#ifndef STIM_NORKYST800FIMEXDATALOADER_H
+#define STIM_NORKYST800FIMEXDATALOADER_H
+
+#include "fimex-fimex_1_4_1__1/"
+
+#endif //STIM_NORKYST800FIMEXDATALOADER_H

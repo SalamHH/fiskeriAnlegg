@@ -191,4 +191,12 @@ class NorKyst800DataLoader : THREDDSDataLoader() {
             return null
         }
     }*/
+
+
+    companion object {
+        init {
+            System.loadLibrary("native-lib");
+        }
+    }
+
 }
