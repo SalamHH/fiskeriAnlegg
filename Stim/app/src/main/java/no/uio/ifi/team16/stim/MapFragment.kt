@@ -4,12 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
@@ -26,7 +27,9 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
     private val TAG = "MapFragment"
     private lateinit var map: GoogleMap
     private lateinit var binding: FragmentMapBinding
-    private val viewModel: MainActivityViewModel by viewModels()
+    private val viewModel: MainActivityViewModel by activityViewModels()
+    private var mapReady = false
+    private var mapBounds: CameraPosition? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
@@ -40,9 +43,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
         // Observe municipality number
         viewModel.getMunicipalityNr().observe(viewLifecycleOwner, this::onMunicipalityUpdate)
 
-        // Observe sites and place them on the map
-        viewModel.getSitesData().observe(viewLifecycleOwner, this::onSiteUpdate)
-
         binding.toSitesBtn.setOnClickListener {
             view?.findNavController()?.navigate(R.id.action_mapFragment_to_sitesFromMapFragment)
         }
@@ -54,16 +54,32 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
         return binding.root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mapBounds = map.cameraPosition
+    }
+
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
-        val bounds = LatLngBounds(LatLng(60.0, 10.0), LatLng(60.5, 10.5))
-        val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 10)
-        map.moveCamera(cameraUpdate)
+        mapReady = true
+
+        mapBounds?.let { bounds ->
+            // Move to last camera position
+            val update = CameraUpdateFactory.newCameraPosition(bounds)
+            map.moveCamera(update)
+        } ?: run {
+            // Move to start position (Todo: make this the user location)
+            val bounds = LatLngBounds(LatLng(60.0, 10.0), LatLng(60.5, 10.5))
+            val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 10)
+            map.moveCamera(cameraUpdate)
+        }
+
+        // Observe sites and place them on the map
+        viewModel.getSitesData().observe(viewLifecycleOwner, this::onSiteUpdate)
     }
 
     private fun onMunicipalityUpdate(nr: String?) {
         if (nr != null) {
-            currentMunicipalityNr = nr
             viewModel.loadSites(nr)
         }
     }

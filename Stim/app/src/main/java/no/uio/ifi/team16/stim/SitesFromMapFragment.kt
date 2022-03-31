@@ -33,11 +33,6 @@ class SitesFromMapFragment : StimFragment() {
             }
         }
 
-        // initial load of data
-        currentMunicipalityNr?.let { nr ->
-            viewModel.loadSites(nr)
-        }
-
         return binding.root
     }
 
