@@ -10,18 +10,24 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.data.Sites
-import no.uio.ifi.team16.stim.databinding.FragmentSiteListBinding
+import no.uio.ifi.team16.stim.databinding.FragmentFavoriteSitesBinding
 import no.uio.ifi.team16.stim.io.adapter.RecycleViewAdapter
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 
-class SiteListFragment : StimFragment() {
 
-    private lateinit var binding: FragmentSiteListBinding
+
+/*
+TODO: Forandre dette fragmentet slik at det viser favoritt sites
+ */
+
+class FavoriteSitesFragment : StimFragment() {
+
+    private lateinit var binding: FragmentFavoriteSitesBinding
     private val viewModel: MainActivityViewModel by activityViewModels()
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = FragmentSiteListBinding.inflate(inflater, container, false)
+        binding = FragmentFavoriteSitesBinding.inflate(inflater, container, false)
 
         /********************
          *  RECYCLEVIEW *
@@ -48,7 +54,7 @@ class SiteListFragment : StimFragment() {
     and then it navigates to the fragment that fetches this Site and displays information about it */
     private fun adapterOnClick(site : Site) {
         viewModel.setCurrentSite(site)
-        view?.findNavController()?.navigate(R.id.action_siteListFragment_to_siteInfoFragment)
+        view?.findNavController()?.navigate(R.id.action_favoriteSitesFragment_to_siteInfoFragment)
 
     }
 }

@@ -11,21 +11,37 @@
         android:label="STIM"
         tools:layout="@layout/fragment_start_page">
         <action
-            android:id="@+id/action_startPageFragment_to_siteListFragment"
-            app:destination="@id/siteListFragment" />
-        <action
             android:id="@+id/action_startPageFragment_to_mapFragment"
             app:destination="@id/mapFragment" />
+        <action
+            android:id="@+id/action_startPageFragment_to_favoriteSitesFragment"
+            app:destination="@id/favoriteSitesFragment" />
     </fragment>
 
+
     <fragment
-        android:id="@+id/siteListFragment"
-        android:name="no.uio.ifi.team16.stim.SiteListFragment"
-        android:label="All sites" >
+        android:id="@+id/mapFragment"
+        android:name="no.uio.ifi.team16.stim.MapFragment"
+        android:label="MapFragment">
         <action
-            android:id="@+id/action_siteListFragment_to_siteInfoFragment"
-            app:destination="@id/siteInfoFragment"
-            app:enterAnim="@android:anim/slide_in_left" />
+            android:id="@+id/action_mapFragment_to_sitesFromMapFragment"
+            app:destination="@id/sitesFromMapFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/favoriteSitesFragment"
+        android:name="no.uio.ifi.team16.stim.FavoriteSitesFragment"
+        android:label="FavoriteSitesFragment" >
+        <action
+            android:id="@+id/action_favoriteSitesFragment_to_siteInfoFragment"
+            app:destination="@id/siteInfoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/sitesFromMapFragment"
+        android:name="no.uio.ifi.team16.stim.SitesFromMapFragment"
+        android:label="SitesFromMapFragment">
+        <action
+            android:id="@+id/action_sitesFromMapFragment_to_siteInfoFragment"
+            app:destination="@id/siteInfoFragment" />
     </fragment>
     <fragment
         android:id="@+id/siteInfoFragment"

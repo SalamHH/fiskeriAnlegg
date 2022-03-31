@@ -23,7 +23,7 @@ class StartPageFragment : StimFragment() {
         }
 
         binding.recyclerViewBtn.setOnClickListener {
-            view?.findNavController()?.navigate(R.id.action_startPageFragment_to_siteListFragment)
+            view?.findNavController()?.navigate(R.id.action_startPageFragment_to_favoriteSitesFragment)
         }
 
         return binding.root
