@@ -1,6 +1,8 @@
 package no.uio.ifi.team16.stim
 
+import android.graphics.Color
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
@@ -20,6 +22,9 @@ class MainActivity : StimActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //window.statusBarColor = Color.TRANSPARENT
+        //window.navigationBarColor = Color.TRANSPARENT
+        //window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
 
         // Navigation control for fragments
         val navController = this.findNavController(R.id.myNavHostFragment)

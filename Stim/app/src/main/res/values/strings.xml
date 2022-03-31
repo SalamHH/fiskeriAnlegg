@@ -13,7 +13,7 @@
     //fragment_site_info
     <string name="weather">weather</string>
     <string name="salt">salt</string>
-    <string name="infection">infection</string>
+    <string name="infection">SMITTE</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

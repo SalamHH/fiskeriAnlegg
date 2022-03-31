@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import no.uio.ifi.team16.stim.databinding.FragmentSiteInfoBinding
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 
@@ -31,7 +33,11 @@ class SiteInfoFragment : StimFragment() {
         }
 
         binding.infectionInfoCard.setOnClickListener {
-            view?.findNavController()?.navigate(R.id.action_siteInfoFragment_to_infectionFragment)
+            val extras = FragmentNavigatorExtras(binding.infectionIcon to "image_big")
+            view?.findNavController()?.navigate(R.id.action_siteInfoFragment_to_infectionFragment,
+                null,
+                null,
+                extras)
         }
 
         return binding.root
