@@ -16,8 +16,11 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.google.android.gms.common.api.internal.ActivityLifecycleObserver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import no.uio.ifi.team16.stim.InfectionFragment
 import no.uio.ifi.team16.stim.data.*
+import no.uio.ifi.team16.stim.data.repository.InfectiousPressureRepository
+import no.uio.ifi.team16.stim.data.repository.InfectiousPressureTimeSeriesRepository
+import no.uio.ifi.team16.stim.data.repository.NorKyst800Repository
+import no.uio.ifi.team16.stim.data.repository.SitesRepository
 import no.uio.ifi.team16.stim.data.repository.*
 import no.uio.ifi.team16.stim.util.LatLong
 import no.uio.ifi.team16.stim.util.Options
@@ -84,10 +87,9 @@ class MainActivityViewModel : ViewModel() {
         //if not use runblocking { }
         viewModelScope.launch(Dispatchers.IO) {
             //runBlocking {
-            Log.d(TAG, "loading infectiousdata to viewmodel")
             val loaded =
                 infectiousPressureRepository.getSomeData() //either loaded, retrieved from cache or faked
-            Log.d(TAG, "loading infectiousdata to viewmodel - DONE")
+            Log.d(TAG, "LOADED infectiousPressure")
             //invokes the observer
             infectiousPressureData.postValue(loaded)
         }
@@ -98,26 +100,25 @@ class MainActivityViewModel : ViewModel() {
         //if not use runblocking { }
         viewModelScope.launch(Dispatchers.IO) {
             //runBlocking {
-            Log.d(TAG, "loading infectioustimeseriesdata to viewmodel")
+            //Log.d(TAG, "loading infectioustimeseriesdata to viewmodel")
             val loaded =
                 infectiousPressureTimeSeriesRepository.getDataAtSite(
                     site,
-                    8
+                    Options.infectiousPressureTimeSeriesSpan
                 ) //either loaded, retrieved from cache or faked
-            Log.d(TAG, "loading infectioustimeseriesdata to viewmodel - DONE")
+            Log.d(TAG, "LOADED - infectioustimeseries at ${site.name}")
             //invokes the observer
             infectiousPressureTimeSeriesData.postValue(loaded)
-            Log.d(TAG, loaded[site.id].toString())
         }
     }
 
     fun loadNorKyst800() {
         viewModelScope.launch(Dispatchers.IO) {
             //runBlocking {
-            Log.d(TAG, "loading infectiousdata to viewmodel")
+            //Log.d(TAG, "loading infectiousdata to viewmodel")
             val loaded =
                 norKyst800Repository.getData() //either loaded, retrieved from cache or faked
-            Log.d(TAG, "loading infectiousdata to viewmodel - DONE")
+            Log.d(TAG, "LOADED - norKyst800")
             //invokes the observer
             norKyst800Data.postValue(loaded)
         }
@@ -179,20 +180,7 @@ class MainActivityViewModel : ViewModel() {
     private var _lineDataSet = MutableLiveData(LineDataSet(infectionData, CHART_LABEL))
     private var lineDataSet: LiveData<LineDataSet> = _lineDataSet
 
-    fun setLineDataSet(lDataSet: MutableLiveData<LineDataSet>) {
-        lineDataSet = lDataSet
+    fun setLineDataSet(lDataSet: LineDataSet) {
+        lineDataSet = MutableLiveData(lDataSet)
     }
-
-    /*
-    init {
-        infectionData.add(Entry(0f, 5f))
-        infectionData.add(Entry(1f, 4f))
-        infectionData.add(Entry(2f, 7f))
-        infectionData.add(Entry(3f, 8f))
-        infectionData.add(Entry(4f, 6f))
-
-        _lineDataSet.value = LineDataSet(infectionData, CHART_LABEL)
-
-    }*/
-
 }

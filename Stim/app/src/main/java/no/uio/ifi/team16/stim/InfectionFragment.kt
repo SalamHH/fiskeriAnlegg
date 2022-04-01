@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.MutableLiveData
 import androidx.transition.TransitionInflater
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
@@ -21,43 +20,54 @@ import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 
 class InfectionFragment : StimFragment() {
 
+    private val TAG = "INFECTIONFRAGMENT"
+
     private lateinit var binding: FragmentInfectionBinding
     private val viewModel: MainActivityViewModel by activityViewModels()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         binding = FragmentInfectionBinding.inflate(inflater, container, false)
 
-        val animation = TransitionInflater.from(requireContext()).inflateTransition(android.R.transition.move)
+        val animation =
+            TransitionInflater.from(requireContext()).inflateTransition(android.R.transition.move)
         sharedElementEnterTransition = animation
         sharedElementReturnTransition = animation
 
-        val site =  viewModel.getCurrentSite()
         val site = viewModel.getCurrentSite()
 
         //last inn InfectiousPressureTimeSeries for dette objektet
         viewModel.loadInfectiousPressureTimeSeriesAtSite(site)
 
-        val contamData = mutableListOf<Entry>()
-        val _lineDataSet = MutableLiveData(LineDataSet(contamData, CHART_LABEL))
+        //val contamData = mutableListOf<Entry>()
+        //val _lineDataSet = MutableLiveData(LineDataSet(contamData, CHART_LABEL))
 
         viewModel.getInfectiousPressureTimeSeriesData().observe(viewLifecycleOwner) {
-            println("THE TIMESERIES OBSERVED ARE \n" + it[site.id].toString())
+            Log.d(TAG, "TIMESERIES CHANGED! \n" + it[site.id].toString())
+            //TODO: handle site not loaded(ie null) - (is it possible? if not comment)
             val (weekList, infectionData) = it[site.id]!!.getAllConcentrationsUnzipped()
-
-            _lineDataSet.value = LineDataSet(
+            Log.d(
+                TAG,
+                weekList.zip(infectionData).map { (x, y) -> Entry(x.toFloat(), y) }.toString()
+            )
+            val linedataset = LineDataSet(
                 weekList.zip(infectionData)                 // list med par av x og y
-                    .map { (x,y) -> Entry(x.toFloat(),y) }, //list med Entry(x,y)
+                    .map { (x, y) -> Entry(x.toFloat(), y) }, //list med Entry(x,y)
                 CHART_LABEL
             )
-
-            viewModel.setLineDataSet(_lineDataSet)
-        }
-
-        viewModel.getLineDataSet().observe(viewLifecycleOwner) {
-            styleLineDataSet(it, requireContext())
-            binding.infectionChart.data = LineData(it)
+            styleLineDataSet(linedataset, requireContext())
+            binding.infectionChart.data = LineData(linedataset)
             binding.infectionChart.invalidate()
         }
+
+        /*viewModel.getLineDataSet().observe(viewLifecycleOwner) {
+            //THIS CODE IS NEVER REACHED!!
+            Log.d("infectionfragment", "observing lineDataset!")
+
+        }*/
 
         styleChart(binding.infectionChart)
 
