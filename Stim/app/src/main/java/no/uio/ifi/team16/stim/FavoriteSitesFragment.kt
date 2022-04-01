@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import no.uio.ifi.team16.stim.data.Site
@@ -38,8 +39,8 @@ class FavoriteSitesFragment : StimFragment() {
 
         //observe sites
         viewModel.getSitesData().observe(viewLifecycleOwner) { sites ->
-            Log.d("INVOKED", "observer of sites")
-            println("THE SITES OBSERVED ARE \n" + sites.toString())
+            Log.d(TAG, "observed change in sites")
+            Log.d(TAG, "THE SITES OBSERVED ARE \n" + sites.toString())
 
             if (sites != null) {
                 adapter.sites = sites

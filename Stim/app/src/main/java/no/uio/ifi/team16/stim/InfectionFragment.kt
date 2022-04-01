@@ -25,11 +25,13 @@ class InfectionFragment : StimFragment() {
     private lateinit var binding: FragmentInfectionBinding
     private val viewModel: MainActivityViewModel by activityViewModels()
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        Log.d(TAG, "oncreate")
         binding = FragmentInfectionBinding.inflate(inflater, container, false)
 
         val animation =
@@ -38,43 +40,43 @@ class InfectionFragment : StimFragment() {
         sharedElementReturnTransition = animation
 
         val site = viewModel.getCurrentSite()
+        Log.d(TAG, "site is $site")
 
-        //last inn InfectiousPressureTimeSeries for dette objektet
+
         viewModel.loadInfectiousPressureTimeSeriesAtSite(site)
-
         //val contamData = mutableListOf<Entry>()
         //val _lineDataSet = MutableLiveData(LineDataSet(contamData, CHART_LABEL))
 
         viewModel.getInfectiousPressureTimeSeriesData().observe(viewLifecycleOwner) {
-            Log.d(TAG, "TIMESERIES CHANGED! \n" + it[site.id].toString())
-            //TODO: handle site not loaded(ie null) - (is it possible? if not comment)
-            val (weekList, infectionData) = it[site.id]!!.getAllConcentrationsUnzipped()
-            Log.d(
-                TAG,
-                weekList.zip(infectionData).map { (x, y) -> Entry(x.toFloat(), y) }.toString()
-            )
-            val linedataset = LineDataSet(
-                weekList.zip(infectionData)                 // list med par av x og y
-                    .map { (x, y) -> Entry(x.toFloat(), y) }, //list med Entry(x,y)
-                CHART_LABEL
-            )
-            styleLineDataSet(linedataset, requireContext())
-            binding.infectionChart.data = LineData(linedataset)
-            binding.infectionChart.invalidate()
+            Log.d(TAG, "TIMESERIES CHANGED! site id: " + site.id)
+            Log.d(TAG, "TO: " + it[site.id].toString())
+            //TODO: handle site not loaded(ie null) - we get nullpointerexception if we go back, and try to load inf from another site,
+            //since site seems to update, but loading the concentrations does not? the get fails since there is no id for this site in the map
+            it[site.id]?.getAllConcentrationsUnzipped()?.also { (weekList, infectionData) ->
+                val linedataset = LineDataSet(
+                    weekList.zip(infectionData)                 // list med par av x og y
+                        .map { (x, y) -> Entry(x.toFloat(), y) }, //list med Entry(x,y)
+                    CHART_LABEL
+                )
+                //set max of yaxis to max of loaded dataset
+                //THE BEZIER CURVE DOES NOT CONSERVE MIN / MAX OF INTERPOLATED POINTS, SO IT WILL CLIP!!
+                //TODO get interpolation(CUBIC BEZIER), and find min max of that, or change to linear(not bezier), or use max+1 min-1
+                binding.infectionChart.apply {
+                    axisLeft.apply {
+                        axisMaximum =
+                            infectionData.maxOf { v -> v } + 1f //clipping might still occurr
+                    }
+                }
+                //style linedataset
+                styleLineDataSet(linedataset, requireContext())
+                binding.infectionChart.data = LineData(linedataset)
+                binding.infectionChart.invalidate()
+            }
         }
-
-        /*viewModel.getLineDataSet().observe(viewLifecycleOwner) {
-            //THIS CODE IS NEVER REACHED!!
-            Log.d("infectionfragment", "observing lineDataset!")
-
-        }*/
 
         styleChart(binding.infectionChart)
 
-        //viewModel.loadSiteContamination()
-
         return binding.root
-
     }
 
     companion object {
@@ -90,8 +92,8 @@ class InfectionFragment : StimFragment() {
 
         axisLeft.apply {
             isEnabled = false
-            axisMinimum = 0f
-            axisMaximum = 10f
+            axisMinimum = 0f //to avoid clipping from bezier curve
+            axisMaximum = 10f //must be overwritten later!
         }
 
         xAxis.apply {
