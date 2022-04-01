@@ -50,7 +50,7 @@
             android:id="@+id/weatherInfoCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/white"
+            app:cardBackgroundColor="@color/grey"
             app:cardCornerRadius="10dp"
             app:cardElevation="5dp"
             app:cardMaxElevation="10dp"
