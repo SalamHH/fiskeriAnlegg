@@ -1,6 +1,5 @@
 package no.uio.ifi.team16.stim.data.repository
 
-import android.util.Log
 import no.uio.ifi.team16.stim.data.NorKyst800
 import no.uio.ifi.team16.stim.data.dataLoader.NorKyst800DataLoader
 
@@ -21,14 +20,14 @@ class NorKyst800Repository {
      * @return mocked, cached or newly loaded data.
      */
     fun getData(): NorKyst800? {
-        Log.d(TAG, "loading infectiousdata from repository")
+        //Log.d(TAG, "loading infectiousdata from repository")
         if (!mocked) {
             if (dirty) {
                 cache = dataSource.load() //TODO: currently mocked, only a 2x2x2x2 grid
                 dirty = false
             }
         }
-        Log.d(TAG, "loading infectiousdata from repository - DONE")
+        //Log.d(TAG, "loading infectiousdata from repository - DONE")
 
         return cache
     }

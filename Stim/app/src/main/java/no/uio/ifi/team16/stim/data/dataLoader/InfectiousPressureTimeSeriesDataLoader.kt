@@ -135,6 +135,12 @@ class InfectiousPressureTimeSeriesDataLoader : THREDDSDataLoader() {
                 )
             }
         }
-        return InfectiousPressureTimeSeries(site.id, out.toTypedArray(), shape, dx, dy)
+        return InfectiousPressureTimeSeries(
+            site.id,
+            out.toTypedArray().reversedArray(),
+            shape,
+            dx,
+            dy
+        )
     }
 }

@@ -1,6 +1,5 @@
 package no.uio.ifi.team16.stim.data.repository
 
-import android.util.Log
 import no.uio.ifi.team16.stim.data.InfectiousPressureTimeSeries
 import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.data.dataLoader.InfectiousPressureTimeSeriesDataLoader
@@ -39,13 +38,13 @@ class InfectiousPressureTimeSeriesRepository() {
      * @return mocked, cached or newly loaded data.
      */
     fun getDataAtSite(site: Site, weeksFromNow: Int): Map<Int, InfectiousPressureTimeSeries> {
-        Log.d(TAG, "loading infectioustimeseriesdata from repository")
+        //Log.d(TAG, "loading infectioustimeseriesdata from repository")
         if (!mocked) {
             cache.getOrPutOrPass(site.id) {
                 dataSource.load(site, weeksFromNow)
             }
         }
-        Log.d(TAG, "loading current infectioustimeseriesdata from repository - DONE")
+        //Log.d(TAG, "loading current infectioustimeseriesdata from repository - DONE")
         return cache
     }
 

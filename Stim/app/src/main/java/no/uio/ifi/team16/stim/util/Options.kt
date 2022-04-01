@@ -11,6 +11,10 @@ class Options {
         const val infectiousPressureStepY =
             50 //amount of steps between data points, 1=use entire y axis
 
+        //InfectiousPressureTimeseries
+        const val infectiousPressureTimeSeriesSpan =
+            8 //how many weeks from now to load in a timeseries
+
         //SITES - DATALOADER
         const val sitesRange = "0-99"
 

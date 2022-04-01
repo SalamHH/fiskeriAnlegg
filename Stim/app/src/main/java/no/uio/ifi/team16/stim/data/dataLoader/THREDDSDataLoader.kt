@@ -101,9 +101,9 @@ abstract class THREDDSDataLoader {
         try {
             Log.d(TAG, "OPENING $url")
             ncfile = NetcdfDataset.openDataset(url)
-            Log.d(TAG, "OPENDAP URL OPENED")
+            //Log.d(TAG, "OPENDAP URL OPENED")
             data = action(ncfile)
-            Log.d(TAG, "OPENDAP URL PARSED")
+            Log.d(TAG, "DONE!")
         } catch (e: IOException) {
             Log.e("ERROR", e.toString())
         } catch (e: InvalidRangeException) {

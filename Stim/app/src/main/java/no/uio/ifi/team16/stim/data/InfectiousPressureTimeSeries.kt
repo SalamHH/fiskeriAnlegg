@@ -93,16 +93,16 @@ data class InfectiousPressureTimeSeries(
     // UTILITIES //
     ///////////////
     override fun toString() =
-        "InfectiousPressureTimeSeries:\n" +
-                concentrations.fold("\n") { acc, (date, concentration2D) ->
-                    acc + "${date.toString()}): " +
-                            concentration2D.fold("") { acc2, concentrationRow ->
-                                "$acc2: " + concentrationRow.fold("") { acc3, concentration ->
-                                    "$acc3,$concentration"
-                                }
+        "InfectiousPressureTimeSeries:" +
+                concentrations.fold("\n") { accTotal, (date, concentration2D) ->
+                    accTotal + "week %2d: [".format(date) +
+                            concentration2D.fold("") { accGrid, concentrationRow ->
+                                accGrid + concentrationRow.fold("[") { accRow, concentration ->
+                                    accRow + "%5.2f, ".format(concentration)
+                                } + "], "
                             } +
-                            " -> " +
-                            aggregation(concentration2D).toString() +
+                            "] -> " +
+                            "%9.7f".format(aggregation(concentration2D)) +
                             "\n"
                 }
 

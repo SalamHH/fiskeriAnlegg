@@ -1,6 +1,5 @@
 package no.uio.ifi.team16.stim.data.repository
 
-import android.util.Log
 import no.uio.ifi.team16.stim.data.InfectiousPressure
 import no.uio.ifi.team16.stim.data.dataLoader.InfectiousPressureDataLoader
 
@@ -41,12 +40,10 @@ class InfectiousPressureRepository() {
      * @return mocked, cached or newly loaded data.
      */
     fun getSomeData(): InfectiousPressure? {
-        Log.d(TAG, "loading some infectiousdata from repository")
         if (!mocked && dirty) {
             cache = dataSource.loadSomeData()
             dirty = false
         }
-        Log.d(TAG, "loading some infectiousdata from repository - DONE")
         return cache
     }
 
@@ -61,12 +58,12 @@ class InfectiousPressureRepository() {
      * @return mocked, cached or newly loaded data.
      */
     fun getCurrentData(): InfectiousPressure? {
-        Log.d(TAG, "loading current infectiousdata from repository")
+        //Log.d(TAG, "loading current infectiousdata from repository")
         if (!mocked && dirty) {
             cache = dataSource.load()
             dirty = false
         }
-        Log.d(TAG, "loading current infectiousdata from repository - DONE")
+        //Log.d(TAG, "loading current infectiousdata from repository - DONE")
         return cache
     }
 }
