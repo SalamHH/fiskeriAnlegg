@@ -1,5 +1,6 @@
 package no.uio.ifi.team16.stim.data.repository
 
+import android.util.Log
 import no.uio.ifi.team16.stim.data.NorKyst800
 import no.uio.ifi.team16.stim.data.dataLoader.NorKyst800DataLoader
 import no.uio.ifi.team16.stim.util.LatLong
@@ -36,7 +37,6 @@ class NorKyst800Repository {
                 dirty = false
             }
         }
-        //Log.d(TAG, "loading infectiousdata from repository - DONE")
 
         return cache
     }

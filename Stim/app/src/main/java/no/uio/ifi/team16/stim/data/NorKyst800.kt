@@ -1,6 +1,6 @@
 package no.uio.ifi.team16.stim.data
 
-import no.uio.ifi.team16.stim.util.IntArray4D
+import no.uio.ifi.team16.stim.util.DoubleArray4D
 import no.uio.ifi.team16.stim.util.LatLng
 import no.uio.ifi.team16.stim.util.get
 
@@ -9,10 +9,10 @@ import no.uio.ifi.team16.stim.util.get
  */
 data class NorKyst800(
     val depth: DoubleArray,
-    val salinity: IntArray4D,
-    val temperature: IntArray4D,
+    val salinity: DoubleArray4D,
+    val temperature: DoubleArray4D,
     val time: DoubleArray,
-    val velocity: Triple<IntArray4D, IntArray4D, IntArray4D>
+    val velocity: Triple<DoubleArray4D, DoubleArray4D, DoubleArray4D>
 ) {
     val TAG = "NORKYST800"
     //////////////////////
