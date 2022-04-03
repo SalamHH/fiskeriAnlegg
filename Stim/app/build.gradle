@@ -14,6 +14,16 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        externalNativeBuild {
+            cmake {
+                arguments '-Ddate_INC_DIR=../date',
+                          //'-Dmi-programoptions_DIR=third_party/mi-programoptions',
+                          '-DENABLE_PYTHON=OFF',
+                          '-DBUILD_SHARED_LIBS=OFF',
+                          '-debug-find'
+            }
+        }
     }
 
     buildFeatures {
@@ -52,7 +62,7 @@ android {
             // Passes optional arguments to CMake.
             /*arguments += listOf(
                     "-GUnix Makefiles",
-                    "-DBUILD_SHARED_LIBS=ON",
+                    ,
                     "-DENABLE_GRIBAPI=YES -Dgrib_api_DIR=/path/to/grib_api",
                     "-DENABLE_THIS=YES",
                     "-DENABLE_THAT=NO",
@@ -60,9 +70,9 @@ android {
             )*/
             //        "-DANDROID_ARM_NEON=TRUE", "-DANDROID_TOOLCHAIN=clang")
             // Sets a flag to enable format macro constants for the C compiler.
-            //cFlags += listOf("-D__STDC_FORMAT_MACROS")
+
             // Sets optional flags for the C++ compiler.
-            //cppFlags += listOf("-fexceptions", "-frtti")
+
             //if using flags, move to inside defaultCongfig! then do
             //
             //here instead

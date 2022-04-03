@@ -89,3 +89,7 @@ lint/tmp/
 # macOS
 .DS_Store
 
+/app/src/main/cpp/fimex/
+/app/src/main/cpp/date/
+/app/src/main/cpp/mi-cpptest/
+/app/src/main/cpp/mi-programoptions/
