@@ -8,6 +8,7 @@ import android.widget.LinearLayout
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -17,9 +18,11 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.data.Sites
 import no.uio.ifi.team16.stim.databinding.FragmentMapBinding
+import no.uio.ifi.team16.stim.io.adapter.RecycleViewAdapter
 import no.uio.ifi.team16.stim.io.adapter.RecycleViewAdapter
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 import no.uio.ifi.team16.stim.util.LatLong
@@ -35,6 +38,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
     private val viewModel: MainActivityViewModel by activityViewModels()
     private var mapReady = false
     private var mapBounds: CameraPosition? = null
+    private lateinit var SearchView: androidx.appcompat.widget.SearchView
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
 
@@ -51,8 +55,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
 
         mapFragment.getMapAsync(this)
 
-        // Observe municipality number
-        viewModel.getMunicipalityNr().observe(viewLifecycleOwner, this::onMunicipalityUpdate)
 
         binding.syncBtn.setOnClickListener {
             onRefresh()
@@ -68,7 +70,39 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
         val adapter = RecycleViewAdapter(Sites(listOf()), this::adapterOnClick, requireActivity())
         binding.recyclerView.adapter = adapter
 
+
+        //nytt
+        binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(p0: String?): Boolean {
+                if (p0 != null) {
+                    searchMunNr(p0)
+                }
+
+                return false
+            }
+
+            override fun onQueryTextChange(p0: String?): Boolean {
+                return false
+            }
+
+        })
+
         return binding.root
+    }
+
+
+    fun searchMunNr(munNr: String){
+        currentMunicipalityNr=munNr
+        viewModel.loadSites(munNr)
+        viewModel.getSitesData().observe(viewLifecycleOwner){
+            onSiteUpdate((it))
+            if (it != null) {
+                val bounds = LatLngBounds(LatLng(it.sites[0].latLong.lat, it.sites[0].latLong.lng), LatLng(it.sites[0].latLong.lat+0.5, it.sites[0].latLong.lng+0.5))
+                val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 10)
+                map.moveCamera(cameraUpdate)
+
+            }
+        }
     }
 
     override fun onDestroyView() {
@@ -97,17 +131,21 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
 
     private fun onMunicipalityUpdate(nr: String?) {
         if (nr != null) {
+            currentMunicipalityNr = nr
+            viewModel.loadSites(nr)
             viewModel.loadSites(nr)
         }
         //todo - update headertext in bottomsheet to kommunenavn/nr
     }
 
     private fun onSiteUpdate(sites: Sites?) {
+
         if (sites != null) {
             binding.numSites.text = "Antall anlegg: ${sites.sites.size}"
 
             for (site in sites.sites) {
                 val markerOptions = MarkerOptions()
+
                 markerOptions.title(site.name)
                 markerOptions.position(site.latLong.toGoogle())
                 map.addMarker(markerOptions)
@@ -132,3 +170,5 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
         view?.findNavController()?.navigate(R.id.action_mapFragment_to_siteInfoFragment)
     }
 }
+
+
