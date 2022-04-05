@@ -146,14 +146,19 @@ class NorKyst800DataLoader : THREDDSDataLoader() {
     suspend fun loadDefault(): NorKyst800? {
         Log.d(TAG, defaultUrl)
         Log.d(TAG, "requesting norkyst800")
-        val responseStr = Fuel.get(defaultUrl).awaitString()
-        //val responseStr = norkString
-        Log.d(TAG, "got norkyst800")
-        if (responseStr.isEmpty()) {
+        try {
+            val responseStr = Fuel.get(defaultUrl).awaitString()
+            Log.d(TAG, "got norkyst800")
+            if (responseStr.isEmpty()) {
+                return null
+            }
+
+            Log.d(TAG, "parsing norkyst800")
+            return NorKyst800RegexParser().parse(responseStr)
+        } catch (e: java.net.SocketTimeoutException) {
+            //val responseStr = norkString
+            Log.e(TAG, " Connection timed out")
             return null
         }
-
-        Log.d(TAG, "parsing norkyst800")
-        return NorKyst800RegexParser().parse(responseStr)
     }
 }
