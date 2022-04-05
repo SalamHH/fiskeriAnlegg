@@ -45,7 +45,7 @@ class InfectiousPressureDataLoader : THREDDSDataLoader() {
     }
 
     /**
-     * return the current date, fjernes med norkyst800-regexed
+     * return the current date
      */
     fun currentDate(): Date {
         val cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"))

@@ -1,6 +1,5 @@
 package no.uio.ifi.team16.stim.data.dataLoader
 
-//import thredds.catalog.ThreddsMetadata
 import android.util.Log
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.coroutines.awaitString
@@ -9,6 +8,7 @@ import no.uio.ifi.team16.stim.util.LatLong
 import ucar.ma2.ArrayDouble
 import ucar.ma2.ArrayInt
 import no.uio.ifi.team16.stim.data.dataLoader.parser.NorKyst800RegexParser
+import no.uio.ifi.team16.stim.util.Options
 
 /**
  * DataLoader for data related tot he norkyst800 model.
@@ -16,43 +16,33 @@ import no.uio.ifi.team16.stim.data.dataLoader.parser.NorKyst800RegexParser
  **/
 class NorKyst800DataLoader : THREDDSDataLoader() {
     private val TAG = "NorKyst800DataLoader"
-    val resolution = "500"
-    val depthResolution = "15"
-    val timeResolution = "41"
-    val yRange = "0:${resolution}:901"
-    val xRange = "0:${resolution}:901"
-    val depthRange = "0:${depthResolution}:15"
-    val timeRange = "0:${timeResolution}:42"
 
-    var url =
-        "https://thredds.met.no/thredds/dodsC/fou-hi/norkyst800m-1h/NorKyst-800m_ZDEPTHS_his.fc.2022040300.nc.ascii?" +
-                "depth[${depthRange}]," +
-                "lat[${yRange}][${xRange}]," +
-                "lon[${yRange}][${xRange}]," +
-                "salinity[${timeRange}][${depthRange}][${yRange}][${xRange}]," +
-                "temperature[${timeRange}][${depthRange}][${yRange}][${xRange}]," +
-                "time[${timeRange}]," +
-                "u[${timeRange}][${depthRange}][${yRange}][${xRange}]," +
-                "v[${timeRange}][${depthRange}][${yRange}][${xRange}]," +
-                "w[${timeRange}][${depthRange}][${yRange}][${xRange}]"
+    private val xStride = Options.defaultNorKyst800XStride
+    private val yStride = Options.defaultNorKyst800YStride
+    private val depthStride = Options.defaultNorKyst800DepthStride
+    private val timeStride = Options.defaultNorKyst800TimeStride
+    private val yRange = "0:${yStride}:901"
+    private val xRange = "0:${xStride}:901"
+    private val depthRange = "0:${depthStride}:15"
+    val timeRange = "0:${timeStride}:42"
 
-    /**
-     * load the "entire" dataset
-     * 388234558 byte allocation with 4194304 free bytes and 193MB until OOM
-     * 385873886 byte allocation with 4194304 free bytes and 194MB until OOM
-     * 385808110 byte allocation with 4194304 free bytes and 194MB until OOM
-     */
-    //fun load(): NorKyst800? = load(-90f, 90f, 0.001f, -90f, 90f, 0.001f)
+    private val baseUrl =
+        "https://thredds.met.no/thredds/dodsC/fou-hi/norkyst800m-1h/NorKyst-800m_ZDEPTHS_his.fc.2022040500.nc.ascii?"
+    private var defaultUrl = baseUrl +
+            "depth[${depthRange}]," +
+            "lat[${yRange}][${xRange}]," +
+            "lon[${yRange}][${xRange}]," +
+            "salinity[${timeRange}][${depthRange}][${yRange}][${xRange}]," +
+            "temperature[${timeRange}][${depthRange}][${yRange}][${xRange}]," +
+            "time[${timeRange}]," +
+            "u[${timeRange}][${depthRange}][${yRange}][${xRange}]," +
+            "v[${timeRange}][${depthRange}][${yRange}][${xRange}]," +
+            "w[${timeRange}][${depthRange}][${yRange}][${xRange}]"
 
     /**
      * return data between latitude from/to, and latitude from/to, with given resolution.
      * Uses minimum of given and possible resolution.
      * crops to dataset if latitudes or longitudes exceed the dataset.
-     *
-     * TODO:
-     * in general, finding the distance between two points of latitude/longitude is "hard",[${timeRage}][${depthRange}][${yRange}][${xRange}]
-     * need to find a library(netcdf probably has it) for doing this.
-     * until then resolution is set to max(ie uses every datapoint between range)
      *
      * @param latitudeFrom smallest latitude to get data from
      * @param latitudeTo largest latitude to get data from
@@ -70,10 +60,78 @@ class NorKyst800DataLoader : THREDDSDataLoader() {
         longitudeResolution: Int,
         depthRange: IntProgression,
         timeRange: IntProgression
-    ): NorKyst800? = NorKyst800(
-        Log.d(TAG, url)
+    ): NorKyst800? {
+        val depthRange = "${depthFrom}:${depthStride}:${depthTo}"
+        val timeRange = "${timeFrom}:${timeStride}:${timeTo}"
+
+        //
+        val parametrizedUrl = baseUrl + "depth[${depthRange}]," +
+                "lat[${yRange}][${xRange}]," +
+                "lon[${yRange}][${xRange}]," +
+                "salinity[${timeRange}][${depthRange}][${yRange}][${xRange}]," +
+                "temperature[${timeRange}][${depthRange}][${yRange}][${xRange}]," +
+                "time[${timeRange}]," +
+                "u[${timeRange}][${depthRange}][${yRange}][${xRange}]," +
+                "v[${timeRange}][${depthRange}][${yRange}][${xRange}]," +
+                "w[${timeRange}][${depthRange}][${yRange}][${xRange}]"
+
+        val responseStr = Fuel.get(parametrizedUrl).awaitString()
+        if (responseStr.isEmpty()) {
+            return null
+        }
+
+        Log.d(TAG, "parsing norkyst800")
+        return NorKyst800RegexParser().parse(responseStr)
+    }
+
+    /**
+     * The most general load
+     * loads the specified ranges of data
+     *
+     * convenience loader, gets depth and timeranges as strings rather than int indexes
+     * @see load(Float, Float, Float, FLoat, FLoat, Float, Int, Int, Int, Int, Int, Int)
+     *
+     * Copy of load(...) TODO: reformat to reuse code, this is too bloated and there is a lot of common code
+     *
+     * @param latitudeFrom upper left corner latitude
+     * @param latitudeTo lower right corner longitude
+     * @param latitudeResolution resolution of latitude, a resolution of 0.001 means that we sample latitudes 0.001 apart
+     * @param longitudeFrom upper left corner longitude
+     * @param longitudeTo lower right corner longitude
+     * @param longitudeResolution resolution of longitude, a resolution of 0.001 means that we sample longitudes 0.001 apart
+     * @param depthRange depth as a range with format from:stride:to
+     * @param timeRange depth as a range with format from:stride:to
+     */
+    suspend fun load(
+        latitudeFrom: Float,
+        latitudeTo: Float,
+        latitudeResolution: Float, //TODO: not used, yet, must find solution to convert to yStride, using Options defualt
+        longitudeFrom: Float,
+        longitudeTo: Float,
+        longitudeResolution: Float, //TODO: not used, yet, must find solution to convert to Xstride, using Options defualt
+        depthRange: String,
+        timeRange: String
+    ): NorKyst800? {
+        //convert parameters to ranges
+        val (xRange, yRange) = geographicCoordinateToRange(
+            latitudeFrom, latitudeTo, Options.defaultNorKyst800YStride,
+            longitudeFrom, longitudeTo, Options.defaultNorKyst800XStride,
+            Options.defaultProjection() //TODO: cannot be read from file in .ascii solution, but MIGHT be wrong
+        )
+
+        val parametrizedUrl = baseUrl + "depth[${depthRange}]," +
+                "lat[${yRange}][${xRange}]," +
+                "lon[${yRange}][${xRange}]," +
+                "salinity[${timeRange}][${depthRange}][${yRange}][${xRange}]," +
+                "temperature[${timeRange}][${depthRange}][${yRange}][${xRange}]," +
+                "time[${timeRange}]," +
+                "u[${timeRange}][${depthRange}][${yRange}][${xRange}]," +
+                "v[${timeRange}][${depthRange}][${yRange}][${xRange}]," +
+                "w[${timeRange}][${depthRange}][${yRange}][${xRange}]"
+
+        Log.d(TAG, parametrizedUrl)
         Log.d(TAG, "requesting norkyst800")
-        val responseStr = Fuel.get(url).awaitString()
+        val responseStr = Fuel.get(parametrizedUrl).awaitString()
         //val responseStr = norkString
         Log.d(TAG, "got norkyst800")
         if (responseStr.isEmpty()) {
@@ -82,5 +140,20 @@ class NorKyst800DataLoader : THREDDSDataLoader() {
 
         Log.d(TAG, "parsing norkyst800")
         return NorKyst800RegexParser().parse(responseStr)
-    )
+    }
+
+    //load with default parameters(as specified in Options)
+    suspend fun loadDefault(): NorKyst800? {
+        Log.d(TAG, defaultUrl)
+        Log.d(TAG, "requesting norkyst800")
+        val responseStr = Fuel.get(defaultUrl).awaitString()
+        //val responseStr = norkString
+        Log.d(TAG, "got norkyst800")
+        if (responseStr.isEmpty()) {
+            return null
+        }
+
+        Log.d(TAG, "parsing norkyst800")
+        return NorKyst800RegexParser().parse(responseStr)
+    }
 }

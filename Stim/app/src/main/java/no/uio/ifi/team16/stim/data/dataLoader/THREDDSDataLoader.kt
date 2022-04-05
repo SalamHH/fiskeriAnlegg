@@ -1,13 +1,13 @@
 package no.uio.ifi.team16.stim.data.dataLoader
 
+//import ucar.nc2.dataset.NetcdfDatasets
 import android.util.Log
 import no.uio.ifi.team16.stim.util.FloatArray2D
-import no.uio.ifi.team16.stim.util.LatLong
-import no.uio.ifi.team16.stim.util.Options
+import no.uio.ifi.team16.stim.util.project
+import org.locationtech.proj4j.CoordinateTransform
 import ucar.ma2.ArrayFloat
 import ucar.ma2.InvalidRangeException
 import ucar.nc2.dataset.NetcdfDataset
-//import ucar.nc2.dataset.NetcdfDatasets
 import java.io.IOException
 import java.util.*
 import kotlin.math.max
@@ -50,18 +50,20 @@ abstract class THREDDSDataLoader {
      * @return pair of ranges in x- and y-direction
      */
     fun geographicCoordinateToRange(
-        latLongUpperLeft: LatLong, latLongLowerRight: LatLong,
-        latitudeResolution: Int, longitudeResolution: Int
-    ): Pair<IntProgression, IntProgression> {
-        val (latitudeFrom, longitudeFrom) = latLongUpperLeft
-        val (latitudeTo, longitudeTo) = latLongLowerRight
+        latitudeFrom: Float, latitudeTo: Float, yStride: Int,
+        longitudeFrom: Float, longitudeTo: Float, xStride: Int,
+        projection: CoordinateTransform
+    ): Pair<String, String> {
+        //map from and to to indexes in grid
+        val (yFrom, xFrom) = projection.project(latitudeFrom, longitudeFrom)
+        val (yTo, xTo) = projection.project(latitudeTo, longitudeTo)
         //interpret as ranges
-        val startX = max(round(min(longitudeFrom - minLongitude, 0.0) / longitudeDiff).toInt(), 0)
-        val stopX = max(round(min(longitudeTo / maxLongitude, 1.0) * maxX).toInt(), 0)
-        val stepX = Options.infectiousPressureStepX //max(latitudeResolution, 1)
-        val startY = max(round(min(latitudeFrom - minLatitude, 0.0) / latitudeDiff).toInt(), 0)
-        val stopY = max(round(min(latitudeTo / maxLatitude, 1.0) * maxY).toInt(), 0)
-        val stepY = Options.infectiousPressureStepY //max(latitudeResolution, 1)
+        val startX = max(min(round(xFrom).toInt(), maxX), 0) //ensure >0, <maxX
+        val stopX = max(min(round(xTo).toInt(), maxX), startX) //ensure >startX <maxX
+        val stepX = xStride
+        val startY = max(min(round(yFrom).toInt(), maxY), 0) //ensure >0, <maxX
+        val stopY = max(min(round(yTo).toInt(), maxY), startY) //ensure >startX <maxX
+        val stepY = yStride
         Log.d(
             TAG,
             "loading from ranges ${startX}:${stopX}:${stepX}\",\"${startY}:${stopY}:${stepY}"
