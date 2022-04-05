@@ -29,7 +29,12 @@ class StartPageFragment : StimFragment() {
 
          */
 
-        return binding.root
+        if (!checkLocationPermission()) {
+            requestPermission {
+                hasLocationPermission = it
+            }
+        }
 
+        return binding.root
     }
 }

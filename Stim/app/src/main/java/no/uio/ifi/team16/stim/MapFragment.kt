@@ -11,13 +11,13 @@ import android.widget.LinearLayout
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import no.uio.ifi.team16.stim.data.Site
@@ -38,6 +38,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
     private val viewModel: MainActivityViewModel by activityViewModels()
     private var mapReady = false
     private var mapBounds: CameraPosition? = null
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var SearchView: androidx.appcompat.widget.SearchView
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
@@ -47,6 +48,8 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
         binding = FragmentMapBinding.inflate(layoutInflater)
 
@@ -191,15 +194,15 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
             // Move to last camera position
             val update = CameraUpdateFactory.newCameraPosition(bounds)
             map.moveCamera(update)
-        } ?: run {
-            // Move to start position (Todo: make this the user location)
-            val bounds = LatLngBounds(LatLng(60.0, 10.0), LatLng(60.5, 10.5))
-            val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 10)
-            map.moveCamera(cameraUpdate)
         }
 
         // Observe sites and place them on the map
         viewModel.getSitesData().observe(viewLifecycleOwner, this::onSiteUpdate)
+
+        if (checkLocationPermission()) {
+            map.isMyLocationEnabled = true
+            // todo må kanskje lage en LocationProvider her
+        }
     }
 
     private fun onMunicipalityUpdate(nr: String?) {
