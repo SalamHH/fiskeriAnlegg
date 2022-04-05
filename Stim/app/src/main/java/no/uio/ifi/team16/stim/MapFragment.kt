@@ -72,7 +72,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
         bottomSheetBehavior.isHideable = false
 
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
-        val adapter = RecycleViewAdapter(Options.fakeSites, this::adapterOnClick)
+        val adapter = RecycleViewAdapter(Options.fakeSites, this::adapterOnClick, requireActivity())
         binding.recyclerView.adapter = adapter
 
         return binding.root

@@ -22,7 +22,7 @@ class SitesFromMapFragment : StimFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentSitesFromMapBinding.inflate(inflater, container, false)
 
-        val adapter = RecycleViewAdapter(Sites(listOf()), this::adapterOnClick)
+        val adapter = RecycleViewAdapter(Sites(listOf()), this::adapterOnClick, requireActivity())
         binding.recyclerview.adapter = adapter
 
         // observe sites
