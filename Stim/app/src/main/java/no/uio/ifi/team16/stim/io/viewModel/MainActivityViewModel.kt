@@ -161,17 +161,6 @@ class MainActivityViewModel : ViewModel() {
         return site
     }
 
-    /*fun loadSiteContamination() {
-        Log.d(TAG, "loading timeSeriesData to viewmodel")
-        loadInfectiousPressureTimeSeriesAtSite(getCurrentSite())
-        Log.d(TAG, "loading timeSeriesData to viewmodel - DONE")
-        val loaded = infectiousPressureTimeSeriesData.value
-        Log.d("load TS", loaded?.get(getCurrentSite().id)?.siteId.toString())
-        Log.d(TAG, "got timeSeriesData from viewmodel - DONE")
-        //infectionData.add(Entry(loaded.value))
-    }*/
-
-
     companion object {
         const val CHART_LABEL = "INFECTION_CHART"
     }

@@ -17,6 +17,7 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import no.uio.ifi.team16.stim.databinding.FragmentInfectionBinding
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
+import javax.inject.Inject
 
 class InfectionFragment : StimFragment() {
 
@@ -24,6 +25,9 @@ class InfectionFragment : StimFragment() {
 
     private lateinit var binding: FragmentInfectionBinding
     private val viewModel: MainActivityViewModel by activityViewModels()
+
+    @Inject
+    lateinit var chartStyle: SparkLineStyle
 
 
     override fun onCreateView(
@@ -42,6 +46,7 @@ class InfectionFragment : StimFragment() {
         val site = viewModel.getCurrentSite()
         Log.d(TAG, "site is $site")
 
+        chartStyle = SparkLineStyle(requireContext())
 
         viewModel.loadInfectiousPressureTimeSeriesAtSite(site)
         //val contamData = mutableListOf<Entry>()
@@ -68,13 +73,13 @@ class InfectionFragment : StimFragment() {
                     }
                 }
                 //style linedataset
-                styleLineDataSet(linedataset, requireContext())
+                chartStyle.styleLineDataSet(linedataset, requireContext())
                 binding.infectionChart.data = LineData(linedataset)
                 binding.infectionChart.invalidate()
             }
         }
 
-        styleChart(binding.infectionChart)
+        chartStyle.styleChart(binding.infectionChart)
 
         return binding.root
     }
@@ -83,51 +88,4 @@ class InfectionFragment : StimFragment() {
         const val CHART_LABEL = "INFECTION_CHART"
     }
 
-    /***
-     * stylizes the chart
-     */
-    // will be moved to its own file using Hilt Dependency I think
-    fun styleChart(lineChart: LineChart) = lineChart.apply {
-        axisRight.isEnabled = false
-
-        axisLeft.apply {
-            isEnabled = false
-            axisMinimum = 0f //to avoid clipping from bezier curve
-            axisMaximum = 10f //must be overwritten later!
-        }
-
-        xAxis.apply {
-            //axisMinimum = 0f
-            //axisMaximum = 24f
-            isGranularityEnabled = true
-            granularity = 4f
-            setDrawGridLines(false)
-            setDrawAxisLine(false)
-            position = XAxis.XAxisPosition.BOTTOM
-        }
-
-        setTouchEnabled(true)
-        isDragEnabled = true
-        setScaleEnabled(false)
-        setPinchZoom(false)
-
-        description = null
-
-        legend.isEnabled = false
-    }
-
-    fun styleLineDataSet(lineDataSet: LineDataSet, context: Context) = lineDataSet.apply{
-        color = ContextCompat.getColor(context, R.color.white)
-        valueTextColor = ContextCompat.getColor(context, R.color.black)
-        setDrawValues(false)
-        lineWidth = 3f
-        isHighlightEnabled = true
-        setDrawHighlightIndicators(false)
-        setDrawCircles(true)
-        mode = LineDataSet.Mode.CUBIC_BEZIER
-
-        setDrawFilled(true)
-        fillDrawable = ContextCompat.getDrawable(context, R.drawable.backgr_spark_line)
-
-    }
 }
