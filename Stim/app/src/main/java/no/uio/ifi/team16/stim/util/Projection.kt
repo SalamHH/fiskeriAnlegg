@@ -12,5 +12,5 @@ fun CoordinateTransform.project(lat: Float, lng: Float): Pair<Float, Float> =
         Pair(p.y.toFloat(), p.x.toFloat())
     }
 
-fun CoordinateTransform.project(latLng: LatLng): Pair<Float, Float> =
+fun CoordinateTransform.project(latLng: LatLong): Pair<Float, Float> =
     project(latLng.lat.toFloat(), latLng.lng.toFloat())
