@@ -47,7 +47,7 @@ class GeneralInfoFragment : Fragment() {
         val mapsApiKey = metadata.getString("com.google.android.geo.API_KEY")
 
         Glide.with(requireActivity())
-            .load("http://maps.google.com/maps/api/staticmap?center=${site.latLng.lat},${site.latLng.lng}&zoom=16&size=${imagewidth}x${imageheight}&maptype=satellite&key=$mapsApiKey")
+            .load("http://maps.google.com/maps/api/staticmap?center=${site.latLong.lat},${site.latLong.lng}&zoom=16&size=${imagewidth}x${imageheight}&maptype=satellite&key=$mapsApiKey")
             .placeholder(android.R.drawable.ic_menu_gallery.toDrawable())
             .error(android.R.drawable.ic_menu_gallery.toDrawable())
             .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -60,13 +60,13 @@ class GeneralInfoFragment : Fragment() {
 
         viewModel.getNorKyst800Data().observe(viewLifecycleOwner) {
             if (it != null) {
-                binding.temperatureTextview.text = "${it.getTemperature(site.latLng).toString()}°"
-                binding.saltTextview.text = it.getSalinity(site.latLng).toString()
+                binding.temperatureTextview.text = "${it.getTemperature(site.latLong).toString()}°"
+                binding.saltTextview.text = it.getSalinity(site.latLong).toString()
             }
         }
 
         //posisjon
-        binding.posisjonView.text = "${site.latLng.lat}, ${site.latLng.lng}"
+        binding.posisjonView.text = "${site.latLong.lat}, ${site.latLong.lng}"
 
         //anleggsnummer
         binding.anleggsnrView.text = site.id.toString()

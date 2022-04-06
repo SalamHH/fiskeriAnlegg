@@ -34,11 +34,11 @@ class MainActivity : StimActivity() {
         viewModel.loadInfectiousPressure()
         viewModel.loadSites(Options.fakeMunicipality)
 
-        //observe norKyst800
+        /**observe norKyst800
         viewModel.getInfectiousPressureTimeSeriesData().observe(this) { inf ->
-            Log.d(TAG, "observed change in infectiousPressureTimeseries")
+        Log.d(TAG, "observed change in infectiousPressureTimeseries")
         }
-
+         **/
 
     }
 

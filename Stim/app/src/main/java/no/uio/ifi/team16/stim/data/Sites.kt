@@ -58,7 +58,7 @@ data class Site(
     val id: Int,
     val name: String,
     val latLong: LatLong,
-    val placement: AreaPlacement?
+    val placement: AreaPlacement?,
     val capacity: Double,
     val placementType: String?,
     val waterType: String?

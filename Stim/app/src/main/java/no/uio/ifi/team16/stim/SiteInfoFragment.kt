@@ -37,8 +37,8 @@ class SiteInfoFragment : StimFragment() {
 
         viewModel.getNorKyst800Data().observe(viewLifecycleOwner) {
             if (it != null) {
-                binding.temperatureTextview.text = "${it.getTemperature(site.latLng).toString()}°"
-                binding.saltTextview.text = it.getSalinity(site.latLng).toString()
+                binding.temperatureTextview.text = "${it.getTemperature(site.latLong).toString()}°"
+                binding.saltTextview.text = it.getSalinity(site.latLong).toString()
             }
         }
 

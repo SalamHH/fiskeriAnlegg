@@ -32,8 +32,8 @@ class SiteListFragment : StimFragment() {
 
         //observe sites
         viewModel.getSitesData().observe(viewLifecycleOwner) { sites ->
-            Log.d(TAG, "observed change in sites")
-            Log.d(TAG, "THE SITES OBSERVED ARE \n" + sites.toString())
+            Log.d("INVOKED", "observer of sites")
+            println("THE SITES OBSERVED ARE \n" + sites.toString())
 
             if (sites != null) {
                 adapter.sites = sites

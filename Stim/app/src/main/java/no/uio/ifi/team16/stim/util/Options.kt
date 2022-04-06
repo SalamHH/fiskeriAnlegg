@@ -20,7 +20,7 @@ class Options {
 
         //MAINACTIVITY
         const val fakeMunicipality = "4615"
-        val fakeSite = Site(0, "bingbong", LatLong(61.12341234, 4.23), null)
+        val fakeSite = Site(0, "bingbong", LatLong(61.12341234, 4.23), null, 0.0, null, null)
         val fakeSites = Sites(listOf(fakeSite, fakeSite, fakeSite, fakeSite))
     }
 }
