@@ -14,12 +14,12 @@
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="144dp"
-        android:fontFamily="@font/montserrat_bold"
+        android:layout_marginTop="100dp"
         android:gravity="center"
         android:text="OM ANLEGG"
         android:textColor="@color/textColor"
-        android:textSize="30sp"
+        android:textSize="40sp"
+        android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="0dp" />
 
@@ -30,14 +30,14 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_gravity="center"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:transitionName="image_big"
         app:layout_constraintBottom_toTopOf="@+id/header"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/mdi___virus_outline" />
+        app:srcCompat="@android:drawable/ic_menu_gallery" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -87,11 +87,10 @@
                     android:text="Vanntemperatur:"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="10dp"
-                    android:fontFamily="@font/montserrat_bold"
                     android:textColor="@color/textColor" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:orientation="horizontal"
@@ -105,22 +104,21 @@
                         android:layout_height="70dp"
                         android:maxHeight="70dp"
                         android:padding="10dp"
-                        android:src="@drawable/salt"
+                        app:srcCompat="@android:drawable/ic_menu_gallery"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/textView"
+                        app:layout_constraintEnd_toStartOf="@+id/temperatureTextview"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:tint="@color/black" />
 
                     <TextView
-                        android:id="@+id/textView"
+                        android:id="@+id/temperatureTextview"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:fontFamily="@font/montserrat_bold"
                         android:text="0°"
                         android:textColor="@color/textColor"
-                        android:textSize="50sp"
+                        android:textSize="40sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/tempIcon"
                         app:layout_constraintHorizontal_bias="0.5"
@@ -148,14 +146,16 @@
                     android:layout_height="wrap_content"
                     android:text="Saltholdighet i vannet:"
                     android:layout_gravity="center_horizontal"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
                     android:layout_marginBottom="10dp"
-                    android:fontFamily="@font/montserrat_bold"
                     android:textColor="@color/textColor" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
+                    android:layout_gravity="center_horizontal"
                     android:orientation="horizontal"
                     android:layout_marginTop="10dp">
 
@@ -167,19 +167,18 @@
                         android:padding="10dp"
                         android:src="@drawable/salt"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/textView3"
+                        app:layout_constraintEnd_toStartOf="@+id/saltTextview"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/textView3"
+                        android:id="@+id/saltTextview"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:fontFamily="@font/montserrat_bold"
-                        android:text="0%"
+                        android:text="0"
                         android:textColor="@color/textColor"
-                        android:textSize="50sp"
+                        android:textSize="40sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.5"
@@ -217,7 +216,6 @@
                     android:layout_alignParentStart="true"
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="5dp"
-                    android:fontFamily="@font/montserrat_bold"
                     android:text="Posisjon: "
                     android:textColor="@color/textColor" />
 
@@ -228,7 +226,6 @@
                     android:layout_alignParentEnd="true"
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="5dp"
-                    android:fontFamily="@font/montserrat_bold"
                     android:text="@string/blank"
                     android:textColor="@color/textColor" />
 
@@ -241,7 +238,6 @@
                     android:layout_alignParentStart="true"
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="5dp"
-                    android:fontFamily="@font/montserrat_bold"
                     android:text="Anleggsnummer:"
                     android:textColor="@color/textColor" />
 
@@ -253,7 +249,6 @@
                     android:layout_alignParentEnd="true"
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="5dp"
-                    android:fontFamily="@font/montserrat_bold"
                     android:text="@string/blank"
                     android:textColor="@color/textColor" />
 
@@ -266,7 +261,6 @@
                     android:layout_alignParentStart="true"
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="5dp"
-                    android:fontFamily="@font/montserrat_bold"
                     android:text="Plassering:"
                     android:textColor="@color/textColor" />
 
@@ -278,7 +272,6 @@
                     android:layout_alignParentEnd="true"
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="5dp"
-                    android:fontFamily="@font/montserrat_bold"
                     android:text="@string/blank"
                     android:textColor="@color/textColor" />
 
@@ -291,7 +284,6 @@
                     android:layout_alignParentStart="true"
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="5dp"
-                    android:fontFamily="@font/montserrat_bold"
                     android:text="Kapasitet:"
                     android:textColor="@color/textColor" />
 
@@ -303,7 +295,6 @@
                     android:layout_alignParentEnd="true"
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="5dp"
-                    android:fontFamily="@font/montserrat_bold"
                     android:text="@string/blank"
                     android:textColor="@color/textColor" />
 
@@ -316,7 +307,6 @@
                     android:layout_alignParentStart="true"
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="5dp"
-                    android:fontFamily="@font/montserrat_bold"
                     android:text="Vanntype:"
                     android:textColor="@color/textColor" />
 
@@ -328,7 +318,6 @@
                     android:layout_alignParentEnd="true"
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="5dp"
-                    android:fontFamily="@font/montserrat_bold"
                     android:text="@string/blank"
                     android:textColor="@color/textColor" />
 
@@ -341,7 +330,6 @@
                     android:layout_alignParentStart="true"
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="5dp"
-                    android:fontFamily="@font/montserrat_bold"
                     android:text="Kommune:"
                     android:textColor="@color/textColor" />
 
@@ -353,7 +341,6 @@
                     android:layout_alignParentEnd="true"
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="5dp"
-                    android:fontFamily="@font/montserrat_bold"
                     android:text="@string/blank"
                     android:textColor="@color/textColor" />
 

@@ -31,13 +31,25 @@ class SiteInfoFragment : StimFragment() {
         binding.saltInfoCard.setOnClickListener {
             view?.findNavController()?.navigate(R.id.action_siteInfoFragment_to_saltFragment)
         }
+        //Vanntemperatur og saltholdighet
+
+        viewModel.loadNorKyst800()
+
+        viewModel.getNorKyst800Data().observe(viewLifecycleOwner) {
+            if (it != null) {
+                binding.temperatureTextview.text = "${it.getTemperature(site.latLng).toString()}°"
+                binding.saltTextview.text = it.getSalinity(site.latLng).toString()
+            }
+        }
 
         binding.infectionInfoCard.setOnClickListener {
             val extras = FragmentNavigatorExtras(binding.infectionIcon to "image_big")
-            view?.findNavController()?.navigate(R.id.action_siteInfoFragment_to_infectionFragment,
+            view?.findNavController()?.navigate(
+                R.id.action_siteInfoFragment_to_infectionFragment,
                 null,
                 null,
-                extras)
+                extras
+            )
         }
 
         return binding.root

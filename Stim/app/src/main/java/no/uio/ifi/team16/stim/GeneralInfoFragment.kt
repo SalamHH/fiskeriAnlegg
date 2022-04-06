@@ -54,10 +54,16 @@ class GeneralInfoFragment : Fragment() {
             .dontAnimate()
             .into(binding.imageViewOverview)
 
-        //TODO vanntemperatur
+        //Vanntemperatur og saltholdighet
 
+        viewModel.loadNorKyst800()
 
-        //TODO saltholdighet
+        viewModel.getNorKyst800Data().observe(viewLifecycleOwner) {
+            if (it != null) {
+                binding.temperatureTextview.text = "${it.getTemperature(site.latLng).toString()}°"
+                binding.saltTextview.text = it.getSalinity(site.latLng).toString()
+            }
+        }
 
         //posisjon
         binding.posisjonView.text = "${site.latLng.lat}, ${site.latLng.lng}"
