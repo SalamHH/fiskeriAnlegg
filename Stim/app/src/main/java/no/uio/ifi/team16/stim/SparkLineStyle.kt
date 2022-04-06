@@ -3,22 +3,29 @@ package no.uio.ifi.team16.stim
 import android.content.Context
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.LineDataSet
 import javax.inject.Inject
 
+/**
+ * Class defining how a chart should be styled in the Spark Line Style
+ */
 class SparkLineStyle @Inject constructor(private val context: Context) {
 
     /***
      * stylizes the chart
      */
-    // will be moved to its own file using Hilt Dependency I think
     fun styleChart(lineChart: LineChart) = lineChart.apply {
         axisRight.isEnabled = false
 
         axisLeft.apply {
-            isEnabled = false
+            isEnabled = true
+            setDrawGridLines(false)
+            setDrawAxisLine(false)
+            isGranularityEnabled = true
+            granularity = 1f
             axisMinimum = 0f //to avoid clipping from bezier curve
             axisMaximum = 10f //must be overwritten later!
         }
@@ -35,17 +42,23 @@ class SparkLineStyle @Inject constructor(private val context: Context) {
             textSize = 12F
         }
 
+        // following section defines how the user may interact with the chart
+        setScaleEnabled(true) // enables the user to zoom in and out
         setTouchEnabled(true)
         isDragEnabled = true
-        setScaleEnabled(false)
         setPinchZoom(true)
         isDoubleTapToZoomEnabled = true
 
-        description = null
+        description = null // description is not necessary
 
-        legend.isEnabled = false
+        legend.isEnabled = false // legend is not necessary
+
+        animateY(1500, Easing.Linear) // animates the chart line
     }
 
+    /***
+     * stylizes the chart line
+     */
     fun styleLineDataSet(lineDataSet: LineDataSet, context: Context) = lineDataSet.apply{
         color = ContextCompat.getColor(context, R.color.white)
         valueTextColor = ContextCompat.getColor(context, R.color.black)
