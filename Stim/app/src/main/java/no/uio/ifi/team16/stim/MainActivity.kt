@@ -1,7 +1,9 @@
 package no.uio.ifi.team16.stim
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.WindowManager
 import android.view.MenuItem
 import android.util.Log
 import android.view.WindowManager
