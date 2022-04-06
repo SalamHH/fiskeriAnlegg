@@ -59,6 +59,9 @@ data class Site(
     val name: String,
     val latLong: LatLong,
     val placement: AreaPlacement?
+    val capacity: Double,
+    val placementType: String?,
+    val waterType: String?
 ) {
     /**
      * @see InfectiousPressure.getConcentration(LatLng)

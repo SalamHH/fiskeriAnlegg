@@ -71,7 +71,16 @@ class SitesDataLoader {
                                     )
                                 }.getOrDefault(null)
                             )
-                        }
+                        },
+                        runCatching {
+                            this.getDouble("capacity")
+                        }.getOrDefault(0.0),
+                        runCatching {
+                            this.getString("placementType")
+                        }.getOrDefault(null),
+                        runCatching {
+                            this.getString("waterType")
+                        }.getOrDefault(null),
                     )
                 )
             }?.onFailure { failure ->

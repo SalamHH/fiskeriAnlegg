@@ -51,8 +51,8 @@
         tools:layout="@layout/fragment_infection" />
     <fragment
         android:id="@+id/saltFragment"
-        android:name="no.uio.ifi.team16.stim.SaltFragment"
-        tools:layout="@layout/fragment_salt" />
+        android:name="no.uio.ifi.team16.stim.GeneralInfoFragment"
+        tools:layout="@layout/fragment_general_info" />
     <fragment
         android:id="@+id/weatherFragment"
         android:name="no.uio.ifi.team16.stim.WeatherFragment"
