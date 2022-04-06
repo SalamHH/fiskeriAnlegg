@@ -6,15 +6,16 @@ import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.MeasureSpec
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.graphics.drawable.toDrawable
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.FutureTarget
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
 import no.uio.ifi.team16.stim.R
 import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.data.Sites
@@ -93,6 +94,30 @@ class RecycleViewAdapter(
             .error(android.R.drawable.ic_menu_gallery.toDrawable())
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .dontAnimate()
+            .listener(
+                object : RequestListener<Drawable> {
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: com.bumptech.glide.request.target.Target<Drawable>?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        Log.e(TAG, "failed to load image")
+                        return true
+                    }
+
+                    override fun onResourceReady(
+                        resource: Drawable?,
+                        model: Any?,
+                        target: com.bumptech.glide.request.target.Target<Drawable>?,
+                        dataSource: DataSource?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        Log.d(TAG, "Succesfully loaded image")
+                        return false
+                    }
+                }
+            )
             .into(viewHolder.pictureView)
 
         Log.d(TAG, "data lagt inn")
