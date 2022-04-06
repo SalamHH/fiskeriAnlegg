@@ -11,7 +11,15 @@
     <color name="primary_variant">#0C3F68</color>
     <color name="colorPrimary">#A2B0B7</color>
     <color name="colorSecondary">#EACCCC</color>
-    <color name="textColor">#FF000000</color>
+
+    <!-- text colors is used for all text in app-->
+    <color name="primaryTextColor">#FF434343</color>
+    <color name="secondaryTextColor">#E2DEDE</color>
+
     <color name="grey">#E2DEDE</color>
+
+    <!-- following colors are used within the charts -->
     <color name="transparent">#00000000</color>
+    <color name="chartlinecolor">#E97B7B</color>
+
 </resources>

@@ -60,14 +60,14 @@ class SparkLineStyle @Inject constructor(private val context: Context) {
      * stylizes the chart line
      */
     fun styleLineDataSet(lineDataSet: LineDataSet, context: Context) = lineDataSet.apply{
-        color = ContextCompat.getColor(context, R.color.white)
+        color = ContextCompat.getColor(context, R.color.chartlinecolor)
         valueTextColor = ContextCompat.getColor(context, R.color.black)
         setDrawValues(false)
         lineWidth = 3f
         isHighlightEnabled = true
         setDrawHighlightIndicators(false)
         setDrawCircles(true)
-        setCircleColor(ContextCompat.getColor(context, R.color.black))
+        setCircleColor(ContextCompat.getColor(context, R.color.chartlinecolor))
         mode = LineDataSet.Mode.CUBIC_BEZIER
 
         setDrawFilled(true)
