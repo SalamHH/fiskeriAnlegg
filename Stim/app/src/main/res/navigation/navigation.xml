@@ -6,27 +6,11 @@
     app:startDestination="@id/favoriteSitesFragment">
 
     <fragment
-        android:id="@+id/mapFragment"
-        android:name="no.uio.ifi.team16.stim.MapFragment"
-        android:label="Kart">
-        <action
-            android:id="@+id/action_mapFragment_to_sitesFromMapFragment"
-            app:destination="@id/sitesFromMapFragment" />
-    </fragment>
-    <fragment
         android:id="@+id/favoriteSitesFragment"
         android:name="no.uio.ifi.team16.stim.FavoriteSitesFragment"
         android:label="Favoritter" >
         <action
             android:id="@+id/action_favoriteSitesFragment_to_siteInfoFragment"
-            app:destination="@id/siteInfoFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/sitesFromMapFragment"
-        android:name="no.uio.ifi.team16.stim.SitesFromMapFragment"
-        android:label="">
-        <action
-            android:id="@+id/action_sitesFromMapFragment_to_siteInfoFragment"
             app:destination="@id/siteInfoFragment" />
     </fragment>
     <fragment
