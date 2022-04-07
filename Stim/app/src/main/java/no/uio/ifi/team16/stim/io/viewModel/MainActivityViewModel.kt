@@ -12,6 +12,7 @@ import no.uio.ifi.team16.stim.data.*
 import no.uio.ifi.team16.stim.data.repository.*
 import no.uio.ifi.team16.stim.util.LatLong
 import no.uio.ifi.team16.stim.util.Options
+import java.net.SocketTimeoutException
 
 class MainActivityViewModel : ViewModel() {
 

@@ -26,18 +26,22 @@ class NorKyst800DataLoader : THREDDSDataLoader() {
     private val depthRange = "0:${depthStride}:15"
     val timeRange = "0:${timeStride}:42"
 
-    private val baseUrl =
-        "https://thredds.met.no/thredds/dodsC/fou-hi/norkyst800m-1h/NorKyst-800m_ZDEPTHS_his.fc.2022040500.nc.ascii?"
-    private var defaultUrl = baseUrl +
-            "depth[${depthRange}]," +
-            "lat[${yRange}][${xRange}]," +
-            "lon[${yRange}][${xRange}]," +
-            "salinity[${timeRange}][${depthRange}][${yRange}][${xRange}]," +
-            "temperature[${timeRange}][${depthRange}][${yRange}][${xRange}]," +
-            "time[${timeRange}]," +
-            "u[${timeRange}][${depthRange}][${yRange}][${xRange}]," +
-            "v[${timeRange}][${depthRange}][${yRange}][${xRange}]," +
-            "w[${timeRange}][${depthRange}][${yRange}][${xRange}]"
+    private val catalogUrl =
+        "https://thredds.met.no/thredds/catalog/fou-hi/norkyst800m-1h/catalog.html"
+
+    //make the default url, we need the base url first, however, and that has to be loaded from the catalog
+    private var defaultUrlFactory: (String) -> String = { baseUrl ->
+        baseUrl +
+                "depth[${depthRange}]," +
+                "lat[${yRange}][${xRange}]," +
+                "lon[${yRange}][${xRange}]," +
+                "salinity[${timeRange}][${depthRange}][${yRange}][${xRange}]," +
+                "temperature[${timeRange}][${depthRange}][${yRange}][${xRange}]," +
+                "time[${timeRange}]," +
+                "u[${timeRange}][${depthRange}][${yRange}][${xRange}]," +
+                "v[${timeRange}][${depthRange}][${yRange}][${xRange}]," +
+                "w[${timeRange}][${depthRange}][${yRange}][${xRange}]"
+    }
 
     /**
      * return data between latitude from/to, and latitude from/to, with given resolution.
@@ -61,10 +65,17 @@ class NorKyst800DataLoader : THREDDSDataLoader() {
         depthRange: IntProgression,
         timeRange: IntProgression
     ): NorKyst800? {
+        //get the forecast url
+        val baseUrl = loadForecastUrl() ?: return null
+        //convert parameters to ranges
+        val (xRange, yRange) = geographicCoordinateToRange(
+            latitudeFrom, latitudeTo, Options.defaultNorKyst800YStride,
+            longitudeFrom, longitudeTo, Options.defaultNorKyst800XStride,
+            Options.defaultProjection() //TODO: cannot be read from file in .ascii solution, but MIGHT be wrong
+        )
         val depthRange = "${depthFrom}:${depthStride}:${depthTo}"
         val timeRange = "${timeFrom}:${timeStride}:${timeTo}"
-
-        //
+        //make the parametrized url from the forecast url and parameters
         val parametrizedUrl = baseUrl + "depth[${depthRange}]," +
                 "lat[${yRange}][${xRange}]," +
                 "lon[${yRange}][${xRange}]," +
@@ -112,6 +123,8 @@ class NorKyst800DataLoader : THREDDSDataLoader() {
         depthRange: String,
         timeRange: String
     ): NorKyst800? {
+        //get the forecast url
+        val baseUrl = loadForecastUrl()
         //convert parameters to ranges
         val (xRange, yRange) = geographicCoordinateToRange(
             latitudeFrom, latitudeTo, Options.defaultNorKyst800YStride,
@@ -144,6 +157,10 @@ class NorKyst800DataLoader : THREDDSDataLoader() {
 
     //load with default parameters(as specified in Options)
     suspend fun loadDefault(): NorKyst800? {
+        //get the forecast url
+        val baseUrl = loadForecastUrl() ?: return null
+        //make the default url from the ase url
+        val defaultUrl = defaultUrlFactory(baseUrl)
         Log.d(TAG, defaultUrl)
         Log.d(TAG, "requesting norkyst800")
         try {
@@ -159,6 +176,31 @@ class NorKyst800DataLoader : THREDDSDataLoader() {
             //val responseStr = norkString
             Log.e(TAG, " Connection timed out")
             return null
+        }
+    }
+
+    /**
+     * load the thredds catalog for the norkyst800 dataset, then return the URL
+     * for the forecast data(which changes periodically)
+     */
+    private val forecastUrlRegex =
+        Regex("""'catalog\.html\?dataset=norkyst800m_1h_files/(.*?\.fc\..*?)'""")
+    private suspend fun loadForecastUrl(): String? = try {
+        Fuel.get(catalogUrl).awaitString()
+    } catch (e: Exception) {
+        Log.e(TAG, "Unable to retrieve NorKyst800 catalog due to", e)
+        null
+    }?.let { responseStr -> //regex out the url with .fc. in it
+        forecastUrlRegex.find(responseStr)?.let { match ->
+            "https://thredds.met.no/thredds/dodsC/fou-hi/norkyst800m-1h/" +
+                    match.groupValues!![1] + //if there is a match, the group (entry[1]) is guaranteed to exist
+                    ".ascii?"
+        } ?: run { //"catch" unsucssessfull parse
+            Log.e(
+                TAG,
+                "Failed to parse out the forecast URL from\n ${responseStr}\n with regex $forecastUrlRegex,\n returning null"
+            )
+            null
         }
     }
 }
