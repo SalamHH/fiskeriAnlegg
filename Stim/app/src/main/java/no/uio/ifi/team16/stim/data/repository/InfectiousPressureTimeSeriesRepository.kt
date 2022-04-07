@@ -1,5 +1,6 @@
 package no.uio.ifi.team16.stim.data.repository
 
+import android.util.Log
 import no.uio.ifi.team16.stim.data.InfectiousPressureTimeSeries
 import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.data.dataLoader.InfectiousPressureTimeSeriesDataLoader

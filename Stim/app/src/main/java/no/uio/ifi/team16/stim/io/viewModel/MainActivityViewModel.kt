@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineExceptionHandler
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineDataSet
 import kotlinx.coroutines.Dispatchers
@@ -112,7 +113,7 @@ class MainActivityViewModel : ViewModel() {
     fun loadNorKyst800() {
         viewModelScope.launch(Dispatchers.IO) {
             val loaded =
-                norKyst800Repository.getDefault() //either loaded, retrieved from cache or faked
+                norKyst800Repository.getDefaultData() //either loaded, retrieved from cache or faked
             //invokes the observer
             norKyst800Data.postValue(loaded)
         }
