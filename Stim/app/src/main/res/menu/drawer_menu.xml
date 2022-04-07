@@ -10,7 +10,8 @@
             android:id="@+id/favoriteSitesFragment"
             android:icon="@drawable/favorite"
             android:title="@string/favoritter" />
-
+    </group>
+    <group android:id="@+id/ekstra" >
         <item
             android:id="@+id/settings"
             android:icon="@drawable/settings"
@@ -21,4 +22,5 @@
             android:icon="@drawable/info"
             android:title="@string/app_info" />
     </group>
+
 </menu>

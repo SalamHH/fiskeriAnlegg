@@ -28,5 +28,6 @@
     <string name="favoritter">Favoritter</string>
     <string name="instillinger">Instillinger</string>
     <string name="app_info">App Info</string>
+    <string name="stim">STIM</string>
     <string name="blank">-----</string>
 </resources>

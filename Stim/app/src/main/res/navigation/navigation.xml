@@ -6,6 +6,15 @@
     app:startDestination="@id/favoriteSitesFragment">
 
     <fragment
+        android:id="@+id/mapFragment"
+        android:name="no.uio.ifi.team16.stim.MapFragment"
+        android:label="Kart">
+        <action
+            android:id="@+id/action_mapFragment_to_siteInfoFragment"
+            app:destination="@id/siteInfoFragment" />
+    </fragment>
+
+    <fragment
         android:id="@+id/favoriteSitesFragment"
         android:name="no.uio.ifi.team16.stim.FavoriteSitesFragment"
         android:label="Favoritter" >
@@ -13,6 +22,7 @@
             android:id="@+id/action_favoriteSitesFragment_to_siteInfoFragment"
             app:destination="@id/siteInfoFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/siteInfoFragment"
         android:name="no.uio.ifi.team16.stim.SiteInfoFragment"
@@ -31,26 +41,21 @@
             app:destination="@id/infectionFragment"
             app:enterAnim="@android:anim/slide_in_left" />
     </fragment>
-    <fragment
-        android:id="@+id/infectionFragment"
-        android:name="no.uio.ifi.team16.stim.InfectionFragment"
-        tools:layout="@layout/fragment_infection" />
-    <fragment
-        android:id="@+id/saltFragment"
-        android:name="no.uio.ifi.team16.stim.GeneralInfoFragment"
-        tools:layout="@layout/fragment_general_info" />
+
     <fragment
         android:id="@+id/weatherFragment"
         android:name="no.uio.ifi.team16.stim.WeatherFragment"
         tools:layout="@layout/fragment_weather" />
     <fragment
-        android:id="@+id/mapFragment"
-        android:name="no.uio.ifi.team16.stim.MapFragment"
-        android:label="MapFragment">
-        <action
-            android:id="@+id/action_mapFragment_to_siteInfoFragment"
-            app:destination="@id/siteInfoFragment" />
-    </fragment>
+        android:id="@+id/saltFragment"
+        android:name="no.uio.ifi.team16.stim.GeneralInfoFragment"
+        tools:layout="@layout/fragment_general_info" />
+    <fragment
+        android:id="@+id/infectionFragment"
+        android:name="no.uio.ifi.team16.stim.InfectionFragment"
+        tools:layout="@layout/fragment_infection" />
+
+
 
 
 </navigation>
