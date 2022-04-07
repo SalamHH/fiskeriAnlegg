@@ -15,7 +15,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:fontFamily="@font/montserrat_bold"
+        android:background="@drawable/oval_background"
         android:gravity="center"
         android:padding="5dp"
         android:text="@string/site_name"
@@ -38,6 +41,7 @@
     <!-- Information cards -->
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
