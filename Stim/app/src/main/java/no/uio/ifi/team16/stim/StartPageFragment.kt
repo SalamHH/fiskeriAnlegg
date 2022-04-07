@@ -18,6 +18,7 @@ class StartPageFragment : StimFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentStartPageBinding.inflate(inflater, container, false)
 
+        /*
         binding.mapButton.setOnClickListener {
             view?.findNavController()?.navigate(R.id.action_startPageFragment_to_mapFragment)
         }
@@ -25,6 +26,8 @@ class StartPageFragment : StimFragment() {
         binding.recyclerViewBtn.setOnClickListener {
             view?.findNavController()?.navigate(R.id.action_startPageFragment_to_favoriteSitesFragment)
         }
+
+         */
 
         return binding.root
 

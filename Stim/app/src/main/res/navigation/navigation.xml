@@ -3,26 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/startPageFragment">
-
-    <fragment
-        android:id="@+id/startPageFragment"
-        android:name="no.uio.ifi.team16.stim.StartPageFragment"
-        android:label="STIM"
-        tools:layout="@layout/fragment_start_page">
-        <action
-            android:id="@+id/action_startPageFragment_to_mapFragment"
-            app:destination="@id/mapFragment" />
-        <action
-            android:id="@+id/action_startPageFragment_to_favoriteSitesFragment"
-            app:destination="@id/favoriteSitesFragment" />
-    </fragment>
-
+    app:startDestination="@id/favoriteSitesFragment">
 
     <fragment
         android:id="@+id/mapFragment"
         android:name="no.uio.ifi.team16.stim.MapFragment"
-        android:label="MapFragment">
+        android:label="Kart">
         <action
             android:id="@+id/action_mapFragment_to_sitesFromMapFragment"
             app:destination="@id/sitesFromMapFragment" />
@@ -30,7 +16,7 @@
     <fragment
         android:id="@+id/favoriteSitesFragment"
         android:name="no.uio.ifi.team16.stim.FavoriteSitesFragment"
-        android:label="FavoriteSitesFragment" >
+        android:label="Favoritter" >
         <action
             android:id="@+id/action_favoriteSitesFragment_to_siteInfoFragment"
             app:destination="@id/siteInfoFragment" />
@@ -38,7 +24,7 @@
     <fragment
         android:id="@+id/sitesFromMapFragment"
         android:name="no.uio.ifi.team16.stim.SitesFromMapFragment"
-        android:label="SitesFromMapFragment">
+        android:label="">
         <action
             android:id="@+id/action_sitesFromMapFragment_to_siteInfoFragment"
             app:destination="@id/siteInfoFragment" />

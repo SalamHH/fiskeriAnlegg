@@ -75,9 +75,8 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/weatherIcon"
                     android:layout_marginStart="10dp"
-                    android:layout_marginBottom="20dp"
-                    android:text="@string/weather"
                     android:textAlignment="center"
+                    android:text="@string/vaer"
                     android:textSize="15sp"
                     android:textStyle="bold" />
             </RelativeLayout>
@@ -117,8 +116,8 @@
                     android:layout_below="@id/generalIcon"
                     android:layout_marginStart="10dp"
                     android:layout_marginBottom="20dp"
-                    android:text="Generell info"
                     android:textAlignment="center"
+                    android:text="@string/vann"
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
@@ -268,8 +267,8 @@
                     android:layout_below="@id/infectionIcon"
                     android:layout_marginStart="10dp"
                     android:layout_marginBottom="20dp"
-                    android:text="@string/infection"
                     android:textAlignment="center"
+                    android:text="@string/smitte"
                     android:textSize="15sp"
                     android:textStyle="bold" />
 

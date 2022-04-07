@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:id="@+id/primary">
+        <item
+            android:id="@+id/mapFragment"
+            android:icon="@drawable/map"
+            android:title="@string/kart" />
+
+        <item
+            android:id="@+id/favoriteSitesFragment"
+            android:icon="@drawable/favorite"
+            android:title="@string/favoritter" />
+
+        <item
+            android:id="@+id/settings"
+            android:icon="@drawable/settings"
+            android:title="@string/instillinger" />
+
+        <item
+            android:id="@+id/about"
+            android:icon="@drawable/info"
+            android:title="@string/app_info" />
+    </group>
+</menu>

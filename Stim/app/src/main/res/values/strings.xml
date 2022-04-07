@@ -19,5 +19,14 @@
     <string name="vanndata">VANNDATA</string>
     <string name="smittedata">SMITTEDATA</string>
     <string name="v_rdata">VÆRDATA</string>
+    <string name="vaer">Vær</string>
+    <string name="vann">Vann</string>
+    <string name="smitte">Smitte</string>
+
+    //drawer_menu
+    <string name="kart">Kart</string>
+    <string name="favoritter">Favoritter</string>
+    <string name="instillinger">Instillinger</string>
+    <string name="app_info">App Info</string>
     <string name="blank">-----</string>
 </resources>
