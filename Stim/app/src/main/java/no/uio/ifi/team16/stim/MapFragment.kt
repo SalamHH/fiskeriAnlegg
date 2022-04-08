@@ -4,16 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.SearchView
-import android.widget.Spinner
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.LifecycleOwner
 import android.widget.LinearLayout
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -23,14 +16,10 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
-import com.toptoche.searchablespinnerlibrary.SearchableSpinner
-import no.uio.ifi.team16.stim.StimFragment.Companion.currentSite
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.data.Sites
 import no.uio.ifi.team16.stim.databinding.FragmentMapBinding
-import no.uio.ifi.team16.stim.io.adapter.RecycleViewAdapter
 import no.uio.ifi.team16.stim.io.adapter.RecycleViewAdapter
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 import no.uio.ifi.team16.stim.util.LatLong
@@ -145,10 +134,15 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
         viewModel.getSitesData().observe(viewLifecycleOwner){
             onSiteUpdate((it))
             if (it != null) {
-                val bounds = LatLngBounds(LatLng(it.sites[0].latLong.lat, it.sites[0].latLong.lng), LatLng(it.sites[0].latLong.lat+0.5, it.sites[0].latLong.lng+0.5))
+                val bounds = LatLngBounds(
+                    LatLng(it.sites[0].latLong.lat, it.sites[0].latLong.lng),
+                    LatLng(it.sites[0].latLong.lat + 0.5, it.sites[0].latLong.lng + 0.5)
+                )
                 val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 10)
                 map.moveCamera(cameraUpdate)
 
+                val adapter = RecycleViewAdapter(it, this::adapterOnClick, requireActivity())
+                binding.recyclerView.adapter = adapter
             }
         }
     }
@@ -161,13 +155,12 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
             if (it != null) {
                 currentMunicipalityNr= null//it.sites[0].placement?.municipalityCode.toString()
                 currentSite=(it.sites[0].name)
-                Log.d("nameq: ", it.sites[0].name)
-
 
                 val bounds = LatLngBounds(LatLng(it.sites[0].latLong.lat, it.sites[0].latLong.lng), LatLng(it.sites[0].latLong.lat+0.5, it.sites[0].latLong.lng+0.5))
                 val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 10)
                 map.moveCamera(cameraUpdate)
             }
+
         }
     }
 
@@ -199,7 +192,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
         if (nr != null) {
             currentMunicipalityNr = nr
             viewModel.loadSites(nr)
-            viewModel.loadSites(nr)
         }
         //todo - update headertext in bottomsheet to kommunenavn/nr
     }
@@ -210,11 +202,12 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
             binding.numSites.text = "Antall anlegg: ${sites.sites.size}"
 
             for (site in sites.sites) {
-                val markerOptions = MarkerOptions()
-                site.placement?.let { Log.d("pls", it.municipalityName) }
-                markerOptions.title(site.name)
-                markerOptions.position(site.latLong.toGoogle())
-                map.addMarker(markerOptions)
+                if (mapReady) {
+                    val markerOptions = MarkerOptions()
+                    markerOptions.title(site.name)
+                    markerOptions.position(site.latLong.toGoogle())
+                    map.addMarker(markerOptions)
+                }
             }
 
             //update sites in bottomsheet
