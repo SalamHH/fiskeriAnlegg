@@ -1,14 +1,8 @@
 package no.uio.ifi.team16.stim
 
-import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
-import android.view.WindowManager
 import android.view.MenuItem
-import android.util.Log
-import android.view.WindowManager
 import androidx.activity.viewModels
-import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.*
 import no.uio.ifi.team16.stim.databinding.ActivityMainBinding

@@ -17,7 +17,7 @@
         android:layout_marginTop="100dp"
         android:gravity="center"
         android:text="OM ANLEGG"
-        android:textColor="@color/textColor"
+        android:textColor="@color/primaryTextColor"
         android:textSize="40sp"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
@@ -87,7 +87,7 @@
                     android:text="Vanntemperatur:"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="10dp"
-                    android:textColor="@color/textColor" />
+                    android:textColor="@color/primaryTextColor" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
@@ -117,7 +117,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:text="0°"
-                        android:textColor="@color/textColor"
+                        android:textColor="@color/primaryTextColor"
                         android:textSize="40sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/tempIcon"
@@ -149,7 +149,7 @@
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"
                     android:layout_marginBottom="10dp"
-                    android:textColor="@color/textColor" />
+                    android:textColor="@color/primaryTextColor" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
@@ -177,7 +177,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:text="0"
-                        android:textColor="@color/textColor"
+                        android:textColor="@color/primaryTextColor"
                         android:textSize="40sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -217,7 +217,7 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="5dp"
                     android:text="Posisjon: "
-                    android:textColor="@color/textColor" />
+                    android:textColor="@color/primaryTextColor" />
 
                 <TextView
                     android:id="@+id/posisjonView"
@@ -227,7 +227,7 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="5dp"
                     android:text="@string/blank"
-                    android:textColor="@color/textColor" />
+                    android:textColor="@color/primaryTextColor" />
 
                 <!-- ANLEGGSNUMMER -->
 
@@ -239,7 +239,7 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="5dp"
                     android:text="Anleggsnummer:"
-                    android:textColor="@color/textColor" />
+                    android:textColor="@color/primaryTextColor" />
 
                 <TextView
                     android:id="@+id/anleggsnrView"
@@ -250,7 +250,7 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="5dp"
                     android:text="@string/blank"
-                    android:textColor="@color/textColor" />
+                    android:textColor="@color/primaryTextColor" />
 
                 <!-- PLASSERING -->
 
@@ -262,7 +262,7 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="5dp"
                     android:text="Plassering:"
-                    android:textColor="@color/textColor" />
+                    android:textColor="@color/primaryTextColor" />
 
                 <TextView
                     android:id="@+id/plasseringView"
@@ -273,7 +273,7 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="5dp"
                     android:text="@string/blank"
-                    android:textColor="@color/textColor" />
+                    android:textColor="@color/primaryTextColor" />
 
                 <!-- KAPASITET -->
 
@@ -285,7 +285,7 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="5dp"
                     android:text="Kapasitet:"
-                    android:textColor="@color/textColor" />
+                    android:textColor="@color/primaryTextColor" />
 
                 <TextView
                     android:id="@+id/kapasitetView"
@@ -296,7 +296,7 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="5dp"
                     android:text="@string/blank"
-                    android:textColor="@color/textColor" />
+                    android:textColor="@color/primaryTextColor" />
 
                 <!-- VANNTYPE -->
 
@@ -308,7 +308,7 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="5dp"
                     android:text="Vanntype:"
-                    android:textColor="@color/textColor" />
+                    android:textColor="@color/primaryTextColor" />
 
                 <TextView
                     android:id="@+id/vannTypeView"
@@ -319,7 +319,7 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="5dp"
                     android:text="@string/blank"
-                    android:textColor="@color/textColor" />
+                    android:textColor="@color/primaryTextColor" />
 
                 <!-- KOMMUNE -->
 
@@ -331,7 +331,7 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="5dp"
                     android:text="Kommune:"
-                    android:textColor="@color/textColor" />
+                    android:textColor="@color/primaryTextColor" />
 
                 <TextView
                     android:id="@+id/prodOmraadeView"
@@ -342,7 +342,7 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="5dp"
                     android:text="@string/blank"
-                    android:textColor="@color/textColor" />
+                    android:textColor="@color/primaryTextColor" />
 
             </RelativeLayout>
 

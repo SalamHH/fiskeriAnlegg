@@ -1,26 +1,15 @@
 package no.uio.ifi.team16.stim.io.viewModel
 
 import android.util.Log
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineDataSet
-import com.google.android.gms.common.api.internal.ActivityLifecycleObserver
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineDataSet
-import com.google.android.gms.common.api.internal.ActivityLifecycleObserver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import no.uio.ifi.team16.stim.data.*
-import no.uio.ifi.team16.stim.data.repository.InfectiousPressureRepository
-import no.uio.ifi.team16.stim.data.repository.InfectiousPressureTimeSeriesRepository
-import no.uio.ifi.team16.stim.data.repository.NorKyst800Repository
-import no.uio.ifi.team16.stim.data.repository.SitesRepository
 import no.uio.ifi.team16.stim.data.repository.*
 import no.uio.ifi.team16.stim.util.LatLong
 import no.uio.ifi.team16.stim.util.Options

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.ViewCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -28,7 +27,7 @@ class SiteInfoFragment : StimFragment() {
             view?.findNavController()?.navigate(R.id.action_siteInfoFragment_to_weatherFragment)
         }
 
-        binding.GeneralInfoCard.setOnClickListener {
+        binding.generalInfoCard.setOnClickListener {
             view?.findNavController()?.navigate(R.id.action_siteInfoFragment_to_generalInfoFragment)
         }
         

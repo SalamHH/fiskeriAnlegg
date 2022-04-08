@@ -93,7 +93,7 @@
 
         <!-- Salt info card-->
         <androidx.cardview.widget.CardView
-            android:id="@+id/saltInfoCard"
+            android:id="@+id/generalInfoCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardBackgroundColor="@color/white"
