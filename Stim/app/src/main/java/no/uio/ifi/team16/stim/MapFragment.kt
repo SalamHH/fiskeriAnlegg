@@ -133,7 +133,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
         viewModel.loadSites(munNr)
         viewModel.getSitesData().observe(viewLifecycleOwner){
             onSiteUpdate((it))
-            if (it != null) {
+            if (it != null && it.sites.isNotEmpty()) {
                 val bounds = LatLngBounds(
                     LatLng(it.sites[0].latLong.lat, it.sites[0].latLong.lng),
                     LatLng(it.sites[0].latLong.lat + 0.5, it.sites[0].latLong.lng + 0.5)
