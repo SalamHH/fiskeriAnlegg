@@ -47,7 +47,7 @@ class InfectionFragment : StimFragment() {
         //val contamData = mutableListOf<Entry>()
         //val _lineDataSet = MutableLiveData(LineDataSet(contamData, CHART_LABEL))
 
-        viewModel.getInfectiousPressureTimeSeriesData(site).observe(viewLifecycleOwner) {
+        viewModel.getInfectiousPressureTimeSeriesData().observe(viewLifecycleOwner) {
             it?.getAllConcentrationsUnzipped()?.also { (weekList, infectionData) ->
                 val linedataset = LineDataSet(
                     weekList.zip(infectionData)                 // list med par av x og y

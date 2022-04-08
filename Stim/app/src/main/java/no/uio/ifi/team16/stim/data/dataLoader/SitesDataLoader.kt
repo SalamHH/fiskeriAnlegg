@@ -87,7 +87,7 @@ class SitesDataLoader {
     /**
      * @see loadWithParameters
      */
-    suspend fun loadMunicipality(municipalityCode: String): Municipality? =
+    suspend fun loadDataByMunicipalityCode(municipalityCode: String): Sites? =
         loadWithParameters(
             listOf(
                 "range" to Options.sitesRange,

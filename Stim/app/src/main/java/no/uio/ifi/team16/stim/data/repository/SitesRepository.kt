@@ -6,10 +6,11 @@ import no.uio.ifi.team16.stim.data.dataLoader.SitesDataLoader
 import no.uio.ifi.team16.stim.util.Options
 
 /**
- * Repository for sites.
+ * Repository for municipality.
+ *
+ * The cache maps a municipalitynumber to a collection of municipality
  */
 class SitesRepository {
-
     private val TAG = "SitesRepository"
     private val dataSource = SitesDataLoader()
 
