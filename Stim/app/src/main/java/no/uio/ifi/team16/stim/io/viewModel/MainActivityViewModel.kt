@@ -27,8 +27,8 @@ class MainActivityViewModel : ViewModel() {
 
     //MUTABLE LIVE DATA
     private val infectiousPressureData = MutableLiveData<InfectiousPressure?>()
-    private val infectiousPressureTimeSeriesData: MutableLiveData<InfectiousPressureTimeSeries?> =
-        MutableLiveData()
+    private val infectiousPressureTimeSeriesData: MutableMap<Site, MutableLiveData<InfectiousPressureTimeSeries?>> =
+        mutableMapOf()
     private val municipalityData: MutableLiveData<Municipality?> = MutableLiveData()
     private val favouriteSitesData: MutableLiveData<List<Site>?> = MutableLiveData()
     private val norKyst800Data = MutableLiveData<NorKyst800?>()
@@ -59,8 +59,10 @@ class MainActivityViewModel : ViewModel() {
         throw NotImplementedError()
     }
 
-    fun getInfectiousPressureTimeSeriesData(): MutableLiveData<InfectiousPressureTimeSeries?> {
-        return infectiousPressureTimeSeriesData
+    fun getInfectiousPressureTimeSeriesData(site: Site): MutableLiveData<InfectiousPressureTimeSeries?> {
+        return infectiousPressureTimeSeriesData.getOrPut(site) {
+            MutableLiveData()
+        }
     }
 
     fun getLineDataSet(): LiveData<LineDataSet> {
@@ -95,7 +97,9 @@ class MainActivityViewModel : ViewModel() {
                     Options.infectiousPressureTimeSeriesSpan
                 ) //either loaded, retrieved from cache or faked
             //invokes the observer
-            infectiousPressureTimeSeriesData.postValue(loaded)
+            infectiousPressureTimeSeriesData.getOrPut(site) {
+                MutableLiveData()
+            }.postValue(loaded)
         }
     }
 

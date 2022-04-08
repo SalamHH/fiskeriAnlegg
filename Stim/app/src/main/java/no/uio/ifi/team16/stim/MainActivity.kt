@@ -36,7 +36,7 @@ class MainActivity : StimActivity() {
 
         //initial load of data
         viewModel.loadNorKyst800()
-        viewModel.loadInfectiousPressure()
+        viewModel.loadSomeInfectiousPressure()
         viewModel.loadFavouriteSites()
         viewModel.loadSitesAtMunicipality(Options.fakeMunicipality)
 
