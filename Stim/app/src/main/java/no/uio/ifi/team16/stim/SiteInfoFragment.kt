@@ -28,8 +28,8 @@ class SiteInfoFragment : StimFragment() {
             view?.findNavController()?.navigate(R.id.action_siteInfoFragment_to_weatherFragment)
         }
 
-        binding.waterInfoCard.setOnClickListener {
-            view?.findNavController()?.navigate(R.id.action_siteInfoFragment_to_waterFragment)
+        binding.GeneralInfoCard.setOnClickListener {
+            view?.findNavController()?.navigate(R.id.action_siteInfoFragment_to_generalInfoFragment)
         }
         //Vanntemperatur og saltholdighet
 

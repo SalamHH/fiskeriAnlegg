@@ -33,8 +33,8 @@
             app:destination="@id/weatherFragment"
             app:enterAnim="@android:anim/slide_in_left" />
         <action
-            android:id="@+id/action_siteInfoFragment_to_saltFragment"
-            app:destination="@id/saltFragment"
+            android:id="@+id/action_siteInfoFragment_to_generalInfoFragment"
+            app:destination="@id/generalInfoFragment"
             app:enterAnim="@android:anim/slide_in_left" />
         <action
             android:id="@+id/action_siteInfoFragment_to_infectionFragment"
@@ -47,7 +47,7 @@
         android:name="no.uio.ifi.team16.stim.WeatherFragment"
         tools:layout="@layout/fragment_weather" />
     <fragment
-        android:id="@+id/saltFragment"
+        android:id="@+id/generalInfoFragment"
         android:name="no.uio.ifi.team16.stim.GeneralInfoFragment"
         tools:layout="@layout/fragment_general_info" />
     <fragment
