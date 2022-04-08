@@ -128,10 +128,10 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
     }
 
 
-    fun searchMunNr(munNr: String){
-        currentMunicipalityNr=munNr
+    fun searchMunNr(munNr: String) {
+        currentMunicipalityNr = munNr
         viewModel.loadSites(munNr)
-        viewModel.getSitesData().observe(viewLifecycleOwner){
+        viewModel.getSitesData().observe(viewLifecycleOwner) {
             onSiteUpdate((it))
             if (it != null && it.sites.isNotEmpty()) {
                 val bounds = LatLngBounds(
