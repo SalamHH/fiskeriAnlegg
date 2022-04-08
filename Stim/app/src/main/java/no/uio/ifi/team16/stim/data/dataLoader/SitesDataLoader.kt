@@ -95,6 +95,14 @@ class SitesDataLoader {
             )
         )
 
+    suspend fun loadDataByName(name: String): Sites? =
+        loadWithParameters(
+            listOf(
+                "range" to Options.sitesRange,
+                "name" to name
+            )
+        )
+
     /**
      * @see loadWithParameters
      */

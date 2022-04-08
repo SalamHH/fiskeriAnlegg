@@ -26,6 +26,7 @@ class MainActivityViewModel : ViewModel() {
 
     private val sitesRepository = SitesRepository()
     private val sitesData = MutableLiveData<Sites?>()
+    private val sitesDataName = MutableLiveData<Sites?>()//nyyy
 
     private val norKyst800Repository = NorKyst800Repository()
     private val norKyst800Data = MutableLiveData<NorKyst800?>()
@@ -51,6 +52,12 @@ class MainActivityViewModel : ViewModel() {
     fun getSitesData(): MutableLiveData<Sites?> {
         return sitesData
     }
+
+    fun getSitesDataName(): MutableLiveData<Sites?> {
+        return sitesDataName
+    }
+
+
 
     fun getWeatherData() {
         throw NotImplementedError()
@@ -126,6 +133,20 @@ class MainActivityViewModel : ViewModel() {
             sitesData.postValue(loaded)
         }
     }
+
+    fun loadSitesByName(name: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            Log.d(TAG, "loading sites to viewmodel")
+            //either loaded, retrieved from cache or faked
+            val loaded = sitesRepository.getDataByName(name)
+            Log.d(TAG, "loading sites to viewmodel - DONE")
+            //invokes the observer
+            sitesDataName.postValue(loaded)
+        }
+    }
+
+
+
 
     fun loadWeather() {
         throw NotImplementedError()

@@ -4,6 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.SearchView
+import android.widget.Spinner
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.LifecycleOwner
 import android.widget.LinearLayout
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
@@ -17,6 +23,8 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
+import com.toptoche.searchablespinnerlibrary.SearchableSpinner
+import no.uio.ifi.team16.stim.StimFragment.Companion.currentSite
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import no.uio.ifi.team16.stim.data.Site
@@ -55,10 +63,12 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
 
         mapFragment.getMapAsync(this)
 
+        // Observe municipality number
+        viewModel.getMunicipalityNr().observe(viewLifecycleOwner, this::onMunicipalityUpdate)
 
-        binding.syncBtn.setOnClickListener {
-            onRefresh()
-        }
+        // Observe sites and place them on the map
+        viewModel.getSitesData().observe(viewLifecycleOwner, this::onSiteUpdate)
+
 
         //Bottom Sheet behavior
         bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet)
@@ -71,10 +81,48 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
         binding.recyclerView.adapter = adapter
 
 
+        /* val spinner = binding.spinner
+
+         //populere spinneren fra array
+         ArrayAdapter.createFromResource(
+             requireActivity()!!,
+             R.array.searchChoices,
+             android.R.layout.simple_spinner_item
+         ).also { adapter ->
+             // Specify the layout to use when the list of choices appears
+             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+             // Apply the adapter to the spinner
+             spinner.adapter = adapter
+         }
+
+
+         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                 when(spinner.selectedItem){
+                     "municipality code" ->{
+                         Log.d("heei","test2")
+                     }
+                     "site name" ->{
+                         Log.d("heei","test")
+
+                     }
+
+                 }
+             }
+
+             override fun onNothingSelected(parent: AdapterView<*>?) {
+             }
+         }*/
+
+        binding.syncBtn.setOnClickListener {
+            onRefresh()
+        }
+
         //nytt
         binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 if (p0 != null) {
+                   // searchName(p0) fjern comment for å søke etter navn til site
                     searchMunNr(p0)
                 }
 
@@ -101,6 +149,24 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
                 val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 10)
                 map.moveCamera(cameraUpdate)
 
+            }
+        }
+    }
+
+    fun searchName(name: String){
+
+        viewModel.loadSitesByName(name)
+        viewModel.getSitesDataName().observe(viewLifecycleOwner){
+            onSiteUpdate((it))
+            if (it != null) {
+                currentMunicipalityNr= null//it.sites[0].placement?.municipalityCode.toString()
+                currentSite=(it.sites[0].name)
+                Log.d("nameq: ", it.sites[0].name)
+
+
+                val bounds = LatLngBounds(LatLng(it.sites[0].latLong.lat, it.sites[0].latLong.lng), LatLng(it.sites[0].latLong.lat+0.5, it.sites[0].latLong.lng+0.5))
+                val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 10)
+                map.moveCamera(cameraUpdate)
             }
         }
     }
@@ -145,7 +211,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
 
             for (site in sites.sites) {
                 val markerOptions = MarkerOptions()
-
+                site.placement?.let { Log.d("pls", it.municipalityName) }
                 markerOptions.title(site.name)
                 markerOptions.position(site.latLong.toGoogle())
                 map.addMarker(markerOptions)

@@ -2,6 +2,7 @@ package no.uio.ifi.team16.stim.data.repository
 
 import no.uio.ifi.team16.stim.data.Sites
 import no.uio.ifi.team16.stim.data.dataLoader.SitesDataLoader
+import android.util.Log
 
 /**
  * Repository for sites.
@@ -30,6 +31,18 @@ class SitesRepository {
         cache[municipalityCode] = sites
         return sites
     }
+
+    suspend fun getDataByName(name: String): Sites? {
+        var sites = cache[name]
+        if (sites != null) {
+            return sites
+        }
+        sites = dataSource.loadDataByName(name)
+        cache[name] = sites
+        return sites
+    }
+
+
 
 
     /**
