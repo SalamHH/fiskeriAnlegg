@@ -89,7 +89,7 @@ class RecycleViewAdapter(
         val imageheight = 200
 
         Glide.with(context)
-            .load("http://maps.google.com/maps/api/staticmap?center=${site.latLong.lat},${site.latLong.lng}&zoom=16&size=${imagewidth}x${imageheight}&maptype=satellite&key=$mapsApiKey")
+            .load("https://maps.google.com/maps/api/staticmap?center=${site.latLong.lat},${site.latLong.lng}&zoom=16&size=${imagewidth}x${imageheight}&maptype=satellite&key=$mapsApiKey")
             .placeholder(android.R.drawable.ic_menu_gallery.toDrawable())
             .error(android.R.drawable.ic_menu_gallery.toDrawable())
             .diskCacheStrategy(DiskCacheStrategy.ALL)

@@ -2,11 +2,11 @@ package no.uio.ifi.team16.stim
 
 import android.content.pm.PackageManager
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.graphics.drawable.toDrawable
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -47,7 +47,7 @@ class GeneralInfoFragment : Fragment() {
         val mapsApiKey = metadata.getString("com.google.android.geo.API_KEY")
 
         Glide.with(requireActivity())
-            .load("http://maps.google.com/maps/api/staticmap?center=${site.latLong.lat},${site.latLong.lng}&zoom=16&size=${imagewidth}x${imageheight}&maptype=satellite&key=$mapsApiKey")
+            .load("https://maps.google.com/maps/api/staticmap?center=${site.latLong.lat},${site.latLong.lng}&zoom=16&size=${imagewidth}x${imageheight}&maptype=satellite&key=$mapsApiKey")
             .placeholder(android.R.drawable.ic_menu_gallery.toDrawable())
             .error(android.R.drawable.ic_menu_gallery.toDrawable())
             .diskCacheStrategy(DiskCacheStrategy.ALL)
