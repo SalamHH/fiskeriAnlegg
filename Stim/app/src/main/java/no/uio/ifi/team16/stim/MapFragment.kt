@@ -49,6 +49,12 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
         savedInstanceState: Bundle?
     ): View {
 
+        if (!checkLocationPermission()) {
+            requestPermission {
+                hasLocationPermission = it
+            }
+        }
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
         binding = FragmentMapBinding.inflate(layoutInflater)
