@@ -18,11 +18,10 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import no.uio.ifi.team16.stim.R
 import no.uio.ifi.team16.stim.data.Site
-import no.uio.ifi.team16.stim.data.Sites
 
 
 class RecycleViewAdapter(
-    var sites: Sites,
+    var sites: List<Site>,
     private val onClick: (Site) -> Unit,
     val context: Context
 ) :
@@ -79,7 +78,7 @@ class RecycleViewAdapter(
         val metadata = info.metaData
         val mapsApiKey = metadata.getString("com.google.android.geo.API_KEY")
 
-        val site = sites.sites[position]
+        val site = sites[position]
 
         viewHolder.bind(site)
         viewHolder.nameView.text = site.name
@@ -124,5 +123,5 @@ class RecycleViewAdapter(
     }
 
     // Return the size of your dataset (invoked by the layout manager)
-    override fun getItemCount() = sites.sites.size
+    override fun getItemCount() = sites.size
 }

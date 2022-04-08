@@ -2,7 +2,11 @@ package no.uio.ifi.team16.stim.data
 
 import no.uio.ifi.team16.stim.util.LatLong
 
-data class Sites(val sites: List<Site>)
+
+data class Municipality(val idd: String, val sites: List<Site>)
+data class County(val id: String, val sites: List<Site>)
+data class ProductionArea(val id: String, val sites: List<Site>)
+
 
 /* schema from fiskeridirektoratet
 Site {
@@ -63,6 +67,7 @@ data class Site(
     val placementType: String?,
     val waterType: String?
 ) {
+
     /**
      * @see InfectiousPressure.getConcentration(LatLng)
      */
@@ -76,4 +81,9 @@ data class Site(
     fun getInfectiousPressure(infectiousPressure: InfectiousPressure, weeksFromNow: Int): Float {
         return infectiousPressure.getConcentration(latLong, weeksFromNow)
     }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
 }
+

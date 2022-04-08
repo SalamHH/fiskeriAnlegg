@@ -23,8 +23,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import no.uio.ifi.team16.stim.data.Municipality
 import no.uio.ifi.team16.stim.data.Site
-import no.uio.ifi.team16.stim.data.Sites
 import no.uio.ifi.team16.stim.databinding.FragmentMapBinding
 import no.uio.ifi.team16.stim.io.adapter.RecycleViewAdapter
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
@@ -71,7 +71,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
         viewModel.getMunicipalityNr().observe(viewLifecycleOwner, this::onMunicipalityUpdate)
 
         // Observe sites and place them on the map
-        viewModel.getSitesData().observe(viewLifecycleOwner, this::onSiteUpdate)
+        viewModel.getMunicipalityData().observe(viewLifecycleOwner, this::onSiteUpdate)
 
 
         //Bottom Sheet behavior
@@ -81,7 +81,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
         bottomSheetBehavior.isHideable = false
 
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
-        val adapter = RecycleViewAdapter(Sites(listOf()), this::adapterOnClick, requireActivity())
+        val adapter = RecycleViewAdapter(listOf(), this::adapterOnClick, requireActivity())
         binding.recyclerView.adapter = adapter
 
 
@@ -150,12 +150,11 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
         return binding.root
     }
 
-
     fun searchMunNr(munNr: String) {
         map.clear()
         currentMunicipalityNr = munNr
-        viewModel.loadSites(munNr)
-        viewModel.getSitesData().observe(viewLifecycleOwner) {
+        viewModel.loadSitesAtMunicipality(munNr)
+        viewModel.getMunicipalityData().observe(viewLifecycleOwner) {
             onSiteUpdate((it))
             if (it != null && it.sites.isNotEmpty()) {
                 val bounds = LatLngBounds(
@@ -165,6 +164,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
                 val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 10)
                 map.moveCamera(cameraUpdate)
 
+                // todo fix hva it gjør her
                 val adapter = RecycleViewAdapter(it, this::adapterOnClick, requireActivity())
                 binding.recyclerView.adapter = adapter
             }
@@ -173,6 +173,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
 
     fun searchName(name: String) {
         map.clear()
+        // todo dette må refaktoreres
         viewModel.loadSitesByName(name)
         viewModel.getSitesDataName().observe(viewLifecycleOwner) {
             onSiteUpdate((it))
@@ -206,8 +207,8 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
             map.moveCamera(update)
         }
 
-        // Observe sites and place them on the map
-        viewModel.getSitesData().observe(viewLifecycleOwner, this::onSiteUpdate)
+        // Observe municipality and place them on the map
+        viewModel.getMunicipalityData().observe(viewLifecycleOwner, this::onSiteUpdate)
 
         if (checkLocationPermission()) {
             map.isMyLocationEnabled = true
@@ -218,32 +219,32 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
     private fun onMunicipalityUpdate(nr: String?) {
         if (nr != null) {
             currentMunicipalityNr = nr
-            viewModel.loadSites(nr)
+            viewModel.loadSitesAtMunicipality(nr)
         }
         //todo - update headertext in bottomsheet to kommunenavn/nr
     }
 
-    private fun onSiteUpdate(sites: Sites?) {
+    private fun onSiteUpdate(municipality: Municipality?) {
+        if (municipality != null && mapReady) {
+            binding.numSites.text = "Antall anlegg: ${municipality.sites.size}"
 
-        if (sites != null && sites.sites.isNotEmpty()) {
-            for (site in sites.sites) {
-                if (mapReady) {
-                    val markerOptions = MarkerOptions()
-                    markerOptions.title(site.name)
-                    markerOptions.position(site.latLong.toGoogle())
-                    map.addMarker(markerOptions)
-                }
+            for (site in municipality.sites) {
+                val markerOptions = MarkerOptions()
+                markerOptions.title(site.name)
+                markerOptions.position(site.latLong.toGoogle())
+                map.addMarker(markerOptions)
             }
 
-            //update sites in bottomsheet
-            val adapter = RecycleViewAdapter(sites, this::adapterOnClick, requireActivity())
+            //update municipality in bottomsheet
+            val adapter =
+                RecycleViewAdapter(municipality.sites, this::adapterOnClick, requireActivity())
             binding.recyclerView.adapter = adapter
         }
     }
 
     private fun onRefresh() {
         val center = LatLong.fromGoogle(map.cameraPosition.target)
-        viewModel.loadMunicipalityNumber(center)
+        viewModel.loadMunicipalityNr(center)
     }
 
     /**
@@ -254,5 +255,3 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
         view?.findNavController()?.navigate(R.id.action_mapFragment_to_siteInfoFragment)
     }
 }
-
-

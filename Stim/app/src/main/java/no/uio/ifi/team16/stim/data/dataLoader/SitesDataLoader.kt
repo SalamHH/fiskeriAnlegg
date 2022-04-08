@@ -10,10 +10,10 @@ import no.uio.ifi.team16.stim.util.Options
 import org.json.JSONArray
 
 /**
- * Load Sites
+ * Load Municipality
  *
  * Shortcomings:
- * The sites API can only respond with at moost 100 sites at a time,
+ * The municipality API can only respond with at moost 100 municipality at a time,
  * hopefully we will not need more than that, but otherwise we will have to merge
  * several responses into a single response
  */
@@ -26,20 +26,21 @@ class SitesDataLoader {
     private val url: String = "https://api.fiskeridir.no/pub-aqua/api/v1/sites"
 
     /**
-     * Loads the 100 first sites from the url, with the given query
+     * Loads the 100 first municipality from the url, with the given query
      *
-     * See the sites-API parameters banner for all parameters.
-     * https://api.fiskeridir.no/pub-aqua/api/swagger-ui/index.html?configUrl=/pub-aqua/api/api-docs/swagger-config#/site-resource/sites
+     * See the municipality-API parameters banner for all parameters.
+     * https://api.fiskeridir.no/pub-aqua/api/swagger-ui/index.html?configUrl=/pub-aqua/api/api-docs/swagger-config#/site-resource/municipality
      *
      * @param parameters list of parameters to the query, can be in the form of List<Pair<String,Any?>>,
      * or using Fules own syntax, listof(param1string to param1, ...)
      */
-    suspend fun loadWithParameters(parameters: Parameters?): Sites? {
+    suspend fun loadWithParameters(parameters: Parameters?): List<Site>? {
         var responseStr = ""
         try {
             responseStr = Fuel.get(url, parameters).awaitString()
         } catch (e: Exception) {
-            Log.e(TAG, "Kunne ikke hente sites med params: $parameters", e)
+            Log.e(TAG, "Kunne ikke hente municipality med params: $parameters", e)
+            return null
         }
 
         if (responseStr.isEmpty()) {
@@ -63,7 +64,7 @@ class SitesDataLoader {
                                 APJSON.getInt("municipalityCode"),
                                 APJSON.getString("municipalityName"),
                                 APJSON.getInt("countyCode"),
-                                runCatching { //many sites have no production area, return null
+                                runCatching { //many municipality have no production area, return null
                                     ProdArea(
                                         APJSON.getInt("prodAreaCode"),
                                         APJSON.getString("prodAreaName"),
@@ -81,19 +82,24 @@ class SitesDataLoader {
                 Log.w(TAG, "Failed to create a site due to: $failure")
             }
         }
-        return Sites(out.toList())
+        return out.toList()
     }
 
     /**
      * @see loadWithParameters
      */
-    suspend fun loadDataByMunicipalityCode(municipalityCode: String): Sites? =
+    suspend fun loadMunicipality(municipalityCode: String): Municipality? =
         loadWithParameters(
             listOf(
                 "range" to Options.sitesRange,
                 "municipality-code" to municipalityCode
             )
-        )
+        )?.let { sites ->
+            Municipality(
+                municipalityCode,
+                sites
+            )
+        }
 
     suspend fun loadDataByName(name: String): Sites? =
         loadWithParameters(
@@ -106,34 +112,23 @@ class SitesDataLoader {
     /**
      * @see loadWithParameters
      */
-    suspend fun loadDataByCountyCode(countyCode: Int): Sites? =
+    /*suspend fun loadDataByCountyCode(countyCode: Int): Municipality? =
         loadWithParameters(
             listOf(
                 "range" to Options.sitesRange,
                 "county-code" to countyCode.toString()
             )
-        )
+        )*/
 
     /**
      * @see loadWithParameters
      */
-    suspend fun loadDataByProductionAreaCode(paCode: Int): Sites? =
+    /*suspend fun loadDataByProductionAreaCode(paCode: Int): Municipality? =
         loadWithParameters(
             listOf(
                 "range" to Options.sitesRange,
                 "production-area-code" to paCode.toString()
             )
-        )
-
-    /**
-     * Loads the 100 first sites from the url
-     * @see loadWithParameters
-     */
-    suspend fun loadSomeData(): Sites? =
-        loadWithParameters(
-            listOf(
-                "range" to Options.sitesRange
-            )
-        )
+        )*/
 }
 

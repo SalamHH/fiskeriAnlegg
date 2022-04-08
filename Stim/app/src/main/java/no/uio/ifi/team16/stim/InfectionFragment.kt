@@ -48,11 +48,7 @@ class InfectionFragment : StimFragment() {
         //val _lineDataSet = MutableLiveData(LineDataSet(contamData, CHART_LABEL))
 
         viewModel.getInfectiousPressureTimeSeriesData().observe(viewLifecycleOwner) {
-            Log.d(TAG, "TIMESERIES CHANGED! site id: " + site.id)
-            Log.d(TAG, "TO: " + it[site.id].toString())
-            //TODO: handle site not loaded(ie null) - we get nullpointerexception if we go back, and try to load inf from another site,
-            //since site seems to update, but loading the concentrations does not? the get fails since there is no id for this site in the map
-            it[site.id]?.getAllConcentrationsUnzipped()?.also { (weekList, infectionData) ->
+            it?.getAllConcentrationsUnzipped()?.also { (weekList, infectionData) ->
                 val linedataset = LineDataSet(
                     weekList.zip(infectionData)                 // list med par av x og y
                         .map { (x, y) -> Entry(x.toFloat(), y) }, //list med Entry(x,y)
@@ -63,8 +59,10 @@ class InfectionFragment : StimFragment() {
                 //TODO get interpolation(CUBIC BEZIER), and find min max of that, or change to linear(not bezier), or use max+1 min-1
                 binding.infectionChart.apply {
                     axisLeft.apply {
-                        axisMaximum =
-                            infectionData.maxOf { v -> v } + 1f //clipping might still occurr
+                        if (infectionData.isNotEmpty()) {
+                            axisMaximum =
+                                infectionData.maxOf { v -> v } + 1f //clipping might still occurr
+                        }
                     }
                 }
                 //style linedataset

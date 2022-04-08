@@ -37,7 +37,7 @@ class InfectiousPressureTimeSeriesRepository() {
      *
      * @return mocked, cached or newly loaded data.
      */
-    fun getDataAtSite(site: Site, weeksFromNow: Int): Map<Int, InfectiousPressureTimeSeries> {
+    fun getDataAtSite(site: Site, weeksFromNow: Int): InfectiousPressureTimeSeries? {
         //Log.d(TAG, "loading infectioustimeseriesdata from repository")
         if (!mocked) {
             cache.getOrPutOrPass(site.id) {
@@ -45,7 +45,7 @@ class InfectiousPressureTimeSeriesRepository() {
             }
         }
         //Log.d(TAG, "loading current infectioustimeseriesdata from repository - DONE")
-        return cache
+        return cache[site.id]
     }
 
     ///////////////

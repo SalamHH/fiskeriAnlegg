@@ -8,14 +8,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import no.uio.ifi.team16.stim.data.Site
-import no.uio.ifi.team16.stim.data.Sites
 import no.uio.ifi.team16.stim.databinding.FragmentFavoriteSitesBinding
 import no.uio.ifi.team16.stim.io.adapter.RecycleViewAdapter
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 
 
 /*
-TODO: Forandre dette fragmentet slik at det viser favoritt sites
+TODO: Forandre dette fragmentet slik at det viser favoritt municipality
  */
 
 class FavoriteSitesFragment : StimFragment() {
@@ -31,11 +30,11 @@ class FavoriteSitesFragment : StimFragment() {
          *  RECYCLEVIEW *
          ********************/
 
-        val adapter = RecycleViewAdapter(Sites(listOf()), this::adapterOnClick, requireActivity())
+        val adapter = RecycleViewAdapter(listOf(), this::adapterOnClick, requireActivity())
         binding.recyclerview.adapter = adapter
 
-        //observe sites
-        viewModel.getSitesData().observe(viewLifecycleOwner) { sites ->
+        //observe municipality
+        viewModel.getFavouriteSitesData().observe(viewLifecycleOwner) { sites ->
 
             if (sites != null) {
                 adapter.sites = sites

@@ -1,12 +1,12 @@
 package no.uio.ifi.team16.stim.data.repository
 
-import no.uio.ifi.team16.stim.data.Sites
+import no.uio.ifi.team16.stim.data.Municipality
+import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.data.dataLoader.SitesDataLoader
+import no.uio.ifi.team16.stim.util.Options
 
 /**
  * Repository for sites.
- *
- * The cache maps a municipalitynumber to a collection of sites
  */
 class SitesRepository {
     private val TAG = "SitesRepository"
@@ -15,45 +15,54 @@ class SitesRepository {
     /**
      * Maps municipality-code to site list
      */
-    private val municipalityCache: MutableMap<String, Sites?> = mutableMapOf()
+    private val municipalityCache: MutableMap<String, Municipality?> = mutableMapOf()
 
     /**
      * Maps sitename to site object
      * TODO: Fix this to be a Map<String, Site>
      */
-    private val nameCache: MutableMap<String, Sites?> = mutableMapOf()
+    private val nameCache: MutableMap<String, Site> = mutableMapOf()
+
+    //todo: store as int then load? sitedata on memory might be incorrect
+    var favouriteSites: MutableList<Site> = mutableListOf()
 
     /**
-     * load the sites at the given municipalitycode
+     * load the municipality at the given municipalitycode
      */
-    suspend fun getData(municipalityCode: String): Sites? {
-        var sites = municipalityCache[municipalityCode]
-        if (sites != null) {
-            return sites
+    suspend fun getMunicipality(municipalityCode: String): Municipality? {
+        var municipality = municipalityCache[municipalityCode]
+        if (municipality != null) {
+            return municipality
         }
-        sites = dataSource.loadDataByMunicipalityCode(municipalityCode)
+        municipality = dataSource.loadMunicipality(municipalityCode)
 
-        if (sites != null) {
-            municipalityCache[municipalityCode] = sites
-            for (site in sites.sites) {
-                // todo this makes no sense
-                nameCache[site.name] = sites
+        if(municipality != null) {
+            municipalityCache[municipalityCode] = municipality
+
+            for(site in municipality.sites) {
+                nameCache[site.name] = site
             }
         }
 
-        return sites
+        return municipality
+    }
+
+    suspend fun getFavouriteSites(): List<Site>? {
+        // TODO: load from memory
+        return Options.initialFavouriteSites
     }
 
     /**
      * Load the site with the given name
      */
-    suspend fun getDataByName(name: String): Sites? {
-        var sites = nameCache[name]
-        if (sites != null) {
-            return sites
+    suspend fun getDataByName(name: String): Site {
+        var site = nameCache[name]
+        if (site != null) {
+            return site
         }
-        sites = dataSource.loadDataByName(name)
-        nameCache[name] = sites
-        return sites
+        // TODO: make function if not exists
+        site = dataSource.loadDataByName(name)
+        nameCache[name] = site
+        return site
     }
 }

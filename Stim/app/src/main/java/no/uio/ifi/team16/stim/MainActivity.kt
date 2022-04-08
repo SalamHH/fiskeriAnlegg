@@ -26,16 +26,20 @@ class MainActivity : StimActivity() {
         // Navigation control for fragments
         setSupportActionBar(binding.toolbar)
         val navController = this.findNavController(R.id.myNavHostFragment)
-        appBarConfiguration = AppBarConfiguration(setOf(R.id.favoriteSitesFragment, R.id.mapFragment), binding.drawerLayout)
+        appBarConfiguration = AppBarConfiguration(
+            setOf(R.id.favoriteSitesFragment, R.id.mapFragment),
+            binding.drawerLayout
+        )
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.navView.setupWithNavController(navController)
-
 
 
         //initial load of data
         viewModel.loadNorKyst800()
         viewModel.loadInfectiousPressure()
-        viewModel.loadSites(Options.fakeMunicipality)
+        viewModel.loadFavouriteSites()
+        viewModel.loadSitesAtMunicipality(Options.fakeMunicipality)
+
     }
 
     override fun onSupportNavigateUp(): Boolean {

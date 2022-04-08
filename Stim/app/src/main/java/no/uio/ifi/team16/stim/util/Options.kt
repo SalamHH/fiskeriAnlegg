@@ -1,7 +1,6 @@
 package no.uio.ifi.team16.stim.util
 
 import no.uio.ifi.team16.stim.data.Site
-import no.uio.ifi.team16.stim.data.Sites
 
 class Options {
     companion object {
@@ -20,7 +19,13 @@ class Options {
 
         //MAINACTIVITY
         const val fakeMunicipality = "4615"
-        val fakeSite = Site(0, "bingbong", LatLong(61.12341234, 4.23), null, 0.0, null, null)
-        val fakeSites = Sites(listOf(fakeSite, fakeSite, fakeSite, fakeSite))
+        val fakeSite = Site(-1, "BingBong", LatLong(61.12341234, 4.23), null, 1.0, null, null)
+        private val skjetve = Site(0, "Skjetve", LatLong(61.12341234, 4.23), null, 1.0, null, null)
+        private val spikkestad =
+            Site(1, "Spikkestad", LatLong(54.12234, 6.73), null, 2.0, null, null)
+        private val foldal = Site(2, "Foldal", LatLong(62.1412341, 5.28), null, 3.0, null, null)
+        private val helvete = Site(3, "Helvete", LatLong(66.6, 4.20), null, 4.0, null, null)
+        val initialFavouriteSites =
+            mutableListOf(skjetve, spikkestad, foldal, helvete) //SHOULD ACTUALLY BE EMPTY!
     }
 }
