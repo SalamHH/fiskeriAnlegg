@@ -56,18 +56,17 @@ class InfectiousPressureTimeSeriesDataLoader : THREDDSDataLoader() {
     }
 
     /**
-     * return data between latitude from/to, and latitude from/to, with given resolution.
-     * Uses minimum of given and possible resolution.
-     * crops to dataset if latitudes or longitudes exceed the dataset.
      *
-     * @param latitudeFrom smallest latitude to get data from
-     * @param latitudeTo largest latitude to get data from
-     * @param latitudeResolution resolution of latitude. A latitude resolution of 0.001 means that
-     * the data is sampled from latitudeFrom to latitudeTo with 0.001 latitude between points
-     * @param longitudeFrom smallest longitude to get data from
-     * @param longitudeTo largest longitude to get data from
-     * @param latitudeResolution resolution of longitude.
-     * @return data of infectious pressure in the prescribed data range.
+     */
+    fun load(
+        site: Site,
+        weeksRange: IntProgression
+    ): InfectiousPressureTimeSeries? {
+        return null
+    }
+
+    /**
+     *
      *
      * @see THREDDSDataLoader.THREDDSLoad()
      */
@@ -122,8 +121,6 @@ class InfectiousPressureTimeSeriesDataLoader : THREDDSDataLoader() {
                 val minY = round(max(y - radius, 0.0)).toInt()
                 val maxY =
                     round(min(max(y + radius, 0.0), concentrations.getShape(1).toDouble())).toInt()
-
-                //Log.d(TAG, "0,${minY}:${maxY},${minX}:${maxX}")
 
                 //take out the arrayfloat
                 out.add(

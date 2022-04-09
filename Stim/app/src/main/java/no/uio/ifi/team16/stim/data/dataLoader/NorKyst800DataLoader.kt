@@ -2,6 +2,7 @@ package no.uio.ifi.team16.stim.data.dataLoader
 
 //import thredds.catalog.ThreddsMetadata
 import no.uio.ifi.team16.stim.data.NorKyst800
+import no.uio.ifi.team16.stim.util.LatLong
 import ucar.ma2.ArrayDouble
 import ucar.ma2.ArrayInt
 
@@ -42,7 +43,7 @@ class NorKyst800DataLoader : THREDDSDataLoader() {
      * 385873886 byte allocation with 4194304 free bytes and 194MB until OOM
      * 385808110 byte allocation with 4194304 free bytes and 194MB until OOM
      */
-    fun load(): NorKyst800? = load(-90f, 90f, 0.001f, -90f, 90f, 0.001f)
+    //fun load(): NorKyst800? = load(-90f, 90f, 0.001f, -90f, 90f, 0.001f)
 
     /**
      * return data between latitude from/to, and latitude from/to, with given resolution.
@@ -64,12 +65,12 @@ class NorKyst800DataLoader : THREDDSDataLoader() {
      * @return NorKyst800 data in the prescribed data range, primarily stream and wave data(?)
      */
     fun load(
-        latitudeFrom: Float,
-        latitudeTo: Float,
-        latitudeResolution: Float,
-        longitudeFrom: Float,
-        longitudeTo: Float,
-        longitudeResolution: Float
+        latLongUpperLeft: LatLong,
+        latLongLowerRight: LatLong,
+        latitudeResolution: Int,
+        longitudeResolution: Int,
+        depthRange: IntProgression,
+        timeRange: IntProgression
     ): NorKyst800? = NorKyst800(
         //depth
         ArrayDouble.factory(
@@ -128,67 +129,4 @@ class NorKyst800DataLoader : THREDDSDataLoader() {
             )
         ).reshape(intArrayOf(2, 2, 2, 2)) as ArrayInt
     )
-
-/*
-    fun load(
-        latitudeFrom: Float,
-        latitudeTo: Float,
-        latitudeResolution: Float,
-        longitudeFrom: Float,
-        longitudeTo: Float,
-        longitudeResolution: Float
-    ): NorKyst800? {
-        System.setProperty( "ssl.TrustManagerFactory.algorithm", javax.net.ssl.KeyManagerFactory.getDefaultAlgorithm())
-        try {
-        NetcdfDataset.openDataset(url).let { ncfile ->
-        Log.d(TAG, "OPENING $url")
-        return try {
-            Log.d(TAG, "OPENDAP URL OPENED")
-            val depth: Variable = ncfile.findVariable("depth") ?: return null
-            val lat: Variable = ncfile.findVariable("lat") ?: return null
-            val lon: Variable = ncfile.findVariable("lon") ?: return null
-            val salinity: Variable = ncfile.findVariable("salinity") ?: return null
-            val temperature: Variable = ncfile.findVariable("temperature") ?: return null
-            val time: Variable = ncfile.findVariable("time") ?: return null
-            val u: Variable = ncfile.findVariable("u") ?: return null
-            val v: Variable = ncfile.findVariable("v") ?: return null
-            val w: Variable = ncfile.findVariable("w") ?: return null
-
-            // note that this way of reading does not apply scale or offset
-            // see variable attributes "scale_factor" and "add_offset".
-            val norKyst800 = NorKyst800(
-                depth.read() as ArrayDouble,
-                lat.read() as ArrayDouble,
-                lon.read() as ArrayDouble,
-                salinity.read() as ArrayInt,
-                temperature.read() as ArrayInt,
-                time.read() as ArrayDouble,
-                u.read() as ArrayInt,
-                v.read() as ArrayInt,
-                w.read() as ArrayInt
-            )
-            ncfile.close()
-            norKyst800 //returned from let-, and then try-black
-        } catch (e: IOException) {
-            Log.e("ERROR", e.toString())
-            null
-        } catch (e: InvalidRangeException) {
-            Log.e("ERROR", e.toString())
-            null
-        } catch (e: NullPointerException) {
-            Log.e(
-                TAG,
-                "ERROR: a Variable might be read as null, are you sure you are using the correct url/dataset?"
-            )
-            Log.e("ERROR", e.toString())
-            null
-        } finally {
-            //NetcdfDataset.shutdown() TODO should be called on application shutdown!
-            Log.d(TAG, " load - DONE")
-            ncfile.close()
-        }}} catch (e : Exception) {
-            Log.e("ERROR", e.toString())
-            return null
-        }
-    }*/
 }

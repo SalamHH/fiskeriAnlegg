@@ -87,7 +87,7 @@ class MainActivityViewModel : ViewModel() {
     fun loadSomeInfectiousPressure() {
         viewModelScope.launch(Dispatchers.IO) {
             val loaded =
-                infectiousPressureRepository.getSomeData() //either loaded, retrieved from cache or faked
+                infectiousPressureRepository.getDefault() //either loaded, retrieved from cache or faked
             //invokes the observer
             infectiousPressureData.postValue(loaded)
         }
@@ -110,7 +110,7 @@ class MainActivityViewModel : ViewModel() {
     fun loadNorKyst800() {
         viewModelScope.launch(Dispatchers.IO) {
             val loaded =
-                norKyst800Repository.getData() //either loaded, retrieved from cache or faked
+                norKyst800Repository.getDefault() //either loaded, retrieved from cache or faked
             //invokes the observer
             norKyst800Data.postValue(loaded)
         }

@@ -48,6 +48,27 @@ class InfectiousPressureTimeSeriesRepository() {
         return cache[site.id]
     }
 
+    /**
+     * get the most recent data from the infectious pressure catalog
+     *
+     * If in testmode(mocked data), return the testdata
+     * otherwise;
+     * if the cache is not up to date(dirty), load the data anew,
+     * otherwise just return the data in the cache.
+     *
+     * @return mocked, cached or newly loaded data.
+     */
+    fun getDataAtSite(site: Site, weekRange: IntProgression): InfectiousPressureTimeSeries? {
+        //Log.d(TAG, "loading infectioustimeseriesdata from repository")
+        if (!mocked) {
+            cache.getOrPutOrPass(site.id) {
+                dataSource.load(site, weekRange)
+            }
+        }
+        //Log.d(TAG, "loading current infectioustimeseriesdata from repository - DONE")
+        return cache[site.id]
+    }
+
     ///////////////
     // UTILITIES //
     ///////////////

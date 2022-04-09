@@ -2,6 +2,7 @@ package no.uio.ifi.team16.stim.data.dataLoader
 
 import android.util.Log
 import no.uio.ifi.team16.stim.util.FloatArray2D
+import no.uio.ifi.team16.stim.util.LatLong
 import no.uio.ifi.team16.stim.util.Options
 import ucar.ma2.ArrayFloat
 import ucar.ma2.InvalidRangeException
@@ -12,6 +13,7 @@ import java.util.*
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.round
+import kotlin.ranges.IntProgression.Companion.fromClosedRange
 
 /**
  * ABSTRACT CLASS FOR THREDDS DATALOADERS
@@ -48,21 +50,23 @@ abstract class THREDDSDataLoader {
      * @return pair of ranges in x- and y-direction
      */
     fun geographicCoordinateToRange(
-        latitudeFrom: Float, latitudeTo: Float, latitudeResolution: Int,
-        longitudeFrom: Float, longitudeTo: Float, longitudeResolution: Int
-    ): Pair<String, String> {
+        latLongUpperLeft: LatLong, latLongLowerRight: LatLong,
+        latitudeResolution: Int, longitudeResolution: Int
+    ): Pair<IntProgression, IntProgression> {
+        val (latitudeFrom, longitudeFrom) = latLongUpperLeft
+        val (latitudeTo, longitudeTo) = latLongLowerRight
         //interpret as ranges
-        val startX = max(round(min(longitudeFrom - minLongitude, 0f) / longitudeDiff).toInt(), 0)
-        val stopX = max(round(min(longitudeTo / maxLongitude, 1f) * maxX).toInt(), 0)
+        val startX = max(round(min(longitudeFrom - minLongitude, 0.0) / longitudeDiff).toInt(), 0)
+        val stopX = max(round(min(longitudeTo / maxLongitude, 1.0) * maxX).toInt(), 0)
         val stepX = Options.infectiousPressureStepX //max(latitudeResolution, 1)
-        val startY = max(round(min(latitudeFrom - minLatitude, 0f) / latitudeDiff).toInt(), 0)
-        val stopY = max(round(min(latitudeTo / maxLatitude, 1f) * maxY).toInt(), 0)
+        val startY = max(round(min(latitudeFrom - minLatitude, 0.0) / latitudeDiff).toInt(), 0)
+        val stopY = max(round(min(latitudeTo / maxLatitude, 1.0) * maxY).toInt(), 0)
         val stepY = Options.infectiousPressureStepY //max(latitudeResolution, 1)
         Log.d(
             TAG,
             "loading from ranges ${startX}:${stopX}:${stepX}\",\"${startY}:${stopY}:${stepY}"
         )
-        return Pair("${startX}:${stopX}:${stepX}", "${startY}:${stopY}:${stepY}")
+        return Pair(fromClosedRange(startX, stopX, stepX), fromClosedRange(startY, stopY, stepY))
     }
 
     /**
@@ -111,7 +115,7 @@ abstract class THREDDSDataLoader {
         } catch (e: NullPointerException) {
             Log.e(
                 TAG,
-                "ERROR: a Variable might be read as null, are you sure you are using the correct url/dataset?"
+                "ERROR: a Variable might be read as null, are you sure you are using the correct url/dataset?$e"
             )
             Log.e("ERROR", e.toString())
         } catch (e: Exception) {
