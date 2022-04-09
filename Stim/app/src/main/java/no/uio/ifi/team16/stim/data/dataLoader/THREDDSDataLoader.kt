@@ -129,7 +129,11 @@ abstract class THREDDSDataLoader {
     }
 
     fun ArrayFloat.to2DFloatArray(): FloatArray2D {
-        return this.copyToNDJavaArray() as FloatArray2D
+        val asFloatArray = this.copyToNDJavaArray() as Array<FloatArray>
+        //this is nice, but we need Array<Array<Float>>, and cupyToNDJavaArray cannot cast directly
+        return Array(asFloatArray.size) { row ->
+            asFloatArray[row].toTypedArray()
+        }
     }
 
     fun reformatIntProgression(p: IntProgression): String {

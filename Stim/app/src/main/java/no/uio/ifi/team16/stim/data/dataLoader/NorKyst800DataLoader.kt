@@ -3,6 +3,9 @@ package no.uio.ifi.team16.stim.data.dataLoader
 import android.util.Log
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.coroutines.awaitString
+import com.github.kittinunf.fuel.coroutines.awaitStringResult
+import com.github.kittinunf.result.getOrElse
+import com.github.kittinunf.result.onError
 import no.uio.ifi.team16.stim.data.NorKyst800
 import no.uio.ifi.team16.stim.util.LatLong
 import ucar.ma2.ArrayDouble
@@ -43,6 +46,7 @@ class NorKyst800DataLoader : THREDDSDataLoader() {
                 "w[${timeRange}][${depthRange}][${yRange}][${xRange}]"
     }
 
+    /*
     /**
      * return data between latitude from/to, and latitude from/to, with given resolution.
      * Uses minimum of given and possible resolution.
@@ -144,8 +148,14 @@ class NorKyst800DataLoader : THREDDSDataLoader() {
 
         Log.d(TAG, parametrizedUrl)
         Log.d(TAG, "requesting norkyst800")
-        val responseStr = Fuel.get(parametrizedUrl).awaitString()
-        //val responseStr = norkString
+        val responseStr = Fuel.get(parametrizedUrl).awaitStringResult().onError { error ->
+            Log.e(TAG, "Failed to load norkyst800data due to:\n $error")
+            return null
+        }.getOrElse {
+            Log.e(TAG, "No errors thrown, but unable to get NorKyst800 data from get request. Is the URL correct?")
+            return null
+        }
+
         Log.d(TAG, "got norkyst800")
         if (responseStr.isEmpty()) {
             return null
@@ -154,6 +164,8 @@ class NorKyst800DataLoader : THREDDSDataLoader() {
         Log.d(TAG, "parsing norkyst800")
         return NorKyst800RegexParser().parse(responseStr)
     }
+    */
+
 
     //load with default parameters(as specified in Options)
     suspend fun loadDefault(): NorKyst800? {
@@ -163,21 +175,26 @@ class NorKyst800DataLoader : THREDDSDataLoader() {
         val defaultUrl = defaultUrlFactory(baseUrl)
         Log.d(TAG, defaultUrl)
         Log.d(TAG, "requesting norkyst800")
-        try {
-            val responseStr = Fuel.get(defaultUrl).awaitString()
-            Log.d(TAG, "got norkyst800")
-            if (responseStr.isEmpty()) {
-                return null
-            }
-
-            Log.d(TAG, "parsing norkyst800")
-            return NorKyst800RegexParser().parse(responseStr)
-        } catch (e: java.net.SocketTimeoutException) {
-            //val responseStr = norkString
-            Log.e(TAG, " Connection timed out")
+        val responseStr = Fuel.get(defaultUrl).awaitStringResult().onError { error ->
+            Log.e(TAG, "Failed to load norkyst800data due to:\n $error")
+            return null
+        }.getOrElse {
+            Log.e(
+                TAG,
+                "No errors thrown, but unable to get NorKyst800 data from get request. Is the URL correct?"
+            )
             return null
         }
+
+        Log.d(TAG, "got norkyst800")
+        if (responseStr.isEmpty()) {
+            return null
+        }
+
+        Log.d(TAG, "parsing norkyst800")
+        return NorKyst800RegexParser().parse(responseStr)
     }
+
 
     /**
      * load the thredds catalog for the norkyst800 dataset, then return the URL

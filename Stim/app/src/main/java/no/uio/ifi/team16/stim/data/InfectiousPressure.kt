@@ -40,7 +40,7 @@ class InfectiousPressure(
      * @param latLong latitude-longitude coordinate we want to find concentration at
      * @return concentration at specified lat long coordinate
      */
-    fun getConcentration(latLong: LatLong): Float {
+    fun getConcentration(latLong: LatLong): Float? {
         val (row, column) = getClosestIndex(latLong)
         return concentration.get(row, column)
     }

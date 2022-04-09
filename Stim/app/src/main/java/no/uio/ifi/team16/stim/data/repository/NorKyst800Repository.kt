@@ -12,6 +12,7 @@ class NorKyst800Repository {
     var mocked: Boolean = false
     var dirty: Boolean = true
 
+    /*
     /**
      * The most general load
      * loads the specified ranges of data
@@ -102,6 +103,7 @@ class NorKyst800Repository {
         }
         return cache
     }
+    */
 
     /**
      * get the data.

@@ -66,24 +66,4 @@ data class Site(
     val capacity: Double,
     val placementType: String?,
     val waterType: String?
-) {
-
-    /**
-     * @see InfectiousPressure.getConcentration(LatLng)
-     */
-    fun getInfectiousPressure(infectiousPressure: InfectiousPressure): Float {
-        return infectiousPressure.getConcentration(latLong)
-    }
-
-    /**
-     * @see InfectiousPressure.getConcentration(LatLng, Int)
-     */
-    fun getInfectiousPressure(infectiousPressure: InfectiousPressure, weeksFromNow: Int): Float {
-        return infectiousPressure.getConcentration(latLong, weeksFromNow)
-    }
-
-    override fun hashCode(): Int {
-        return id.hashCode()
-    }
-}
-
+)

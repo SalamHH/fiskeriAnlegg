@@ -15,7 +15,7 @@ class Options {
         const val defaultNorKyst800DepthStride = "5"
         const val defaultNorKyst800TimeStride = "10"
         private const val defaultProj4String =
-            "stere +ellps=WGS84 +lat_0=90.0 +lat_ts=60.0 +x_0=3192800 +y_0=1784000 +lon_0=70" //retrieved from opendap grid_mapping attribute
+            "+proj=stere +ellps=WGS84 +lat_0=90.0 +lat_ts=60.0 +x_0=3192800 +y_0=1784000 +lon_0=70"  //retrieved from opendap grid_mapping attribute
         val defaultProjection: () -> CoordinateTransform =
             { //functional, to avoid initialization problems with static
                 CRSFactory().createFromParameters(null, defaultProj4String).let { stereoCRT ->
