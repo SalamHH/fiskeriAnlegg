@@ -136,7 +136,7 @@ class NorKyst800RegexParser {
                         if (isTHREDDSFiller(unscaledValue)) {
                             null
                         } else {
-                            unscaledValue * scaleFactor - offset
+                            unscaledValue * scaleFactor + offset
                         }
                     }
             }
@@ -232,7 +232,7 @@ class NorKyst800RegexParser {
                         if (unscaledValue == 1.0E37) {
                             null
                         } else {
-                            unscaledValue * scaleFactor - offset
+                            unscaledValue * scaleFactor + offset
                         }
                     }
             }

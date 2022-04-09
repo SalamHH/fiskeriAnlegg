@@ -31,7 +31,11 @@ fun IntArray4D.get(depth: Int, time: Int, row: Int, column: Int): Int? =
     this[depth][time][row][column]
 
 //"pretty" prints
-fun FloatArray1D.prettyPrint(): String = fold("[") { acc, arr -> "$acc, ${arr ?: "N/A"}" } + "]"
+fun FloatArray1D.prettyPrint(): String = fold("[") { acc, arr ->
+    "$acc, " +
+            (if (arr == null) "N/A  " else "${"%5.2f".format(arr)}")
+} + "]"
+
 fun FloatArray2D.prettyPrint(): String =
     foldIndexed("") { row, acc, arr -> "$acc[$row]${arr.prettyPrint()}" }
 
@@ -41,7 +45,11 @@ fun FloatArray3D.prettyPrint(): String =
 fun FloatArray4D.prettyPrint(): String =
     foldIndexed("[") { i, acc, arr -> "$acc\n${arr.prettyPrint()}" } + "]"
 
-fun DoubleArray1D.prettyPrint(): String = fold("[") { acc, arr -> "$acc, ${arr ?: "N/A"}" } + "]"
+fun DoubleArray1D.prettyPrint(): String = fold("[") { acc, arr ->
+    "$acc, " +
+            (if (arr == null) "N/A  " else "${"%5.2f".format(arr)}")
+} + "]"
+
 fun DoubleArray2D.prettyPrint(): String =
     foldIndexed("") { row, acc, arr -> "$acc[$row]${arr.prettyPrint()}\n" }
 
