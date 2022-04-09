@@ -50,8 +50,13 @@ class InfectionFragment : StimFragment() {
         viewModel.getInfectiousPressureTimeSeriesData(site).observe(viewLifecycleOwner) {
             it?.getAllConcentrationsUnzipped()?.also { (weekList, infectionData) ->
                 val linedataset = LineDataSet(
-                    weekList.zip(infectionData)                 // list med par av x og y
-                        .map { (x, y) -> Entry(x.toFloat(), y) }, //list med Entry(x,y)
+                    weekList.zip(infectionData)             // list med par av x og y
+                        .mapIndexed { i, weekAndInf ->
+                            Entry(
+                                i.toFloat(),
+                                weekAndInf.second
+                            )
+                        }, //list med Entry(x,y)
                     CHART_LABEL
                 )
                 //set max of yaxis to max of loaded dataset

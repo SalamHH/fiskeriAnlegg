@@ -39,15 +39,9 @@ class InfectiousPressureTimeSeriesRepository() {
      * @return mocked, cached or newly loaded data.
      */
     fun getDataAtSite(site: Site, weeksFromNow: Int): InfectiousPressureTimeSeries? {
-        //Log.d(TAG, "loading infectioustimeseriesdata from repository")
-        if (!mocked) {
-            cache.getOrPutOrPass(site.id) {
-                dataSource.load(site, weeksFromNow)
-            }
+        cache.getOrPutOrPass(site.id) {
+            dataSource.load(site, weekRange)
         }
-        //Log.d(TAG, "loading current infectioustimeseriesdata from repository - DONE")
-        return cache[site.id]
-    }
 
     /**
      * get the most recent data from the infectious pressure catalog
@@ -59,16 +53,10 @@ class InfectiousPressureTimeSeriesRepository() {
      *
      * @return mocked, cached or newly loaded data.
      */
-    fun getDataAtSite(site: Site, weekRange: IntProgression): InfectiousPressureTimeSeries? {
-        //Log.d(TAG, "loading infectioustimeseriesdata from repository")
-        if (!mocked) {
-            cache.getOrPutOrPass(site.id) {
-                dataSource.load(site, weekRange)
-            }
+    fun getDataAtSite(site: Site, weekRange: IntProgression): InfectiousPressureTimeSeries? =
+        cache.getOrPutOrPass(site.id) {
+            dataSource.load(site, weekRange)
         }
-        //Log.d(TAG, "loading current infectioustimeseriesdata from repository - DONE")
-        return cache[site.id]
-    }
 
     ///////////////
     // UTILITIES //
@@ -77,11 +65,10 @@ class InfectiousPressureTimeSeriesRepository() {
      * same as Map.getOrPut, but if the put value resuls in null, don't put
      * @see MutableMap.getOrPut
      */
-    private fun <K, V> MutableMap<K, V>.getOrPutOrPass(key: K, default: () -> V?) {
-        this.getOrElse(key) {
+    private fun <K, V> MutableMap<K, V>.getOrPutOrPass(key: K, default: () -> V?) =
+        getOrElse(key) {
             default()?.let { value ->
-                this.put(key, value)
+                this.put(key, value) //TODO does put also return?
             }
         }
-    }
 }

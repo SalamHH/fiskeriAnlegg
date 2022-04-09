@@ -1,9 +1,30 @@
 package no.uio.ifi.team16.stim.util
 
 import no.uio.ifi.team16.stim.data.Site
+import no.uio.ifi.team16.stim.data.Sites
+import org.locationtech.proj4j.CRSFactory
+import org.locationtech.proj4j.CoordinateTransform
+import org.locationtech.proj4j.CoordinateTransformFactory
 
 class Options {
     companion object {
+        //NorKyst800
+        const val useDefault = true
+        const val defaultNorKyst800XStride = 500
+        const val defaultNorKyst800YStride = 500
+        const val defaultNorKyst800DepthStride = "5"
+        const val defaultNorKyst800TimeStride = "10"
+        private const val defaultProj4String =
+            "stere +ellps=WGS84 +lat_0=90.0 +lat_ts=60.0 +x_0=3192800 +y_0=1784000 +lon_0=70" //retrieved from opendap grid_mapping attribute
+        val defaultProjection: () -> CoordinateTransform =
+            { //functional, to avoid initialization problems with static
+                CRSFactory().createFromParameters(null, defaultProj4String).let { stereoCRT ->
+                    val latLngCRT = stereoCRT.createGeographic()
+                    val ctFactory = CoordinateTransformFactory()
+                    ctFactory.createTransform(latLngCRT, stereoCRT)
+                }
+            }
+
         //INFECTIOUSPRESSURE - DATALOADER
         const val infectiousPressureStepX =
             50 //amount of steps between data points, 1=use entire x axis
