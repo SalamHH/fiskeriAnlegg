@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.LinearLayout
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,6 +19,8 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import no.uio.ifi.team16.stim.data.Site
@@ -39,7 +42,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
     private var mapReady = false
     private var mapBounds: CameraPosition? = null
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var SearchView: androidx.appcompat.widget.SearchView
+    private lateinit var SearchView: SearchView
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
 
@@ -82,55 +85,53 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
         binding.recyclerView.adapter = adapter
 
 
-         val spinner = binding.spinner
+        val spinner = binding.spinner
 
-         //populere spinneren fra array
-         ArrayAdapter.createFromResource(
-             requireActivity()!!,
-             R.array.searchChoices,
-             android.R.layout.simple_spinner_item
-         ).also { adapter ->
-             // Specify the layout to use when the list of choices appears
-             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-             // Apply the adapter to the spinner
-             spinner.adapter = adapter
-         }
+        //populere spinneren fra array
+        ArrayAdapter.createFromResource(
+            requireActivity(),
+            R.array.searchChoices,
+            android.R.layout.simple_spinner_item
+        ).also { arrayAdapter ->
+            // Specify the layout to use when the list of choices appears
+            arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            // Apply the adapter to the spinner
+            spinner.adapter = arrayAdapter
+        }
 
+        var filterChoice = 1 //1=muncode, 2=site name...
 
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                when (spinner.selectedItem) {
+                    "municipality code" -> {
+                        filterChoice = 1
+                    }
+                    "site name" -> {
+                        filterChoice = 2
 
-        var filterChoice=1 //1=muncode, 2=site name...
+                    }
+                }
+            }
 
-         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
-             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                 when(spinner.selectedItem){
-                     "municipality code" ->{
-                         filterChoice=1
-                     }
-                     "site name" ->{
-                         filterChoice=2
-
-                     }
-                 }
-             }
-             override fun onNothingSelected(parent: AdapterView<*>?) {
-             }
-         }
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+        }
 
         binding.syncBtn.setOnClickListener {
             onRefresh()
         }
 
         //nytt
-        binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener{
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 if (p0 != null) {
                     map.clear()
-                    if (filterChoice==1){
-                        Log.d("choice:", "muncode" )
+                    if (filterChoice == 1) {
+                        Log.d("choice:", "muncode")
                         searchMunNr(p0)
-                    }
-                    else if (filterChoice==2){
-                        Log.d("choice:", "site name" )
+                    } else if (filterChoice == 2) {
+                        Log.d("choice:", "site name")
                         searchName(p0)
 
                     }
@@ -170,16 +171,19 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
         }
     }
 
-    fun searchName(name: String){
+    fun searchName(name: String) {
         map.clear()
         viewModel.loadSitesByName(name)
-        viewModel.getSitesDataName().observe(viewLifecycleOwner){
+        viewModel.getSitesDataName().observe(viewLifecycleOwner) {
             onSiteUpdate((it))
             if (it != null && it.sites.isNotEmpty()) {
-                currentMunicipalityNr= null//it.sites[0].placement?.municipalityCode.toString()
-                currentSite=(it.sites[0].name)
+                currentMunicipalityNr = null//it.sites[0].placement?.municipalityCode.toString()
+                currentSite = (it.sites[0].name)
 
-                val bounds = LatLngBounds(LatLng(it.sites[0].latLong.lat, it.sites[0].latLong.lng), LatLng(it.sites[0].latLong.lat+0.5, it.sites[0].latLong.lng+0.5))
+                val bounds = LatLngBounds(
+                    LatLng(it.sites[0].latLong.lat, it.sites[0].latLong.lng),
+                    LatLng(it.sites[0].latLong.lat + 0.5, it.sites[0].latLong.lng + 0.5)
+                )
                 val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 10)
                 map.moveCamera(cameraUpdate)
             }
@@ -245,9 +249,9 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
         viewModel.loadMunicipalityNumber(center)
     }
 
-    /*
-   When an item in the RecyclerView is clicked it updates the viewModels currentSite to the Site that was clicked
-   and then it navigates to the fragment that fetches this Site and displays information about it */
+    /**
+     * When an item in the recyclerview is clicked, navigate to that site
+     */
     private fun adapterOnClick(site: Site) {
         viewModel.setCurrentSite(site)
         view?.findNavController()?.navigate(R.id.action_mapFragment_to_siteInfoFragment)
