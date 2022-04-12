@@ -19,6 +19,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import no.uio.ifi.team16.stim.data.Municipality
@@ -201,13 +202,8 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
             // Move to last camera position
             val update = CameraUpdateFactory.newCameraPosition(bounds)
             map.moveCamera(update)
-        }
-
-        // Observe municipality and place them on the map
-        viewModel.getMunicipalityData().observe(viewLifecycleOwner) { municipality ->
-            if (municipality != null) {
-                onSiteUpdate(municipality.sites)
-            }
+        } ?: run {
+            map.moveCamera(getInitialCameraPosition())
         }
 
         if (checkLocationPermission()) {
@@ -242,7 +238,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
 
     private fun onRefresh() {
         val center = LatLong.fromGoogle(map.cameraPosition.target)
-        viewModel.loadMunicipalityNr(center)
+        viewModel.loadMunicipalityNumber(center)
     }
 
     /**
@@ -251,6 +247,14 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
     private fun adapterOnClick(site: Site) {
         viewModel.setCurrentSite(site)
         view?.findNavController()?.navigate(R.id.action_mapFragment_to_siteInfoFragment)
+    }
+
+    /**
+     * Hent kartposisjon som viser sør-Norge
+     */
+    private fun getInitialCameraPosition(): CameraUpdate {
+        val coordinates = LatLng(61.42888648306541, 8.68770383298397)
+        return CameraUpdateFactory.newLatLngZoom(coordinates, 5.5639253F)
     }
 
     override fun onCameraMove() {
