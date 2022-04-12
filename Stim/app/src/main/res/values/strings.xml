@@ -32,8 +32,6 @@
     <string name="blank">-----</string>
 
 
-    <string-array name="searchChoices">
-        <item>municipality code</item>
-        <item>site name</item>
-    </string-array>
+    <string name="bottomsheet_default_header">Liste over anlegg</string>
+    <string name="bottomsheet_formatted_header">Liste over anlegg i kommune: %s</string>
 </resources>

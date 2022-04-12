@@ -3,7 +3,7 @@ package no.uio.ifi.team16.stim.data
 import no.uio.ifi.team16.stim.util.LatLong
 
 
-data class Municipality(val idd: String, val sites: List<Site>)
+data class Municipality(val id: String, val sites: List<Site>)
 data class County(val id: String, val sites: List<Site>)
 data class ProductionArea(val id: String, val sites: List<Site>)
 

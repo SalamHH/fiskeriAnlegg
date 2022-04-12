@@ -6,16 +6,23 @@ import no.uio.ifi.team16.stim.util.LatLong
 class AddressRepository {
 
     private val dataSource = AddressDataLoader()
-    private val cache: MutableMap<LatLong, String?> = mutableMapOf()
 
+    /**
+     * Key = latlng, value = municipality nr
+     */
+    private val municipalityNrCache: MutableMap<LatLong, String?> = mutableMapOf()
+
+    /**
+     * Get municipality number for a given coordinate
+     */
     suspend fun getMunicipalityNr(latLong: LatLong): String? {
-        var nr = cache[latLong]
+        var nr = municipalityNrCache[latLong]
         if (nr != null) {
             return nr
         }
 
-        nr = dataSource.loadMunicipalityNr(latLong)
-        cache[latLong] = nr
+        nr = dataSource.getMunicipalityNr(latLong)
+        municipalityNrCache[latLong] = nr
         return nr
     }
 }
