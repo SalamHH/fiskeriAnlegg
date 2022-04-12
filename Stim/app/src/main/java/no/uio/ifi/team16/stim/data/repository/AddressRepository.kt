@@ -21,7 +21,7 @@ class AddressRepository {
             return nr
         }
 
-        nr = dataSource.getMunicipalityNr(latLong)
+        nr = dataSource.loadMunicipalityNr(latLong)
         municipalityNrCache[latLong] = nr
         return nr
     }
