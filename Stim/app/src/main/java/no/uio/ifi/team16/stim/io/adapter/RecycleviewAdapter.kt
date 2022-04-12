@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.graphics.drawable.toDrawable
@@ -46,12 +47,15 @@ class RecycleViewAdapter(
         val nameView: TextView
         val locationView: TextView
         val pictureView: ImageView
+        val favoriteButton: Button
+
         private var site: Site? = null
 
         init {
             nameView = view.findViewById(R.id.textview_name)
             locationView = view.findViewById(R.id.textview_location)
             pictureView = view.findViewById(R.id.imageView_overview)
+            favoriteButton = view.findViewById(R.id.favoriteButton)
             view.setOnClickListener { site?.let { onClick(it) } }
         }
 
@@ -120,6 +124,10 @@ class RecycleViewAdapter(
             .into(viewHolder.pictureView)
 
         Log.d(TAG, "data lagt inn")
+
+        viewHolder.favoriteButton.setOnClickListener {
+            //find viewmodel, and use its registerFavourtieSite(site)
+        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)

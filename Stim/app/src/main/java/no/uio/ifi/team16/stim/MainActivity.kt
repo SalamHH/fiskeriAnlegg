@@ -36,9 +36,16 @@ class MainActivity : StimActivity() {
 
         //initial load of data
         viewModel.loadNorKyst800()
-        viewModel.loadInfectiousPressure()
-        viewModel.loadFavouriteSites()
-        viewModel.loadSitesAtMunicipality(Options.fakeMunicipality)
+        viewModel.loadSomeInfectiousPressure()
+        viewModel.loadFavouriteSites() //denne er i utgangspunktet tom!
+        viewModel.loadSitesAtMunicipality(Options.initialMunicipality)
+        //men vi legger til dataene fra det først municipalities i starten, TODO: må fjernes i release
+        viewModel.getMunicipalityData().observe(this) { municipality ->
+            municipality?.sites?.forEach() { site ->
+                viewModel.registerFavouriteSite(site)
+            }
+            //oppdaterer favouritesites, som igjen burde kalle på observatører til disse
+        }
 
     }
 

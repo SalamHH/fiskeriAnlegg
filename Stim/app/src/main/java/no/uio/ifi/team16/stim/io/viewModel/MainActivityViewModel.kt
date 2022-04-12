@@ -14,7 +14,7 @@ import no.uio.ifi.team16.stim.util.LatLong
 import no.uio.ifi.team16.stim.util.Options
 
 class MainActivityViewModel : ViewModel() {
-    
+
     private val TAG = "MainActivityViewModel"
 
     //REPOSITORIES
@@ -29,11 +29,11 @@ class MainActivityViewModel : ViewModel() {
     private val infectiousPressureTimeSeriesData: MutableMap<Site, MutableLiveData<InfectiousPressureTimeSeries?>> =
         mutableMapOf()
     private val municipalityData: MutableLiveData<Municipality?> = MutableLiveData()
-    private val favouriteSitesData: MutableLiveData<List<Site>?> = MutableLiveData()
+    private val favouriteSitesData: MutableLiveData<MutableList<Site>?> = MutableLiveData()
     private val norKyst800Data = MutableLiveData<NorKyst800?>()
     private val addressData = MutableLiveData<String?>()
     private val currentSiteData: MutableLiveData<Site?> = MutableLiveData()
-    
+
     //
     //private val WeatherRepository = WeatherRepository()
     //private val WeatherData  = MutableLiveData<Weather>()
@@ -73,7 +73,7 @@ class MainActivityViewModel : ViewModel() {
         return addressData
     }
 
-    fun getFavouriteSitesData(): LiveData<List<Site>?> {
+    fun getFavouriteSitesData(): MutableLiveData<MutableList<Site>?> {
         return favouriteSitesData
     }
 
@@ -152,7 +152,7 @@ class MainActivityViewModel : ViewModel() {
             addressData.postValue(nr)
         }
     }
-    
+
     //Methods for communicating chosen Site between fragments
 
     private var site = Options.fakeSite
@@ -175,5 +175,23 @@ class MainActivityViewModel : ViewModel() {
 
     fun setLineDataSet(lDataSet: LineDataSet) {
         lineDataSet = MutableLiveData(lDataSet)
+    }
+
+    //TODO: only for debug
+    fun registerFavouriteSite(site: Site) {
+        favouriteSitesData.value.let { favouriteSites ->
+            favouriteSites?.add(site)
+            favouriteSitesData.postValue(favouriteSites)
+        }
+    }
+
+    //TODO: only for debug
+    fun registerFavouriteSite(sites: List<Site>) {
+        favouriteSitesData.value.let { favouriteSites ->
+            sites.forEach() { site ->
+                favouriteSites?.add(site)
+            }
+            favouriteSitesData.postValue(favouriteSites)
+        }
     }
 }

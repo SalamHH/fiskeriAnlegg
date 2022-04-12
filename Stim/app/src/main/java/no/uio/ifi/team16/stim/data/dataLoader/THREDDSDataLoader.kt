@@ -129,4 +129,8 @@ abstract class THREDDSDataLoader {
     fun ArrayFloat.to2DFloatArray(): FloatArray2D {
         return this.copyToNDJavaArray() as FloatArray2D
     }
+
+    fun reformatIntProgression(p: IntProgression): String {
+        return "${p.first}:${p.last}:${p.step}"
+    }
 }

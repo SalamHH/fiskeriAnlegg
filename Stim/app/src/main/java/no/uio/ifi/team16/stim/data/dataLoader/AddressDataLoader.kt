@@ -12,7 +12,7 @@ class AddressDataLoader {
     private val BASE_URL = "https://ws.geonorge.no/adresser/v1/punktsok"
     private val RADIUS = 1000
 
-    suspend fun getMunicipalityNr(latLong: LatLong): String? {
+    suspend fun loadMunicipalityNr(latLong: LatLong): String? {
 
         val side = "side" to 0
         val radius = "radius" to RADIUS

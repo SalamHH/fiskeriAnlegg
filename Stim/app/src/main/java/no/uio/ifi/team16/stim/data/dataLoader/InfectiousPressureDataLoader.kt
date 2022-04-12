@@ -28,8 +28,8 @@ class InfectiousPressureDataLoader : THREDDSDataLoader() {
      */
     fun loadDefault(): InfectiousPressure? =
         load(
-            fromClosedRange(0, Options.infectiousPressureStepX, 901),
-            fromClosedRange(0, Options.infectiousPressureStepY, 2601)
+            fromClosedRange(0, 901, Options.infectiousPressureStepX),
+            fromClosedRange(0, 2601, Options.infectiousPressureStepY)
         )
 
     /**
@@ -67,7 +67,7 @@ class InfectiousPressureDataLoader : THREDDSDataLoader() {
         val dx = gridMapping.findAttribute("dx")?.numericValue?.toFloat()
             ?: throw NullPointerException("Failed to read attribute <dx> from <gridMapping> from infectiousPressure")
         //make some extra ranges to access data
-        val range2 = "$xRange,$yRange"
+        val range2 = "${reformatIntProgression(xRange)},${reformatIntProgression(yRange)}"
         val range3 = "0,$range2"
 
         //make the projection
