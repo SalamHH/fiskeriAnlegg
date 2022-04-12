@@ -104,6 +104,10 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.13.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.13.0'
 
+    //async
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.1.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.1.1'
+
 }
 
 kapt {

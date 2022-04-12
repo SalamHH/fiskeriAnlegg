@@ -104,7 +104,8 @@ abstract class THREDDSDataLoader {
      * @param action: action to perform on the opened file, must return a representation of the data
      * @return the result of the action on the netcdf file, f.ex. an infectiousPressure-object
      */
-    fun <D> THREDDSLoad(url: String, action: (NetcdfDataset) -> D?): D? {
+    inline fun <D> THREDDSLoad(url: String, action: (NetcdfDataset) -> D?): D? {
+        val TAG = "THREDDSLOADER"
         var ncfile: NetcdfDataset? = null
         var data: D? = null
         try {
@@ -154,6 +155,18 @@ abstract class THREDDSDataLoader {
      * for the given sequence, take values in the given intProgression(range with stride)
      */
     protected fun <T> Sequence<T>.takeRange(range: IntProgression): Sequence<T> =
+        drop(range.first).take(range.last - range.first).takeEvery(range.step)
+
+    /**
+     * from a sequence take every (stride) eleemnt
+     */
+    protected fun <T> List<T>.takeEvery(stride: Int): List<T> =
+        this.filterIndexed { i, _ -> (i % stride == 0) }
+
+    /**
+     * for the given sequence, take values in the given intProgression(range with stride)
+     */
+    protected fun <T> List<T>.takeRange(range: IntProgression): List<T> =
         drop(range.first).take(range.last - range.first).takeEvery(range.step)
 
 }

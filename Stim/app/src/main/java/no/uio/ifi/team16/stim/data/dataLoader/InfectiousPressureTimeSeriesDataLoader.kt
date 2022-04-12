@@ -1,6 +1,9 @@
 package no.uio.ifi.team16.stim.data.dataLoader
 
 import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import no.uio.ifi.team16.stim.data.InfectiousPressureTimeSeries
 import no.uio.ifi.team16.stim.data.Site
 import org.locationtech.proj4j.CRSFactory
@@ -41,82 +44,109 @@ class InfectiousPressureTimeSeriesDataLoader : InfectiousPressureDataLoader() {
         site: Site,
         weeksRange: IntProgression
     ): InfectiousPressureTimeSeries? {
-        //var out: MutableList<Pair<Int, FloatArray2D>> = mutableListOf()
         var dx: Float = 0f
         var dy: Float = 0f
         var shape: Pair<Int, Int> = Pair(0, 0)
         val latLng = site.latLong
         //load name of all entries in catalog
-        val catalogEntries = loadEntryUrls()
-        //fow the first (weeksfromnow) entries, open and parse
-        return catalogEntries?.takeRange(weeksRange)?.map { entryUrl ->
-            THREDDSLoad(entryUrl) { ncfile ->
-                //lets make some infectious pressure
-                //Variables are data that are NOT READ YET. findVariable() is not null-safe
-                //TODO: move outside for loop since only needs to be done once
-                val concentrations: Variable = ncfile.findVariable("C10")
-                    ?: run {
-                        Log.e(TAG, "Failed to read variable <C10> from infectiousPressure")
-                        return@THREDDSLoad null //specidy scope of lambda to allow return
-                    }
-                val gridMapping: Variable = ncfile.findVariable("grid_mapping")
-                    ?: run {
-                        Log.e(TAG, "Failed to read variable <gridMapping> from infectiousPressure")
-                        return@THREDDSLoad null //specidy scope of lambda to allow return
-                    }
-                dx = gridMapping.findAttribute("dx")?.numericValue?.toFloat()
+        val catalogEntries = loadEntryUrls()?.toList() ?: run {
+            Log.e(TAG, "Failed to open thredds catalog")
+            return null
+        }
+
+        //open the first file, which is used to get the data common for all datasets
+        return THREDDSLoad(catalogEntries.firstOrNull() ?: return null) { firstncfile ->
+            //get common data
+            val gridMapping: Variable = firstncfile.findVariable("grid_mapping")
+                ?: run {
+                    Log.e(TAG, "Failed to read variable <gridMapping> from infectiousPressure")
+                    return@THREDDSLoad null //specidy scope of lambda to allow return
+                }
+            dx = gridMapping.findAttribute("dx")?.numericValue?.toFloat()
+                ?: run {
+                    Log.e(
+                        TAG,
+                        "Failed to read attribute <dx> from <gridMapping> from infectiousPressure"
+                    )
+                    return@THREDDSLoad null //specidy scope of lambda to allow return
+                }
+            dy = dx
+            //make the projection
+            val crsFactory = CRSFactory()
+            val stereoCRT = crsFactory.createFromParameters(
+                null,
+                gridMapping.findAttribute("proj4string")?.stringValue
                     ?: run {
                         Log.e(
                             TAG,
-                            "Failed to read attribute <dx> from <gridMapping> from infectiousPressure"
+                            "Failed to read attribute <proj4string> from <gridMapping> from infectiousPressure"
                         )
                         return@THREDDSLoad null //specidy scope of lambda to allow return
                     }
-                dy = dx
-                shape = Pair(concentrations.getShape(1), concentrations.getShape(2))
+            )
+            val latLngCRT = stereoCRT.createGeographic()
+            val ctFactory = CoordinateTransformFactory()
+            val latLngToStereo: CoordinateTransform =
+                ctFactory.createTransform(latLngCRT, stereoCRT)
 
-                //make the projection
-                val crsFactory = CRSFactory()
-                val stereoCRT = crsFactory.createFromParameters(
-                    null,
-                    gridMapping.findAttribute("proj4string")?.stringValue
+            //project latlng to etaxi
+            val (y, x) = ProjCoordinate().let { p ->
+                latLngToStereo.transform(ProjCoordinate(latLng.lng, latLng.lat), p)
+            }.let { p ->
+                Pair(round(p.y / dy), round(p.x / dx))
+            }
+
+            //all common data parsed, now open each dataset. Note the mapasync which uses coroutines
+            catalogEntries.takeRange(weeksRange)?.mapAsync { entryUrl ->
+                THREDDSLoad(entryUrl) { ncfile ->
+                    //concentration is unique to each dataset
+                    val concentrations: Variable = ncfile.findVariable("C10")
                         ?: run {
-                            Log.e(
-                                TAG,
-                                "Failed to read attribute <proj4string> from <gridMapping> from infectiousPressure"
-                            )
+                            Log.e(TAG, "Failed to read variable <C10> from infectiousPressure")
                             return@THREDDSLoad null //specidy scope of lambda to allow return
                         }
-                )
-                val latLngCRT = stereoCRT.createGeographic()
-                val ctFactory = CoordinateTransformFactory()
-                val latLngToStereo: CoordinateTransform =
-                    ctFactory.createTransform(latLngCRT, stereoCRT)
 
-                //project latlng to etaxi
-                val (y, x) = ProjCoordinate().let { p ->
-                    latLngToStereo.transform(ProjCoordinate(latLng.lng, latLng.lat), p)
-                }.let { p ->
-                    Pair(round(p.y / dy), round(p.x / dx))
-                }
+                    //make valid range around the point, minimum 0, not larger than bounds
+                    //TODO: can be moved to first dataset, somehow
+                    val minX = round(max(x - radius, 0.0)).toInt()
+                    val maxX =
+                        round(
+                            min(
+                                max(x + radius, 0.0),
+                                concentrations.getShape(2).toDouble()
+                            )
+                        ).toInt()
+                    val minY = round(max(y - radius, 0.0)).toInt()
+                    val maxY =
+                        round(
+                            min(
+                                max(y + radius, 0.0),
+                                concentrations.getShape(1).toDouble()
+                            )
+                        ).toInt()
+                    shape = Pair(concentrations.getShape(1), concentrations.getShape(2))
 
-                //make valid range around the point, minimum 0, not larger than bounds
-                val minX = round(max(x - radius, 0.0)).toInt()
-                val maxX =
-                    round(min(max(x + radius, 0.0), concentrations.getShape(2).toDouble())).toInt()
-                val minY = round(max(y - radius, 0.0)).toInt()
-                val maxY =
-                    round(min(max(y + radius, 0.0), concentrations.getShape(1).toDouble())).toInt()
-
-                //take out the arrayfloat(s)
-                Pair(
-                    ncfile.findGlobalAttribute("weeknumber")!!.numericValue.toInt(), //global attribute week always exists
-                    ((concentrations.read("0,${minY}:${maxY},${minX}:${maxX}")
-                        .reduce(0) as ArrayFloat).to2DFloatArray())
-                ) //end threddsload
-            } //end mapping
-        }?.filterNotNull()?.let { data -> //wrap the data in infectiousPressureTimeSeries
-            InfectiousPressureTimeSeries(site.id, data.toList().toTypedArray(), shape, dx, dy)
+                    //take out the arrayfloat(s) for this dataset, return (weeknumber, concnetration)
+                    Pair(
+                        ncfile.findGlobalAttribute("weeknumber")!!.numericValue.toInt(), //global attribute week always exists
+                        ((concentrations.read("0,${minY}:${maxY},${minX}:${maxX}")
+                            .reduce(0) as ArrayFloat).to2DFloatArray())
+                    ) //end threddsload
+                } //end mapping
+            }?.filterNotNull()?.let { data -> //wrap the data in infectiousPressureTimeSeries
+                InfectiousPressureTimeSeries(site.id, data.toTypedArray(), shape, dx, dy)
+            }
         }
+    }
+
+    /**
+     * let one coroutine handle each entry, then join
+     */
+    private suspend fun <T, U> List<T>.mapAsync(f: (T) -> U): List<U> = map { t ->
+        CoroutineScope(Dispatchers.IO).async(Dispatchers.IO) {
+            f(t)
+        }
+    }.map { deferred ->
+        deferred.await()
     }
 }
