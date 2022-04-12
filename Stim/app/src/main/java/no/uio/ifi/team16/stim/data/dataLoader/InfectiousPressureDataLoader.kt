@@ -5,7 +5,6 @@ import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.coroutines.awaitString
 import no.uio.ifi.team16.stim.data.InfectiousPressure
 import no.uio.ifi.team16.stim.util.LatLong
-import no.uio.ifi.team16.stim.util.LatLong
 import no.uio.ifi.team16.stim.util.Options
 import org.locationtech.proj4j.CRSFactory
 import org.locationtech.proj4j.CoordinateTransform
@@ -34,13 +33,14 @@ open class InfectiousPressureDataLoader : THREDDSDataLoader() {
     protected var catalogCache: Sequence<String> = sequenceOf()
 
     protected val baseUrl = "http://thredds.nodc.no:8080/thredds/fileServer/smittepress_new2018/"
+
     protected val catalogUrl =
         "http://thredds.nodc.no:8080/thredds/catalog/smittepress_new2018/catalog.html"
 
     /**
      * load the default dataset
      */
-    fun loadDefault(): InfectiousPressure? =
+    suspend fun loadDefault(): InfectiousPressure? =
         load(
             fromClosedRange(0, 901, Options.infectiousPressureStepX),
             fromClosedRange(0, 2601, Options.infectiousPressureStepY)
@@ -77,12 +77,12 @@ open class InfectiousPressureDataLoader : THREDDSDataLoader() {
      *
      * @see THREDDSDataLoader.THREDDSLoad()
      */
-    fun load(
+    suspend fun load(
         xRange: IntProgression,
         yRange: IntProgression
     ): InfectiousPressure? {
-        loadEntryUrls() //fills catalogCache
-        return THREDDSLoad(baseUrl + yearAndWeek(currentDate()) + ".nc") { ncfile ->
+        val catalogEntries = loadEntryUrls() //fills catalogCache, blocks the current coroutine
+        return THREDDSLoad(catalogEntries?.firstOrNull() ?: return null) { ncfile ->
             //lets make some infectious pressure
             //Variables are data that are NOT READ YET. findVariable() is not null-safe
             val concentrations: Variable = ncfile.findVariable("C10")
@@ -131,28 +131,72 @@ open class InfectiousPressureDataLoader : THREDDSDataLoader() {
      * Uses minimum of given and possible resolution.
      * crops to dataset if latitudes or longitudes exceed the dataset.
      *
-     * @param latitudeFrom smallest latitude to get data from
-     * @param latitudeTo largest latitude to get data from
-     * @param latitudeResolution resolution of latitude. A latitude resolution of 0.001 means that
-     * the data is sampled from latitudeFrom to latitudeTo with 0.001 latitude between points
-     * @param longitudeFrom smallest longitude to get data from
-     * @param longitudeTo largest longitude to get data from
-     * @param latitudeResolution resolution of longitude.
+     * @param latLongUpperLeft latlong of upper left corner in a box
+     * @param latLongLowerRight latlong of lower right corner in a box
+     * @param xStride stride between x coordinates
+     * @param yStride stride between y coordinates
      * @return data of infectious pressure in the prescribed data range.
      *
      * @see THREDDSDataLoader.THREDDSLoad()
      */
-    fun load(
+    suspend fun load(
         latLongUpperLeft: LatLong,
         latLongLowerRight: LatLong,
-        latitudeResolution: Int,
-        longitudeResolution: Int
-    ): InfectiousPressure? = THREDDSLoad(baseUrl + yearAndWeek(currentDate()) + ".nc") { ncfile ->
-        //convert parameters to ranges
-        val (xRange, yRange) = geographicCoordinateToRange(
-            latLongUpperLeft, latLongLowerRight, latitudeResolution, longitudeResolution
-        )
-        load(xRange, yRange)
+        xStride: Int,
+        yStride: Int
+    ): InfectiousPressure? {
+        val catalogEntries = loadEntryUrls() //fills catalogCache, blocks the current coroutine
+        return THREDDSLoad(catalogEntries?.firstOrNull() ?: return null) { ncfile ->
+            //lets make some infectious pressure
+            //Variables are data that are NOT READ YET. findVariable() is not null-safe
+            val concentrations: Variable = ncfile.findVariable("C10")
+                ?: throw NullPointerException("Failed to read variable <C10> from infectiousPressure")
+            val time: Variable = ncfile.findVariable("time")
+                ?: throw NullPointerException("Failed to read variable <time> from infectiousPressure")
+            val gridMapping: Variable = ncfile.findVariable("grid_mapping")
+                ?: throw NullPointerException("Failed to read variable <gridMapping> from infectiousPressure")
+            val dx = gridMapping.findAttribute("dx")?.numericValue?.toFloat()
+                ?: throw NullPointerException("Failed to read attribute <dx> from <gridMapping> from infectiousPressure")
+
+            //make the projection
+            val crsFactory = CRSFactory()
+            val stereoCRT = crsFactory.createFromParameters(
+                null,
+                gridMapping.findAttribute("proj4string")?.stringValue
+                    ?: throw NullPointerException("Failed to read attribute <proj4string> from <gridMapping> from infectiousPressure")
+            )
+            val latLngCRT = stereoCRT.createGeographic()
+            val ctFactory = CoordinateTransformFactory()
+            val latLngToStereo: CoordinateTransform =
+                ctFactory.createTransform(latLngCRT, stereoCRT)
+
+            val (xRange, yRange) = geographicCoordinateToRange(
+                latLongUpperLeft,
+                latLongLowerRight,
+                xStride,
+                yStride,
+                latLngToStereo
+            )
+
+            //make some extra ranges to access data
+            val range2 = "${reformatIntProgression(xRange)},${reformatIntProgression(yRange)}"
+            val range3 = "0,$range2"
+
+            //make the infectiousPressure
+            InfectiousPressure(
+                (concentrations.read(range3).reduce(0) as ArrayFloat).to2DFloatArray(),
+                time.readScalarFloat(),
+                latLngToStereo,
+                ncfile.findGlobalAttribute("fromdate")?.run {
+                    parseDate(this.stringValue)
+                },
+                ncfile.findGlobalAttribute("todate")?.run {
+                    parseDate(this.stringValue)
+                },
+                dx * max(Options.infectiousPressureStepX, 1).toFloat(),
+                dx * max(Options.infectiousPressureStepY, 1).toFloat()
+            )
+        }
     }
 
     /**

@@ -1,7 +1,6 @@
 package no.uio.ifi.team16.stim.util
 
 import no.uio.ifi.team16.stim.data.Site
-import no.uio.ifi.team16.stim.data.Sites
 import org.locationtech.proj4j.CRSFactory
 import org.locationtech.proj4j.CoordinateTransform
 import org.locationtech.proj4j.CoordinateTransformFactory

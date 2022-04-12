@@ -1,9 +1,9 @@
 package no.uio.ifi.team16.stim.data.repository
 
-import android.util.Log
 import no.uio.ifi.team16.stim.data.InfectiousPressureTimeSeries
 import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.data.dataLoader.InfectiousPressureTimeSeriesDataLoader
+import kotlin.ranges.IntProgression.Companion.fromClosedRange
 
 /**
  * Repository for infectious pressure time series data.
@@ -38,10 +38,12 @@ class InfectiousPressureTimeSeriesRepository() {
      *
      * @return mocked, cached or newly loaded data.
      */
-    fun getDataAtSite(site: Site, weeksFromNow: Int): InfectiousPressureTimeSeries? {
-        cache.getOrPutOrPass(site.id) {
-            dataSource.load(site, weekRange)
+    suspend fun getDataAtSite(site: Site, weeksFromNow: Int): InfectiousPressureTimeSeries? {
+        val value = cache.getOrElse(site.id) { null }
+        return cache.getOrPutOrPass(site.id) {
+            dataSource.load(site, fromClosedRange(0, weeksFromNow, 1))
         }
+    }
 
     /**
      * get the most recent data from the infectious pressure catalog
@@ -53,22 +55,32 @@ class InfectiousPressureTimeSeriesRepository() {
      *
      * @return mocked, cached or newly loaded data.
      */
-    fun getDataAtSite(site: Site, weekRange: IntProgression): InfectiousPressureTimeSeries? =
+    suspend fun getDataAtSite(
+        site: Site,
+        weekRange: IntProgression
+    ): InfectiousPressureTimeSeries? =
         cache.getOrPutOrPass(site.id) {
             dataSource.load(site, weekRange)
         }
+
 
     ///////////////
     // UTILITIES //
     ///////////////
     /**
      * same as Map.getOrPut, but if the put value resuls in null, don't put
+     *
+     * if the key exists, return its value
+     * if not, evaluate default,
+     *      if default succeeds(not null) put it in the cache, and return the value
+     *      if default fails (null), dont put anything in cache(get or put would put null in cache) and return null
      * @see MutableMap.getOrPut
      */
-    private fun <K, V> MutableMap<K, V>.getOrPutOrPass(key: K, default: () -> V?) =
+    private inline fun <K, V> MutableMap<K, V>.getOrPutOrPass(key: K, default: () -> V?): V? =
         getOrElse(key) {
             default()?.let { value ->
-                this.put(key, value) //TODO does put also return?
+                this.put(key, value)
+                value
             }
         }
 }

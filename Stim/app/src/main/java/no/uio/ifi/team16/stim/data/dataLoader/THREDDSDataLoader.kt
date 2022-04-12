@@ -3,6 +3,7 @@ package no.uio.ifi.team16.stim.data.dataLoader
 //import ucar.nc2.dataset.NetcdfDatasets
 import android.util.Log
 import no.uio.ifi.team16.stim.util.FloatArray2D
+import no.uio.ifi.team16.stim.util.LatLong
 import no.uio.ifi.team16.stim.util.project
 import org.locationtech.proj4j.CoordinateTransform
 import ucar.ma2.ArrayFloat
@@ -50,13 +51,15 @@ abstract class THREDDSDataLoader {
      * @return pair of ranges in x- and y-direction
      */
     fun geographicCoordinateToRange(
-        latitudeFrom: Float, latitudeTo: Float, yStride: Int,
-        longitudeFrom: Float, longitudeTo: Float, xStride: Int,
+        latLongUpperLeft: LatLong,
+        latLongLowerRight: LatLong,
+        xStride: Int,
+        yStride: Int,
         projection: CoordinateTransform
-    ): Pair<String, String> {
+    ): Pair<IntProgression, IntProgression> {
         //map from and to to indexes in grid
-        val (yFrom, xFrom) = projection.project(latitudeFrom, longitudeFrom)
-        val (yTo, xTo) = projection.project(latitudeTo, longitudeTo)
+        val (yFrom, xFrom) = projection.project(latLongUpperLeft)
+        val (yTo, xTo) = projection.project(latLongLowerRight)
         //interpret as ranges
         val startX = max(min(round(xFrom).toInt(), maxX), 0) //ensure >0, <maxX
         val stopX = max(min(round(xTo).toInt(), maxX), startX) //ensure >startX <maxX
@@ -129,7 +132,8 @@ abstract class THREDDSDataLoader {
     }
 
     fun ArrayFloat.to2DFloatArray(): FloatArray2D {
-        val asFloatArray = this.copyToNDJavaArray() as Array<FloatArray>
+        val asFloatArray =
+            this.copyToNDJavaArray() as Array<FloatArray> //unchecked cast, but guaranteed to be Array<FloatArray>
         //this is nice, but we need Array<Array<Float>>, and cupyToNDJavaArray cannot cast directly
         return Array(asFloatArray.size) { row ->
             asFloatArray[row].toTypedArray()
@@ -139,4 +143,17 @@ abstract class THREDDSDataLoader {
     fun reformatIntProgression(p: IntProgression): String {
         return "${p.first}:${p.last}:${p.step}"
     }
+
+    /**
+     * from a sequence take every (stride) eleemnt
+     */
+    protected fun <T> Sequence<T>.takeEvery(stride: Int): Sequence<T> =
+        this.filterIndexed { i, _ -> (i % stride == 0) }
+
+    /**
+     * for the given sequence, take values in the given intProgression(range with stride)
+     */
+    protected fun <T> Sequence<T>.takeRange(range: IntProgression): Sequence<T> =
+        drop(range.first).take(range.last - range.first).takeEvery(range.step)
+
 }

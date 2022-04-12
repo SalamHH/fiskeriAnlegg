@@ -39,7 +39,7 @@ class InfectiousPressureRepository() {
      *
      * @return mocked, cached or newly loaded data.
      */
-    fun getDefault(): InfectiousPressure? {
+    suspend fun getDefault(): InfectiousPressure? {
         if (!mocked && dirty) {
             cache = dataSource.loadDefault()
             dirty = false
