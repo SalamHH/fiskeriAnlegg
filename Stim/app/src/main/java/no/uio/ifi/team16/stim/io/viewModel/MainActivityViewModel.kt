@@ -33,6 +33,7 @@ class MainActivityViewModel : ViewModel() {
     private val norKyst800Data = MutableLiveData<NorKyst800?>()
     private val addressData = MutableLiveData<String?>()
     private val currentSiteData: MutableLiveData<Site?> = MutableLiveData()
+    private var lineDataSet: MutableLiveData<LineDataSet?> = MutableLiveData(null)
 
     //
     //private val WeatherRepository = WeatherRepository()
@@ -65,7 +66,7 @@ class MainActivityViewModel : ViewModel() {
         }
     }
 
-    fun getLineDataSet(): LiveData<LineDataSet> {
+    fun getLineDataSet(): LiveData<LineDataSet?> {
         return lineDataSet
     }
 
@@ -170,12 +171,6 @@ class MainActivityViewModel : ViewModel() {
     }
 
     private val infectionData = mutableListOf<Entry>()
-    private var _lineDataSet = MutableLiveData(LineDataSet(infectionData, CHART_LABEL))
-    private var lineDataSet: LiveData<LineDataSet> = _lineDataSet
-
-    fun setLineDataSet(lDataSet: LineDataSet) {
-        lineDataSet = MutableLiveData(lDataSet)
-    }
 
     //TODO: only for debug
     fun registerFavouriteSite(site: Site) {
