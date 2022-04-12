@@ -33,7 +33,7 @@
 
 
     <string-array name="searchChoices">
-        <item>Municipality Code</item>
+        <item>municipality code</item>
         <item>site name</item>
     </string-array>
 </resources>

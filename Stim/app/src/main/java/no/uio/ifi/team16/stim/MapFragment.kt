@@ -1,9 +1,12 @@
 package no.uio.ifi.team16.stim
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
@@ -70,7 +73,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
         binding.recyclerView.adapter = adapter
 
 
-        /* val spinner = binding.spinner
+         val spinner = binding.spinner
 
          //populere spinneren fra array
          ArrayAdapter.createFromResource(
@@ -85,23 +88,24 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
          }
 
 
+
+        var filterChoice=1 //1=muncode, 2=site name...
+
          spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
              override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                  when(spinner.selectedItem){
                      "municipality code" ->{
-                         Log.d("heei","test2")
+                         filterChoice=1
                      }
                      "site name" ->{
-                         Log.d("heei","test")
+                         filterChoice=2
 
                      }
-
                  }
              }
-
              override fun onNothingSelected(parent: AdapterView<*>?) {
              }
-         }*/
+         }
 
         binding.syncBtn.setOnClickListener {
             onRefresh()
@@ -111,8 +115,17 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
         binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 if (p0 != null) {
-                   // searchName(p0) fjern comment for å søke etter navn til site
-                    searchMunNr(p0)
+                    map.clear()
+                    if (filterChoice==1){
+                        Log.d("choice:", "muncode" )
+                        searchMunNr(p0)
+                    }
+                    else if (filterChoice==2){
+                        Log.d("choice:", "site name" )
+                        searchName(p0)
+
+                    }
+
                 }
 
                 return false
@@ -129,6 +142,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
 
 
     fun searchMunNr(munNr: String) {
+        map.clear()
         currentMunicipalityNr = munNr
         viewModel.loadSites(munNr)
         viewModel.getSitesData().observe(viewLifecycleOwner) {
@@ -148,11 +162,11 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
     }
 
     fun searchName(name: String){
-
+        map.clear()
         viewModel.loadSitesByName(name)
         viewModel.getSitesDataName().observe(viewLifecycleOwner){
             onSiteUpdate((it))
-            if (it != null) {
+            if (it != null && it.sites.isNotEmpty()) {
                 currentMunicipalityNr= null//it.sites[0].placement?.municipalityCode.toString()
                 currentSite=(it.sites[0].name)
 
@@ -198,7 +212,8 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
 
     private fun onSiteUpdate(sites: Sites?) {
 
-        if (sites != null) {
+        if (sites != null && sites.sites.isNotEmpty()) {
+
             binding.numSites.text = "Antall anlegg: ${sites.sites.size}"
 
             for (site in sites.sites) {
