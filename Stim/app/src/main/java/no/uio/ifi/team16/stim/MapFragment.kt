@@ -226,9 +226,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
     private fun onSiteUpdate(sites: Sites?) {
 
         if (sites != null && sites.sites.isNotEmpty()) {
-
-            binding.numSites.text = "Antall anlegg: ${sites.sites.size}"
-
             for (site in sites.sites) {
                 if (mapReady) {
                     val markerOptions = MarkerOptions()
