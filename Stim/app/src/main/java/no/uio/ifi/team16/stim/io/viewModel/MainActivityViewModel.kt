@@ -131,7 +131,7 @@ class MainActivityViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             val loaded = sitesRepository.getFavouriteSites()
             //invokes the observer
-            favouriteSitesData.postValue(loaded)
+            favouriteSitesData.postValue(loaded?.toMutableList())
         }
     }
 

@@ -35,7 +35,7 @@ class SitesRepository {
         if (municipality != null) {
             return municipality
         }
-        municipality = dataSource.loadMunicipality(municipalityCode)
+        municipality = dataSource.loadDataByMunicipalityCode(municipalityCode)
 
         if(municipality != null) {
             municipalityCache[municipalityCode] = municipality
