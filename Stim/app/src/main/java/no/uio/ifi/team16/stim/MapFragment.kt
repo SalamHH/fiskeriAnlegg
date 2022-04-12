@@ -19,11 +19,8 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import no.uio.ifi.team16.stim.data.Municipality
 import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.databinding.FragmentMapBinding
 import no.uio.ifi.team16.stim.io.adapter.RecycleViewAdapter
@@ -33,7 +30,7 @@ import no.uio.ifi.team16.stim.util.LatLong
 /**
  * Map fragment
  */
-class MapFragment : StimFragment(), OnMapReadyCallback {
+class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveListener {
 
     private val TAG = "MapFragment"
     private lateinit var map: GoogleMap
@@ -43,6 +40,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
     private var mapBounds: CameraPosition? = null
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var SearchView: SearchView
+    private var zoomLevel = 12F
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
 
@@ -69,10 +67,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
 
         // Observe municipality number
         viewModel.getMunicipalityNr().observe(viewLifecycleOwner, this::onMunicipalityUpdate)
-
-        // Observe sites and place them on the map
-        viewModel.getMunicipalityData().observe(viewLifecycleOwner, this::onSiteUpdate)
-
 
         //Bottom Sheet behavior
         bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet)
@@ -152,20 +146,24 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
 
     fun searchMunNr(munNr: String) {
         map.clear()
+
+        // Check that the input is numeric only
+        if (!munNr.matches(Regex("^[0-9]+\$"))) {
+            return
+        }
+
         currentMunicipalityNr = munNr
         viewModel.loadSitesAtMunicipality(munNr)
-        viewModel.getMunicipalityData().observe(viewLifecycleOwner) {
-            onSiteUpdate((it))
-            if (it != null && it.sites.isNotEmpty()) {
-                val bounds = LatLngBounds(
-                    LatLng(it.sites[0].latLong.lat, it.sites[0].latLong.lng),
-                    LatLng(it.sites[0].latLong.lat + 0.5, it.sites[0].latLong.lng + 0.5)
-                )
-                val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 10)
-                map.moveCamera(cameraUpdate)
+        viewModel.getMunicipalityData().observe(viewLifecycleOwner) { municipality ->
+            if (municipality != null && municipality.sites.isNotEmpty()) {
+                onSiteUpdate(municipality.sites)
 
-                // todo fix hva it gjør her
-                val adapter = RecycleViewAdapter(it, this::adapterOnClick, requireActivity())
+                // Move camera to arbitrary site in municipality
+                val firstSite = municipality.sites[0]
+                val cameraUpdate = CameraUpdateFactory.newLatLngZoom(firstSite.latLong.toGoogle(), zoomLevel)
+                map.animateCamera(cameraUpdate)
+
+                val adapter = RecycleViewAdapter(municipality.sites, this::adapterOnClick, requireActivity())
                 binding.recyclerView.adapter = adapter
             }
         }
@@ -173,20 +171,15 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
 
     fun searchName(name: String) {
         map.clear()
-        // todo dette må refaktoreres
-        viewModel.loadSitesByName(name)
-        viewModel.getSitesDataName().observe(viewLifecycleOwner) {
-            onSiteUpdate((it))
-            if (it != null && it.sites.isNotEmpty()) {
-                currentMunicipalityNr = null//it.sites[0].placement?.municipalityCode.toString()
-                currentSite = (it.sites[0].name)
+        viewModel.loadSiteByName(name)
+        viewModel.getCurrentSiteData().observe(viewLifecycleOwner) { site ->
+            if (site != null) {
+                onSiteUpdate(listOf(site))
+                currentMunicipalityNr = null
+                currentSite = site.name
 
-                val bounds = LatLngBounds(
-                    LatLng(it.sites[0].latLong.lat, it.sites[0].latLong.lng),
-                    LatLng(it.sites[0].latLong.lat + 0.5, it.sites[0].latLong.lng + 0.5)
-                )
-                val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 10)
-                map.moveCamera(cameraUpdate)
+                val cameraUpdate = CameraUpdateFactory.newLatLngZoom(site.latLong.toGoogle(), zoomLevel)
+                map.animateCamera(cameraUpdate)
             }
 
         }
@@ -201,6 +194,8 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
         map = googleMap
         mapReady = true
 
+        map.setOnCameraMoveListener(this::onCameraMove)
+
         mapBounds?.let { bounds ->
             // Move to last camera position
             val update = CameraUpdateFactory.newCameraPosition(bounds)
@@ -208,7 +203,11 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
         }
 
         // Observe municipality and place them on the map
-        viewModel.getMunicipalityData().observe(viewLifecycleOwner, this::onSiteUpdate)
+        viewModel.getMunicipalityData().observe(viewLifecycleOwner) { municipality ->
+            if (municipality != null) {
+                onSiteUpdate(municipality.sites)
+            }
+        }
 
         if (checkLocationPermission()) {
             map.isMyLocationEnabled = true
@@ -224,11 +223,10 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
         //todo - update headertext in bottomsheet to kommunenavn/nr
     }
 
-    private fun onSiteUpdate(municipality: Municipality?) {
-        if (municipality != null && mapReady) {
-            binding.numSites.text = "Antall anlegg: ${municipality.sites.size}"
+    private fun onSiteUpdate(sites: List<Site>?) {
+        if (sites != null && mapReady) {
 
-            for (site in municipality.sites) {
+            for (site in sites) {
                 val markerOptions = MarkerOptions()
                 markerOptions.title(site.name)
                 markerOptions.position(site.latLong.toGoogle())
@@ -236,8 +234,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
             }
 
             //update municipality in bottomsheet
-            val adapter =
-                RecycleViewAdapter(municipality.sites, this::adapterOnClick, requireActivity())
+            val adapter = RecycleViewAdapter(sites, this::adapterOnClick, requireActivity())
             binding.recyclerView.adapter = adapter
         }
     }
@@ -253,5 +250,9 @@ class MapFragment : StimFragment(), OnMapReadyCallback {
     private fun adapterOnClick(site: Site) {
         viewModel.setCurrentSite(site)
         view?.findNavController()?.navigate(R.id.action_mapFragment_to_siteInfoFragment)
+    }
+
+    override fun onCameraMove() {
+        zoomLevel = map.cameraPosition.zoom
     }
 }

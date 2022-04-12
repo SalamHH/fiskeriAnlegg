@@ -9,6 +9,7 @@ import no.uio.ifi.team16.stim.util.Options
  * Repository for sites.
  */
 class SitesRepository {
+
     private val TAG = "SitesRepository"
     private val dataSource = SitesDataLoader()
 
@@ -19,9 +20,8 @@ class SitesRepository {
 
     /**
      * Maps sitename to site object
-     * TODO: Fix this to be a Map<String, Site>
      */
-    private val nameCache: MutableMap<String, Site> = mutableMapOf()
+    private val nameCache: MutableMap<String, Site?> = mutableMapOf()
 
     //todo: store as int then load? sitedata on memory might be incorrect
     var favouriteSites: MutableList<Site> = mutableListOf()
@@ -55,12 +55,11 @@ class SitesRepository {
     /**
      * Load the site with the given name
      */
-    suspend fun getDataByName(name: String): Site {
+    suspend fun getDataByName(name: String): Site? {
         var site = nameCache[name]
         if (site != null) {
             return site
         }
-        // TODO: make function if not exists
         site = dataSource.loadDataByName(name)
         nameCache[name] = site
         return site

@@ -18,7 +18,7 @@ import org.json.JSONArray
  * several responses into a single response
  */
 class SitesDataLoader {
-    val TAG = "SitesDataLoader"
+    private val TAG = "SitesDataLoader"
 
     /**
      * URL to the API
@@ -34,13 +34,12 @@ class SitesDataLoader {
      * @param parameters list of parameters to the query, can be in the form of List<Pair<String,Any?>>,
      * or using Fules own syntax, listof(param1string to param1, ...)
      */
-    suspend fun loadWithParameters(parameters: Parameters?): List<Site>? {
+    private suspend fun loadWithParameters(parameters: Parameters?): List<Site>? {
         var responseStr = ""
         try {
             responseStr = Fuel.get(url, parameters).awaitString()
         } catch (e: Exception) {
             Log.e(TAG, "Kunne ikke hente municipality med params: $parameters", e)
-            return null
         }
 
         if (responseStr.isEmpty()) {
@@ -101,13 +100,15 @@ class SitesDataLoader {
             )
         }
 
-    suspend fun loadDataByName(name: String): Sites? =
-        loadWithParameters(
+    suspend fun loadDataByName(name: String): Site? {
+        val sites = loadWithParameters(
             listOf(
                 "range" to Options.sitesRange,
                 "name" to name
             )
         )
+        return sites?.getOrNull(0)
+    }
 
     /**
      * @see loadWithParameters

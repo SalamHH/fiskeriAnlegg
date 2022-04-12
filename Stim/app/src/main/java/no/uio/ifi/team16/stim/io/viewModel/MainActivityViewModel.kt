@@ -1,6 +1,5 @@
 package no.uio.ifi.team16.stim.io.viewModel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -33,6 +32,7 @@ class MainActivityViewModel : ViewModel() {
     private val favouriteSitesData: MutableLiveData<List<Site>?> = MutableLiveData()
     private val norKyst800Data = MutableLiveData<NorKyst800?>()
     private val addressData = MutableLiveData<String?>()
+    private val currentSiteData: MutableLiveData<Site?> = MutableLiveData()
     
     //
     //private val WeatherRepository = WeatherRepository()
@@ -73,8 +73,12 @@ class MainActivityViewModel : ViewModel() {
         return addressData
     }
 
-    fun getFavouriteSitesData(): MutableLiveData<List<Site>?> {
+    fun getFavouriteSitesData(): LiveData<List<Site>?> {
         return favouriteSitesData
+    }
+
+    fun getCurrentSiteData(): LiveData<Site?> {
+        return currentSiteData
     }
 
     ///////////// used to load the data from its source, does ot return the data but puts it
@@ -131,15 +135,10 @@ class MainActivityViewModel : ViewModel() {
         }
     }
 
-    fun loadSitesByName(name: String) {
+    fun loadSiteByName(name: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            Log.d(TAG, "loading sites to viewmodel")
-            //either loaded, retrieved from cache or faked
             val loaded = sitesRepository.getDataByName(name)
-            Log.d(TAG, "loading sites to viewmodel - DONE")
-            //invokes the observer
-            // todo fix dette
-            //sitesDataName.postValue(loaded)
+            currentSiteData.postValue(loaded)
         }
     }
 
