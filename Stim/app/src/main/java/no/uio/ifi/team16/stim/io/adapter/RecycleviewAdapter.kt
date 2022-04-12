@@ -3,6 +3,7 @@ package no.uio.ifi.team16.stim.io.adapter
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -43,7 +44,7 @@ class RecycleViewAdapter(
      * Oppretter viewholder med alle views i element
      */
 
-    class ViewHolder(view: View, val onClick : (Site) -> Unit) : RecyclerView.ViewHolder(view) {
+    inner class ViewHolder(view: View, val onClick: (Site) -> Unit) : RecyclerView.ViewHolder(view) {
         val nameView: TextView
         val locationView: TextView
         val pictureView: ImageView
@@ -75,12 +76,6 @@ class RecycleViewAdapter(
      */
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        val info = context.packageManager.getApplicationInfo(
-            context.packageName,
-            PackageManager.GET_META_DATA
-        )
-        val metadata = info.metaData
-        val mapsApiKey = metadata.getString("com.google.android.geo.API_KEY")
 
         val site = sites[position]
 
@@ -88,11 +83,8 @@ class RecycleViewAdapter(
         viewHolder.nameView.text = site.name
         viewHolder.locationView.text = site.latLong.toString()
 
-        val imagewidth = 800
-        val imageheight = 200
-
         Glide.with(context)
-            .load("https://maps.google.com/maps/api/staticmap?center=${site.latLong.lat},${site.latLong.lng}&zoom=16&size=${imagewidth}x${imageheight}&maptype=satellite&key=$mapsApiKey")
+            .load(getImageUrl(site))
             .placeholder(android.R.drawable.ic_menu_gallery.toDrawable())
             .error(android.R.drawable.ic_menu_gallery.toDrawable())
             .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -132,4 +124,29 @@ class RecycleViewAdapter(
 
     // Return the size of your dataset (invoked by the layout manager)
     override fun getItemCount() = sites.size
+
+    private val mapsApiKey by lazy {
+        val info = context.packageManager.getApplicationInfo(
+            context.packageName,
+            PackageManager.GET_META_DATA
+        )
+        info.metaData.getString("com.google.android.geo.API_KEY")
+    }
+
+    /**
+     * Hent URL til bilde av site
+     */
+    private fun getImageUrl(site: Site): String {
+
+        val imagewidth = 1000
+        val imageheight = 1000
+
+        return Uri.parse("https://maps.google.com/maps/api/staticmap").buildUpon().apply {
+            appendQueryParameter("center", "${site.latLong.lat},${site.latLong.lng}")
+            appendQueryParameter("zoom", "16")
+            appendQueryParameter("size", "${imagewidth}x${imageheight}")
+            appendQueryParameter("maptype", "satellite")
+            appendQueryParameter("key", mapsApiKey)
+        }.toString()
+    }
 }
