@@ -89,3 +89,4 @@ lint/tmp/
 # macOS
 .DS_Store
 
+/Norkloader/
