@@ -82,7 +82,7 @@ class InfectiousPressureTimeSeriesRepository() {
     private inline fun <K, V> MutableMap<K, V>.getOrPutOrPass(key: K, default: () -> V?): V? =
         getOrElse(key) {
             default()?.let { value ->
-                this.put(key, value)
+                this[key] = value
                 value
             }
         }

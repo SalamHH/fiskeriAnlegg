@@ -7,15 +7,15 @@ import kotlinx.coroutines.async
 import no.uio.ifi.team16.stim.data.InfectiousPressureTimeSeries
 import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.util.Options
+import no.uio.ifi.team16.stim.util.project
 import org.locationtech.proj4j.CRSFactory
 import org.locationtech.proj4j.CoordinateTransform
 import org.locationtech.proj4j.CoordinateTransformFactory
-import org.locationtech.proj4j.ProjCoordinate
 import ucar.ma2.ArrayFloat
 import ucar.nc2.Variable
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.math.round
+import kotlin.math.roundToInt
 
 /**
  * Dataloader for infectiouspressure over time.
@@ -60,8 +60,8 @@ class InfectiousPressureTimeSeriesDataLoader : InfectiousPressureDataLoader() {
         and use these to make the infectiousPressureTimeseries.
          */
 
-        var dx: Float = 0f
-        var dy: Float = 0f
+        var dx: Float
+        var dy: Float
         var shape: Pair<Int, Int> = Pair(0, 0)
         val latLng = site.latLong
 
@@ -112,12 +112,14 @@ class InfectiousPressureTimeSeriesDataLoader : InfectiousPressureDataLoader() {
             val latLngToStereo: CoordinateTransform =
                 ctFactory.createTransform(latLngCRT, stereoCRT)
 
-            //project latlng to etaxi
-            val (y, x) = ProjCoordinate().let { p ->
-                latLngToStereo.transform(ProjCoordinate(latLng.lng, latLng.lat), p)
-            }.let { p ->
-                Pair(round(p.y / dy), round(p.x / dx))
+            val (y, x) = latLngToStereo.project(site.latLong).let { (xf, yf) ->
+                Pair((xf / 800).roundToInt(), (yf / 800).roundToInt())
             }
+
+            val minX = max(x - radius, 0)
+            val maxX = min(max(x + radius, 0), Options.norKyst800XEnd)
+            val minY = max(y - radius, 0)
+            val maxY = min(max(y + radius, 0), Options.norKyst800YEnd)
 
             /*
             all common data parsed, now open each dataset. Note the mapasync which uses coroutines.
@@ -126,41 +128,25 @@ class InfectiousPressureTimeSeriesDataLoader : InfectiousPressureDataLoader() {
             but this is more convenient, albeit less readable:/ Also, this keeps the first dataset
             open throughout opening all the others, which is unnecessary
             */
-            catalogEntries.takeRange(weeksRange).mapAsync { entryUrl ->
-                THREDDSLoad(entryUrl) { ncfile ->
-                    //concentration is unique to each dataset
-                    val concentrations: Variable = ncfile.findVariable("C10")
-                        ?: run {
-                            Log.e(TAG, "Failed to read variable <C10> from infectiousPressure")
-                            return@THREDDSLoad null //specidy scope of lambda to allow return
-                            /*TODO: check how return works here, we actyually want to return from
-                            just the lambda, and continue reading the other datasets*/
-                        }
+            catalogEntries.takeRange(weeksRange)
+                .map { entryUrl -> //use mapAsync to load asynchronously, however the servers cannot handle parallell loads!
+                    THREDDSLoad(entryUrl) { ncfile ->
+                        //concentration is unique to each dataset
+                        val concentrations: Variable = ncfile.findVariable("C10")
+                            ?: run {
+                                Log.e(TAG, "Failed to read variable <C10> from infectiousPressure")
+                                return@THREDDSLoad null //specidy scope of lambda to allow return
+                                /*TODO: check how return works here, we actyually want to return from
+                                just the lambda, and continue reading the other datasets*/
+                            }
 
-                    //make valid range around the point, minimum 0, not larger than bounds
                     //TODO: can be moved to first dataset, somehow
-                    val minX = round(max(x - radius, 0.0)).toInt()
-                    val maxX =
-                        round(
-                            min(
-                                max(x + radius, 0.0),
-                                concentrations.getShape(2).toDouble()
-                            )
-                        ).toInt()
-                    val minY = round(max(y - radius, 0.0)).toInt()
-                    val maxY =
-                        round(
-                            min(
-                                max(y + radius, 0.0),
-                                concentrations.getShape(1).toDouble()
-                            )
-                        ).toInt()
                     shape = Pair(concentrations.getShape(1), concentrations.getShape(2))
 
                     //take out the arrayfloat(s) for this dataset, return (weeknumber, concnetration)
                     Pair(
                         ncfile.findGlobalAttribute("weeknumber")!!.numericValue.toInt(), //global attribute week always exists
-                        ((concentrations.read("0,${minY}:${maxY},${minX}:${maxX}")
+                        ((concentrations.read("0,${minX}:${maxX},${minY}:${maxY}")
                             .reduce(0) as ArrayFloat).to2DFloatArray())
                     ) //end threddsload
                 } //end async mapping

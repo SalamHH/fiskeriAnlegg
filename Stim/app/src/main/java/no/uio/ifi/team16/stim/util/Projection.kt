@@ -8,5 +8,5 @@ import org.locationtech.proj4j.ProjCoordinate
  */
 fun CoordinateTransform.project(latLng: LatLong): Pair<Float, Float> =
     transform(ProjCoordinate(latLng.lng, latLng.lat), ProjCoordinate(0.0, 0.0)).let { p ->
-        Pair(p.y.toFloat(), p.x.toFloat())
+        Pair(p.x.toFloat(), p.y.toFloat())
     }

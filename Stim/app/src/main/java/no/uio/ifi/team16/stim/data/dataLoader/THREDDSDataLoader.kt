@@ -198,9 +198,18 @@ abstract class THREDDSDataLoader {
 
     /**
      * return an intprogression as a string with format "first:last:step"
+     * indexing used in infectiouspressure, or more specifically ucar.edu.netcdf
      */
-    fun reformatIntProgression(p: IntProgression): String {
+    fun reformatIntProgressionFLS(p: IntProgression): String {
         return "${p.first}:${p.last}:${p.step}"
+    }
+
+    /**
+     * return an intprogression as a string with format "first:step:last"
+     * indexing used in norkyst800, or more specifically slicing in opendap
+     */
+    fun reformatIntProgressionFSL(p: IntProgression): String {
+        return "${p.first}:${p.step}:${p.last}"
     }
 
 }

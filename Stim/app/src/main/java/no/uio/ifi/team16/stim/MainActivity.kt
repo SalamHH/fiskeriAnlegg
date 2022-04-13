@@ -36,7 +36,7 @@ class MainActivity : StimActivity() {
 
         //initial load of data
         viewModel.loadNorKyst800()
-        viewModel.loadSomeInfectiousPressure()
+        viewModel.loadDefaultInfectiousPressure()
         viewModel.loadFavouriteSites() //denne er i utgangspunktet tom!
         viewModel.loadSitesAtMunicipality(Options.initialMunicipality)
         //men vi legger til dataene fra det først municipalities i starten, TODO: må fjernes i release
@@ -46,7 +46,6 @@ class MainActivity : StimActivity() {
             }
             //oppdaterer favouritesites, som igjen burde kalle på observatører til disse
         }
-
     }
 
     override fun onSupportNavigateUp(): Boolean {

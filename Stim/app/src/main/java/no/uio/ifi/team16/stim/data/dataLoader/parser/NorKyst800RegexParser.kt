@@ -70,16 +70,6 @@ class NorKyst800RegexParser {
             }
         )
 
-        val nork = NorKyst800(
-            depth,
-            salinity,
-            temperature,
-            time,
-            velocity
-        )
-
-        Log.d(TAG, "MADE:\n $nork")
-
         return NorKyst800(
             depth,
             salinity,

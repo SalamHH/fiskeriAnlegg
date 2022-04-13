@@ -9,12 +9,14 @@ import kotlin.ranges.IntProgression.Companion.fromClosedRange
 class Options {
     companion object {
         //NorKyst800
-        const val defaultNorKyst800XStride = 40
-        const val defaultNorKyst800YStride = 40
-        const val defaultNorKyst800DepthStride = 8
-        const val defaultNorKyst800TimeStride = 10
-        const val defaultNorKyst800DepthEnd = 8
-        const val defaultNorKyst800TimeEnd = 10
+        const val defaultNorKyst800XStride = 5
+        const val defaultNorKyst800YStride = 3
+        const val defaultNorKyst800DepthStride = 5
+        const val defaultNorKyst800TimeStride = 3
+        const val defaultNorKyst800DepthEnd = 0 //15
+        const val defaultNorKyst800TimeEnd = 0 //16
+        const val norKyst800XEnd = 902
+        const val norKyst800YEnd = 2602
         val defaultNorKyst800XRange = fromClosedRange(0, 902, defaultNorKyst800XStride)
         val defaultNorKyst800YRange = fromClosedRange(0, 2602, defaultNorKyst800YStride)
         val defaultNorKyst800DepthRange =
@@ -31,6 +33,11 @@ class Options {
                     ctFactory.createTransform(latLngCRT, stereoCRT)
                 }
             }
+
+
+        const val norKyst800AtSiteRadius = 2
+        val norKyst800AtSiteDepthRange = fromClosedRange(0, 10, 1)
+        val norKyst800AtSiteTimeRange = fromClosedRange(0, 10, 1)
 
         //INFECTIOUSPRESSURE - DATALOADER
         const val infectiousPressureStepX =

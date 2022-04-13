@@ -63,7 +63,7 @@ open class InfectiousPressureDataLoader : THREDDSDataLoader() {
 
         return THREDDSLoad(firstEntry) { ncfile ->
             //make some extra ranges to access data
-            val range2 = "${reformatIntProgression(yRange)},${reformatIntProgression(xRange)}"
+            val range2 = "${reformatIntProgressionFLS(xRange)},${reformatIntProgressionFLS(yRange)}"
             val range3 = "0,$range2"
             //make the projection
             val gridMapping: Variable = ncfile.findVariable("grid_mapping")
@@ -132,7 +132,7 @@ open class InfectiousPressureDataLoader : THREDDSDataLoader() {
             )
 
             //make some extra ranges to access data
-            val range2 = "${reformatIntProgression(xRange)},${reformatIntProgression(yRange)}"
+            val range2 = "${reformatIntProgressionFLS(xRange)},${reformatIntProgressionFLS(yRange)}"
             val range3 = "0,$range2"
 
             //lets make some infectious pressure
@@ -181,7 +181,7 @@ open class InfectiousPressureDataLoader : THREDDSDataLoader() {
      * @param infectiousPressure object to check if is up-to-date.
      * @return Boolean? true if up-to-date, false if not. Null if request failed
      */
-    fun isUpToDate(infectiousPressure: InfectiousPressure): Boolean? = true //NOT IMPLEMENTED
+    //fun isUpToDate(infectiousPressure: InfectiousPressure): Boolean? = true //NOT IMPLEMENTED
 
     /**
      * Make a list of all url-entries in the catalog, sorted by date(newer first)

@@ -56,12 +56,16 @@ class GeneralInfoFragment : Fragment() {
 
         //Vanntemperatur og saltholdighet
 
-        viewModel.loadNorKyst800()
+        viewModel.loadNorKyst800AtSite(site)
 
-        viewModel.getNorKyst800Data().observe(viewLifecycleOwner) {
-            if (it != null) {
-                binding.temperatureTextview.text = "${it.getTemperature(site.latLong).toString()}°"
-                binding.saltTextview.text = it.getSalinity(site.latLong).toString()
+        viewModel.getNorKyst800AtSiteData(site).observe(viewLifecycleOwner) {
+            it?.apply {
+                //forecast data is also available in the norkyst object! (about 66 hours, time indexes hours)
+                binding.temperatureTextview.text = "%4.1f".format(getTemperature()) + "°"
+                binding.saltTextview.text = "%4.1f".format(getSalinity())
+            } ?: run {
+                binding.temperatureTextview.text = "N/A"
+                binding.saltTextview.text = "N/A"
             }
         }
 

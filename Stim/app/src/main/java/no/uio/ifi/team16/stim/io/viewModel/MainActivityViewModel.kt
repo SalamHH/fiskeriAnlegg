@@ -1,6 +1,5 @@
 package no.uio.ifi.team16.stim.io.viewModel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -23,6 +22,7 @@ class MainActivityViewModel : ViewModel() {
     private val infectiousPressureTimeSeriesRepository = InfectiousPressureTimeSeriesRepository()
     private val sitesRepository = SitesRepository() //municipalities, favourite sites
     private val norKyst800Repository = NorKyst800Repository()
+    private val norKyst800AtSiteRepository = NorKyst800AtSiteRepository()
     private val addressRepository = AddressRepository()
 
     //MUTABLE LIVE DATA
@@ -32,6 +32,8 @@ class MainActivityViewModel : ViewModel() {
     private val municipalityData: MutableLiveData<Municipality?> = MutableLiveData()
     private val favouriteSitesData: MutableLiveData<MutableList<Site>?> = MutableLiveData()
     private val norKyst800Data = MutableLiveData<NorKyst800?>()
+    private val norKyst800AtSiteData: MutableMap<Site, MutableLiveData<NorKyst800AtSite?>> =
+        mutableMapOf()
     private val addressData = MutableLiveData<String?>()
     private val currentSiteData: MutableLiveData<Site?> = MutableLiveData()
     private var lineDataSet: MutableLiveData<LineDataSet?> = MutableLiveData(null)
@@ -51,6 +53,12 @@ class MainActivityViewModel : ViewModel() {
 
     fun getNorKyst800Data(): MutableLiveData<NorKyst800?> {
         return norKyst800Data
+    }
+
+    fun getNorKyst800AtSiteData(site: Site): MutableLiveData<NorKyst800AtSite?> {
+        return norKyst800AtSiteData.getOrPut(site) {
+            MutableLiveData()
+        }
     }
 
     fun getMunicipalityData(): MutableLiveData<Municipality?> {
@@ -86,7 +94,7 @@ class MainActivityViewModel : ViewModel() {
     ///////////// used to load the data from its source, does ot return the data but puts it
     // LOADERS // into its corresponding MutableLiveData container.
     ///////////// The posting will wake the observer of that data.
-    fun loadSomeInfectiousPressure() {
+    fun loadDefaultInfectiousPressure() {
         viewModelScope.launch(Dispatchers.IO) {
             val loaded =
                 infectiousPressureRepository.getDefault() //either loaded, retrieved from cache or faked
@@ -97,16 +105,14 @@ class MainActivityViewModel : ViewModel() {
 
     fun loadInfectiousPressureTimeSeriesAtSite(site: Site) {
         viewModelScope.launch(Dispatchers.IO) {
-            val loaded =
+            infectiousPressureTimeSeriesData.getOrPut(site) {
+                MutableLiveData()
+            }.postValue(
                 infectiousPressureTimeSeriesRepository.getDataAtSite(
                     site,
                     Options.infectiousPressureTimeSeriesSpan
                 ) //either loaded, retrieved from cache or faked
-            Log.d(TAG, "got: ${loaded}")
-            //invokes the observer
-            infectiousPressureTimeSeriesData.getOrPut(site) {
-                MutableLiveData()
-            }.postValue(loaded)
+            )
         }
     }
 
@@ -116,6 +122,16 @@ class MainActivityViewModel : ViewModel() {
                 norKyst800Repository.getDefaultData() //either loaded, retrieved from cache or faked
             //invokes the observer
             norKyst800Data.postValue(loaded)
+        }
+    }
+
+    fun loadNorKyst800AtSite(site: Site) {
+        viewModelScope.launch(Dispatchers.IO) {
+            norKyst800AtSiteData.getOrPut(site) {
+                MutableLiveData()
+            }.postValue(
+                norKyst800AtSiteRepository.getDataAtSite(site)
+            )
         }
     }
 

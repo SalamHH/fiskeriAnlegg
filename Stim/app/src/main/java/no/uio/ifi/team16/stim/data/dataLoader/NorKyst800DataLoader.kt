@@ -15,7 +15,7 @@ import no.uio.ifi.team16.stim.util.Options
  * DataLoader for data related tot he norkyst800 model.
  * Temperature, salinity, water velocity etc
  **/
-class NorKyst800DataLoader : THREDDSDataLoader() {
+open class NorKyst800DataLoader : THREDDSDataLoader() {
     private val TAG = "NorKyst800DataLoader"
 
     private val catalogUrl =
@@ -39,6 +39,7 @@ class NorKyst800DataLoader : THREDDSDataLoader() {
         depthRange: IntProgression,
         timeRange: IntProgression
     ): NorKyst800? {
+
         val baseUrl = loadForecastUrl() ?: run {
             Log.e(
                 TAG,
@@ -48,6 +49,7 @@ class NorKyst800DataLoader : THREDDSDataLoader() {
         }
 
         val parametrizedUrl = makeParametrizedUrl(baseUrl, xRange, yRange, depthRange, timeRange)
+        Log.d(TAG, parametrizedUrl)
 
         val responseStr = Fuel.get(parametrizedUrl).awaitStringResult().onError { error ->
             Log.e(TAG, "Failed to load norkyst800data due to:\n $error")
@@ -65,7 +67,6 @@ class NorKyst800DataLoader : THREDDSDataLoader() {
             return null
         }
 
-        Log.d(TAG, "parsing norkyst800")
         return NorKyst800RegexParser().parse(responseStr)
     }
 
@@ -116,16 +117,24 @@ class NorKyst800DataLoader : THREDDSDataLoader() {
         yRange: IntProgression,
         depthRange: IntProgression,
         timeRange: IntProgression
-    ): String = baseUrl +
-            "depth[${depthRange}]," +
-            "lat[${yRange}][${xRange}]," +
-            "lon[${yRange}][${xRange}]," +
-            "salinity[${timeRange}][${depthRange}][${yRange}][${xRange}]," +
-            "temperature[${timeRange}][${depthRange}][${yRange}][${xRange}]," +
-            "time[${timeRange}]," +
-            "u[${timeRange}][${depthRange}][${yRange}][${xRange}]," +
-            "v[${timeRange}][${depthRange}][${yRange}][${xRange}]," +
-            "w[${timeRange}][${depthRange}][${yRange}][${xRange}]"
+    ): String {
+
+        val xyString =
+            "[${reformatIntProgressionFSL(xRange)}][${reformatIntProgressionFSL(yRange)}]"
+        val dString = "[${reformatIntProgressionFSL(depthRange)}]"
+        val tString = "[${reformatIntProgressionFSL(timeRange)}]"
+        val dtxyString = dString + tString + xyString
+        return baseUrl +
+                "depth$dString," +
+                "lat$xyString," +
+                "lon$xyString," +
+                "salinity$dtxyString," +
+                "temperature$dtxyString," +
+                "time$tString," +
+                "u$dtxyString," +
+                "v$dtxyString," +
+                "w$dtxyString"
+    }
 
     /**
      * load the thredds catalog for the norkyst800 dataset, then return the URL
@@ -134,7 +143,7 @@ class NorKyst800DataLoader : THREDDSDataLoader() {
     private val forecastUrlRegex =
         Regex("""'catalog\.html\?dataset=norkyst800m_1h_files/(.*?\.fc\..*?)'""")
 
-    private suspend fun loadForecastUrl(): String? = try {
+    protected suspend fun loadForecastUrl(): String? = try {
         Fuel.get(catalogUrl).awaitString()
     } catch (e: Exception) {
         Log.e(TAG, "Unable to retrieve NorKyst800 catalog due to", e)
