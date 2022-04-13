@@ -6,7 +6,6 @@ import no.uio.ifi.team16.stim.util.get
 import org.locationtech.proj4j.CoordinateTransform
 import org.locationtech.proj4j.ProjCoordinate
 import java.util.*
-import kotlin.math.cos
 import kotlin.math.round
 
 //typealias FloatArray2D = Array<FloatArray>
@@ -45,21 +44,14 @@ class InfectiousPressure(
         return concentration.get(row, column)
     }
 
-    /**
-     * DEPRECATED! use InfectiousPressureTimeSeries, get from InfectiousPressureTimeSeriesRepository
-     * will be removed in a future commit
-     */
-    @Deprecated("use InfectiousPressureTimeSeries, get from InfectiousPressureTimeSeriesRepository")
-    fun getConcentration(latLong: LatLong, weeksFromNow: Int): Float {
-        /*find the concentrationgrid closest to our latlongpoint,
-        we use euclidean distance, or technically L1, to measure distance between latlngs.*/
-        val (row, column) = getClosestIndex(latLong)
-        return concentration[row][column] * cos(weeksFromNow.toFloat() / 2 * 3.141592f)
-    }
-
     ///////////////
     // UTILITIES //
     ///////////////
+    /**
+     * get the index in the dataset that is closest to the given latlong.
+     * The latlong is in one of the squares of the grid, and the indexes are
+     * the gridpoints closest to that latlong in the grid-cell
+     */
     private fun getClosestIndex(latLong: LatLong): Pair<Int, Int> {
         //map latLng to projection coordinates(eta, xi)
         val (eta, xi) = project(latLong)
@@ -70,18 +62,13 @@ class InfectiousPressure(
     /**
      * project a latlng point to a point on the projection.
      * in the thredds dataset, maps from latlong to eps, xi.
-     *
-     * TODO: these should really be handled py a projection class!
      */
-    fun project(lat: Float, lng: Float): Pair<Float, Float> =
+    fun project(latLong: LatLong): Pair<Float, Float> =
         ProjCoordinate(0.0, 0.0).let { p ->
-            projection.transform(ProjCoordinate(lng.toDouble(), lat.toDouble()), p)
+            projection.transform(ProjCoordinate(latLong.lng, latLong.lat), p)
         }.let { p ->
             Pair(p.y.toFloat(), p.x.toFloat())
         }
-
-    fun project(latLong: LatLong): Pair<Float, Float> =
-        project(latLong.lat.toFloat(), latLong.lng.toFloat())
 
     override fun toString() = "InfectiousPressure:" +
             "\nFrom: ${fromDate}, to: $toDate" +

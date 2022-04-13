@@ -5,9 +5,12 @@ import android.util.Log
 import no.uio.ifi.team16.stim.util.FloatArray2D
 import no.uio.ifi.team16.stim.util.LatLong
 import no.uio.ifi.team16.stim.util.project
+import org.locationtech.proj4j.CRSFactory
 import org.locationtech.proj4j.CoordinateTransform
+import org.locationtech.proj4j.CoordinateTransformFactory
 import ucar.ma2.ArrayFloat
 import ucar.ma2.InvalidRangeException
+import ucar.nc2.Variable
 import ucar.nc2.dataset.NetcdfDataset
 import java.io.IOException
 import java.util.*
@@ -38,66 +41,9 @@ abstract class THREDDSDataLoader {
     private val maxLatitude = 90
     private val latitudeDiff = maxLatitude - minLatitude
 
-    /**
-     * convert a set of geographical coordinates to a range applicable to our THREDDS datasets
-     *
-     * @param latitudeFrom smallest latitude to get data from
-     * @param latitudeTo largest latitude to get data from
-     * @param latitudeResolution resolution of latitude. A latitude resolution of 0.001 means that
-     * the data is sampled from latitudeFrom to latitudeTo with 0.001 latitude between points
-     * @param longitudeFrom smallest longitude to get data from
-     * @param longitudeTo largest longitude to get data from
-     * @param latitudeResolution resolution of longitude.
-     * @return pair of ranges in x- and y-direction
-     */
-    fun geographicCoordinateToRange(
-        latLongUpperLeft: LatLong,
-        latLongLowerRight: LatLong,
-        xStride: Int,
-        yStride: Int,
-        projection: CoordinateTransform
-    ): Pair<IntProgression, IntProgression> {
-        //map from and to to indexes in grid
-        val (yFrom, xFrom) = projection.project(latLongUpperLeft)
-        val (yTo, xTo) = projection.project(latLongLowerRight)
-        //interpret as ranges
-        val startX = max(min(round(xFrom).toInt(), maxX), 0) //ensure >0, <maxX
-        val stopX = max(min(round(xTo).toInt(), maxX), startX) //ensure >startX <maxX
-        val stepX = xStride
-        val startY = max(min(round(yFrom).toInt(), maxY), 0) //ensure >0, <maxX
-        val stopY = max(min(round(yTo).toInt(), maxY), startY) //ensure >startX <maxX
-        val stepY = yStride
-        Log.d(
-            TAG,
-            "loading from ranges ${startX}:${stopX}:${stepX}\",\"${startY}:${stopY}:${stepY}"
-        )
-        return Pair(fromClosedRange(startX, stopX, stepX), fromClosedRange(startY, stopY, stepY))
-    }
-
-    /**
-     * parses a string with format YYYY-MM-DD to a date object
-     */
-    fun parseDate(dateString: String): Date {
-        val yyyy = dateString.substring(0..3)
-        val mm = dateString.substring(5..6)
-        val dd = dateString.substring(8..9)
-        return Date(yyyy.toInt(), mm.toInt(), dd.toInt())
-    }
-
-    /**
-     * check if the dataset is up to date with given date.
-     * If true, daaset is up to date, if false it is not. If null the checking failed.
-     *
-     * Should work, not tested
-     * @param currentDate date to check if dataset agrees with(date has minimum esolution on a day)
-     * @return whether the data is up to date or not. Or null if request failed.
-     */
-    fun isUpToDate(currentDate: Date, url: String): Boolean? = THREDDSLoad(url) { ncfile ->
-        ncfile.findGlobalAttribute("fromdate")?.run {
-            parseDate(this.stringValue)
-        } == currentDate
-    }
-
+    /////////////
+    // LOADERS //
+    /////////////
     /**
      * general method for opening THREDDS file.
      * @param url: url of data to open
@@ -132,6 +78,12 @@ abstract class THREDDSDataLoader {
         return data
     }
 
+    ////////////////////////////
+    // UTILITIES - EXTENSIONS //
+    ////////////////////////////
+    /**
+     * make an arrayFloat(netcdfs version of FloatArray) into FloatArray2D(alias for Array<Array<Float?>>)
+     */
     fun ArrayFloat.to2DFloatArray(): FloatArray2D {
         val asFloatArray =
             this.copyToNDJavaArray() as Array<FloatArray> //unchecked cast, but guaranteed to be Array<FloatArray>
@@ -141,12 +93,8 @@ abstract class THREDDSDataLoader {
         }
     }
 
-    fun reformatIntProgression(p: IntProgression): String {
-        return "${p.first}:${p.last}:${p.step}"
-    }
-
     /**
-     * from a sequence take every (stride) eleemnt
+     * from a sequence take every (stride) element
      */
     protected fun <T> Sequence<T>.takeEvery(stride: Int): Sequence<T> =
         this.filterIndexed { i, _ -> (i % stride == 0) }
@@ -168,5 +116,91 @@ abstract class THREDDSDataLoader {
      */
     protected fun <T> List<T>.takeRange(range: IntProgression): List<T> =
         drop(range.first).take(range.last - range.first).takeEvery(range.step)
+
+    ////////////////////////
+    // UTILITIES - NETCDF //
+    ////////////////////////
+    /**
+     * for a netcdfdataset with a gridmappingvariable, read out the projection
+     */
+    protected fun readAndMakeProjectionFromGridMapping(gridMapping: Variable): CoordinateTransform {
+        val crsFactory = CRSFactory()
+        val stereoCRT = crsFactory.createFromParameters(
+            null,
+            gridMapping.findAttribute("proj4string")?.stringValue
+                ?: throw NullPointerException("Failed to read attribute <proj4string> from <gridMapping> from infectiousPressure")
+        )
+        val latLngCRT = stereoCRT.createGeographic()
+        val ctFactory = CoordinateTransformFactory()
+        return ctFactory.createTransform(latLngCRT, stereoCRT)
+    }
+
+    /////////////////////////////
+    // UTILITIES - COORDINATES //
+    /////////////////////////////
+    /**
+     * convert a set of geographical coordinates to a range applicable to our THREDDS datasets
+     *
+     * @param latLongUpperLeft latlong of upper left corner in a box
+     * @param latLongLowerRight latlong of lower right corner in a box
+     * @param xStride stride between x coordinates
+     * @param yStride stride between y coordinates
+     * @param projection projection used in the dataset.
+     * @return pair of ranges in x- and y-direction
+     */
+    fun geographicCoordinateToRange(
+        latLongUpperLeft: LatLong,
+        latLongLowerRight: LatLong,
+        xStride: Int,
+        yStride: Int,
+        projection: CoordinateTransform
+    ): Pair<IntProgression, IntProgression> {
+        //map from and to to indexes in grid
+        val (yFrom, xFrom) = projection.project(latLongUpperLeft)
+        val (yTo, xTo) = projection.project(latLongLowerRight)
+        //interpret as ranges
+        val startX = max(min(round(xFrom).toInt(), maxX), 0) //ensure >0, <maxX
+        val stopX = max(min(round(xTo).toInt(), maxX), startX) //ensure >startX <maxX
+        val startY = max(min(round(yFrom).toInt(), maxY), 0) //ensure >0, <maxX
+        val stopY = max(min(round(yTo).toInt(), maxY), startY) //ensure >startX <maxX
+        return Pair(
+            fromClosedRange(startX, stopX, xStride),
+            fromClosedRange(startY, stopY, yStride)
+        )
+    }
+
+    ///////////////////////
+    // UTILITIES - OTHER //
+    ///////////////////////
+    /**
+     * parses a string with format YYYY-MM-DD to a date object
+     */
+    fun parseDate(dateString: String): Date {
+        val yyyy = dateString.substring(0..3)
+        val mm = dateString.substring(5..6)
+        val dd = dateString.substring(8..9)
+        return Date(yyyy.toInt(), mm.toInt(), dd.toInt())
+    }
+
+    /**
+     * check if the dataset is up to date with given date.
+     * If true, daaset is up to date, if false it is not. If null the checking failed.
+     *
+     * Should work, not tested
+     * @param currentDate date to check if dataset agrees with(date has minimum esolution on a day)
+     * @return whether the data is up to date or not. Or null if request failed.
+     */
+    fun isUpToDate(currentDate: Date, url: String): Boolean? = THREDDSLoad(url) { ncfile ->
+        ncfile.findGlobalAttribute("fromdate")?.run {
+            parseDate(this.stringValue)
+        } == currentDate
+    }
+
+    /**
+     * return an intprogression as a string with format "first:last:step"
+     */
+    fun reformatIntProgression(p: IntProgression): String {
+        return "${p.first}:${p.last}:${p.step}"
+    }
 
 }

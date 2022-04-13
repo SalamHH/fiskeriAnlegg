@@ -12,6 +12,11 @@ class AddressDataLoader {
     private val BASE_URL = "https://ws.geonorge.no/adresser/v1/punktsok"
     private val RADIUS = 1000
 
+    /**
+     * Load the municipalityNr at the given latLong
+     * @param latLong latLong to find MunicipalityNr of
+     * @return municipalitynr
+     */
     suspend fun loadMunicipalityNr(latLong: LatLong): String? {
 
         val side = "side" to 0
@@ -31,6 +36,7 @@ class AddressDataLoader {
         }
 
         if (result.isBlank()) {
+            Log.w(TAG, "Empty response")
             return null
         }
 

@@ -25,14 +25,18 @@ class SitesDataLoader {
      */
     private val url: String = "https://api.fiskeridir.no/pub-aqua/api/v1/sites"
 
+    /////////////
+    // LOADERS //
+    /////////////
     /**
-     * Loads the 100 first municipality from the url, with the given query
+     * Loads the 100 first municipality from the url, with the given parameters in the query
      *
      * See the municipality-API parameters banner for all parameters.
      * https://api.fiskeridir.no/pub-aqua/api/swagger-ui/index.html?configUrl=/pub-aqua/api/api-docs/swagger-config#/site-resource/municipality
      *
      * @param parameters list of parameters to the query, can be in the form of List<Pair<String,Any?>>,
      * or using Fules own syntax, listof(param1string to param1, ...)
+     * @return a list of sites returned from the query with given parameters, or null if fetching or parsing fails
      */
     private suspend fun loadWithParameters(parameters: Parameters?): List<Site>? {
         var responseStr = ""
@@ -43,6 +47,7 @@ class SitesDataLoader {
         }
 
         if (responseStr.isEmpty()) {
+            Log.w(TAG, "empty response")
             return null
         }
 
@@ -69,7 +74,7 @@ class SitesDataLoader {
                                         APJSON.getString("prodAreaName"),
                                         ProdAreaStatus.valueOf(APJSON.getString("prodAreaStatus"))
                                     )
-                                }.getOrDefault(null)
+                                }.getOrDefault(null) //placement might be null
                             )
                         },
                         this.getDouble("capacity"),
@@ -85,6 +90,8 @@ class SitesDataLoader {
     }
 
     /**
+     * @param municipalityCode municipalitycode to find sites in
+     * @return municipality object with sites in the specified municipality
      * @see loadWithParameters
      */
     suspend fun loadDataByMunicipalityCode(municipalityCode: String): Municipality? =
@@ -100,6 +107,11 @@ class SitesDataLoader {
             )
         }
 
+    /**
+     * @param name ???
+     * @return List of sites associated with the given name
+     * @see loadWithParameters
+     */
     suspend fun loadDataByName(name: String): Site? {
         val sites = loadWithParameters(
             listOf(
@@ -113,7 +125,7 @@ class SitesDataLoader {
     /**
      * @see loadWithParameters
      */
-    /*suspend fun loadDataByCountyCode(countyCode: Int): Municipality? =
+    /*suspend fun loadDataByCountyCode(countyCode: Int): County? =
         loadWithParameters(
             listOf(
                 "range" to Options.sitesRange,
@@ -124,7 +136,7 @@ class SitesDataLoader {
     /**
      * @see loadWithParameters
      */
-    /*suspend fun loadDataByProductionAreaCode(paCode: Int): Municipality? =
+    /*suspend fun loadDataByProductionAreaCode(paCode: Int): ProductionArea? =
         loadWithParameters(
             listOf(
                 "range" to Options.sitesRange,

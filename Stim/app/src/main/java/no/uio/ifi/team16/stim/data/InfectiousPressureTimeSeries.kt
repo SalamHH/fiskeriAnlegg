@@ -25,6 +25,15 @@ data class InfectiousPressureTimeSeries(
     //how concentrations at a given time are aggregated to a single float
     val aggregation: (FloatArray2D) -> Float = { arr -> meanAggregation(arr) }
 
+    init {
+        //infer y-x shape
+        val shape: Pair<Int, Int> = Pair(
+            concentrations.firstOrNull()?.second?.size
+                ?: -1, //if null, there are no data entries, and shape cannot be inferred!
+            concentrations.firstOrNull()?.second?.firstOrNull()?.size ?: 0
+        )
+    }
+
     /////////////////
     // AGGREGATORS //
     /////////////////

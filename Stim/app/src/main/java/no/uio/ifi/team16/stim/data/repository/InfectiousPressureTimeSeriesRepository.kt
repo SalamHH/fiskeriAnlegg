@@ -29,13 +29,15 @@ class InfectiousPressureTimeSeriesRepository() {
     }
 
     /**
-     * get the most recent data from the infectious pressure catalog
+     * get infectious pressure timeseries data at a given site.
      *
      * If in testmode(mocked data), return the testdata
      * otherwise;
      * if the cache is not up to date(dirty), load the data anew,
      * otherwise just return the data in the cache.
      *
+     * @param site site to load data around
+     * @param weeksFromNow amount of weeks from th current week to load
      * @return mocked, cached or newly loaded data.
      */
     suspend fun getDataAtSite(site: Site, weeksFromNow: Int): InfectiousPressureTimeSeries? {
@@ -45,13 +47,15 @@ class InfectiousPressureTimeSeriesRepository() {
     }
 
     /**
-     * get the most recent data from the infectious pressure catalog
+     * get infectious pressure timeseries data at a given site.
      *
      * If in testmode(mocked data), return the testdata
      * otherwise;
      * if the cache is not up to date(dirty), load the data anew,
      * otherwise just return the data in the cache.
      *
+     * @param site site to load data around
+     * @param weekRange range of weeks(from the current week!) to load from
      * @return mocked, cached or newly loaded data.
      */
     suspend fun getDataAtSite(

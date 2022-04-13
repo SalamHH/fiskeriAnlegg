@@ -32,6 +32,12 @@ class NorKyst800RegexParser {
     /////////////
     // PARSING //
     /////////////
+    /**
+     * Take an ascii response from the norkystdataset and parse it into a norkyst-object
+     *
+     * @param response ascii response from the norjkyst dataset.
+     * @return corresponding NorKyst800 object.
+     */
     fun parse(response: String): NorKyst800? {
         val depth = make1DDoubleArrayOf("depth", response) ?: run {
             Log.e(TAG, "Failed to read <depth> from NorKyst800")
@@ -85,13 +91,16 @@ class NorKyst800RegexParser {
 
     /**
      * Thredds stores a float as a special value if the value is actually nan,
-     * For this particular dataset, the value is the fillvalue -32767
+     * For this particular dataset, the value is the fillvalue -32767.
+     * Fill value varies from dataset to dataset, and variable to variable, so this is actually not safe!
+     * But it is impossible to find from the ascii response alone
      */
     private fun isTHREDDSFiller(unscaledValue: Int): Boolean = (unscaledValue == -32767)
 
     /**
      * try to parse out a 4D intarray from an ascii opendap response,
      * returns null if any parsing fails.
+     * The array contains null where the data is not available(ie where there are filler values)
      */
     private fun make4DDoubleArrayOf(
         attribute: String,

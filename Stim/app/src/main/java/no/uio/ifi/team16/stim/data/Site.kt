@@ -2,43 +2,13 @@ package no.uio.ifi.team16.stim.data
 
 import no.uio.ifi.team16.stim.util.LatLong
 
-
 data class Municipality(val id: String, val sites: List<Site>)
 data class County(val id: String, val sites: List<Site>)
-data class ProductionArea(val id: String, val sites: List<Site>)
+data class ProductionArea(
+    val id: String,
+    val sites: List<Site>
+) //distinct from ProdArea, this one contains sites
 
-
-/* schema from fiskeridirektoratet
-Site {
-    siteId	integer($int64)
-    versionId	integer($int64)
-    siteNr	integer($int32)
-    name	string
-    placementType	string
-    placementTypeValue	string
-    waterType	string
-    waterTypeValue	string
-    firstClearanceTime	string
-    firstClearanceType	string
-    firstClearanceTypeValue	string
-    latitude	number($double)
-    longitude	number($double)
-    capacity	number($double)
-    tempCapacity	number($double)
-    capacityUnitType	string
-    placement	AreaPlacement{...}
-    speciesLimitations	[...]
-    connections	[...]
-    version	VersionDetail{...}
-}
-*/
-
-/*BorderPoint{
-    id	integer($int64)
-    index	integer($int32)
-    latitude	number($double)
-    longitude	number($double)
-}*/
 data class ProdArea(
     val prodAreaCode: Int,
     val prodAreaName: String,

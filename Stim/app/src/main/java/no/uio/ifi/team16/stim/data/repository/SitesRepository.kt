@@ -24,7 +24,7 @@ class SitesRepository {
      */
     private val nameCache: MutableMap<String, Site?> = mutableMapOf()
 
-    //todo: store as int then load? sitedata on memory might be incorrect
+    //todo: store as int then load? sitedata on memory might be inconsistent with remote
     var favouriteSites: MutableList<Site> = mutableListOf()
 
     /**

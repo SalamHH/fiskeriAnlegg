@@ -1,5 +1,6 @@
 package no.uio.ifi.team16.stim.data.dataLoader
 
+import android.util.Log
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.coroutines.awaitString
 import no.uio.ifi.team16.stim.data.Weather
@@ -10,6 +11,7 @@ import org.json.JSONObject
  * Loads weather using the LocationForecast API
  */
 class WeatherDataLoader {
+    private val TAG = "WeatherDataLoader"
 
     /**
      * URL to the API
@@ -29,6 +31,7 @@ class WeatherDataLoader {
         val responseStr = Fuel.get(url, listOf(lat, lon)).awaitString()
 
         if (responseStr.isEmpty()) {
+            Log.w(TAG, "Empty response")
             return null
         }
 
@@ -37,6 +40,7 @@ class WeatherDataLoader {
         val timeseries = properties.getJSONArray("timeseries")
 
         if (timeseries.length() == 0) {
+            Log.w(TAG, "Empty timeseries")
             return null
         }
 

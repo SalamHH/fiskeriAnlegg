@@ -6,12 +6,8 @@ import com.github.kittinunf.fuel.coroutines.awaitString
 import no.uio.ifi.team16.stim.data.InfectiousPressure
 import no.uio.ifi.team16.stim.util.LatLong
 import no.uio.ifi.team16.stim.util.Options
-import org.locationtech.proj4j.CRSFactory
-import org.locationtech.proj4j.CoordinateTransform
-import org.locationtech.proj4j.CoordinateTransformFactory
 import ucar.ma2.ArrayFloat
 import ucar.nc2.Variable
-import java.util.*
 import kotlin.math.max
 import kotlin.ranges.IntProgression.Companion.fromClosedRange
 
@@ -28,51 +24,26 @@ open class InfectiousPressureDataLoader : THREDDSDataLoader() {
     once per run. However the catalog updates at wednesdays, so if the application is started 5 min before
     and caches the result, the cache will be incorrect when the catalog updates and will be unable to
     check the catalog.
-    * */
-    protected var dirtyCatalogCache = true
-    protected var catalogCache: Sequence<String> = sequenceOf()
+    */
+    private var dirtyCatalogCache = true
 
-    protected val baseUrl = "http://thredds.nodc.no:8080/thredds/fileServer/smittepress_new2018/"
+    //sequence of urls in the catalog, format AGG_OPR_<YEAR>_<WEEK>.nc
+    private var catalogCache: Sequence<String> = sequenceOf()
 
-    protected val catalogUrl =
+    private val baseUrl = "http://thredds.nodc.no:8080/thredds/fileServer/smittepress_new2018/"
+
+    private val catalogUrl =
         "http://thredds.nodc.no:8080/thredds/catalog/smittepress_new2018/catalog.html"
 
+    /////////////
+    // LOADERS //
+    /////////////
     /**
-     * load the default dataset
-     */
-    suspend fun loadDefault(): InfectiousPressure? =
-        load(
-            fromClosedRange(0, 901, Options.infectiousPressureStepX),
-            fromClosedRange(0, 2601, Options.infectiousPressureStepY)
-        )
-
-    /**
-     * return the year and week of the given data in yyyy_w format
-     * , fjernes med norkyst800-regexed
-     */
-    fun yearAndWeek(date: Date): String {
-        //TODO: this MIGHT be wrong, datasets are made on wednesdays, but published... some time after that?
-        val week = ((date.getTime() - Date(date.year, 0, 0).getTime()) / 1000 / 60 / 60 / 24 / 7)
-        return date.year.toString() +
-                "_" +
-                (if (week == 0L) 52 else week).toString()
-    }
-
-    /**
-     * return the current date
-     */
-    fun currentDate(): Date {
-        val cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-        return Date(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH))
-    }
-
-    /**
-     * return data between latitude from/to, and latitude from/to, with given resolution.
-     * Uses minimum of given and possible resolution.
-     * crops to dataset if latitudes or longitudes exceed the dataset.
+     * return data in the given range.
+     * Usually the data is in a 2602x902 yx-grid
      *
-     * @param TODO
-     * @param TODO
+     * @param xRange range of x-coordinates to get
+     * @param yRange range of y-coordinates to get
      * @return data of infectious pressure in the prescribed data range.
      *
      * @see THREDDSDataLoader.THREDDSLoad()
@@ -82,32 +53,31 @@ open class InfectiousPressureDataLoader : THREDDSDataLoader() {
         yRange: IntProgression
     ): InfectiousPressure? {
         val catalogEntries = loadEntryUrls() //fills catalogCache, blocks the current coroutine
-        return THREDDSLoad(catalogEntries?.firstOrNull() ?: return null) { ncfile ->
+        val firstEntry = catalogEntries?.firstOrNull() ?: run {
+            Log.e(
+                TAG,
+                "failed to load a single entry from the catalog, is the url correct? Are you connected to the internet?"
+            )
+            return null
+        }
+
+        return THREDDSLoad(firstEntry) { ncfile ->
+            //make some extra ranges to access data
+            val range2 = "${reformatIntProgression(yRange)},${reformatIntProgression(xRange)}"
+            val range3 = "0,$range2"
+            //make the projection
+            val gridMapping: Variable = ncfile.findVariable("grid_mapping")
+                ?: throw NullPointerException("Failed to read variable <gridMapping> from infectiousPressure") //caught by THREDDSLOAD
+            val latLngToStereo =
+                readAndMakeProjectionFromGridMapping(gridMapping) //can throw NullpointerException, caught by THREDDSLOAD
             //lets make some infectious pressure
             //Variables are data that are NOT READ YET. findVariable() is not null-safe
             val concentrations: Variable = ncfile.findVariable("C10")
-                ?: throw NullPointerException("Failed to read variable <C10> from infectiousPressure")
+                ?: throw NullPointerException("Failed to read variable <C10> from infectiousPressure") //caught by THREDDSLOAD
             val time: Variable = ncfile.findVariable("time")
-                ?: throw NullPointerException("Failed to read variable <time> from infectiousPressure")
-            val gridMapping: Variable = ncfile.findVariable("grid_mapping")
-                ?: throw NullPointerException("Failed to read variable <gridMapping> from infectiousPressure")
+                ?: throw NullPointerException("Failed to read variable <time> from infectiousPressure") //caught by THREDDSLOAD
             val dx = gridMapping.findAttribute("dx")?.numericValue?.toFloat()
-                ?: throw NullPointerException("Failed to read attribute <dx> from <gridMapping> from infectiousPressure")
-            //make some extra ranges to access data
-            val range2 = "${reformatIntProgression(xRange)},${reformatIntProgression(yRange)}"
-            val range3 = "0,$range2"
-
-            //make the projection
-            val crsFactory = CRSFactory()
-            val stereoCRT = crsFactory.createFromParameters(
-                null,
-                gridMapping.findAttribute("proj4string")?.stringValue
-                    ?: throw NullPointerException("Failed to read attribute <proj4string> from <gridMapping> from infectiousPressure")
-            )
-            val latLngCRT = stereoCRT.createGeographic()
-            val ctFactory = CoordinateTransformFactory()
-            val latLngToStereo: CoordinateTransform =
-                ctFactory.createTransform(latLngCRT, stereoCRT)
+                ?: throw NullPointerException("Failed to read attribute <dx> from <gridMapping> from infectiousPressure") //caught by THREDDSLOAD
 
             //make the infectiousPressure
             InfectiousPressure(
@@ -116,10 +86,10 @@ open class InfectiousPressureDataLoader : THREDDSDataLoader() {
                 latLngToStereo,
                 ncfile.findGlobalAttribute("fromdate")?.run {
                     parseDate(this.stringValue)
-                },
+                }, //can be null
                 ncfile.findGlobalAttribute("todate")?.run {
                     parseDate(this.stringValue)
-                },
+                }, //can be null
                 dx * max(Options.infectiousPressureStepX, 1).toFloat(),
                 dx * max(Options.infectiousPressureStepY, 1).toFloat()
             )
@@ -147,28 +117,11 @@ open class InfectiousPressureDataLoader : THREDDSDataLoader() {
     ): InfectiousPressure? {
         val catalogEntries = loadEntryUrls() //fills catalogCache, blocks the current coroutine
         return THREDDSLoad(catalogEntries?.firstOrNull() ?: return null) { ncfile ->
-            //lets make some infectious pressure
-            //Variables are data that are NOT READ YET. findVariable() is not null-safe
-            val concentrations: Variable = ncfile.findVariable("C10")
-                ?: throw NullPointerException("Failed to read variable <C10> from infectiousPressure")
-            val time: Variable = ncfile.findVariable("time")
-                ?: throw NullPointerException("Failed to read variable <time> from infectiousPressure")
-            val gridMapping: Variable = ncfile.findVariable("grid_mapping")
-                ?: throw NullPointerException("Failed to read variable <gridMapping> from infectiousPressure")
-            val dx = gridMapping.findAttribute("dx")?.numericValue?.toFloat()
-                ?: throw NullPointerException("Failed to read attribute <dx> from <gridMapping> from infectiousPressure")
-
             //make the projection
-            val crsFactory = CRSFactory()
-            val stereoCRT = crsFactory.createFromParameters(
-                null,
-                gridMapping.findAttribute("proj4string")?.stringValue
-                    ?: throw NullPointerException("Failed to read attribute <proj4string> from <gridMapping> from infectiousPressure")
-            )
-            val latLngCRT = stereoCRT.createGeographic()
-            val ctFactory = CoordinateTransformFactory()
-            val latLngToStereo: CoordinateTransform =
-                ctFactory.createTransform(latLngCRT, stereoCRT)
+            val gridMapping: Variable = ncfile.findVariable("grid_mapping")
+                ?: throw NullPointerException("Failed to read variable <gridMapping> from infectiousPressure") //caught by THREDDSLOAD
+            val latLngToStereo =
+                readAndMakeProjectionFromGridMapping(gridMapping) //can throw NullpointerException, caught by THREDDSLOAD
 
             val (xRange, yRange) = geographicCoordinateToRange(
                 latLongUpperLeft,
@@ -181,6 +134,15 @@ open class InfectiousPressureDataLoader : THREDDSDataLoader() {
             //make some extra ranges to access data
             val range2 = "${reformatIntProgression(xRange)},${reformatIntProgression(yRange)}"
             val range3 = "0,$range2"
+
+            //lets make some infectious pressure
+            //Variables are data that are NOT READ YET. findVariable() is not null-safe
+            val concentrations: Variable = ncfile.findVariable("C10")
+                ?: throw NullPointerException("Failed to read variable <C10> from infectiousPressure")
+            val time: Variable = ncfile.findVariable("time")
+                ?: throw NullPointerException("Failed to read variable <time> from infectiousPressure")
+            val dx = gridMapping.findAttribute("dx")?.numericValue?.toFloat()
+                ?: throw NullPointerException("Failed to read attribute <dx> from <gridMapping> from infectiousPressure")
 
             //make the infectiousPressure
             InfectiousPressure(
@@ -198,6 +160,28 @@ open class InfectiousPressureDataLoader : THREDDSDataLoader() {
             )
         }
     }
+
+    /**
+     * load the default dataset, as specified by Options
+     */
+    suspend fun loadDefault(): InfectiousPressure? =
+        load(
+            fromClosedRange(0, 901, Options.infectiousPressureStepX),
+            fromClosedRange(0, 2601, Options.infectiousPressureStepY)
+        )
+
+    ///////////////
+    // UTILITIES //
+    ///////////////
+    /**
+     * Given an infectiousPressureObject, return wether it is to most recent one.
+     * returns null if the request failed
+     * TODO: find reasonable method. Need to check with catalog, but then the cache is useless
+     * if we must get the entire catalog each time
+     * @param infectiousPressure object to check if is up-to-date.
+     * @return Boolean? true if up-to-date, false if not. Null if request failed
+     */
+    fun isUpToDate(infectiousPressure: InfectiousPressure): Boolean? = true //NOT IMPLEMENTED
 
     /**
      * Make a list of all url-entries in the catalog, sorted by date(newer first)
@@ -219,7 +203,6 @@ open class InfectiousPressureDataLoader : THREDDSDataLoader() {
     //group3: entry week
     private val catalogEntryRegex =
         Regex("""'catalog\.html\?dataset=smittepress_new2018/(agg_OPR_(.*?)_(.*?)\.nc)'""")
-
     protected suspend fun loadEntryUrls(): Sequence<String>? =
         if (dirtyCatalogCache) {
             try {
@@ -237,9 +220,9 @@ open class InfectiousPressureDataLoader : THREDDSDataLoader() {
                         //associate weeks from year 0 to name
                         //the first entry of the year is labeled as week 52, for some reason, map to 0
                         year * 52 + (if (week == 52) 0 else week) to name
-                    }.sortedByDescending { (weeksFromYear0, name) -> //sort by weeks from year 0
+                    }.sortedByDescending { (weeksFromYear0, _) -> //sort by weeks from year 0
                         weeksFromYear0
-                    }.map { (weeksFromYear0, name) -> //reduce to only urls
+                    }.map { (_, name) -> //reduce to only urls
                         baseUrl + name
                     } //we have a list of urls, sorted by date!
             }?.let { result -> //if everything succeeded, store in cache and return it

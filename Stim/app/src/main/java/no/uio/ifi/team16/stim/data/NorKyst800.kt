@@ -27,9 +27,6 @@ data class NorKyst800(
         return salinity.get(time, depth, index.first, index.second)
     }
 
-    //wrapper, get at "smallest" time and at surface
-    fun getSalinity(latLng: LatLong) = getSalinity(latLng, 0, 0)
-
     /**
      * Get temperature closest to given coordinates at given time and depth.
      * See time and depth explanation in class definition
@@ -38,9 +35,6 @@ data class NorKyst800(
         val index = getClosestIndex(latLng)
         return temperature.get(time, depth, index.first, index.second)
     }
-
-    //wrapper, get at "smallest" time and at surface
-    fun getTemperature(latLng: LatLong) = getTemperature(latLng, 0, 0)
 
     /**
      * Get velocity in all three directions(xyz) closest to given coordinates at given time and depth.
@@ -55,12 +49,24 @@ data class NorKyst800(
         )
     }
 
-    //wrapper, get at "smallest" time and at surface
+    /////////////////////
+    // GETTER-WRAPPERS //
+    /////////////////////
+    //get at "smallest" time and at surface
     fun getVelocity(latLng: LatLong) = getVelocity(latLng, 0, 0)
+
+    //get at "smallest" time and at surface
+    fun getTemperature(latLng: LatLong) = getTemperature(latLng, 0, 0)
+
+    //get at "smallest" time and at surface
+    fun getSalinity(latLng: LatLong) = getSalinity(latLng, 0, 0)
 
     //////////////////////
     // HELPER FUNCTIONS //
     //////////////////////
+    /**
+     * get the closest y-x index corresponding to a given latLng
+     */
     private fun getClosestIndex(latLng: LatLong): Pair<Int, Int> =
         projection.project(latLng).let { (yf, xf) ->
             Pair(
@@ -81,4 +87,33 @@ data class NorKyst800(
                 "\tvelocity.x: ${velocity.first.prettyPrint()}" +
                 "\tvelocity.y: ${velocity.second.prettyPrint()}" +
                 "\tvelocity.z: ${velocity.third.prettyPrint()}"
+
+    ////////////////////
+    // AUTO-GENERATED //
+    ////////////////////
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as NorKyst800
+
+        if (!depth.contentEquals(other.depth)) return false
+        if (!salinity.contentDeepEquals(other.salinity)) return false
+        if (!temperature.contentDeepEquals(other.temperature)) return false
+        if (!time.contentEquals(other.time)) return false
+        if (velocity != other.velocity) return false
+        if (projection != other.projection) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = depth.contentHashCode()
+        result = 31 * result + salinity.contentDeepHashCode()
+        result = 31 * result + temperature.contentDeepHashCode()
+        result = 31 * result + time.contentHashCode()
+        result = 31 * result + velocity.hashCode()
+        result = 31 * result + projection.hashCode()
+        return result
+    }
 }
