@@ -55,6 +55,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginEnd="5dp"
             android:layout_marginBottom="5dp"
+            android:scaleType="fitXY"
             android:background="@color/cardview_dark_background"
             android:contentDescription="@string/visual_of_the_location_of_the_site"
             android:minHeight="150dp"
