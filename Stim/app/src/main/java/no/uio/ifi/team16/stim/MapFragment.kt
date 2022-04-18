@@ -9,8 +9,6 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -35,7 +33,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
     private val viewModel: MainActivityViewModel by activityViewModels()
     private var mapReady = false
     private var mapBounds: CameraPosition? = null
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var zoomLevel = 12F
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
 
@@ -50,8 +47,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
                 hasLocationPermission = it
             }
         }
-
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
         binding = FragmentMapBinding.inflate(layoutInflater)
 
