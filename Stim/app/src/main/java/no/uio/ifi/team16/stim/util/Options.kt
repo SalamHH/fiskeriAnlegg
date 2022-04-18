@@ -57,7 +57,7 @@ class Options {
 
         //MAINACTIVITY
         const val initialMunicipality = "4615"
-        val fakeSite = Site(420, "fakevik", LatLong(1.0, 2.0), null, 3.141592, null, null)
+        val fakeSite = Site(420, "fakevik", LatLong(59.910073, 10.743205), null, 3.141592, null, null)
         val initialFavouriteSites: MutableList<Site> = mutableListOf()
 
         //INFECTIONFRAGMENT OPTIONS

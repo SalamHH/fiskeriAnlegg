@@ -1,21 +1,27 @@
 package no.uio.ifi.team16.stim.data.repository
 
-import no.uio.ifi.team16.stim.data.Weather
+import no.uio.ifi.team16.stim.data.Site
+import no.uio.ifi.team16.stim.data.WeatherForecast
 import no.uio.ifi.team16.stim.data.dataLoader.WeatherDataLoader
-import no.uio.ifi.team16.stim.util.LatLong
 
 class WeatherRepository {
 
     private val TAG = "WeatherRepository"
-    val dataSource = WeatherDataLoader()
-    private val cache: MutableMap<LatLong, Weather> = mutableMapOf()
+    private val dataSource = WeatherDataLoader()
+    private val cache: MutableMap<Site, WeatherForecast?> = mutableMapOf()
 
     /**
      * Load the data from the datasource
      */
-    suspend fun getData(position: LatLong): Weather? {
-        return cache.getOrPut(position) {
-            return dataSource.load(position)
+    suspend fun getWeatherForecast(site: Site): WeatherForecast? {
+        var forecast = cache[site]
+
+        if (forecast == null) {
+            forecast = dataSource.load(site.latLong)
+            cache[site] = forecast
+            site.weatherForecast = forecast
         }
+
+        return forecast
     }
 }

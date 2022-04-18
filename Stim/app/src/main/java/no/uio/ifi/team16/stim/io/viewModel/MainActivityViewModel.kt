@@ -24,19 +24,20 @@ class MainActivityViewModel : ViewModel() {
     private val norKyst800Repository = NorKyst800Repository()
     private val norKyst800AtSiteRepository = NorKyst800AtSiteRepository()
     private val addressRepository = AddressRepository()
+    private val weatherRepository = WeatherRepository()
 
     //MUTABLE LIVE DATA
     private val infectiousPressureData = MutableLiveData<InfectiousPressure?>()
     private val infectiousPressureTimeSeriesData: MutableMap<Site, MutableLiveData<InfectiousPressureTimeSeries?>> =
         mutableMapOf()
-    private val municipalityData: MutableLiveData<Municipality?> = MutableLiveData()
-    private val favouriteSitesData: MutableLiveData<MutableList<Site>?> = MutableLiveData()
+    private val municipalityData = MutableLiveData<Municipality?>()
+    private val favouriteSitesData = MutableLiveData<MutableList<Site>?>()
     private val norKyst800Data = MutableLiveData<NorKyst800?>()
-    private val norKyst800AtSiteData: MutableMap<Site, MutableLiveData<NorKyst800AtSite?>> =
-        mutableMapOf()
+    private val norKyst800AtSiteData = mutableMapOf<Site, MutableLiveData<NorKyst800AtSite?>>()
     private val addressData = MutableLiveData<String?>()
-    private val currentSiteData: MutableLiveData<Site?> = MutableLiveData()
-    private var lineDataSet: MutableLiveData<LineDataSet?> = MutableLiveData(null)
+    private val currentSiteData = MutableLiveData<Site?>()
+    private var lineDataSet = MutableLiveData<LineDataSet?>(null)
+    private val weatherData = MutableLiveData<WeatherForecast?>()
 
     //
     //private val WeatherRepository = WeatherRepository()
@@ -47,29 +48,29 @@ class MainActivityViewModel : ViewModel() {
     /////////////
     //note that for maps, getting on a value of the map, say site or municipalitycode,
     //will create a mutablelivedata at the entry if there is none.
-    fun getInfectiousPressureData(): MutableLiveData<InfectiousPressure?> {
+    fun getInfectiousPressureData(): LiveData<InfectiousPressure?> {
         return infectiousPressureData
     }
 
-    fun getNorKyst800Data(): MutableLiveData<NorKyst800?> {
+    fun getNorKyst800Data(): LiveData<NorKyst800?> {
         return norKyst800Data
     }
 
-    fun getNorKyst800AtSiteData(site: Site): MutableLiveData<NorKyst800AtSite?> {
+    fun getNorKyst800AtSiteData(site: Site): LiveData<NorKyst800AtSite?> {
         return norKyst800AtSiteData.getOrPut(site) {
             MutableLiveData()
         }
     }
 
-    fun getMunicipalityData(): MutableLiveData<Municipality?> {
+    fun getMunicipalityData(): LiveData<Municipality?> {
         return municipalityData
     }
 
-    fun getWeatherData() {
-        throw NotImplementedError()
+    fun getWeatherData(): LiveData<WeatherForecast?> {
+        return weatherData
     }
 
-    fun getInfectiousPressureTimeSeriesData(site: Site): MutableLiveData<InfectiousPressureTimeSeries?> {
+    fun getInfectiousPressureTimeSeriesData(site: Site): LiveData<InfectiousPressureTimeSeries?> {
         return infectiousPressureTimeSeriesData.getOrPut(site) {
             MutableLiveData()
         }
@@ -83,7 +84,7 @@ class MainActivityViewModel : ViewModel() {
         return addressData
     }
 
-    fun getFavouriteSitesData(): MutableLiveData<MutableList<Site>?> {
+    fun getFavouriteSitesData(): LiveData<MutableList<Site>?> {
         return favouriteSitesData
     }
 
@@ -161,8 +162,11 @@ class MainActivityViewModel : ViewModel() {
         }
     }
 
-    fun loadWeather() {
-        throw NotImplementedError()
+    fun loadWeatherAtSite(site: Site) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val forecast = weatherRepository.getWeatherForecast(site)
+            weatherData.postValue(forecast)
+        }
     }
 
     fun loadMunicipalityNr(latLong: LatLong) {

@@ -31,7 +31,20 @@
     <string name="stim">STIM</string>
     <string name="blank">-----</string>
 
-
     <string name="bottomsheet_default_header">Liste over anlegg</string>
     <string name="bottomsheet_formatted_header">Liste over anlegg i kommune: %s</string>
+
+    // weather fragment
+    <string name="weather_data">VÆRDATA</string>
+    <string name="weather_icon">Weather icon</string>
+    <string name="storm_forecast">STORM FORECAST</string>
+    <string name="temperature">%.0f°</string>
+    <string name="monday">Mandag</string>
+    <string name="tuesday">Tirsdag</string>
+    <string name="wednesday">Onsdag</string>
+    <string name="thursday">Torsdag</string>
+    <string name="friday">Fredag</string>
+    <string name="saturday">Lørdag</string>
+    <string name="sunday">Søndag</string>
+    <string name="today">I dag</string>
 </resources>

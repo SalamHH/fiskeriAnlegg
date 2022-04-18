@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
@@ -9,25 +9,268 @@
 
 
     <!-- WEATHER-->
-    <TextView
-        app:layout_constraintTop_toTopOf="parent"
-        android:id="@+id/weatherText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/v_rdata"
-        android:textSize="30sp"
-        android:layout_marginTop="30dp"
-        android:gravity="center" />
 
     <ImageView
-        app:layout_constraintTop_toBottomOf="@id/weatherText"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:id="@+id/weatherIcon"
+        android:id="@+id/weatherHeaderIcon"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_gravity="center"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="40dp"
+        android:contentDescription="@string/weather_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/clear_sky" />
+
+    <TextView
+        android:id="@+id/weatherHeaderText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/montserrat_bold"
+        android:text="@string/weather_data"
+        android:textColor="@color/black"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/weatherHeaderIcon" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/weatherDay1"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="40dp"
+        app:cardBackgroundColor="@color/colorSecondary"
+        app:cardCornerRadius="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/weatherHeaderText">
+
+        <TextView
+            android:id="@+id/dayText1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="20dp"
+            android:fontFamily="@font/montserrat"
+            android:text="@string/blank"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/weatherBox1"
+            android:layout_width="80dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center_vertical|end"
+            android:layout_marginEnd="20dp"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="20dp">
+
+            <ImageView
+                android:id="@+id/weatherIcon1"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="10dp"
+                android:src="@drawable/clear_sky"
+                android:contentDescription="@string/weather_icon" />
+
+            <TextView
+                android:id="@+id/temperatureView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginEnd="10dp"
+                android:text="@string/blank"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+        </androidx.cardview.widget.CardView>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/weatherDay2"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="25dp"
+        app:cardBackgroundColor="@color/colorSecondary"
+        app:cardCornerRadius="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/weatherDay1">
+
+        <TextView
+            android:id="@+id/dayText2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="20dp"
+            android:fontFamily="@font/montserrat"
+            android:text="@string/blank"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/weatherBox2"
+            android:layout_width="80dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center_vertical|end"
+            android:layout_marginEnd="20dp"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="20dp">
+
+            <ImageView
+                android:id="@+id/weatherIcon2"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="10dp"
+                android:src="@drawable/clear_sky"
+                android:contentDescription="@string/weather_icon" />
+
+            <TextView
+                android:id="@+id/temperatureView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginEnd="10dp"
+                android:text="@string/blank"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+        </androidx.cardview.widget.CardView>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/weatherDay3"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="25dp"
+        app:cardBackgroundColor="@color/colorSecondary"
+        app:cardCornerRadius="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/weatherDay2">
+
+        <TextView
+            android:id="@+id/dayText3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="20dp"
+            android:fontFamily="@font/montserrat"
+            android:text="@string/blank"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/weatherBox3"
+            android:layout_width="80dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center_vertical|end"
+            android:layout_marginEnd="20dp"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="20dp">
+
+            <ImageView
+                android:id="@+id/weatherIcon3"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="10dp"
+                android:src="@drawable/clear_sky"
+                android:contentDescription="@string/weather_icon" />
+
+            <TextView
+                android:id="@+id/temperatureView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginEnd="10dp"
+                android:text="@string/blank"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+        </androidx.cardview.widget.CardView>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/weatherDay4"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="25dp"
+        app:cardBackgroundColor="@color/colorSecondary"
+        app:cardCornerRadius="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/weatherDay3">
+
+        <TextView
+            android:id="@+id/dayText4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="20dp"
+            android:fontFamily="@font/montserrat"
+            android:text="@string/blank"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/weatherBox4"
+            android:layout_width="80dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center_vertical|end"
+            android:layout_marginEnd="20dp"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="20dp">
+
+            <ImageView
+                android:id="@+id/weatherIcon4"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="10dp"
+                android:src="@drawable/clear_sky"
+                android:contentDescription="@string/weather_icon" />
+
+            <TextView
+                android:id="@+id/temperatureView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginEnd="10dp"
+                android:text="@string/blank"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+        </androidx.cardview.widget.CardView>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/stormForecast"
+        android:layout_width="300dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="25dp"
+        app:cardBackgroundColor="@color/colorSecondary"
+        app:cardCornerRadius="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/weatherDay4">
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/montserrat"
+            android:text="@string/storm_forecast"
+            android:textColor="@color/black" />
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

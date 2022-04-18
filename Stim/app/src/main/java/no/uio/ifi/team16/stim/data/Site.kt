@@ -36,4 +36,9 @@ data class Site(
     val capacity: Double,
     val placementType: String?,
     val waterType: String?
-)
+) {
+    /**
+     * Current weather forecast at site, null if not loaded yet
+     */
+    var weatherForecast: WeatherForecast? = null
+}

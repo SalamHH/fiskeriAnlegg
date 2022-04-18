@@ -5,21 +5,45 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import no.uio.ifi.team16.stim.data.WeatherForecast
 import no.uio.ifi.team16.stim.databinding.FragmentWeatherBinding
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 
+/**
+ * Weather fragment
+ */
 class WeatherFragment : StimFragment() {
 
     private lateinit var binding: FragmentWeatherBinding
     private val viewModel: MainActivityViewModel by activityViewModels()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentWeatherBinding.inflate(inflater, container, false)
 
         val site = viewModel.getCurrentSite()
 
+        viewModel.getWeatherData().observe(viewLifecycleOwner, this::onWeatherLoaded)
+        viewModel.loadWeatherAtSite(site)
 
         return binding.root
+    }
 
+    private fun onWeatherLoaded(forecast: WeatherForecast?) {
+        forecast?.apply {
+            binding.dayText1.text = first.day.getTranslation(requireContext())
+            binding.dayText2.text = second.day.getTranslation(requireContext())
+            binding.dayText3.text = third.day.getTranslation(requireContext())
+            binding.dayText4.text = fourth.day.getTranslation(requireContext())
+
+            binding.weatherIcon1.setImageDrawable(first.icon.asDrawable(requireContext()))
+            binding.weatherIcon2.setImageDrawable(second.icon.asDrawable(requireContext()))
+            binding.weatherIcon3.setImageDrawable(third.icon.asDrawable(requireContext()))
+            binding.weatherIcon4.setImageDrawable(fourth.icon.asDrawable(requireContext()))
+
+            binding.temperatureView1.text = getString(R.string.temperature, first.temperature)
+            binding.temperatureView2.text = getString(R.string.temperature, second.temperature)
+            binding.temperatureView3.text = getString(R.string.temperature, third.temperature)
+            binding.temperatureView4.text = getString(R.string.temperature, fourth.temperature)
+        }
     }
 }
