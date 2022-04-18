@@ -2,7 +2,6 @@ package no.uio.ifi.team16.stim.io.adapter
 
 import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,10 +13,6 @@ import android.widget.TextView
 import androidx.core.graphics.drawable.toDrawable
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
 import no.uio.ifi.team16.stim.R
 import no.uio.ifi.team16.stim.data.Site
 
@@ -45,22 +40,20 @@ class RecycleViewAdapter(
      */
 
     inner class ViewHolder(view: View, val onClick: (Site) -> Unit) : RecyclerView.ViewHolder(view) {
-        val nameView: TextView
-        val locationView: TextView
-        val pictureView: ImageView
-        val favoriteButton: Button
+        val nameView: TextView = view.findViewById(R.id.textview_name)
+        val locationView: TextView = view.findViewById(R.id.textview_location)
+        val pictureView: ImageView = view.findViewById(R.id.imageView_overview)
+        val favoriteButton: Button = view.findViewById(R.id.favoriteButton)
 
         private var site: Site? = null
 
         init {
-            nameView = view.findViewById(R.id.textview_name)
-            locationView = view.findViewById(R.id.textview_location)
-            pictureView = view.findViewById(R.id.imageView_overview)
-            favoriteButton = view.findViewById(R.id.favoriteButton)
             view.setOnClickListener { site?.let { onClick(it) } }
         }
 
-        fun bind(s: Site) { site = s }
+        fun bind(s: Site) {
+            site = s
+        }
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
@@ -74,7 +67,6 @@ class RecycleViewAdapter(
     /**
      * Setter data inn i view
      */
-
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
 
         val site = sites[position]
@@ -87,32 +79,7 @@ class RecycleViewAdapter(
             .load(getImageUrl(site))
             .placeholder(android.R.drawable.ic_menu_gallery.toDrawable())
             .error(android.R.drawable.ic_menu_gallery.toDrawable())
-            .diskCacheStrategy(DiskCacheStrategy.ALL)
             .dontAnimate()
-            .listener(
-                object : RequestListener<Drawable> {
-                    override fun onLoadFailed(
-                        e: GlideException?,
-                        model: Any?,
-                        target: com.bumptech.glide.request.target.Target<Drawable>?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        Log.e(TAG, "failed to load image")
-                        return true
-                    }
-
-                    override fun onResourceReady(
-                        resource: Drawable?,
-                        model: Any?,
-                        target: com.bumptech.glide.request.target.Target<Drawable>?,
-                        dataSource: DataSource?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        Log.d(TAG, "Succesfully loaded image")
-                        return false
-                    }
-                }
-            )
             .into(viewHolder.pictureView)
 
         Log.d(TAG, "data lagt inn")
@@ -125,6 +92,9 @@ class RecycleViewAdapter(
     // Return the size of your dataset (invoked by the layout manager)
     override fun getItemCount() = sites.size
 
+    /**
+     * API-nøkkel til Google Maps
+     */
     private val mapsApiKey by lazy {
         val info = context.packageManager.getApplicationInfo(
             context.packageName,
@@ -138,15 +108,17 @@ class RecycleViewAdapter(
      */
     private fun getImageUrl(site: Site): String {
 
-        val imagewidth = 1000
-        val imageheight = 1000
-
         return Uri.parse("https://maps.google.com/maps/api/staticmap").buildUpon().apply {
             appendQueryParameter("center", "${site.latLong.lat},${site.latLong.lng}")
             appendQueryParameter("zoom", "16")
-            appendQueryParameter("size", "${imagewidth}x${imageheight}")
+            appendQueryParameter("size", "${IMAGE_WIDTH}x${IMAGE_HEIGHT}")
             appendQueryParameter("maptype", "satellite")
             appendQueryParameter("key", mapsApiKey)
         }.toString()
+    }
+
+    companion object {
+        private const val IMAGE_WIDTH = 800
+        private const val IMAGE_HEIGHT = 300
     }
 }

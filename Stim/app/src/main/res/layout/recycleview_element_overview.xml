@@ -18,24 +18,21 @@
 
         <ImageView
             android:id="@+id/imageView_overview"
+            android:scaleType="fitXY"
             android:layout_width="800dp"
             android:layout_height="200dp"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="5dp"
+            android:layout_centerHorizontal="true"
             android:background="@color/cardview_dark_background"
             android:contentDescription="@string/visual_of_the_location_of_the_site"
-            app:srcCompat="@android:drawable/ic_menu_gallery"
-            android:layout_centerHorizontal="true" />
+            app:srcCompat="@android:drawable/ic_menu_gallery" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/infoTextbox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/imageView_overview"
-            android:layout_toLeftOf="@id/windowheart"
+            android:layout_toStartOf="@id/windowheart"
             android:layout_marginStart="5dp"
             android:layout_marginBottom="5dp"
             android:orientation="vertical">
