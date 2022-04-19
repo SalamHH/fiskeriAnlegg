@@ -1,7 +1,9 @@
 package no.uio.ifi.team16.stim
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -45,5 +47,15 @@ abstract class StimFragment : Fragment() {
 
         val permissions = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
         request.launch(permissions)
+    }
+
+    /**
+     * Lukker tastaturet
+     */
+    protected fun closeKeyboard() {
+        view?.let {
+            val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.hideSoftInputFromWindow(it.windowToken, 0)
+        }
     }
 }

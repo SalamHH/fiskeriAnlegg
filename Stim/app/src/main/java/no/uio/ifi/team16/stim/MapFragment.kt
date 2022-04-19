@@ -78,6 +78,8 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
             onRefresh()
         }
 
+        binding.searchView.setOnQueryTextListener(this)
+
         return binding.root
     }
 
@@ -85,7 +87,8 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
      * Called when the user searches for something
      */
     override fun onQueryTextSubmit(query: String?): Boolean {
-        if (query != null) {
+        if (query != null && query.isNotBlank()) {
+            closeKeyboard()
             map.clear()
             if (query.matches(Regex("^[0-9]+\$"))) {
                 // Numeric input, search for municipality number
