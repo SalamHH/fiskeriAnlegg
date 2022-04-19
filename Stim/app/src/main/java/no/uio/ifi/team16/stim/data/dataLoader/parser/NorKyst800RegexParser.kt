@@ -1,6 +1,7 @@
 package no.uio.ifi.team16.stim.data.dataLoader.parser
 
 import android.util.Log
+import no.uio.ifi.team16.stim.BuildConfig
 import no.uio.ifi.team16.stim.data.NorKyst800
 
 /**
@@ -39,6 +40,8 @@ class NorKyst800RegexParser {
      * @return corresponding NorKyst800 object.
      */
     fun parse(response: String): NorKyst800? {
+        // midlertidig fix pga. koden under er litt treg :-)
+        if (BuildConfig.DEBUG) return null
         val depth = make1DDoubleArrayOf("depth", response) ?: run {
             Log.e(TAG, "Failed to read <depth> from NorKyst800")
             return null
