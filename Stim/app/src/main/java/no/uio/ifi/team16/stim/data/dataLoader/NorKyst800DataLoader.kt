@@ -2,14 +2,18 @@ package no.uio.ifi.team16.stim.data.dataLoader
 
 import android.util.Log
 import com.github.kittinunf.fuel.Fuel
+import com.github.kittinunf.fuel.coroutines.awaitByteArrayResult
 import com.github.kittinunf.fuel.coroutines.awaitString
-import com.github.kittinunf.fuel.coroutines.awaitStringResult
 import com.github.kittinunf.result.getOrElse
 import com.github.kittinunf.result.onError
 import no.uio.ifi.team16.stim.data.NorKyst800
-import no.uio.ifi.team16.stim.data.dataLoader.parser.NorKyst800RegexParser
 import no.uio.ifi.team16.stim.util.LatLong
 import no.uio.ifi.team16.stim.util.Options
+import ucar.ma2.ArrayFloat
+import ucar.nc2.NetcdfFile.openInMemory
+import ucar.nc2.Variable
+import ucar.nc2.dataset.NetcdfDataset
+import kotlin.math.max
 
 /**
  * DataLoader for data related tot he norkyst800 model.
@@ -18,6 +22,7 @@ import no.uio.ifi.team16.stim.util.Options
 open class NorKyst800DataLoader : THREDDSDataLoader() {
     private val TAG = "NorKyst800DataLoader"
 
+    //the catalog url is assumed to be time-invariant. Here all entries are listed.
     private val catalogUrl =
         "https://thredds.met.no/thredds/catalog/fou-hi/norkyst800m-1h/catalog.html"
 
@@ -39,35 +44,85 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
         depthRange: IntProgression,
         timeRange: IntProgression
     ): NorKyst800? {
-
+        /*
+        * Due to the abscence of certain critical java libraries for doing requests over https with
+        * netcdf java, we have to fetch the data "ourselves", with a fuel request. We then open the file in memory.
+        * The downside is that we cannot stream the data, but the data can be retrieved pre-sliced
+        */
         val baseUrl = loadForecastUrl() ?: run {
             Log.e(
                 TAG,
-                "Failed to load the forecast URL form the catalog, is the catalog URL correct?"
+                "Failed to load the forecast URL from the catalog, is the catalog URL correct?"
             )
-            return null
+            return@load null
         }
 
         val parametrizedUrl = makeParametrizedUrl(baseUrl, xRange, yRange, depthRange, timeRange)
         Log.d(TAG, parametrizedUrl)
 
-        val responseStr = Fuel.get(parametrizedUrl).awaitStringResult().onError { error ->
+        val responseBinary = Fuel.get(parametrizedUrl).awaitByteArrayResult().onError { error ->
             Log.e(TAG, "Failed to load norkyst800data due to:\n $error")
-            return null
+            return@load null
         }.getOrElse {
             Log.e(
                 TAG,
                 "No errors thrown, but unable to get NorKyst800 data from get request. Is the URL correct?"
             )
-            return null
+            return@load null
         }
 
-        if (responseStr.isEmpty()) {
+        if (responseBinary.isEmpty()) {
             Log.e(TAG, "Empty response")
             return null
         }
 
-        return NorKyst800RegexParser().parse(responseStr)
+        //open the file
+        NetcdfDataset(openInMemory("NorKyst800", responseBinary)).let { ncfile ->
+            //now, comes pre-sliced form the THREDDS server, so we merely have to wrap everything into
+            //a NorkYst800-object.
+            //make the projection
+            val gridMapping: Variable = ncfile.findVariable("grid_mapping")
+                ?: throw NullPointerException("Failed to read variable <gridMapping> from norKyst800") //caught by THREDDSLOAD
+            val latLngToStereo =
+                readAndMakeProjectionFromGridMapping(gridMapping) //can throw NullpointerException, caught by THREDDSLOAD
+            //Variables are data that are NOT READ YET. findVariable() is not null-safe
+            val depth: DoubleArray,
+            val salinity: DoubleArray4D,
+            val temperature: DoubleArray4D,
+            val time: DoubleArray,
+            val velocity: Triple<DoubleArray4D, DoubleArray4D, DoubleArray4D>
+
+            val depth: Variable = ncfile.findVariable("depth")
+                ?: throw NullPointerException("Failed to read variable <time> from NorKyst800") //caught by THREDDSLOAD
+            val time: Variable = ncfile.findVariable("time")
+                ?: throw NullPointerException("Failed to read variable <depth> from NorKyst800") //caught by THREDDSLOAD
+            val salinity: Variable = ncfile.findVariable("salinity")
+                ?: throw NullPointerException("Failed to read variable <salinity> from NorKyst800") //caught by THREDDSLOAD
+            val temperature: Variable = ncfile.findVariable("temperature")
+                ?: throw NullPointerException("Failed to read variable <temperature> from NorKyst800") //caught by THREDDSLOAD
+            val u: Variable = ncfile.findVariable("u")
+                ?: throw NullPointerException("Failed to read variable <u> from NorKyst800") //caught by THREDDSLOAD
+            val v: Variable = ncfile.findVariable("v")
+                ?: throw NullPointerException("Failed to read variable <v> from NorKyst800") //caught by THREDDSLOAD
+            val w: Variable = ncfile.findVariable("w")
+                ?: throw NullPointerException("Failed to read variable <w> from NorKyst800") //caught by THREDDSLOAD
+
+            //make the infectiousPressure
+            NorKyst800(
+                (concentrations.read().reduce(0) as ArrayFloat).to2DFloatArray(),
+                time.readScalarFloat(),
+                latLngToStereo,
+                ncfile.findGlobalAttribute("fromdate")?.run {
+                    parseDate(this.stringValue)
+                }, //can be null
+                ncfile.findGlobalAttribute("todate")?.run {
+                    parseDate(this.stringValue)
+                }, //can be null
+                dx * max(Options.infectiousPressureStepX, 1).toFloat(),
+                dx * max(Options.infectiousPressureStepY, 1).toFloat()
+            )
+        }
+        return null
     }
 
     /**
@@ -118,7 +173,6 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
         depthRange: IntProgression,
         timeRange: IntProgression
     ): String {
-
         val xyString =
             "[${reformatIntProgressionFSL(xRange)}][${reformatIntProgressionFSL(yRange)}]"
         val dString = "[${reformatIntProgressionFSL(depthRange)}]"
@@ -152,7 +206,7 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
         forecastUrlRegex.find(responseStr)?.let { match ->
             "https://thredds.met.no/thredds/dodsC/fou-hi/norkyst800m-1h/" +
                     match.groupValues[1] + //if there is a match, the group (entry[1]) is guaranteed to exist
-                    ".ascii?"
+                    ".dodsC?"
         } ?: run { //"catch" unsucssessfull parse
             Log.e(
                 TAG,
