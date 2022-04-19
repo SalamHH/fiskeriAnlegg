@@ -4,9 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_blue"
-    android:backgroundTint="@color/skyblue"
-    android:backgroundTintMode="multiply"
+    android:background="@drawable/background_pink"
     android:gravity="center"
     tools:context=".SiteInfoFragment">
 
@@ -41,6 +39,7 @@
         app:layout_constraintTop_toBottomOf="@id/siteName" />
 
 
+
     <!-- Information cards -->
 
     <LinearLayout
@@ -58,38 +57,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline12"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.8" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline13"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.2" />
-
             <ImageView
-                android:id="@+id/wavesIcon"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="12dp"
-                android:elevation="11dp"
-                android:transitionName="image_small"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/generalInfoCard"
-                app:srcCompat="@drawable/mdi___waves" />
-
-            <ImageView
-                android:id="@+id/circleFilledWhiteIcon"
-                android:layout_width="71dp"
-                android:layout_height="66dp"
+                android:id="@+id/generalInfoIcon"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_gravity="center"
                 android:elevation="10dp"
                 android:transitionName="image_small"
@@ -97,7 +68,7 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/generalInfoCard"
-                app:srcCompat="@drawable/circle_filled_white" />
+                app:srcCompat="@drawable/virus_icon" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/generalInfoCard"
@@ -124,9 +95,9 @@
                         android:id="@+id/generalInfoValue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="32dp"
+                        android:layout_marginTop="28dp"
                         android:fontFamily="@font/montserrat_bold"
-                        android:text="Generelt"
+                        android:text="@string/generelt"
                         android:textAlignment="center"
                         android:textColor="@color/primaryTextColor"
                         android:textSize="15sp"
@@ -139,30 +110,28 @@
                         android:id="@+id/stromninger"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="27dp"
                         android:fontFamily="@font/montserrat_semibold"
-                        android:text="STRØMN."
+                        android:text="STRØMNINGER"
                         android:textColor="@color/primaryTextColor"
                         app:layout_constraintBottom_toBottomOf="@+id/temperatur"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.08"
+                        app:layout_constraintEnd_toStartOf="@+id/temperatur"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/generalInfoValue"
-                        app:layout_constraintVertical_bias="0.0" />
+                        app:layout_constraintTop_toTopOf="@+id/temperatur"
+                        app:layout_constraintVertical_bias="1.0" />
 
                     <TextView
                         android:id="@+id/temperatur"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
                         android:fontFamily="@font/montserrat_semibold"
-                        android:text="TEMP."
+                        android:text="TEMPERATUR"
                         android:textColor="@color/primaryTextColor"
-                        app:layout_constraintBottom_toTopOf="@+id/temp"
+                        app:layout_constraintBottom_toBottomOf="@+id/saltholdighet"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.501"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/generalInfoValue"
+                        app:layout_constraintTop_toTopOf="@+id/saltholdighet"
                         app:layout_constraintVertical_bias="0.0" />
 
                     <TextView
@@ -171,13 +140,14 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:fontFamily="@font/montserrat_semibold"
-                        android:text="SALT."
+                        android:text="SALTHOLDIGHET"
                         android:textColor="@color/primaryTextColor"
-                        app:layout_constraintBottom_toTopOf="@id/varsel"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.88"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/generalInfoValue" />
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toEndOf="@+id/temperatur"
+                        app:layout_constraintTop_toBottomOf="@+id/generalInfoValue"
+                        app:layout_constraintVertical_bias="0.0" />
 
                     <TextView
                         android:id="@+id/strom"
@@ -188,21 +158,22 @@
                         android:textSize="10sp"
                         app:layout_constraintBaseline_toBaselineOf="@+id/temp"
                         app:layout_constraintEnd_toStartOf="@+id/temp"
-                        app:layout_constraintHorizontal_bias="0.27"
+                        app:layout_constraintHorizontal_bias="0.26"
                         app:layout_constraintStart_toStartOf="parent"
-                        tools:text="0.04m/s" />
+                        tools:text="6*" />
 
                     <TextView
                         android:id="@+id/temp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp"
                         android:text="TextView"
                         android:textColor="@color/primaryTextColor"
                         android:textSize="10sp"
-                        app:layout_constraintBaseline_toBaselineOf="@+id/varsel"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        tools:text="-3*" />
+                        app:layout_constraintTop_toBottomOf="@+id/temperatur"
+                        tools:text="7*" />
 
                     <TextView
                         android:id="@+id/varsel"
@@ -213,10 +184,10 @@
                         android:textColor="@color/primaryTextColor"
                         android:textSize="10sp"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.673"
+                        app:layout_constraintHorizontal_bias="0.914"
                         app:layout_constraintStart_toEndOf="@+id/temp"
                         app:layout_constraintTop_toBottomOf="@+id/saltholdighet"
-                        tools:text="2.3" />
+                        tools:text="Ingen storm meldt" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -229,40 +200,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline10"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.2"
-                tools:visibility="invisible" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline11"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.8"
-                tools:visibility="invisible" />
-
             <ImageView
                 android:id="@+id/infectionIcon"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="12dp"
-                android:elevation="11dp"
-                android:transitionName="image_small"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/infectionInfoCard"
-                app:srcCompat="@drawable/mdi___virus" />
-
-            <ImageView
-                android:id="@+id/circleFilledWhiteIcon2"
-                android:layout_width="71dp"
-                android:layout_height="66dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_gravity="center"
                 android:elevation="10dp"
                 android:transitionName="image_small"
@@ -270,7 +211,7 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/infectionInfoCard"
-                app:srcCompat="@drawable/circle_filled_white" />
+                app:srcCompat="@drawable/virus_icon" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/infectionInfoCard"
@@ -297,7 +238,7 @@
                         android:id="@+id/infectionValue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="32dp"
+                        android:layout_marginTop="28dp"
                         android:fontFamily="@font/montserrat_bold"
                         android:text="@string/infection"
                         android:textAlignment="center"
@@ -312,28 +253,27 @@
                         android:id="@+id/lakselus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="40dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="5dp"
                         android:fontFamily="@font/montserrat_semibold"
-                        android:text="LUS"
+                        android:text="LAKSELUS"
                         android:textColor="@color/primaryTextColor"
                         app:layout_constraintBottom_toBottomOf="@+id/pd"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/infectionValue"
+                        app:layout_constraintTop_toTopOf="@+id/pd"
                         app:layout_constraintVertical_bias="1.0" />
 
                     <TextView
                         android:id="@+id/pd"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
                         android:fontFamily="@font/montserrat_semibold"
                         android:text="PD"
                         android:textColor="@color/primaryTextColor"
                         app:layout_constraintBottom_toBottomOf="@+id/ila"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/infectionValue"
+                        app:layout_constraintTop_toTopOf="@+id/ila"
                         app:layout_constraintVertical_bias="0.0" />
 
                     <TextView
@@ -341,7 +281,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:layout_marginEnd="44dp"
                         android:fontFamily="@font/montserrat_semibold"
                         android:text="ILA"
                         android:textColor="@color/primaryTextColor"
@@ -350,17 +289,18 @@
                         app:layout_constraintTop_toBottomOf="@+id/infectionValue"
                         app:layout_constraintVertical_bias="0.0" />
 
-                    <ImageView
+                    <TextView
                         android:id="@+id/fare"
-                        android:layout_width="12dp"
-                        android:layout_height="16dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="TextView"
+                        android:textColor="@color/primaryTextColor"
+                        android:textSize="10sp"
+                        app:layout_constraintBaseline_toBaselineOf="@+id/meldtPD"
                         app:layout_constraintEnd_toStartOf="@+id/meldtPD"
-                        app:layout_constraintHorizontal_bias="0.32"
+                        app:layout_constraintHorizontal_bias="0.26"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/lakselus"
-                        app:layout_constraintVertical_bias="0.0"
-                        app:srcCompat="@drawable/farevarsel" />
+                        tools:text="6*" />
 
                     <TextView
                         android:id="@+id/meldtPD"
@@ -373,7 +313,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/pd"
-                        tools:text="N/A" />
+                        tools:text="7*" />
 
                     <TextView
                         android:id="@+id/meldtILA"
@@ -384,10 +324,10 @@
                         android:textColor="@color/primaryTextColor"
                         android:textSize="10sp"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.68"
+                        app:layout_constraintHorizontal_bias="0.914"
                         app:layout_constraintStart_toEndOf="@+id/meldtPD"
                         app:layout_constraintTop_toBottomOf="@+id/ila"
-                        tools:text="N/A" />
+                        tools:text="Ingen storm meldt" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -400,38 +340,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline9"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.8" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.2" />
-
             <ImageView
-                android:id="@+id/cloudIcon"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="12dp"
-                android:elevation="11dp"
-                android:transitionName="image_small"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/weatherInfoCard"
-                app:srcCompat="@drawable/mdi___cloud_outline" />
-
-            <ImageView
-                android:id="@+id/circleFilledWhiteIcon3"
-                android:layout_width="71dp"
-                android:layout_height="66dp"
+                android:id="@+id/weatherIcon"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_gravity="center"
                 android:elevation="10dp"
                 android:transitionName="image_small"
@@ -439,7 +351,7 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/weatherInfoCard"
-                app:srcCompat="@drawable/circle_filled_white" />
+                app:srcCompat="@drawable/virus_icon" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/weatherInfoCard"
@@ -466,7 +378,7 @@
                         android:id="@+id/weatherValue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="32dp"
+                        android:layout_marginTop="28dp"
                         android:fontFamily="@font/montserrat_bold"
                         android:text="@string/vaer"
                         android:textAlignment="center"
@@ -481,9 +393,9 @@
                         android:id="@+id/textView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="36dp"
+                        android:layout_marginStart="24dp"
                         android:layout_marginTop="5dp"
-                        android:fontFamily="@font/montserrat_medium"
+                        android:fontFamily="@font/montserrat_semibold"
                         android:text="I DAG"
                         android:textColor="@color/primaryTextColor"
                         app:layout_constraintBottom_toBottomOf="@+id/textView2"
@@ -495,7 +407,7 @@
                         android:id="@+id/textView2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/montserrat_medium"
+                        android:fontFamily="@font/montserrat_semibold"
                         android:text="I MORGEN"
                         android:textColor="@color/primaryTextColor"
                         app:layout_constraintBottom_toBottomOf="@+id/textView3"
@@ -509,8 +421,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:layout_marginEnd="32dp"
-                        android:fontFamily="@font/montserrat_medium"
+                        android:layout_marginEnd="24dp"
+                        android:fontFamily="@font/montserrat_semibold"
                         android:text="STORM"
                         android:textColor="@color/primaryTextColor"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -522,38 +434,41 @@
                         android:id="@+id/textView7"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="6*"
+                        android:text="TextView"
                         android:textColor="@color/primaryTextColor"
                         android:textSize="10sp"
                         app:layout_constraintBaseline_toBaselineOf="@+id/textView8"
                         app:layout_constraintEnd_toStartOf="@+id/textView8"
-                        app:layout_constraintHorizontal_bias="0.32"
-                        app:layout_constraintStart_toStartOf="parent" />
+                        app:layout_constraintHorizontal_bias="0.26"
+                        app:layout_constraintStart_toStartOf="parent"
+                        tools:text="6*" />
 
                     <TextView
                         android:id="@+id/textView8"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="1dp"
-                        android:text="7*"
+                        android:text="TextView"
                         android:textColor="@color/primaryTextColor"
                         android:textSize="10sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+                        app:layout_constraintTop_toBottomOf="@+id/textView2"
+                        tools:text="7*" />
 
                     <TextView
                         android:id="@+id/textView9"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="1dp"
-                        android:text="Ingen storm meldt"
+                        android:text="TextView"
                         android:textColor="@color/primaryTextColor"
                         android:textSize="10sp"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.83"
+                        app:layout_constraintHorizontal_bias="0.914"
                         app:layout_constraintStart_toEndOf="@+id/textView8"
-                        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+                        app:layout_constraintTop_toBottomOf="@+id/textView3"
+                        tools:text="Ingen storm meldt" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

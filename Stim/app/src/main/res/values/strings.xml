@@ -19,7 +19,7 @@
     <string name="vanndata">VANNDATA</string>
     <string name="smittedata">SMITTEDATA</string>
     <string name="v_rdata">VÆRDATA</string>
-    <string name="vaer">Vær</string>
+    <string name="vaer">VÆR</string>
     <string name="vann">Vann</string>
     <string name="smitte">Smitte</string>
 
@@ -30,6 +30,7 @@
     <string name="app_info">App Info</string>
     <string name="stim">STIM</string>
     <string name="blank">-----</string>
+    <string name="generelt">GENERELT</string>
 
     <string name="bottomsheet_default_header">Liste over anlegg</string>
     <string name="bottomsheet_formatted_header">Liste over anlegg i kommune: %s</string>
