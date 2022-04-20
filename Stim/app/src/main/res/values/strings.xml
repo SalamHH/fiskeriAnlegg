@@ -20,7 +20,7 @@
     <string name="smittedata">SMITTEDATA</string>
     <string name="v_rdata">VÆRDATA</string>
     <string name="vaer">VÆR</string>
-    <string name="vann">Vann</string>
+    <string name="vann">VANN</string>
     <string name="smitte">Smitte</string>
 
     //drawer_menu
@@ -31,6 +31,9 @@
     <string name="stim">STIM</string>
     <string name="blank">-----</string>
     <string name="generelt">GENERELT</string>
+    <string name="todayText">I DAG</string>
+    <string name="tomorrow">I MORGEN</string>
+    <string name="storm">STORM</string>
 
     <string name="bottomsheet_default_header">Liste over anlegg</string>
     <string name="bottomsheet_formatted_header">Liste over anlegg i kommune: %s</string>

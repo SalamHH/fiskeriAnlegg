@@ -4,7 +4,7 @@
     <!-- app colors -->
     <color name="colorPrimary">#A2B0B7</color>
     <color name="colorSecondary">#EACCCC</color>
-    <color name="colorAccent">#FFFFFFFF</color>
+    <color name="colorAccent">#F5F5F5</color>
 
     <!-- text colors is used for all text in app-->
     <color name="primaryTextColor">#FF434343</color>

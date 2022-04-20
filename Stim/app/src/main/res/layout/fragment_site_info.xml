@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_pink"
+    android:background="@drawable/background_blue"
+    android:backgroundTint="@color/skyblue"
+    android:backgroundTintMode="multiply"
     android:gravity="center"
     tools:context=".SiteInfoFragment">
 
@@ -14,29 +16,234 @@
         android:id="@+id/siteName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/oval_background"
+        android:layout_marginTop="20dp"
         android:fontFamily="@font/montserrat_bold"
         android:gravity="center"
-        android:padding="5dp"
         android:text="@string/site_name"
-        android:textColor="@color/primaryTextColor"
+        android:textColor="@color/colorAccent"
         android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
-    <TextView
-        android:id="@+id/sitelocation"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/generalInfoBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:textColor="@color/primaryTextColor"
-        android:fontFamily="@font/montserrat_bold"
-        android:gravity="center"
-        android:text="@string/site_location"
-        app:layout_constraintTop_toBottomOf="@id/siteName" />
+        android:layout_gravity="center"
+        app:cardBackgroundColor="@color/transparent"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="0dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="0dp"
+        app:cardPreventCornerOverlap="true"
+        app:cardUseCompatPadding="true"
+        app:layout_constraintTop_toBottomOf="@+id/siteName">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp">
+
+                <!-- GENERAL INFO ABOUT THE SITE -->
+
+                <TextView
+                    android:id="@+id/generellInformasjon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:layout_gravity="center"
+                    android:text="Trykk for generell informasjon om anlegget"
+                    android:textColor="@color/colorAccent" />
+
+                <ImageView
+                    android:id="@+id/pil"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    app:srcCompat="@drawable/down_icon" />
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/relativelayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp"
+                android:visibility="gone">
+
+                <!-- POSISJON -->
+
+                <TextView
+                    android:id="@+id/posisjon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:text="Posisjon: "
+                    android:textColor="@color/colorAccent" />
+
+                <TextView
+                    android:id="@+id/posisjonView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:text="@string/blank"
+                    android:textColor="@color/colorAccent" />
+
+                <!-- ANLEGGSNUMMER -->
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/posisjonView"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:text="Anleggsnummer:"
+                    android:textColor="@color/colorAccent" />
+
+                <TextView
+                    android:id="@+id/anleggsnrView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/posisjonView"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:text="@string/blank"
+                    android:textColor="@color/colorAccent" />
+
+                <!-- PLASSERING -->
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/anleggsnrView"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:text="Plassering:"
+                    android:textColor="@color/colorAccent" />
+
+                <TextView
+                    android:id="@+id/plasseringView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/anleggsnrView"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:text="@string/blank"
+                    android:textColor="@color/colorAccent" />
+
+                <!-- KAPASITET -->
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/plasseringView"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:text="Kapasitet:"
+                    android:textColor="@color/colorAccent" />
+
+                <TextView
+                    android:id="@+id/kapasitetView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/plasseringView"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:text="@string/blank"
+                    android:textColor="@color/colorAccent" />
+
+                <!-- VANNTYPE -->
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/kapasitetView"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:text="Vanntype:"
+                    android:textColor="@color/colorAccent" />
+
+                <TextView
+                    android:id="@+id/vannTypeView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/kapasitetView"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:text="@string/blank"
+                    android:textColor="@color/colorAccent" />
+
+                <!-- KOMMUNE -->
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/vannTypeView"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:text="Kommune:"
+                    android:textColor="@color/colorAccent" />
+
+                <TextView
+                    android:id="@+id/prodOmraadeView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/vannTypeView"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:text="@string/blank"
+                    android:textColor="@color/colorAccent" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
 
 
     <!-- Information cards -->
@@ -47,10 +254,14 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="15dp"
-        app:layout_constraintTop_toBottomOf="@id/sitelocation">
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="15dp"
+        app:layout_constraintTop_toBottomOf="@id/generalInfoBox">
 
-        <!-- General information card -->
+
+
+        <!-- Water information card -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout"
             android:layout_width="match_parent"
@@ -81,7 +292,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/generalInfoCard"
+                app:layout_constraintTop_toTopOf="@+id/waterInfoCard"
                 app:srcCompat="@drawable/mdi___waves" />
 
             <ImageView
@@ -94,11 +305,11 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/generalInfoCard"
+                app:layout_constraintTop_toTopOf="@+id/waterInfoCard"
                 app:srcCompat="@drawable/circle_filled_white" />
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/generalInfoCard"
+                android:id="@+id/waterInfoCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="@color/colorAccent"
@@ -119,12 +330,12 @@
                     android:layout_margin="10dp">
 
                     <TextView
-                        android:id="@+id/generalInfoValue"
+                        android:id="@+id/waterInfoValue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="32dp"
                         android:fontFamily="@font/montserrat_bold"
-                        android:text="@string/generelt"
+                        android:text="@string/vann"
                         android:textAlignment="center"
                         android:textColor="@color/primaryTextColor"
                         android:textSize="15sp"
@@ -145,7 +356,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.08"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/generalInfoValue"
+                        app:layout_constraintTop_toBottomOf="@+id/waterInfoValue"
                         app:layout_constraintVertical_bias="0.0" />
 
                     <TextView
@@ -160,7 +371,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.501"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/generalInfoValue"
+                        app:layout_constraintTop_toBottomOf="@+id/waterInfoValue"
                         app:layout_constraintVertical_bias="0.0" />
 
                     <TextView
@@ -175,7 +386,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.88"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/generalInfoValue" />
+                        app:layout_constraintTop_toBottomOf="@+id/waterInfoValue" />
 
                     <TextView
                         android:id="@+id/strom"
@@ -186,7 +397,7 @@
                         android:textSize="10sp"
                         app:layout_constraintBaseline_toBaselineOf="@+id/temp"
                         app:layout_constraintEnd_toStartOf="@+id/temp"
-                        app:layout_constraintHorizontal_bias="0.27"
+                        app:layout_constraintHorizontal_bias="0.274"
                         app:layout_constraintStart_toStartOf="parent"
                         tools:text="0.04m/s" />
 
@@ -250,7 +461,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="12dp"
                 android:elevation="11dp"
-                android:transitionName="image_small"
+                android:transitionName="image_big"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
@@ -310,12 +521,13 @@
                         android:id="@+id/lakselus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="40dp"
                         android:layout_marginTop="8dp"
                         android:fontFamily="@font/montserrat_semibold"
                         android:text="LUS"
                         android:textColor="@color/primaryTextColor"
                         app:layout_constraintBottom_toBottomOf="@+id/pd"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.13"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/infectionValue"
                         app:layout_constraintVertical_bias="1.0" />
@@ -353,39 +565,33 @@
                         android:layout_width="12dp"
                         android:layout_height="16dp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/meldtPD"
-                        app:layout_constraintHorizontal_bias="0.32"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.15"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/lakselus"
                         app:layout_constraintVertical_bias="0.0"
                         app:srcCompat="@drawable/farevarsel" />
 
-                    <TextView
+                    <ImageView
                         android:id="@+id/meldtPD"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="12dp"
+                        android:layout_height="16dp"
                         android:layout_marginTop="1dp"
-                        android:text="TextView"
-                        android:textColor="@color/primaryTextColor"
-                        android:textSize="10sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/pd"
-                        tools:text="N/A" />
+                        app:srcCompat="@drawable/checkmark" />
 
-                    <TextView
+                    <ImageView
                         android:id="@+id/meldtILA"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="12dp"
+                        android:layout_height="16dp"
                         android:layout_marginTop="1dp"
-                        android:text="TextView"
-                        android:textColor="@color/primaryTextColor"
-                        android:textSize="10sp"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.68"
+                        app:layout_constraintHorizontal_bias="0.64"
                         app:layout_constraintStart_toEndOf="@+id/meldtPD"
                         app:layout_constraintTop_toBottomOf="@+id/ila"
-                        tools:text="N/A" />
+                        app:srcCompat="@drawable/checkmark" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -403,14 +609,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.8" />
+                app:layout_constraintGuide_percent="0.8"
+                tools:visibility="invisible" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.2" />
+                app:layout_constraintGuide_percent="0.2"
+                tools:visibility="invisible" />
 
             <ImageView
                 android:id="@+id/cloudIcon"
@@ -476,82 +684,110 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/textView"
+                        android:id="@+id/idag"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="36dp"
                         android:layout_marginTop="5dp"
                         android:fontFamily="@font/montserrat_medium"
-                        android:text="I DAG"
+                        android:text="@string/todayText"
                         android:textColor="@color/primaryTextColor"
-                        app:layout_constraintBottom_toBottomOf="@+id/textView2"
+                        app:layout_constraintBottom_toBottomOf="@+id/imorgen"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/textView2"
+                        app:layout_constraintTop_toTopOf="@+id/imorgen"
                         app:layout_constraintVertical_bias="1.0" />
 
+                    <ImageView
+                        android:id="@+id/vaer_idag"
+                        android:layout_width="13dp"
+                        android:layout_height="11dp"
+                        android:layout_marginTop="2dp"
+                        android:src="@drawable/sun_icon"
+                        app:layout_constraintEnd_toEndOf="@+id/temp_idag"
+                        app:layout_constraintStart_toStartOf="@+id/temp_idag"
+                        app:layout_constraintTop_toBottomOf="@+id/idag" />
+
                     <TextView
-                        android:id="@+id/textView2"
+                        android:id="@+id/temp_idag"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="48dp"
+                        android:text="6*"
+                        android:textColor="@color/primaryTextColor"
+                        android:textSize="10sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/vaer_idag" />
+
+                    <TextView
+                        android:id="@+id/imorgen"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/montserrat_medium"
-                        android:text="I MORGEN"
+                        android:text="@string/tomorrow"
                         android:textColor="@color/primaryTextColor"
-                        app:layout_constraintBottom_toBottomOf="@+id/textView3"
+                        app:layout_constraintBottom_toBottomOf="@+id/storm"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/textView3"
+                        app:layout_constraintTop_toTopOf="@+id/storm"
                         app:layout_constraintVertical_bias="0.0" />
 
+                    <ImageView
+                        android:id="@+id/vaer_imorgen"
+                        android:layout_width="13dp"
+                        android:layout_height="11dp"
+                        android:layout_marginTop="2dp"
+                        android:src="@drawable/sun_icon"
+                        app:layout_constraintEnd_toEndOf="@+id/temp_imorgen"
+                        app:layout_constraintStart_toStartOf="@+id/temp_imorgen"
+                        app:layout_constraintTop_toBottomOf="@+id/imorgen" />
+
                     <TextView
-                        android:id="@+id/textView3"
+                        android:id="@+id/temp_imorgen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="7*"
+                        android:textColor="@color/primaryTextColor"
+                        android:textSize="10sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/vaer_imorgen" />
+
+                    <TextView
+                        android:id="@+id/storm"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:layout_marginEnd="32dp"
+                        android:layout_marginEnd="28dp"
                         android:fontFamily="@font/montserrat_medium"
-                        android:text="STORM"
+                        android:text="@string/storm"
                         android:textColor="@color/primaryTextColor"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/weatherValue"
                         app:layout_constraintVertical_bias="0.0" />
 
-                    <TextView
-                        android:id="@+id/textView7"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="6*"
-                        android:textColor="@color/primaryTextColor"
-                        android:textSize="10sp"
-                        app:layout_constraintBaseline_toBaselineOf="@+id/textView8"
-                        app:layout_constraintEnd_toStartOf="@+id/textView8"
-                        app:layout_constraintHorizontal_bias="0.32"
-                        app:layout_constraintStart_toStartOf="parent" />
-
-                    <TextView
-                        android:id="@+id/textView8"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="1dp"
-                        android:text="7*"
-                        android:textColor="@color/primaryTextColor"
-                        android:textSize="10sp"
+                    <ImageView
+                        android:id="@+id/storm_vaer"
+                        android:layout_width="13dp"
+                        android:layout_height="11dp"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginEnd="47dp"
+                        android:src="@drawable/sun_icon"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toEndOf="@+id/vaer_imorgen"
+                        app:layout_constraintTop_toBottomOf="@+id/storm" />
 
                     <TextView
-                        android:id="@+id/textView9"
+                        android:id="@+id/meldt_storm"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="1dp"
+                        android:layout_marginEnd="12dp"
                         android:text="Ingen storm meldt"
                         android:textColor="@color/primaryTextColor"
                         android:textSize="10sp"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.83"
-                        app:layout_constraintStart_toEndOf="@+id/textView8"
-                        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+                        app:layout_constraintTop_toBottomOf="@+id/storm_vaer" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

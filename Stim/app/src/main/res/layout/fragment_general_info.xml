@@ -196,156 +196,185 @@
             android:id="@+id/generalInfoBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/grey"
+            android:layout_gravity="center"
+            app:cardBackgroundColor="@color/transparent"
             app:cardCornerRadius="10dp"
-            app:cardElevation="5dp"
-            app:cardMaxElevation="10dp"
+            app:cardElevation="0dp"
             app:cardPreventCornerOverlap="true"
-            app:cardUseCompatPadding="true"
-            android:layout_gravity="center">
+            app:cardUseCompatPadding="true">
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp">
+                android:layout_margin="5dp"
+                android:orientation="vertical">
 
                 <!-- POSISJON -->
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="5dp"
                     android:layout_marginTop="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:text="Posisjon: "
-                    android:textColor="@color/primaryTextColor" />
+                    android:layout_marginEnd="5dp">
 
-                <TextView
-                    android:id="@+id/posisjonView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:text="@string/blank"
-                    android:textColor="@color/primaryTextColor" />
+                    <TextView
+                        android:id="@+id/textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:text="Posisjon: "
+                        android:textColor="@color/primaryTextColor" />
+
+                    <TextView
+                        android:id="@+id/posisjonView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:text="@string/blank"
+                        android:textColor="@color/primaryTextColor" />
+
+                </RelativeLayout>
 
                 <!-- ANLEGGSNUMMER -->
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:id="@+id/relativelayout"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/posisjonView"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"
-                    android:text="Anleggsnummer:"
-                    android:textColor="@color/primaryTextColor" />
+                    android:layout_marginBottom="5dp"
+                    android:visibility="gone">
 
-                <TextView
-                    android:id="@+id/anleggsnrView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/posisjonView"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:text="@string/blank"
-                    android:textColor="@color/primaryTextColor" />
+                    <!-- ANLEGGSNUMMER -->
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:text="Anleggsnummer:"
+                        android:textColor="@color/primaryTextColor" />
+
+                    <TextView
+                        android:id="@+id/anleggsnrView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:text="@string/blank"
+                        android:textColor="@color/primaryTextColor" />
+
+                    <!-- PLASSERING -->
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/anleggsnrView"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:text="Plassering:"
+                        android:textColor="@color/primaryTextColor" />
+
+                    <TextView
+                        android:id="@+id/plasseringView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/anleggsnrView"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:text="@string/blank"
+                        android:textColor="@color/primaryTextColor" />
+
+                    <!-- KAPASITET -->
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/plasseringView"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:text="Kapasitet:"
+                        android:textColor="@color/primaryTextColor" />
+
+                    <TextView
+                        android:id="@+id/kapasitetView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/plasseringView"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:text="@string/blank"
+                        android:textColor="@color/primaryTextColor" />
+
+                    <!-- VANNTYPE -->
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/kapasitetView"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:text="Vanntype:"
+                        android:textColor="@color/primaryTextColor" />
+
+                    <TextView
+                        android:id="@+id/vannTypeView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/kapasitetView"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:text="@string/blank"
+                        android:textColor="@color/primaryTextColor" />
+
+                    <!-- KOMMUNE -->
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/vannTypeView"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:text="Kommune:"
+                        android:textColor="@color/primaryTextColor" />
+
+                    <TextView
+                        android:id="@+id/prodOmraadeView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/vannTypeView"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:text="@string/blank"
+                        android:textColor="@color/primaryTextColor" />
+
+                </RelativeLayout>
 
                 <!-- PLASSERING -->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/anleggsnrView"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:text="Plassering:"
-                    android:textColor="@color/primaryTextColor" />
-
-                <TextView
-                    android:id="@+id/plasseringView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/anleggsnrView"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:text="@string/blank"
-                    android:textColor="@color/primaryTextColor" />
-
                 <!-- KAPASITET -->
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/plasseringView"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:text="Kapasitet:"
-                    android:textColor="@color/primaryTextColor" />
-
-                <TextView
-                    android:id="@+id/kapasitetView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/plasseringView"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:text="@string/blank"
-                    android:textColor="@color/primaryTextColor" />
 
                 <!-- VANNTYPE -->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/kapasitetView"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:text="Vanntype:"
-                    android:textColor="@color/primaryTextColor" />
-
-                <TextView
-                    android:id="@+id/vannTypeView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/kapasitetView"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:text="@string/blank"
-                    android:textColor="@color/primaryTextColor" />
-
                 <!-- KOMMUNE -->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/vannTypeView"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:text="Kommune:"
-                    android:textColor="@color/primaryTextColor" />
-
-                <TextView
-                    android:id="@+id/prodOmraadeView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/vannTypeView"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:text="@string/blank"
-                    android:textColor="@color/primaryTextColor" />
-
-            </RelativeLayout>
+            </LinearLayout>
 
         </androidx.cardview.widget.CardView>
 

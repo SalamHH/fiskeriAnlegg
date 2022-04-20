@@ -1,14 +1,18 @@
 package no.uio.ifi.team16.stim
 
+import android.R
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.transition.AutoTransition
+import androidx.transition.TransitionManager
 import no.uio.ifi.team16.stim.data.StaticMapImageLoader
 import no.uio.ifi.team16.stim.databinding.FragmentGeneralInfoBinding
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
+
 
 class GeneralInfoFragment : Fragment() {
 
@@ -52,20 +56,46 @@ class GeneralInfoFragment : Fragment() {
         //posisjon
         binding.posisjonView.text = "${site.latLong.lat}, ${site.latLong.lng}"
 
-        //anleggsnummer
-        binding.anleggsnrView.text = site.nr.toString()
+        binding.generalInfoBox.setOnClickListener {
+            // If the CardView is already expanded, set its visibility
+            //  to gone and change the expand less icon to expand more.
+            // If the CardView is already expanded, set its visibility
+            //  to gone and change the expand less icon to expand more.
+            if (binding.relativelayout.getVisibility() === View.VISIBLE) {
 
-        //plassering
-        binding.plasseringView.text = site.placementType ?: "-----"
+                // The transition of the hiddenView is carried out
+                //  by the TransitionManager class.
+                // Here we use an object of the AutoTransition
+                // Class to create a default transition.
+                TransitionManager.beginDelayedTransition(
+                    binding.generalInfoBox,
+                    AutoTransition()
+                )
+                binding.relativelayout.setVisibility(View.GONE)
+            } else {
+                TransitionManager.beginDelayedTransition(
+                    binding.generalInfoBox,
+                    AutoTransition()
+                )
+                binding.relativelayout.setVisibility(View.VISIBLE)
+            }
 
-        //kapasitet
-        binding.kapasitetView.text = site.capacity.toString()
+            //anleggsnummer
+            binding.anleggsnrView.text = site.id.toString()
 
-        //vanntype
-        binding.vannTypeView.text = site.waterType ?: "-----"
+            //plassering
+            binding.plasseringView.text = site.placementType ?: "-----"
 
-        //kommune
-        binding.prodOmraadeView.text = site.placement?.municipalityName ?: "-----"
+            //kapasitet
+            binding.kapasitetView.text = site.capacity.toString()
+
+            //vanntype
+            binding.vannTypeView.text = site.waterType ?: "-----"
+
+            //kommune
+            binding.prodOmraadeView.text = site.placement?.municipalityName ?: "-----"
+        }
+
 
         return binding.root
 
