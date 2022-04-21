@@ -24,5 +24,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="grey">#E2DEDE</color>
     <color name="medium_gray">#80E2DEDE</color>
+    <color name="skyblue">#8CB4F6</color>
 
 </resources>

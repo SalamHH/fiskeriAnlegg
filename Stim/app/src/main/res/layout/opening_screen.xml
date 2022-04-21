@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:id="@+id/openingLayout"
     android:background="@drawable/background_blue"
-    android:backgroundTint="#8CB4F6"
+    android:backgroundTint="@color/skyblue"
     android:backgroundTintMode="multiply"
     android:clickable="true"
     android:focusable="true"
