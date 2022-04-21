@@ -1,6 +1,7 @@
 package no.uio.ifi.team16.stim.data
 
 import no.uio.ifi.team16.stim.util.FloatArray2D
+import no.uio.ifi.team16.stim.util.FloatArray4D
 import no.uio.ifi.team16.stim.util.LatLong
 import no.uio.ifi.team16.stim.util.get
 import org.locationtech.proj4j.CoordinateTransform

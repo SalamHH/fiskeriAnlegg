@@ -6,6 +6,7 @@ import com.github.kittinunf.fuel.coroutines.awaitString
 import no.uio.ifi.team16.stim.data.InfectiousPressure
 import no.uio.ifi.team16.stim.util.LatLong
 import no.uio.ifi.team16.stim.util.Options
+import no.uio.ifi.team16.stim.util.to2DFloatArray
 import ucar.ma2.ArrayFloat
 import ucar.nc2.Variable
 import kotlin.math.max

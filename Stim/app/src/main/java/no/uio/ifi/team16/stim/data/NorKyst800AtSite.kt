@@ -3,6 +3,7 @@ package no.uio.ifi.team16.stim.data
 import com.github.mikephil.charting.data.Entry
 import no.uio.ifi.team16.stim.util.DoubleArray2D
 import no.uio.ifi.team16.stim.util.DoubleArray4D
+import no.uio.ifi.team16.stim.util.NullableDoubleArray4D
 import no.uio.ifi.team16.stim.util.Options
 import no.uio.ifi.team16.stim.util.get
 
@@ -149,8 +150,9 @@ data class NorKyst800AtSite(
     ///////////////
     /**
      * take out all non-null, then average them
+     * TODO WRONG!!!
      */
-    fun averageOf(depth: Int, time: Int, arr: DoubleArray4D): Double = arr[depth][time]
+    fun averageOf(depth: Int, time: Int, arr: NullableDoubleArray4D): Double = arr.data[depth][time]
         .flatMap { row -> row.toList() }
         .filterNotNull()
         .let { elements ->

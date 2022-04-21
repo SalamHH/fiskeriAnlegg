@@ -8,6 +8,7 @@ import no.uio.ifi.team16.stim.data.InfectiousPressureTimeSeries
 import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.util.Options
 import no.uio.ifi.team16.stim.util.project
+import no.uio.ifi.team16.stim.util.to2DFloatArray
 import org.locationtech.proj4j.CRSFactory
 import org.locationtech.proj4j.CoordinateTransform
 import org.locationtech.proj4j.CoordinateTransformFactory

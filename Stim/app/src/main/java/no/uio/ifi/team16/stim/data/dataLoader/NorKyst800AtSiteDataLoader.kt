@@ -7,7 +7,6 @@ import com.github.kittinunf.result.getOrElse
 import com.github.kittinunf.result.onError
 import no.uio.ifi.team16.stim.data.NorKyst800AtSite
 import no.uio.ifi.team16.stim.data.Site
-import no.uio.ifi.team16.stim.data.dataLoader.parser.NorKyst800RegexParser
 import no.uio.ifi.team16.stim.util.Options
 import no.uio.ifi.team16.stim.util.project
 import kotlin.math.max
@@ -88,11 +87,6 @@ class NorKyst800AtSiteDataLoader : NorKyst800DataLoader() {
             return null
         }
 
-        return NorKyst800RegexParser().parse(responseStr)?.let { loaded ->
-            NorKyst800AtSite(site.id, loaded)
-        } ?: run {
-            Log.w(TAG, "Failed to load norkyst")
-            null
-        }
+        return null
     }
 }

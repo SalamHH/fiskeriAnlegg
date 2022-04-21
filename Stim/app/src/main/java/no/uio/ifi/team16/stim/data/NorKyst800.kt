@@ -8,10 +8,10 @@ import kotlin.math.roundToInt
  */
 data class NorKyst800(
     val depth: DoubleArray,
-    val salinity: DoubleArray4D,
-    val temperature: DoubleArray4D,
+    val salinity: NullableDoubleArray4D,
+    val temperature: NullableDoubleArray4D,
     val time: DoubleArray,
-    val velocity: Triple<DoubleArray4D, DoubleArray4D, DoubleArray4D>
+    val velocity: Triple<NullableDoubleArray4D, NullableDoubleArray4D, NullableDoubleArray4D>
 ) {
     val TAG = "NORKYST800"
     val projection = Options.defaultProjection()
@@ -98,8 +98,8 @@ data class NorKyst800(
         other as NorKyst800
 
         if (!depth.contentEquals(other.depth)) return false
-        if (!salinity.contentDeepEquals(other.salinity)) return false
-        if (!temperature.contentDeepEquals(other.temperature)) return false
+        if (!salinity.data.contentDeepEquals(other.salinity.data)) return false
+        if (!temperature.data.contentDeepEquals(other.temperature.data)) return false
         if (!time.contentEquals(other.time)) return false
         if (velocity != other.velocity) return false
         if (projection != other.projection) return false
@@ -109,8 +109,8 @@ data class NorKyst800(
 
     override fun hashCode(): Int {
         var result = depth.contentHashCode()
-        result = 31 * result + salinity.contentDeepHashCode()
-        result = 31 * result + temperature.contentDeepHashCode()
+        result = 31 * result + salinity.data.contentDeepHashCode()
+        result = 31 * result + temperature.data.contentDeepHashCode()
         result = 31 * result + time.contentHashCode()
         result = 31 * result + velocity.hashCode()
         result = 31 * result + projection.hashCode()

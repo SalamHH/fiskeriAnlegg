@@ -7,8 +7,8 @@ import com.github.kittinunf.fuel.coroutines.awaitString
 import com.github.kittinunf.result.getOrElse
 import com.github.kittinunf.result.onError
 import no.uio.ifi.team16.stim.data.NorKyst800
-import no.uio.ifi.team16.stim.util.LatLong
-import no.uio.ifi.team16.stim.util.Options
+import no.uio.ifi.team16.stim.util.*
+import ucar.ma2.ArrayDouble
 import ucar.ma2.ArrayFloat
 import ucar.nc2.NetcdfFile.openInMemory
 import ucar.nc2.Variable
@@ -78,6 +78,7 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
 
         //open the file
         NetcdfDataset(openInMemory("NorKyst800", responseBinary)).let { ncfile ->
+            ncfile.findCoordinateAxis("")
             //now, comes pre-sliced form the THREDDS server, so we merely have to wrap everything into
             //a NorkYst800-object.
             //make the projection
@@ -86,12 +87,6 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
             val latLngToStereo =
                 readAndMakeProjectionFromGridMapping(gridMapping) //can throw NullpointerException, caught by THREDDSLOAD
             //Variables are data that are NOT READ YET. findVariable() is not null-safe
-            val depth: DoubleArray,
-            val salinity: DoubleArray4D,
-            val temperature: DoubleArray4D,
-            val time: DoubleArray,
-            val velocity: Triple<DoubleArray4D, DoubleArray4D, DoubleArray4D>
-
             val depth: Variable = ncfile.findVariable("depth")
                 ?: throw NullPointerException("Failed to read variable <time> from NorKyst800") //caught by THREDDSLOAD
             val time: Variable = ncfile.findVariable("time")
@@ -106,20 +101,26 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
                 ?: throw NullPointerException("Failed to read variable <v> from NorKyst800") //caught by THREDDSLOAD
             val w: Variable = ncfile.findVariable("w")
                 ?: throw NullPointerException("Failed to read variable <w> from NorKyst800") //caught by THREDDSLOAD
+            //Read out the filler-value for the datasets that have those
+            val salinityFillValue = ncfile.readAttributeInteger(salinity, "_FillValue", -32767).toDouble()
+            val temperatureFillValue = ncfile.readAttributeInteger(temperature, "_FillValue", -32767).toDouble()
+            val uFillValue = ncfile.readAttributeInteger(u, "_FillValue", -32767).toDouble()
+            val vFillValue = ncfile.readAttributeInteger(v, "_FillValue", -32767).toDouble()
+            val wFillValue = ncfile.readAttributeInteger(w, "_FillValue", -32767).toDouble()
+
+
 
             //make the infectiousPressure
             NorKyst800(
-                (concentrations.read().reduce(0) as ArrayFloat).to2DFloatArray(),
-                time.readScalarFloat(),
-                latLngToStereo,
-                ncfile.findGlobalAttribute("fromdate")?.run {
-                    parseDate(this.stringValue)
-                }, //can be null
-                ncfile.findGlobalAttribute("todate")?.run {
-                    parseDate(this.stringValue)
-                }, //can be null
-                dx * max(Options.infectiousPressureStepX, 1).toFloat(),
-                dx * max(Options.infectiousPressureStepY, 1).toFloat()
+                (depth.read() as ArrayDouble).to1DDoubleArray(),
+                (salinity.read() as ArrayDouble).toNullable4DDoubleArray(salinityFillValue),
+                (temperature.read() as ArrayDouble).toNullable4DDoubleArray(temperatureFillValue),
+                (time.read() as ArrayDouble).to1DDoubleArray(),
+                Triple(
+                    (u.read() as ArrayDouble).toNullable4DDoubleArray(uFillValue),
+                    (v.read() as ArrayDouble).toNullable4DDoubleArray(vFillValue),
+                    (w.read() as ArrayDouble).toNullable4DDoubleArray(wFillValue)
+                )
             )
         }
         return null
@@ -206,7 +207,7 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
         forecastUrlRegex.find(responseStr)?.let { match ->
             "https://thredds.met.no/thredds/dodsC/fou-hi/norkyst800m-1h/" +
                     match.groupValues[1] + //if there is a match, the group (entry[1]) is guaranteed to exist
-                    ".dodsC?"
+                    ".dods?"
         } ?: run { //"catch" unsucssessfull parse
             Log.e(
                 TAG,

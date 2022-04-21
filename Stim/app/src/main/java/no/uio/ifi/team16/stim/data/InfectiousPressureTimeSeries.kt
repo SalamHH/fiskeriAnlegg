@@ -1,7 +1,7 @@
 package no.uio.ifi.team16.stim.data
 
 import no.uio.ifi.team16.stim.util.FloatArray2D
-
+import no.uio.ifi.team16.stim.util.FloatArray4D
 
 /**
  * Class representing infectious pressure over a grid at a given time.

@@ -2,13 +2,13 @@ package no.uio.ifi.team16.stim.data.dataLoader
 
 //import ucar.nc2.dataset.NetcdfDatasets
 import android.util.Log
-import no.uio.ifi.team16.stim.util.FloatArray2D
-import no.uio.ifi.team16.stim.util.LatLong
-import no.uio.ifi.team16.stim.util.project
+import no.uio.ifi.team16.stim.util.*
 import org.locationtech.proj4j.CRSFactory
 import org.locationtech.proj4j.CoordinateTransform
 import org.locationtech.proj4j.CoordinateTransformFactory
+import ucar.ma2.ArrayDouble
 import ucar.ma2.ArrayFloat
+import ucar.ma2.ArrayInt
 import ucar.ma2.InvalidRangeException
 import ucar.nc2.Variable
 import ucar.nc2.dataset.NetcdfDataset
@@ -76,21 +76,6 @@ abstract class THREDDSDataLoader {
             ncfile?.close()
         }
         return data
-    }
-
-    ////////////////////////////
-    // UTILITIES - EXTENSIONS //
-    ////////////////////////////
-    /**
-     * make an arrayFloat(netcdfs version of FloatArray) into FloatArray2D(alias for Array<Array<Float?>>)
-     */
-    fun ArrayFloat.to2DFloatArray(): FloatArray2D {
-        val asFloatArray =
-            this.copyToNDJavaArray() as Array<FloatArray> //unchecked cast, but guaranteed to be Array<FloatArray>
-        //this is nice, but we need Array<Array<Float>>, and cupyToNDJavaArray cannot cast directly
-        return Array(asFloatArray.size) { row ->
-            asFloatArray[row].toTypedArray()
-        }
     }
 
     /**
