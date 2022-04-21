@@ -1,10 +1,15 @@
 package no.uio.ifi.team16.stim
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TableLayout
+import android.widget.TableRow
+import android.widget.TextView
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.activityViewModels
 import androidx.transition.TransitionInflater
 import com.github.mikephil.charting.data.Entry
@@ -13,6 +18,7 @@ import com.github.mikephil.charting.data.LineDataSet
 import no.uio.ifi.team16.stim.databinding.FragmentInfectionBinding
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 import javax.inject.Inject
+
 
 class InfectionFragment : StimFragment() {
 
@@ -49,6 +55,7 @@ class InfectionFragment : StimFragment() {
 
         viewModel.getInfectiousPressureTimeSeriesData(site).observe(viewLifecycleOwner) {
             it?.getAllConcentrationsUnzipped()?.also { (weekList, infectionData) ->
+                //CHART
                 val linedataset = LineDataSet(
                     weekList.zip(infectionData)             // list med par av x og y
                         .mapIndexed { i, weekAndInf ->
@@ -59,6 +66,19 @@ class InfectionFragment : StimFragment() {
                         }, //list med Entry(x,y)
                     CHART_LABEL
                 )
+                //STATUS
+                if (infectionData.isNotEmpty()) {
+                    binding.infectionStatusText.text = calculateInfectionStatusText(infectionData)
+                    if (calculateInfectionStatusIcon(infectionData) != null) {
+                        binding.StatusIcon.setImageDrawable(
+                            calculateInfectionStatusIcon(
+                                infectionData
+                            )
+                        )
+                    }
+                } else {
+                    binding.infectionStatusText.text = "Fant ikke smittedata"
+                }
                 //set max of yaxis to max of loaded dataset
                 //THE BEZIER CURVE DOES NOT CONSERVE MIN / MAX OF INTERPOLATED POINTS, SO IT WILL CLIP!!
                 //TODO get interpolation(CUBIC BEZIER), and find min max of that, or change to linear(not bezier), or use max+1 min-1
@@ -74,12 +94,128 @@ class InfectionFragment : StimFragment() {
                 chartStyle.styleLineDataSet(linedataset, requireContext())
                 binding.infectionChart.data = LineData(linedataset)
                 binding.infectionChart.invalidate()
+
+                //TABLE
+                binding.tablelayout.isStretchAllColumns
+                binding.tablelayout.removeAllViews()
+
+                for (i in 0..infectionData.lastIndex) {
+                    val newRow = TableRow(requireContext())
+                    val view = inflater.inflate(R.layout.infection_table_row, container)
+                    view.findViewById<TextView>(R.id.table_display_week).text =
+                        weekList[i].toString()
+                    view.findViewById<TextView>(R.id.table_display_float).text =
+                        infectionData[i].toString()
+                    view.layoutParams = TableLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                    )
+                    newRow.addView(view)
+                    binding.tablelayout.addView(newRow)
+                    newRow.layoutParams = TableLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                    )
+                    Log.d(TAG, "Row added: ${i}")
+                }
+                binding.tablelayout.requestLayout()
             }
         }
 
         chartStyle.styleChart(binding.infectionChart)
 
+        binding.StatusIcon.setOnClickListener {
+            val newFragment = StatusDialogFragment()
+            newFragment.show(parentFragmentManager, "statusicons")
+        }
+
         return binding.root
+    }
+
+    private fun calculateInfectionStatusText(infectiondata: Array<Float>): String {
+
+        //Limits
+        //TODO - enable option to edit this in settings
+        val high = 5
+        val infectionExists = 1
+        val increase = 0.5
+        val decrease = 0.5
+
+
+        if (infectiondata.lastIndex > 1 && infectiondata.average() > infectionExists) {
+            //sjekker om det er signifikant økning/miskning på de siste 3 datapunktene
+            val lastThree = arrayOf(
+                infectiondata[infectiondata.lastIndex - 2],
+                infectiondata[infectiondata.lastIndex - 1],
+                infectiondata[infectiondata.lastIndex]
+            )
+            return if (lastThree.average() - infectiondata.average() > increase) {
+                "Signifikant økning i smitte"
+            } else if (infectiondata.average() - lastThree.average() > decrease) {
+                "Signifikant miskning i smitte"
+            } else {
+                return if (infectiondata.average() > high) {
+                    "Høyt smittenivå"
+                } else {
+                    "Lavt smittenivå"
+                }
+            }
+        } else {
+            return "Veldig lav/Ingen smitte"
+        }
+    }
+
+    private fun calculateInfectionStatusIcon(infectiondata: Array<Float>): Drawable? {
+
+        //Limits
+        //TODO - enable option to edit this in settings
+        val high = 5
+        val infectionExists = 1
+        val increase = 0.5
+        val decrease = 0.5
+
+
+        if (infectiondata.lastIndex > 1 && infectiondata.average() > infectionExists) {
+            //sjekker om det er signifikant økning/miskning på de siste 3 datapunktene
+            val lastThree = arrayOf(
+                infectiondata[infectiondata.lastIndex - 2],
+                infectiondata[infectiondata.lastIndex - 1],
+                infectiondata[infectiondata.lastIndex]
+            )
+            return if (lastThree.average() - infectiondata.average() > increase) {
+                ResourcesCompat.getDrawable(
+                    resources,
+                    no.uio.ifi.team16.stim.R.drawable.arrow_up,
+                    null
+                )
+            } else if (infectiondata.average() - lastThree.average() > decrease) {
+                ResourcesCompat.getDrawable(
+                    resources,
+                    no.uio.ifi.team16.stim.R.drawable.arrow_down,
+                    null
+                )
+            } else {
+                return if (infectiondata.average() > high) {
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        no.uio.ifi.team16.stim.R.drawable.farevarsel,
+                        null
+                    )
+                } else {
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        no.uio.ifi.team16.stim.R.drawable.no_change,
+                        null
+                    )
+                }
+            }
+        } else {
+            return ResourcesCompat.getDrawable(
+                resources,
+                no.uio.ifi.team16.stim.R.drawable.checkmark,
+                null
+            )
+        }
     }
 
     companion object {
