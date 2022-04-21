@@ -46,6 +46,7 @@ class InfectionFragment : StimFragment() {
 
         val site = viewModel.getCurrentSite()
         Log.d(TAG, "site is $site")
+        binding.sitename.text = site.name
 
         chartStyle = SparkLineStyle(requireContext())
 
@@ -96,27 +97,26 @@ class InfectionFragment : StimFragment() {
                 binding.infectionChart.invalidate()
 
                 //TABLE
-                binding.tablelayout.isStretchAllColumns
                 binding.tablelayout.removeAllViews()
 
                 for (i in 0..infectionData.lastIndex) {
                     val newRow = TableRow(requireContext())
-                    val view = inflater.inflate(R.layout.infection_table_row, container)
+                    val view = inflater.inflate(R.layout.infection_table_row, container, false)
                     view.findViewById<TextView>(R.id.table_display_week).text =
                         weekList[i].toString()
                     view.findViewById<TextView>(R.id.table_display_float).text =
                         infectionData[i].toString()
-                    view.layoutParams = TableLayout.LayoutParams(
+                    view.layoutParams = TableRow.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT
                     )
                     newRow.addView(view)
-                    binding.tablelayout.addView(newRow)
+                    binding.tablelayout.addView(newRow, 0)
                     newRow.layoutParams = TableLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT
                     )
-                    Log.d(TAG, "Row added: ${i}")
+                    Log.d(TAG, "Row added: $i")
                 }
                 binding.tablelayout.requestLayout()
             }
