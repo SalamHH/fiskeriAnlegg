@@ -30,7 +30,7 @@
         android:layout_marginTop="10dp"
         android:fontFamily="@font/montserrat_bold"
         android:text="@string/weather_data"
-        android:textColor="@color/black"
+        android:textColor="@color/primaryTextColor"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -57,7 +57,7 @@
             android:layout_marginStart="20dp"
             android:fontFamily="@font/montserrat"
             android:text="@string/blank"
-            android:textColor="@color/black"
+            android:textColor="@color/primaryTextColor"
             android:textSize="20sp" />
 
         <androidx.cardview.widget.CardView
@@ -85,7 +85,7 @@
                 android:layout_gravity="center_vertical|end"
                 android:layout_marginEnd="10dp"
                 android:text="@string/blank"
-                android:textColor="@color/black"
+                android:textColor="@color/primaryTextColor"
                 android:textSize="18sp" />
         </androidx.cardview.widget.CardView>
 
@@ -111,7 +111,7 @@
             android:layout_marginStart="20dp"
             android:fontFamily="@font/montserrat"
             android:text="@string/blank"
-            android:textColor="@color/black"
+            android:textColor="@color/primaryTextColor"
             android:textSize="20sp" />
 
         <androidx.cardview.widget.CardView
@@ -139,7 +139,7 @@
                 android:layout_gravity="center_vertical|end"
                 android:layout_marginEnd="10dp"
                 android:text="@string/blank"
-                android:textColor="@color/black"
+                android:textColor="@color/primaryTextColor"
                 android:textSize="18sp" />
         </androidx.cardview.widget.CardView>
     </androidx.cardview.widget.CardView>
@@ -164,7 +164,7 @@
             android:layout_marginStart="20dp"
             android:fontFamily="@font/montserrat"
             android:text="@string/blank"
-            android:textColor="@color/black"
+            android:textColor="@color/primaryTextColor"
             android:textSize="20sp" />
 
         <androidx.cardview.widget.CardView
@@ -192,7 +192,7 @@
                 android:layout_gravity="center_vertical|end"
                 android:layout_marginEnd="10dp"
                 android:text="@string/blank"
-                android:textColor="@color/black"
+                android:textColor="@color/primaryTextColor"
                 android:textSize="18sp" />
         </androidx.cardview.widget.CardView>
     </androidx.cardview.widget.CardView>
@@ -217,7 +217,7 @@
             android:layout_marginStart="20dp"
             android:fontFamily="@font/montserrat"
             android:text="@string/blank"
-            android:textColor="@color/black"
+            android:textColor="@color/primaryTextColor"
             android:textSize="20sp" />
 
         <androidx.cardview.widget.CardView
@@ -245,7 +245,7 @@
                 android:layout_gravity="center_vertical|end"
                 android:layout_marginEnd="10dp"
                 android:text="@string/blank"
-                android:textColor="@color/black"
+                android:textColor="@color/primaryTextColor"
                 android:textSize="18sp" />
         </androidx.cardview.widget.CardView>
     </androidx.cardview.widget.CardView>
@@ -270,7 +270,7 @@
             android:layout_marginTop="5dp"
             android:fontFamily="@font/montserrat"
             android:text="@string/storm_forecast"
-            android:textColor="@color/black" />
+            android:textColor="@color/primaryTextColor" />
     </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

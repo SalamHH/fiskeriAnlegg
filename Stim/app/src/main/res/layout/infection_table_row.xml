@@ -13,6 +13,7 @@
         android:gravity="center"
         android:fontFamily="@font/montserrat_bold"
         android:textStyle="bold"
+        android:textColor="@color/primaryTextColor"
         android:background="@color/colorSecondary" />
 
     <TextView
@@ -20,6 +21,7 @@
         android:layout_height="match_parent"
         android:id="@+id/table_display_float"
         android:layout_weight="0.75"
+        android:textColor="@color/primaryTextColor"
         android:gravity="center"
         android:fontFamily="@font/montserrat_light" />
 

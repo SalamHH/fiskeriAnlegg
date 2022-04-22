@@ -79,6 +79,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
                 android:fontFamily="@font/montserrat_bold"
+                android:textColor="@color/primaryTextColor"
                 android:gravity="center"
                 android:text="@string/site_name"
                 app:layout_constraintTop_toBottomOf="@id/contaminationText" />
@@ -275,6 +276,7 @@
                                 android:layout_height="match_parent"
                                 android:id="@+id/table_display_float"
                                 android:text="Smittedata"
+                                android:textColor="@color/primaryTextColor"
                                 android:layout_weight="0.75"
                                 android:gravity="center"
                                 android:fontFamily="@font/montserrat_light" />

@@ -25,6 +25,7 @@
             android:fontFamily="@font/montserrat_bold"
             android:layout_gravity="center"
             android:textSize="18sp"
+            android:textColor="@color/primaryTextColor"
             android:layout_marginBottom="10dp" />
 
         <RelativeLayout
@@ -44,6 +45,7 @@
                 android:layout_marginStart="10dp"
                 android:text="Fant ikke smittedata"
                 android:textSize="15sp"
+                android:textColor="@color/primaryTextColor"
                 android:fontFamily="@font/montserrat_light"
                 android:layout_toEndOf="@+id/fantIkkeData"
                 android:layout_centerVertical="true" />
@@ -67,6 +69,7 @@
                 android:layout_marginStart="10dp"
                 android:text="Veldig lav/ingen smitte"
                 android:textSize="15sp"
+                android:textColor="@color/primaryTextColor"
                 android:fontFamily="@font/montserrat_light"
                 android:layout_toEndOf="@+id/ingenSmitte"
                 android:layout_centerVertical="true" />
@@ -90,6 +93,7 @@
                 android:layout_marginStart="10dp"
                 android:text="Signifikant smittemiskning"
                 android:textSize="15sp"
+                android:textColor="@color/primaryTextColor"
                 android:fontFamily="@font/montserrat_light"
                 android:layout_toEndOf="@+id/decrease"
                 android:layout_centerVertical="true" />
@@ -113,6 +117,7 @@
                 android:layout_marginStart="10dp"
                 android:text="Lav/medium smitte"
                 android:textSize="15sp"
+                android:textColor="@color/primaryTextColor"
                 android:fontFamily="@font/montserrat_light"
                 android:layout_toEndOf="@+id/lavSmitte"
                 android:layout_centerVertical="true" />
@@ -136,6 +141,7 @@
                 android:layout_marginStart="10dp"
                 android:text="Signifikant smitteøkning"
                 android:textSize="15sp"
+                android:textColor="@color/primaryTextColor"
                 android:fontFamily="@font/montserrat_light"
                 android:layout_toEndOf="@+id/increase"
                 android:layout_centerVertical="true" />
@@ -158,6 +164,7 @@
                 android:layout_marginStart="10dp"
                 android:text="Høy smitte"
                 android:textSize="15sp"
+                android:textColor="@color/primaryTextColor"
                 android:fontFamily="@font/montserrat_light"
                 android:layout_toEndOf="@+id/high"
                 android:layout_centerVertical="true" />
