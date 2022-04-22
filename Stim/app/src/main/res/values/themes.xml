@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Theme.Stim" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color. -->
@@ -15,6 +15,8 @@
         <item name="windowNoTitle">true</item>
         <item name="android:fitsSystemWindows">true</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+
+        <item name="android:textColorHint">@color/white</item>
     </style>
 
     <style name="DrawerArrowStyle" parent="@style/Widget.AppCompat.DrawerArrowToggle">

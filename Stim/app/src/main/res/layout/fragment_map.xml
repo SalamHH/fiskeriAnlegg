@@ -27,8 +27,11 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="28dp"
             android:layout_marginBottom="100dp"
+            android:backgroundTint="@color/dark_skyblue"
             android:clickable="true"
             android:contentDescription="Sync button"
+            android:focusable="true"
+            app:backgroundTint="@color/dark_skyblue"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@android:drawable/stat_notify_sync" />
@@ -40,7 +43,7 @@
             android:layout_margin="10dp"
             android:layout_marginStart="12dp"
             android:layout_marginTop="84dp"
-            android:background="#BFBFBF"
+            android:background="@color/dark_skyblue"
             android:elevation="5dp"
             app:iconifiedByDefault="false"
             app:layout_constraintStart_toStartOf="parent"
@@ -62,7 +65,7 @@
             android:id="@+id/toolbar_btmSheet"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary">
+            android:background="@color/dark_skyblue">
 
             <ImageView
                 android:id="@+id/icon_pull"
@@ -79,6 +82,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/icon_pull"
                 android:gravity="center"
+                android:fontFamily="@font/montserrat_semibold"
                 android:text="@string/bottomsheet_default_header"
                 android:textColor="@color/white"
                 android:textSize="15sp" />
