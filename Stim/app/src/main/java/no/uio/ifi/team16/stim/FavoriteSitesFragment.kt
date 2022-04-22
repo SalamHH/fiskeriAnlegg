@@ -13,10 +13,6 @@ import no.uio.ifi.team16.stim.io.adapter.RecycleViewAdapter
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 
 
-/*
-TODO: Forandre dette fragmentet slik at det viser favoritt municipality
- */
-
 class FavoriteSitesFragment : StimFragment() {
 
     private lateinit var binding: FragmentFavoriteSitesBinding
@@ -30,7 +26,7 @@ class FavoriteSitesFragment : StimFragment() {
          *  RECYCLEVIEW *
          ********************/
 
-        val adapter = RecycleViewAdapter(listOf(), this::adapterOnClick, requireActivity())
+        val adapter = RecycleViewAdapter(listOf(), listOf(), this::adapterOnClick, this::favoriteOnClick, requireActivity())
         binding.recyclerview.adapter = adapter
 
         //observe municipality
@@ -38,6 +34,7 @@ class FavoriteSitesFragment : StimFragment() {
 
             if (sites != null) {
                 adapter.sites = sites
+                adapter.favs = sites
                 adapter.notifyDataSetChanged()
             }
         }
@@ -50,6 +47,10 @@ class FavoriteSitesFragment : StimFragment() {
     private fun adapterOnClick(site : Site) {
         viewModel.setCurrentSite(site)
         view?.findNavController()?.navigate(R.id.action_favoriteSitesFragment_to_siteInfoFragment)
+    }
 
+    private fun favoriteOnClick(site : Site, checked : Boolean) {
+        if (checked) viewModel.registerFavouriteSite(site)
+        else viewModel.removeFavouriteSite(site)
     }
 }

@@ -70,7 +70,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         bottomSheetBehavior.isHideable = false
 
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
-        val adapter = RecycleViewAdapter(listOf(), this::adapterOnClick, requireActivity())
+        val adapter = RecycleViewAdapter(listOf(), listOf(), this::adapterOnClick, this::favoriteOnClick, requireActivity())
         binding.recyclerView.adapter = adapter
 
         binding.syncBtn.setOnClickListener {
@@ -174,7 +174,13 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
             val cameraUpdate = CameraUpdateFactory.newLatLngZoom(firstSite.latLong.toGoogle(), zoomLevel)
             map.animateCamera(cameraUpdate)
 
-            val adapter = RecycleViewAdapter(municipality.sites, this::adapterOnClick, requireActivity())
+            var favSites = listOf<Site>()
+            viewModel.getFavouriteSitesData().observe(viewLifecycleOwner) {
+                if (it != null) {
+                    favSites = it.toList()
+                }
+            }
+            val adapter = RecycleViewAdapter(municipality.sites, favSites, this::adapterOnClick, this::favoriteOnClick, requireActivity())
             binding.recyclerView.adapter = adapter
 
 
@@ -234,6 +240,11 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
     private fun adapterOnClick(site: Site) {
         viewModel.setCurrentSite(site)
         view?.findNavController()?.navigate(R.id.action_mapFragment_to_siteInfoFragment)
+    }
+
+    private fun favoriteOnClick(site : Site, checked : Boolean) {
+        if (checked) viewModel.registerFavouriteSite(site)
+        else viewModel.removeFavouriteSite(site)
     }
 
     /**

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.ToggleButton
 import androidx.recyclerview.widget.RecyclerView
 import no.uio.ifi.team16.stim.R
 import no.uio.ifi.team16.stim.data.Site
@@ -16,7 +17,9 @@ import no.uio.ifi.team16.stim.data.StaticMapImageLoader
 
 class RecycleViewAdapter(
     var sites: List<Site>,
+    var favs: List<Site>,
     private val onClick: (Site) -> Unit,
+    private val favOnClick: (Site, Boolean) -> Unit,
     val context: Context
 ) :
     RecyclerView.Adapter<RecycleViewAdapter.ViewHolder>() {
@@ -42,7 +45,7 @@ class RecycleViewAdapter(
         val nameView: TextView = view.findViewById(R.id.textview_name)
         val locationView: TextView = view.findViewById(R.id.textview_location)
         val pictureView: ImageView = view.findViewById(R.id.imageView_overview)
-        val favoriteButton: Button = view.findViewById(R.id.favoriteButton)
+        val favoriteButton: ToggleButton = view.findViewById(R.id.favoriteButton)
 
         private var site: Site? = null
 
@@ -76,10 +79,10 @@ class RecycleViewAdapter(
 
         imageLoader.loadSiteImage(site, viewHolder.pictureView)
 
-        Log.d(TAG, "data lagt inn")
+        viewHolder.favoriteButton.isChecked = favs.contains(site)
 
         viewHolder.favoriteButton.setOnClickListener {
-            //find viewmodel, and use its registerFavourtieSite(site)
+            favOnClick(site, viewHolder.favoriteButton.isChecked)
         }
     }
 

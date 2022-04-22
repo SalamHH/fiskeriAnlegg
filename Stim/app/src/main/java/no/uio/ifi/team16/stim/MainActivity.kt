@@ -1,5 +1,6 @@
 package no.uio.ifi.team16.stim
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.viewModels
@@ -16,11 +17,14 @@ class MainActivity : StimActivity() {
     private val viewModel: MainActivityViewModel by viewModels()
     private lateinit var binding: ActivityMainBinding
     private lateinit var appBarConfiguration : AppBarConfiguration
+    private lateinit var prefrences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        prefrences = getSharedPreferences("prefrences", MODE_PRIVATE)
 
         // Navigation control for fragments
         setSupportActionBar(binding.toolbar)
@@ -37,15 +41,9 @@ class MainActivity : StimActivity() {
         //initial load of data
         viewModel.loadNorKyst800()
         viewModel.loadDefaultInfectiousPressure()
-        viewModel.loadFavouriteSites() //denne er i utgangspunktet tom!
+        viewModel.loadFavouriteSites(prefrences.getStringSet("Favorites", null))
         viewModel.loadSitesAtMunicipality(Options.initialMunicipality)
         //men vi legger til dataene fra det først municipalities i starten, TODO: må fjernes i release
-        viewModel.getMunicipalityData().observe(this) { municipality ->
-            municipality?.sites?.forEach() { site ->
-                viewModel.registerFavouriteSite(site)
-            }
-            //oppdaterer favouritesites, som igjen burde kalle på observatører til disse
-        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -55,5 +53,13 @@ class MainActivity : StimActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return item.onNavDestinationSelected(findNavController(R.id.myNavHostFragment))
                 || super.onOptionsItemSelected(item)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        val editor = prefrences.edit()
+
+        editor.putStringSet("Favorites", viewModel.getFavouriteSitesStringSet())
+        editor.apply()
     }
 }

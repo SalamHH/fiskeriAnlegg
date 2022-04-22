@@ -152,11 +152,11 @@ class MainActivityViewModel : ViewModel() {
         }
     }
 
-    fun loadFavouriteSites() {
+    fun loadFavouriteSites(favourites: Set<String>?) {
         viewModelScope.launch(Dispatchers.IO) {
-            val loaded = sitesRepository.getFavouriteSites()
+            val loaded = sitesRepository.getFavouriteSites(favourites)
             //invokes the observer
-            favouriteSitesData.postValue(loaded?.toMutableList())
+            favouriteSitesData.postValue(loaded)
         }
     }
 
@@ -206,10 +206,16 @@ class MainActivityViewModel : ViewModel() {
 
     private val infectionData = mutableListOf<Entry>()
 
-    //TODO: only for debug
     fun registerFavouriteSite(site: Site) {
         favouriteSitesData.value.let { favouriteSites ->
             favouriteSites?.add(site)
+            favouriteSitesData.postValue(favouriteSites)
+        }
+    }
+
+    fun removeFavouriteSite(site: Site) {
+        favouriteSitesData.value.let { favouriteSites ->
+            favouriteSites?.remove(site)
             favouriteSitesData.postValue(favouriteSites)
         }
     }
@@ -222,5 +228,13 @@ class MainActivityViewModel : ViewModel() {
             }
             favouriteSitesData.postValue(favouriteSites)
         }
+    }
+
+    fun getFavouriteSitesStringSet() : Set<String> {
+        val favSet = mutableSetOf<String>()
+        favouriteSitesData.value?.forEach {
+            favSet.add(it.name)
+        }
+        return favSet
     }
 }

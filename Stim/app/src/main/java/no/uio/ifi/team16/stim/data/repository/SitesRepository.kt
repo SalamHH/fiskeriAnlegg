@@ -1,5 +1,6 @@
 package no.uio.ifi.team16.stim.data.repository
 
+import android.util.Log
 import no.uio.ifi.team16.stim.data.Municipality
 import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.data.dataLoader.SitesDataLoader
@@ -26,9 +27,6 @@ class SitesRepository {
     private val nameListCache: MutableMap<String, List<Site>?> = mutableMapOf()//ny
 
 
-    //todo: store as int then load? sitedata on memory might be inconsistent with remote
-    var favouriteSites: MutableList<Site> = mutableListOf()
-
     /**
      * load the municipality at the given municipalitycode
      */
@@ -41,18 +39,20 @@ class SitesRepository {
 
         if(municipality != null) {
             municipalityCache[municipalityCode] = municipality
-
             for(site in municipality.sites) {
                 nameCache[site.name] = site
             }
         }
-
         return municipality
     }
 
-    suspend fun getFavouriteSites(): List<Site>? {
-        // TODO: load from memory
-        return Options.initialFavouriteSites
+    suspend fun getFavouriteSites(favourites: Set<String>?): MutableList<Site> {
+        val list = mutableListOf<Site>()
+        favourites?.forEach { siteName ->
+            val loadedSite = getDataByName(siteName)
+            if (loadedSite != null) list.add(loadedSite)
+        }
+        return list
     }
 
     /**
