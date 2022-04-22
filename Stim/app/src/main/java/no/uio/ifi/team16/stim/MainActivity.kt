@@ -22,7 +22,6 @@ class MainActivity : StimActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         // Navigation control for fragments
         setSupportActionBar(binding.toolbar)
         val navController = this.findNavController(R.id.myNavHostFragment)
@@ -33,6 +32,7 @@ class MainActivity : StimActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.navView.setupWithNavController(navController)
 
+        window.statusBarColor = getColor(R.color.skyblue)
 
         //initial load of data
         viewModel.loadNorKyst800()
