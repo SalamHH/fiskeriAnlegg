@@ -20,4 +20,5 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Stim"
 include ':app'
+include ':netcdf'
 include ':netcdfC'

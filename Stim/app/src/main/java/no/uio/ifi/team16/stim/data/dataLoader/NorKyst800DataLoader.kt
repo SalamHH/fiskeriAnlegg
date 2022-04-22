@@ -1,19 +1,16 @@
 package no.uio.ifi.team16.stim.data.dataLoader
 
+//import no.uio.ifi.team16.stim.data.dataLoader.parser.NorKyst800RegexParser
 import android.util.Log
 import com.github.kittinunf.fuel.Fuel
-import com.github.kittinunf.fuel.coroutines.awaitByteArrayResult
 import com.github.kittinunf.fuel.coroutines.awaitString
+import com.github.kittinunf.fuel.coroutines.awaitStringResult
 import com.github.kittinunf.result.getOrElse
 import com.github.kittinunf.result.onError
 import no.uio.ifi.team16.stim.data.NorKyst800
-import no.uio.ifi.team16.stim.util.*
-import ucar.ma2.ArrayDouble
-import ucar.ma2.ArrayFloat
-import ucar.nc2.NetcdfFile.openInMemory
-import ucar.nc2.Variable
-import ucar.nc2.dataset.NetcdfDataset
-import kotlin.math.max
+import no.uio.ifi.team16.stim.data.dataLoader.parser.NorKyst800RegexParser
+import no.uio.ifi.team16.stim.util.LatLong
+import no.uio.ifi.team16.stim.util.Options
 
 /**
  * DataLoader for data related tot he norkyst800 model.
@@ -60,7 +57,7 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
         val parametrizedUrl = makeParametrizedUrl(baseUrl, xRange, yRange, depthRange, timeRange)
         Log.d(TAG, parametrizedUrl)
 
-        val responseBinary = Fuel.get(parametrizedUrl).awaitByteArrayResult().onError { error ->
+        val responseStr = Fuel.get(parametrizedUrl).awaitStringResult().onError { error ->
             Log.e(TAG, "Failed to load norkyst800data due to:\n $error")
             return@load null
         }.getOrElse {
@@ -71,59 +68,13 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
             return@load null
         }
 
-        if (responseBinary.isEmpty()) {
+        if (responseStr.isEmpty()) {
             Log.e(TAG, "Empty response")
             return null
         }
 
         //open the file
-        NetcdfDataset(openInMemory("NorKyst800", responseBinary)).let { ncfile ->
-            ncfile.findCoordinateAxis("")
-            //now, comes pre-sliced form the THREDDS server, so we merely have to wrap everything into
-            //a NorkYst800-object.
-            //make the projection
-            val gridMapping: Variable = ncfile.findVariable("grid_mapping")
-                ?: throw NullPointerException("Failed to read variable <gridMapping> from norKyst800") //caught by THREDDSLOAD
-            val latLngToStereo =
-                readAndMakeProjectionFromGridMapping(gridMapping) //can throw NullpointerException, caught by THREDDSLOAD
-            //Variables are data that are NOT READ YET. findVariable() is not null-safe
-            val depth: Variable = ncfile.findVariable("depth")
-                ?: throw NullPointerException("Failed to read variable <time> from NorKyst800") //caught by THREDDSLOAD
-            val time: Variable = ncfile.findVariable("time")
-                ?: throw NullPointerException("Failed to read variable <depth> from NorKyst800") //caught by THREDDSLOAD
-            val salinity: Variable = ncfile.findVariable("salinity")
-                ?: throw NullPointerException("Failed to read variable <salinity> from NorKyst800") //caught by THREDDSLOAD
-            val temperature: Variable = ncfile.findVariable("temperature")
-                ?: throw NullPointerException("Failed to read variable <temperature> from NorKyst800") //caught by THREDDSLOAD
-            val u: Variable = ncfile.findVariable("u")
-                ?: throw NullPointerException("Failed to read variable <u> from NorKyst800") //caught by THREDDSLOAD
-            val v: Variable = ncfile.findVariable("v")
-                ?: throw NullPointerException("Failed to read variable <v> from NorKyst800") //caught by THREDDSLOAD
-            val w: Variable = ncfile.findVariable("w")
-                ?: throw NullPointerException("Failed to read variable <w> from NorKyst800") //caught by THREDDSLOAD
-            //Read out the filler-value for the datasets that have those
-            val salinityFillValue = ncfile.readAttributeInteger(salinity, "_FillValue", -32767).toDouble()
-            val temperatureFillValue = ncfile.readAttributeInteger(temperature, "_FillValue", -32767).toDouble()
-            val uFillValue = ncfile.readAttributeInteger(u, "_FillValue", -32767).toDouble()
-            val vFillValue = ncfile.readAttributeInteger(v, "_FillValue", -32767).toDouble()
-            val wFillValue = ncfile.readAttributeInteger(w, "_FillValue", -32767).toDouble()
-
-
-
-            //make the infectiousPressure
-            NorKyst800(
-                (depth.read() as ArrayDouble).to1DDoubleArray(),
-                (salinity.read() as ArrayDouble).toNullable4DDoubleArray(salinityFillValue),
-                (temperature.read() as ArrayDouble).toNullable4DDoubleArray(temperatureFillValue),
-                (time.read() as ArrayDouble).to1DDoubleArray(),
-                Triple(
-                    (u.read() as ArrayDouble).toNullable4DDoubleArray(uFillValue),
-                    (v.read() as ArrayDouble).toNullable4DDoubleArray(vFillValue),
-                    (w.read() as ArrayDouble).toNullable4DDoubleArray(wFillValue)
-                )
-            )
-        }
-        return null
+        return NorKyst800RegexParser().parse(responseStr)
     }
 
     /**
@@ -207,7 +158,7 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
         forecastUrlRegex.find(responseStr)?.let { match ->
             "https://thredds.met.no/thredds/dodsC/fou-hi/norkyst800m-1h/" +
                     match.groupValues[1] + //if there is a match, the group (entry[1]) is guaranteed to exist
-                    ".dods?"
+                    ".ascii?"
         } ?: run { //"catch" unsucssessfull parse
             Log.e(
                 TAG,

@@ -9,10 +9,10 @@ import kotlin.ranges.IntProgression.Companion.fromClosedRange
 class Options {
     companion object {
         //NorKyst800
-        const val defaultNorKyst800XStride = 5
-        const val defaultNorKyst800YStride = 3
-        const val defaultNorKyst800DepthStride = 5
-        const val defaultNorKyst800TimeStride = 3
+        const val defaultNorKyst800XStride = 50
+        const val defaultNorKyst800YStride = 50
+        const val defaultNorKyst800DepthStride = 15
+        const val defaultNorKyst800TimeStride = 16
         const val defaultNorKyst800DepthEnd = 0 //15
         const val defaultNorKyst800TimeEnd = 0 //16
         const val norKyst800XEnd = 902
