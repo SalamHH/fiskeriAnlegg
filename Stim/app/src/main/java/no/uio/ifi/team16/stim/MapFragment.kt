@@ -131,7 +131,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
 
         if (checkLocationPermission()) {
             map.isMyLocationEnabled = true
-            // todo må kanskje lage en LocationProvider her
         }
     }
 
