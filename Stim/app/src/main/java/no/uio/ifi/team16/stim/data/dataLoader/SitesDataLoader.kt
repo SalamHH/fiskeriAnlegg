@@ -59,7 +59,7 @@ class SitesDataLoader {
             sites.getJSONObject(i)?.runCatching {
                 out.add(
                     Site(
-                        this.getInt("siteId"),
+                        this.getInt("siteNr"),
                         this.getString("name"),
                         LatLong(this.getDouble("latitude"), this.getDouble("longitude")),
                         //a site might not have an areaplacement(?)
@@ -126,6 +126,16 @@ class SitesDataLoader {
             listOf(
                 "range" to Options.sitesRange,
                 "name" to name
+            )
+        )
+        return sites?.getOrNull(0)
+    }
+
+    suspend fun loadDataByNr(nr: String): Site? {
+        val sites = loadWithParameters(
+            listOf(
+                "range" to Options.sitesRange,
+                "nr" to nr
             )
         )
         return sites?.getOrNull(0)

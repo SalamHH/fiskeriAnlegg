@@ -53,7 +53,7 @@ class GeneralInfoFragment : Fragment() {
         binding.posisjonView.text = "${site.latLong.lat}, ${site.latLong.lng}"
 
         //anleggsnummer
-        binding.anleggsnrView.text = site.id.toString()
+        binding.anleggsnrView.text = site.nr.toString()
 
         //plassering
         binding.plasseringView.text = site.placementType ?: "-----"

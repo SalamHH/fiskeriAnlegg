@@ -233,7 +233,7 @@ class MainActivityViewModel : ViewModel() {
     fun getFavouriteSitesStringSet() : Set<String> {
         val favSet = mutableSetOf<String>()
         favouriteSitesData.value?.forEach {
-            favSet.add(it.name)
+            favSet.add(it.nr.toString())
         }
         return favSet
     }

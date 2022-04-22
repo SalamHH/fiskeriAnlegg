@@ -23,7 +23,7 @@ class NorKyst800AtSiteRepository {
      * @return mocked, cached or newly loaded data.
      */
     suspend fun getDataAtSite(site: Site): NorKyst800AtSite? {
-        return cache.getOrPutOrPass(site.id) {
+        return cache.getOrPutOrPass(site.nr) {
             dataSource.load(site)
         }
     }

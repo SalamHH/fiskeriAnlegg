@@ -29,7 +29,7 @@ data class BorderPoint(val id: Int, val index: Int, val longitude: Double, val l
 data class SiteBorder(val points: List<BorderPoint>)
 
 data class Site(
-    val id: Int,
+    val nr: Int,
     val name: String,
     val latLong: LatLong,
     val placement: AreaPlacement?,

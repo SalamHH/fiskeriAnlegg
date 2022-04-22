@@ -1,10 +1,8 @@
 package no.uio.ifi.team16.stim.data.repository
 
-import android.util.Log
 import no.uio.ifi.team16.stim.data.Municipality
 import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.data.dataLoader.SitesDataLoader
-import no.uio.ifi.team16.stim.util.Options
 
 /**
  * Repository for municipality.
@@ -48,8 +46,8 @@ class SitesRepository {
 
     suspend fun getFavouriteSites(favourites: Set<String>?): MutableList<Site> {
         val list = mutableListOf<Site>()
-        favourites?.forEach { siteName ->
-            val loadedSite = getDataByName(siteName)
+        favourites?.forEach { siteNr ->
+            val loadedSite = dataSource.loadDataByNr(siteNr)
             if (loadedSite != null) list.add(loadedSite)
         }
         return list

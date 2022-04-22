@@ -41,7 +41,7 @@ class InfectiousPressureTimeSeriesRepository() {
      * @return mocked, cached or newly loaded data.
      */
     suspend fun getDataAtSite(site: Site, weeksFromNow: Int): InfectiousPressureTimeSeries? {
-        return cache.getOrPutOrPass(site.id) {
+        return cache.getOrPutOrPass(site.nr) {
             dataSource.load(site, fromClosedRange(0, weeksFromNow, 1))
         }
     }
@@ -62,7 +62,7 @@ class InfectiousPressureTimeSeriesRepository() {
         site: Site,
         weekRange: IntProgression
     ): InfectiousPressureTimeSeries? =
-        cache.getOrPutOrPass(site.id) {
+        cache.getOrPutOrPass(site.nr) {
             dataSource.load(site, weekRange)
         }
 
