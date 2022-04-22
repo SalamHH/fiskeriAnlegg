@@ -1,5 +1,7 @@
 package no.uio.ifi.team16.stim.data
 
+import com.github.mikephil.charting.data.Entry
+import no.uio.ifi.team16.stim.util.DoubleArray2D
 import no.uio.ifi.team16.stim.util.DoubleArray4D
 import no.uio.ifi.team16.stim.util.Options
 import no.uio.ifi.team16.stim.util.get
@@ -18,6 +20,49 @@ data class NorKyst800AtSite(
     val TAG = "NORKYST800AtSite"
 
     val radius = Options.norKyst800AtSiteRadius
+
+    //how concentrations at a given time are aggregated to a single float
+    val aggregation: (DoubleArray2D) -> Double = { arr -> meanAggregation(arr) }
+
+    /////////////////
+    // AGGREGATORS //
+    /////////////////
+    /**
+     * return max value of a 2D array
+     */
+    private fun maxAggregation(array: DoubleArray2D): Double =
+        array.maxOf { concentrationRow ->
+            concentrationRow.maxOf { concentration ->
+                concentration ?: 0.0
+            }
+        }
+
+    /**
+     * return mean value of a 2D array
+     * TODO: nulls count towards mean
+     */
+    private fun meanAggregation(array: DoubleArray2D): Double =
+        array.fold(0.0) { sum, concentrationRow ->
+            sum + concentrationRow.fold(0.0) { rowSum, concentration ->
+                concentration?.let {
+                    rowSum + it
+                } ?: rowSum
+            } / concentrationRow.size
+        } / array.size
+
+    /**
+     * return sum of a 2D array
+     * TODO: nulls count towards mean
+     */
+    private fun sumAggregation(array: DoubleArray2D): Double =
+        array.fold(0.0) { sum, concentrationRow ->
+            sum + concentrationRow.fold(0.0) { rowSum, concentration ->
+                concentration?.let {
+                    rowSum + it
+                } ?: rowSum
+            }
+        }
+
 
     ///////////////
     // UTILITIES //
@@ -38,6 +83,66 @@ data class NorKyst800AtSite(
     fun getSalinity(depth: Int, time: Int, y: Int, x: Int): Double? =
         norKyst800.salinity.get(depth, time, radius + y, radius + x)
             ?: averageOf(depth, time, norKyst800.salinity)
+
+    /**
+     * return a graph(List of Entry) of salinity over time(hours)
+     */
+    fun getSalinityAtSurfaceAsGraph(): List<Entry> =
+        norKyst800.time.zip(
+            norKyst800.salinity
+                .first() //get at surface
+                .map { arr -> //for each latlong grid at a given time
+                    aggregation(arr) //apply aggregation
+                }
+        ).map { (hour, salt) -> //we have List<Pair<...>> make it into List<Entry>
+            Entry(hour.toFloat(), salt.toFloat())
+        }
+
+    /**
+     * return a list of graphs(list of entries) where each entry is a graph of salinity
+     * at the depth indicated by index
+     */
+    fun getSalinitiesAsGraphs(): List<List<Entry>> =
+        norKyst800.salinity
+            .map { salinityOverTime -> //for each depth
+                salinityOverTime.map { salinity -> //for each latlong grid at a given time
+                    aggregation(salinity) //apply aggregation
+                }.zip(
+                    norKyst800.time.toList()
+                ).map { (hour, salt) -> //we have List<Pair<...>> make it into List<Entry>
+                    Entry(hour.toFloat(), salt.toFloat())
+                }
+            }
+
+    /**
+     * return a graph(List of Entry) of salinity over time(hours)
+     */
+    fun getTemperatureAtSurfaceAsGraph(): List<Entry> =
+        norKyst800.time.zip(
+            norKyst800.temperature
+                .first() //get at surface
+                .map { arr -> //for each latlong grid at a given time
+                    aggregation(arr) //apply aggregation
+                }
+        ).map { (hour, temp) -> //we have List<Pair<...>> make it into List<Entry>
+            Entry(hour.toFloat(), temp.toFloat())
+        }
+
+    /**
+     * return a list of graphs(list of entries) where each entry is a graph of salinity
+     * at the depth indicated by index
+     */
+    fun getTemperaturesAsGraphs(): List<List<Entry>> =
+        norKyst800.temperature
+            .map { temperatureOverTime -> //for each depth
+                temperatureOverTime.map { temperature -> //for each latlong grid at a given time
+                    aggregation(temperature) //apply aggregation
+                }.zip(
+                    norKyst800.time.toList()
+                ).map { (hour, temp) -> //we have List<Pair<...>> make it into List<Entry>
+                    Entry(hour.toFloat(), temp.toFloat())
+                }
+            }
 
     ///////////////
     // UTILITIES //
