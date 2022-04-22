@@ -17,6 +17,7 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import no.uio.ifi.team16.stim.databinding.FragmentInfectionBinding
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
+import no.uio.ifi.team16.stim.util.Options
 import javax.inject.Inject
 
 
@@ -134,27 +135,20 @@ class InfectionFragment : StimFragment() {
 
     private fun calculateInfectionStatusText(infectiondata: Array<Float>): String {
 
-        //Limits
-        //TODO - enable option to edit this in settings
-        val high = 5
-        val infectionExists = 1
-        val increase = 0.5
-        val decrease = 0.5
 
-
-        if (infectiondata.lastIndex > 1 && infectiondata.average() > infectionExists) {
+        if (infectiondata.lastIndex > 1 && infectiondata.average() > Options.infectionExists) {
             //sjekker om det er signifikant økning/miskning på de siste 3 datapunktene
             val lastThree = arrayOf(
                 infectiondata[infectiondata.lastIndex - 2],
                 infectiondata[infectiondata.lastIndex - 1],
                 infectiondata[infectiondata.lastIndex]
             )
-            return if (lastThree.average() - infectiondata.average() > increase) {
+            return if (lastThree.average() - infectiondata.average() > Options.increase) {
                 "Signifikant økning i smitte"
-            } else if (infectiondata.average() - lastThree.average() > decrease) {
+            } else if (infectiondata.average() - lastThree.average() > Options.decrease) {
                 "Signifikant miskning i smitte"
             } else {
-                return if (infectiondata.average() > high) {
+                return if (infectiondata.average() > Options.high) {
                     "Høyt smittenivå"
                 } else {
                     "Lavt smittenivå"
@@ -167,35 +161,28 @@ class InfectionFragment : StimFragment() {
 
     private fun calculateInfectionStatusIcon(infectiondata: Array<Float>): Drawable? {
 
-        //Limits
-        //TODO - enable option to edit this in settings
-        val high = 5
-        val infectionExists = 1
-        val increase = 0.5
-        val decrease = 0.5
 
-
-        if (infectiondata.lastIndex > 1 && infectiondata.average() > infectionExists) {
+        if (infectiondata.lastIndex > 1 && infectiondata.average() > Options.infectionExists) {
             //sjekker om det er signifikant økning/miskning på de siste 3 datapunktene
             val lastThree = arrayOf(
                 infectiondata[infectiondata.lastIndex - 2],
                 infectiondata[infectiondata.lastIndex - 1],
                 infectiondata[infectiondata.lastIndex]
             )
-            return if (lastThree.average() - infectiondata.average() > increase) {
+            return if (lastThree.average() - infectiondata.average() > Options.increase) {
                 ResourcesCompat.getDrawable(
                     resources,
                     no.uio.ifi.team16.stim.R.drawable.arrow_up,
                     null
                 )
-            } else if (infectiondata.average() - lastThree.average() > decrease) {
+            } else if (infectiondata.average() - lastThree.average() > Options.decrease) {
                 ResourcesCompat.getDrawable(
                     resources,
                     no.uio.ifi.team16.stim.R.drawable.arrow_down,
                     null
                 )
             } else {
-                return if (infectiondata.average() > high) {
+                return if (infectiondata.average() > Options.high) {
                     ResourcesCompat.getDrawable(
                         resources,
                         no.uio.ifi.team16.stim.R.drawable.farevarsel,
