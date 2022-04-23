@@ -11,6 +11,7 @@ import no.uio.ifi.team16.stim.data.NorKyst800
 import no.uio.ifi.team16.stim.data.dataLoader.parser.NorKyst800RegexParser
 import no.uio.ifi.team16.stim.util.LatLong
 import no.uio.ifi.team16.stim.util.Options
+import kotlin.system.measureTimeMillis
 
 /**
  * DataLoader for data related tot he norkyst800 model.
@@ -74,9 +75,15 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
         }
 
         //open the file
-        return NorKyst800RegexParser().parse(responseStr)
-    }
+        var nork: NorKyst800? = null
 
+        val parseTime = measureTimeMillis {
+            nork = NorKyst800RegexParser().parse(responseStr)
+        }
+        Log.d(TAG, "Parsed data in $parseTime ms")
+
+        return nork
+    }
     /**
      * return data in a box specified by the given coordinates.
      *

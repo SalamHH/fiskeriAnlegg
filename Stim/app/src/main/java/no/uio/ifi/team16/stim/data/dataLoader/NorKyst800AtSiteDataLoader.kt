@@ -5,14 +5,17 @@ import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.coroutines.awaitStringResult
 import com.github.kittinunf.result.getOrElse
 import com.github.kittinunf.result.onError
+import no.uio.ifi.team16.stim.data.NorKyst800
 import no.uio.ifi.team16.stim.data.NorKyst800AtSite
 import no.uio.ifi.team16.stim.data.Site
+import no.uio.ifi.team16.stim.data.dataLoader.parser.NorKyst800RegexParser
 import no.uio.ifi.team16.stim.util.Options
 import no.uio.ifi.team16.stim.util.project
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.ranges.IntProgression.Companion.fromClosedRange
+import kotlin.system.measureTimeMillis
 
 /**
  * Dataloader for loading NorKyst800 data around a specified site
@@ -87,6 +90,13 @@ class NorKyst800AtSiteDataLoader : NorKyst800DataLoader() {
             return null
         }
 
-        return null
+        var nork: NorKyst800? = null
+
+        val parseTime = measureTimeMillis {
+            nork = NorKyst800RegexParser().parse(responseStr)
+        }
+        Log.d(TAG, "Parsed data in $parseTime ms")
+
+        return NorKyst800AtSite(site.id, nork ?: return null)
     }
 }
