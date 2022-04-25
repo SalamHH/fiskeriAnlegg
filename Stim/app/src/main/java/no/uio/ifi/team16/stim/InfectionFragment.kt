@@ -12,7 +12,6 @@ import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.activityViewModels
 import androidx.transition.TransitionInflater
-import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import no.uio.ifi.team16.stim.databinding.FragmentInfectionBinding
@@ -56,16 +55,13 @@ class InfectionFragment : StimFragment() {
         //val _lineDataSet = MutableLiveData(LineDataSet(contamData, CHART_LABEL))
 
         viewModel.getInfectiousPressureTimeSeriesData(site).observe(viewLifecycleOwner) {
-            it?.getAllConcentrationsUnzipped()?.also { (weekList, infectionData) ->
+            it?.getConcentrationsAsGraph()?.also { graph ->
+                val infectionData =
+                    graph.map { xy -> xy.y }.toTypedArray() //get contamination as separate list
+                val weekList = graph.map { xy -> xy.x } //get weeks as separate list
                 //CHART
                 val linedataset = LineDataSet(
-                    weekList.zip(infectionData)             // list med par av x og y
-                        .mapIndexed { i, weekAndInf ->
-                            Entry(
-                                i.toFloat(),
-                                weekAndInf.second
-                            )
-                        }, //list med Entry(x,y)
+                    graph,
                     CHART_LABEL
                 )
                 //STATUS
@@ -146,7 +142,7 @@ class InfectionFragment : StimFragment() {
             return if (lastThree.average() - infectiondata.average() > Options.increase) {
                 "Signifikant økning i smitte"
             } else if (infectiondata.average() - lastThree.average() > Options.decrease) {
-                "Signifikant miskning i smitte"
+                "Signifikant minskning i smitte"
             } else {
                 return if (infectiondata.average() > Options.high) {
                     "Høyt smittenivå"

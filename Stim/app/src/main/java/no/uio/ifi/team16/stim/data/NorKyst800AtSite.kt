@@ -1,9 +1,8 @@
 package no.uio.ifi.team16.stim.data
 
 import com.github.mikephil.charting.data.Entry
-import no.uio.ifi.team16.stim.util.DoubleArray2D
-import no.uio.ifi.team16.stim.util.DoubleArray4D
-import no.uio.ifi.team16.stim.util.NullableDoubleArray4D
+import no.uio.ifi.team16.stim.util.NullableFloatArray2D
+import no.uio.ifi.team16.stim.util.NullableFloatArray4D
 import no.uio.ifi.team16.stim.util.Options
 import no.uio.ifi.team16.stim.util.get
 
@@ -23,7 +22,9 @@ data class NorKyst800AtSite(
     val radius = Options.norKyst800AtSiteRadius
 
     //how concentrations at a given time are aggregated to a single float
-    val aggregation: (DoubleArray2D) -> Double = { arr -> meanAggregation(arr) }
+    val aggregation: (NullableFloatArray2D) -> Float = { arr ->
+        meanAggregation(arr.flatten().filterNotNull().toFloatArray())
+    }
 
     /////////////////
     // AGGREGATORS //
@@ -31,39 +32,17 @@ data class NorKyst800AtSite(
     /**
      * return max value of a 2D array
      */
-    private fun maxAggregation(array: DoubleArray2D): Double =
-        array.maxOf { concentrationRow ->
-            concentrationRow.maxOf { concentration ->
-                concentration ?: 0.0
-            }
-        }
+    private fun maxAggregation(array: FloatArray): Float = array.maxOf { i -> i }
 
     /**
      * return mean value of a 2D array
-     * TODO: nulls count towards mean
      */
-    private fun meanAggregation(array: DoubleArray2D): Double =
-        array.fold(0.0) { sum, concentrationRow ->
-            sum + concentrationRow.fold(0.0) { rowSum, concentration ->
-                concentration?.let {
-                    rowSum + it
-                } ?: rowSum
-            } / concentrationRow.size
-        } / array.size
+    private fun meanAggregation(array: FloatArray): Float = array.sum() / array.size
 
     /**
      * return sum of a 2D array
-     * TODO: nulls count towards mean
      */
-    private fun sumAggregation(array: DoubleArray2D): Double =
-        array.fold(0.0) { sum, concentrationRow ->
-            sum + concentrationRow.fold(0.0) { rowSum, concentration ->
-                concentration?.let {
-                    rowSum + it
-                } ?: rowSum
-            }
-        }
-
+    private fun sumAggregation(array: FloatArray): Float = array.sum()
 
     ///////////////
     // UTILITIES //
@@ -73,15 +52,15 @@ data class NorKyst800AtSite(
                 "\tsite: $siteId\n" +
                 "\tnorkyst: $norKyst800\n"
 
-    fun getTemperature(): Double? = getTemperature(0, 0, 0, 0)
-    fun getTemperature(y: Int, x: Int): Double? = getTemperature(0, 0, y, x)
-    fun getTemperature(depth: Int, time: Int, y: Int, x: Int): Double? =
+    fun getTemperature(): Float? = getTemperature(0, 0, 0, 0)
+    fun getTemperature(y: Int, x: Int): Float? = getTemperature(0, 0, y, x)
+    fun getTemperature(depth: Int, time: Int, y: Int, x: Int): Float? =
         norKyst800.temperature.get(depth, time, radius + y, radius + x)
             ?: averageOf(depth, time, norKyst800.temperature)
 
-    fun getSalinity(): Double? = getSalinity(0, 0, 0, 0)
-    fun getSalinity(y: Int, x: Int): Double? = getSalinity(0, 0, y, x)
-    fun getSalinity(depth: Int, time: Int, y: Int, x: Int): Double? =
+    fun getSalinity(): Float? = getSalinity(0, 0, 0, 0)
+    fun getSalinity(y: Int, x: Int): Float? = getSalinity(0, 0, y, x)
+    fun getSalinity(depth: Int, time: Int, y: Int, x: Int): Float? =
         norKyst800.salinity.get(depth, time, radius + y, radius + x)
             ?: averageOf(depth, time, norKyst800.salinity)
 
@@ -96,7 +75,7 @@ data class NorKyst800AtSite(
                     aggregation(arr) //apply aggregation
                 }
         ).map { (hour, salt) -> //we have List<Pair<...>> make it into List<Entry>
-            Entry(hour.toFloat(), salt.toFloat())
+            Entry(hour, salt)
         }
 
     /**
@@ -111,7 +90,7 @@ data class NorKyst800AtSite(
                 }.zip(
                     norKyst800.time.toList()
                 ).map { (hour, salt) -> //we have List<Pair<...>> make it into List<Entry>
-                    Entry(hour.toFloat(), salt.toFloat())
+                    Entry(hour, salt)
                 }
             }
 
@@ -126,7 +105,7 @@ data class NorKyst800AtSite(
                     aggregation(arr) //apply aggregation
                 }
         ).map { (hour, temp) -> //we have List<Pair<...>> make it into List<Entry>
-            Entry(hour.toFloat(), temp.toFloat())
+            Entry(hour, temp)
         }
 
     /**
@@ -141,7 +120,7 @@ data class NorKyst800AtSite(
                 }.zip(
                     norKyst800.time.toList()
                 ).map { (hour, temp) -> //we have List<Pair<...>> make it into List<Entry>
-                    Entry(hour.toFloat(), temp.toFloat())
+                    Entry(hour, temp)
                 }
             }
 
@@ -149,15 +128,17 @@ data class NorKyst800AtSite(
     // UTILITIES //
     ///////////////
     /**
-     * take out all non-null, then average them
-     * TODO WRONG!!!
+     * take out all non-null, then average them.
+     *
+     * Used when getters find null, so we get all sorrounnding entries and average them to get a meaningful result
      */
-    fun averageOf(depth: Int, time: Int, arr: NullableDoubleArray4D): Double = arr.data[depth][time]
-        .flatMap { row -> row.toList() }
-        .filterNotNull()
-        .let { elements ->
-            elements.fold(0.0) { acc, element ->
-                acc + element
-            } / elements.count()
-        }
+    private fun averageOf(depth: Int, time: Int, arr: NullableFloatArray4D): Float =
+        arr[depth][time]
+            .flatMap { row -> row.toList() } //flatten
+            .filterNotNull() //take out null
+            .let { elements -> //with the flattened array of non-null values
+                elements.fold(0f) { acc, element -> //sum all
+                    acc + element
+                } / elements.size //divide by amount of elements
+            }
 }

@@ -1,7 +1,8 @@
 package no.uio.ifi.team16.stim.data
 
+import com.github.mikephil.charting.data.Entry
 import no.uio.ifi.team16.stim.util.FloatArray2D
-import no.uio.ifi.team16.stim.util.FloatArray4D
+import no.uio.ifi.team16.stim.util.FloatArray3D
 
 /**
  * Class representing infectious pressure over a grid at a given time.
@@ -15,10 +16,11 @@ import no.uio.ifi.team16.stim.util.FloatArray4D
  */
 data class InfectiousPressureTimeSeries(
     val siteId: Int,
-    val concentrations: Array<Pair<Int, FloatArray2D>>, //array of 2D arrays of concentration and their associated week
-    val concentrationShape: Pair<Int, Int>,             //shape of each 2D array. Can be inferred from concentrations, but unsafe
-    val dx: Float,                                      //separation between points in x-direction
-    val dy: Float                                       //separation between points in y-direction, usually dx
+    val concentrations: FloatArray3D,        //array of 2D arrays of concentration around site
+    val weeks: Array<Int>,                  //array of week numbers
+    val concentrationShape: Pair<Int, Int>,  //shape of each 2D array. Can be inferred from concentrations, but unsafe
+    val dx: Float,                           //separation between points in x-direction
+    val dy: Float                            //separation between points in y-direction, usually dx
 ) {
     val TAG = "InfectiousPressureTimeSeries"
 
@@ -28,9 +30,9 @@ data class InfectiousPressureTimeSeries(
     init {
         //infer y-x shape
         val shape: Pair<Int, Int> = Pair(
-            concentrations.firstOrNull()?.second?.size
+            concentrations.firstOrNull()?.size
                 ?: -1, //if null, there are no data entries, and shape cannot be inferred!
-            concentrations.firstOrNull()?.second?.firstOrNull()?.size ?: 0
+            concentrations.firstOrNull()?.firstOrNull()?.size ?: 0
         )
     }
 
@@ -72,38 +74,43 @@ data class InfectiousPressureTimeSeries(
     /////////////////////////
     /**
      * get concentration(aggregated) at a given index, 0 being the most recent
+     *
+     * nullable to return null when out of bounds.
      */
     fun getConcentration(index: Int): Float? =
-        concentrations.getOrNull(index)?.second?.let { arr ->
+        concentrations.getOrNull(index)?.let { arr ->
             aggregation(arr)
         }
 
     /**
      * get concentration(aggregated) at all times
      *
-     * includes time
-     */
-    fun getAllConcentrations(): Array<Pair<Int, Float>> = mapOverTime(aggregation)
-
-    /**
-     * get concentration(aggregated) at all times
-     *
      * includes time in a separate array
      */
-    fun getAllConcentrationsUnzipped(): Pair<Array<Int>, Array<Float>> =
-        mapOverTime(aggregation).unzip().let { (timeList, concentrationList) ->
-            Pair(
-                timeList.toTypedArray(),
-                concentrationList.toTypedArray()
-            )
-        }
+    fun getAggregatedConcentrationsAndTime(): Pair<Array<Int>, Array<Float>> = Pair(
+        weeks,
+        mapOverTime(aggregation)
+    )
+
+    /**
+     * return a graph(List of Entry) of concentration over time(weeks)
+     */
+    fun getConcentrationsAsGraph(): List<Entry> =
+        weeks.zip(
+            concentrations
+                .map { arr -> //for each latlong grid at a given time
+                    aggregation(arr) //apply aggregation
+                }
+        ).map { (week, conc) -> //we have List<Pair<...>> make it into List<Entry>
+            Entry(week.toFloat(), conc)
+        }.reversed()
 
     ///////////////
     // UTILITIES //
     ///////////////
     override fun toString() =
         "InfectiousPressureTimeSeries:" +
-                concentrations.fold("\n") { accTotal, (date, concentration2D) ->
+                weeks.zip(concentrations).fold("\n") { accTotal, (date, concentration2D) ->
                     accTotal + "week %2d: [".format(date) +
                             concentration2D.fold("") { accGrid, concentrationRow ->
                                 accGrid + concentrationRow.fold("[") { accRow, concentration ->
@@ -117,10 +124,11 @@ data class InfectiousPressureTimeSeries(
 
     /**
      * map each arrayFloat2D over time
+     * reified and inlined so that T can be inferred(in toTypedArray)
      */
-    private fun <T> mapOverTime(reduction: (FloatArray2D) -> T): Array<Pair<Int, T>> =
-        concentrations.map { (week, arr) ->
-            Pair(week, reduction(arr))
+    private inline fun <reified T> mapOverTime(reduction: (FloatArray2D) -> T): Array<T> =
+        concentrations.map { arr ->
+            reduction(arr)
         }.toTypedArray()
 
     ////////////////////

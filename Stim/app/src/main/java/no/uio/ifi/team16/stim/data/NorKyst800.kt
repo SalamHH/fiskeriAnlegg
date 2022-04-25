@@ -1,17 +1,19 @@
 package no.uio.ifi.team16.stim.data
 
 import no.uio.ifi.team16.stim.util.*
+import kotlin.math.atan2
 import kotlin.math.roundToInt
+import kotlin.math.sqrt
 
 /**
  * data from the NorKyst800 model. Mostly we will use stream data.
  */
 data class NorKyst800(
-    val depth: DoubleArray,
-    val salinity: NullableDoubleArray4D,
-    val temperature: NullableDoubleArray4D,
-    val time: DoubleArray,
-    val velocity: Triple<NullableDoubleArray4D, NullableDoubleArray4D, NullableDoubleArray4D>
+    val depth: FloatArray1D,
+    val salinity: NullableFloatArray4D,
+    val temperature: NullableFloatArray4D,
+    val time: FloatArray1D,
+    val velocity: Triple<NullableFloatArray4D, NullableFloatArray4D, NullableFloatArray4D>
 ) {
     val TAG = "NORKYST800"
     val projection = Options.defaultProjection()
@@ -22,7 +24,7 @@ data class NorKyst800(
      * Get salinity closest to given coordinates at given time and depth.
      * See time and depth explanation in class definition
      */
-    fun getSalinity(latLng: LatLong, time: Int, depth: Int): Double? {
+    fun getSalinity(latLng: LatLong, time: Int, depth: Int): Float? {
         val index = getClosestIndex(latLng)
         return salinity.get(time, depth, index.first, index.second)
     }
@@ -31,7 +33,7 @@ data class NorKyst800(
      * Get temperature closest to given coordinates at given time and depth.
      * See time and depth explanation in class definition
      */
-    fun getTemperature(latLng: LatLong, time: Int, depth: Int): Double? {
+    fun getTemperature(latLng: LatLong, time: Int, depth: Int): Float? {
         val index = getClosestIndex(latLng)
         return temperature.get(time, depth, index.first, index.second)
     }
@@ -40,20 +42,33 @@ data class NorKyst800(
      * Get velocity in all three directions(xyz) closest to given coordinates at given time and depth.
      * See time and depth explanation in class definition
      */
-    fun getVelocity(latLng: LatLong, time: Int, depth: Int): Triple<Double?, Double?, Double?> {
+    fun getVelocityVector(latLng: LatLong, time: Int, depth: Int): Triple<Float, Float, Float>? {
         val index = getClosestIndex(latLng)
         return Triple(
-            velocity.first.get(time, depth, index.first, index.second),
-            velocity.second.get(time, depth, index.first, index.second),
-            velocity.third.get(time, depth, index.first, index.second)
+            velocity.first.get(time, depth, index.first, index.second) ?: return null,
+            velocity.second.get(time, depth, index.first, index.second) ?: return null,
+            velocity.third.get(time, depth, index.first, index.second) ?: return null
         )
     }
+
+    fun getVelocity(latLng: LatLong, time: Int, depth: Int): Float? =
+        getVelocityVector(latLng, time, depth)?.let { (x, y, z) ->
+            sqrt(x * x + y * y + z * z)
+        }
+
+    fun getVelocityDirectionInXYPlane(latLng: LatLong, time: Int, depth: Int): Float? =
+        getVelocityVector(latLng, time, depth)?.let { (x, y, z) ->
+            atan2(y, x)
+        }
 
     /////////////////////
     // GETTER-WRAPPERS //
     /////////////////////
     //get at "smallest" time and at surface
     fun getVelocity(latLng: LatLong) = getVelocity(latLng, 0, 0)
+
+    //get at "smallest" time and at surface
+    fun getVelocityDirectionInXYPlane(latLng: LatLong) = getVelocityDirectionInXYPlane(latLng, 0, 0)
 
     //get at "smallest" time and at surface
     fun getTemperature(latLng: LatLong) = getTemperature(latLng, 0, 0)
@@ -98,8 +113,8 @@ data class NorKyst800(
         other as NorKyst800
 
         if (!depth.contentEquals(other.depth)) return false
-        if (!salinity.data.contentDeepEquals(other.salinity.data)) return false
-        if (!temperature.data.contentDeepEquals(other.temperature.data)) return false
+        if (!salinity.contentDeepEquals(other.salinity)) return false
+        if (!temperature.contentDeepEquals(other.temperature)) return false
         if (!time.contentEquals(other.time)) return false
         if (velocity != other.velocity) return false
         if (projection != other.projection) return false
@@ -109,8 +124,8 @@ data class NorKyst800(
 
     override fun hashCode(): Int {
         var result = depth.contentHashCode()
-        result = 31 * result + salinity.data.contentDeepHashCode()
-        result = 31 * result + temperature.data.contentDeepHashCode()
+        result = 31 * result + salinity.contentDeepHashCode()
+        result = 31 * result + temperature.contentDeepHashCode()
         result = 31 * result + time.contentHashCode()
         result = 31 * result + velocity.hashCode()
         result = 31 * result + projection.hashCode()

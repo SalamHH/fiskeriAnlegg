@@ -2,7 +2,7 @@ package no.uio.ifi.team16.stim.data.dataLoader.parser
 
 import android.util.Log
 import no.uio.ifi.team16.stim.data.NorKyst800
-import no.uio.ifi.team16.stim.util.NullableDoubleArray4D
+import no.uio.ifi.team16.stim.util.NullableFloatArray4D
 import no.uio.ifi.team16.stim.util.mapAsync
 
 /**
@@ -41,79 +41,110 @@ class NorKyst800RegexParser {
      * @return corresponding NorKyst800 object.
      */
     suspend fun parse(response: String): NorKyst800? {
-        // midlertidig fix pga. koden under er litt treg :-)
-        //if (BuildConfig.DEBUG) return null
         //get filler values TODO get from data itself, fram .dds
+
         val salinityFillValue = -32767
         val temperatureFillValue = -32767
         val uFillValue = -32767
         val vFillValue = -32767
-        val wFillValue = 1.0E37
+        val wFillValue = 1.0E37f
 
-
-        val depth = make1DDoubleArrayOf("depth", response) ?: run {
+        val depth = make1DFloatArrayOf("depth", response) ?: run {
             Log.e(TAG, "Failed to read <depth> from NorKyst800")
             return@parse null
         }
         val salinity =
-            make4DDoubleArrayOf("salinity", response, 0.001, 30.0, salinityFillValue) ?: run {
-                Log.e(TAG, "Failed to read <salinity> from NorKyst800")
-                return@parse null
-            }
+            makeNullable4DFloatArrayOf("salinity", response, 0.001f, 30.0f, salinityFillValue)
+                ?: run {
+                    Log.e(TAG, "Failed to read <salinity> from NorKyst800")
+                    return@parse null
+                }
         val temperature =
-            make4DDoubleArrayOf("temperature", response, 0.01, 0.0, temperatureFillValue) ?: run {
-                Log.e(TAG, "Failed to read <temperature> from NorKyst800")
-                return@parse null
-            }
-        val time = make1DDoubleArrayOf("time", response) ?: run {
+            makeNullable4DFloatArrayOf("temperature", response, 0.01f, 0.0f, temperatureFillValue)
+                ?: run {
+                    Log.e(TAG, "Failed to read <temperature> from NorKyst800")
+                    return@parse null
+                }
+        val time = make1DFloatArrayOf("time", response) ?: run {
             Log.e(TAG, "Failed to read <time> from NorKyst800")
             return@parse null
         }
         val velocity = Triple(
-            NullableDoubleArray4D(
-                make4DDoubleArrayOf("u", response, 0.001, 0.0, uFillValue) ?: run {
-                    Log.e(TAG, "Failed to read <u> from NorKyst800")
-                    return@parse null
-                },
-                uFillValue.toDouble()
-            ),
-            NullableDoubleArray4D(
-                make4DDoubleArrayOf("v", response, 0.001, 0.0, vFillValue) ?: run {
-                    Log.e(TAG, "Failed to read <v> from NorKyst800")
-                    return@parse null
-                },
-                vFillValue.toDouble()
-            ),
-            NullableDoubleArray4D(
-                make4DDoubleArrayOfW("w", response, 1.0, 0.0, wFillValue) ?: run {
-                    Log.e(TAG, "Failed to read <w> from NorKyst800")
-                    return@parse null
-                },
-                wFillValue
-            )
+            makeNullable4DFloatArrayOf("u", response, 0.001f, 0.0f, uFillValue) ?: run {
+                Log.e(TAG, "Failed to read <u> from NorKyst800")
+                return@parse null
+            },
+            makeNullable4DFloatArrayOf("v", response, 0.001f, 0.0f, vFillValue) ?: run {
+                Log.e(TAG, "Failed to read <v> from NorKyst800")
+                return@parse null
+            },
+            makeNullable4DFloatArrayOfW("w", response, 1.0f, 0.0f, wFillValue) ?: run {
+                Log.e(TAG, "Failed to read <w> from NorKyst800")
+                return@parse null
+            }
         )
+
 
         return NorKyst800(
             depth,
-            NullableDoubleArray4D(salinity, salinityFillValue.toDouble()),
-            NullableDoubleArray4D(temperature, temperatureFillValue.toDouble()),
+            salinity,
+            temperature,
             time,
             velocity
         )
     }
 
+    ///////////////////
+    // MAKE 1D ARRAY //
+    ///////////////////
+    /**
+     * try to parse out a 1D FloatArray from an ascii opendap response,
+     * returns null if any parsing fails.
+     */
+    private fun make1DFloatArrayOf(attribute: String, response: String): FloatArray? =
+        dataRegex1D(attribute).find(response, 0)?.let { match ->
+            //parse dimensions
+            val dT = match.groupValues.getOrNull(1)?.toInt() ?: run {
+                Log.e(TAG, "Failed to read <dimension-size> from 1DArray")
+                return@make1DFloatArrayOf null
+            }
+            //parse the data
+            val dataString = match.groupValues.getOrNull(5) ?: run {
+                Log.e(TAG, "Failed to read <data-section> from 1DArray")
+                return@make1DFloatArrayOf null
+            }
+
+            //match all rows, for each one parse out entries
+            val dataSequence = arrayRowRegex.findAll(dataString, 0).map { rowMatch ->
+                entryRegex.findAll(rowMatch.groupValues.getOrElse(1) { "" }, 0).map { entryMatch ->
+                    entryMatch.groupValues.getOrNull(1)?.toFloat()
+                }
+            }
+
+            FloatArray(dT) { id ->
+                dataSequence.elementAtOrNull(0)?.elementAtOrNull(id) ?: run {
+                    Log.e(TAG, "Failed to read an entry in data-section from 1DArray")
+                    return@make1DFloatArrayOf null
+                }
+            }
+        }
+
+
+    ///////////////////
+    // MAKE 4D ARRAY //
+    ///////////////////
     /**
      * try to parse out a 4D intarray from an ascii opendap response,
      * returns null if any parsing fails.
      * The array contains null where the data is not available(ie where there are filler values)
      */
-    suspend private fun make4DDoubleArrayOf(
+    private suspend fun makeNullable4DFloatArrayOf(
         attribute: String,
         response: String,
-        scaleFactor: Double,
-        offset: Double,
-        fillValue: Int
-    ): Array<Array<Array<DoubleArray>>>? =
+        scale: Float,
+        offset: Float,
+        fillValue: Int //the data is read from the ascii as ints, then scled to floats
+    ): NullableFloatArray4D? =
         dataRegex(attribute).find(response, 0)?.let { match ->
             //parse dimensions
             val dT = match.groupValues.getOrNull(1)?.toInt() ?: run {
@@ -137,52 +168,21 @@ class NorKyst800RegexParser {
                 Log.e(TAG, "Failed to read <data-section> from 4DArray")
                 return null
             }
-
+            //read the rows of ints, apply scale, offset and fillvalues to get the floats
             val dataSequence =
-                readRowsOf4DIntArray(dataString, scaleFactor, offset, fillValue.toDouble())
+                readRowsOf4DIntArray(dataString, scale, offset, fillValue)
+
             Log.d(TAG, "in total: $dataSequence")
-            //we have Sequence<Sequence<Int>>, where the inner sequence is a row.
+            //we have List<List<Int>>, where the inner sequence is a row.
             //now, reshape it to Array<Array<Array<FloatArray>>>
             Array(dT) { ti ->
                 Array(dD) { di ->
                     Array(dY) { yi ->
-                        DoubleArray(dX) { xi ->
+                        Array(dX) { xi ->
                             dataSequence.elementAt(ti * dD * dY + di * dY + yi)
                                 .elementAt(xi) //element is guaranteed to exist(if indexing done properly!)
                         }
                     }
-                }
-            }
-        }
-
-    /**
-     * try to parse out a 1D DoubleArray from an ascii opendap response,
-     * returns null if any parsing fails.
-     */
-    private fun make1DDoubleArrayOf(attribute: String, response: String): DoubleArray? =
-        dataRegex1D(attribute).find(response, 0)?.let { match ->
-            //parse dimensions
-            val dT = match.groupValues.getOrNull(1)?.toInt() ?: run {
-                Log.e(TAG, "Failed to read <dimension-size> from 1DArray")
-                return null
-            }
-            //parse the data
-            val dataString = match.groupValues.getOrNull(5) ?: run {
-                Log.e(TAG, "Failed to read <data-section> from 1DArray")
-                return null
-            }
-
-            //match all rows, for each one parse out entries
-            val dataSequence = arrayRowRegex.findAll(dataString, 0).map { rowMatch ->
-                entryRegex.findAll(rowMatch.groupValues.getOrElse(1) { "" }, 0).map { entryMatch ->
-                    entryMatch.groupValues.getOrNull(1)?.toDouble()
-                }
-            }
-
-            DoubleArray(dT) { id ->
-                dataSequence.elementAtOrNull(0)?.elementAtOrNull(id) ?: run {
-                    Log.e(TAG, "Failed to read an entry in data-section from 1DArray")
-                    return null
                 }
             }
         }
@@ -192,13 +192,13 @@ class NorKyst800RegexParser {
      * for some reason the velocity w variable has a double as a fillervalue,
      * so we have to make an entirely separate function for it. Yay!
      */
-    private suspend fun make4DDoubleArrayOfW(
+    private suspend fun makeNullable4DFloatArrayOfW(
         attribute: String,
         response: String,
-        scaleFactor: Double,
-        offset: Double,
-        fillValue: Double
-    ): Array<Array<Array<DoubleArray>>>? =
+        scale: Float,
+        offset: Float,
+        fillValue: Float
+    ): NullableFloatArray4D? =
         dataRegex(attribute).find(response, 0)?.let { match ->
             //parse dimensions
             val dT = match.groupValues.getOrNull(1)?.toInt() ?: run {
@@ -223,14 +223,14 @@ class NorKyst800RegexParser {
                 return null
             }
 
-            val dataSequence = readRowsOf4DIntArray(dataString, scaleFactor, offset, fillValue)
+            val dataSequence = readRowsOf4DFloatArray(dataString, scale, offset, fillValue)
 
             //we have Sequence<Sequence<Int>>, where the inner sequence is a row.
             //now, reshape it to Array<Array<Array<FloatArray>>>
             Array(dT) { ti ->
                 Array(dD) { di ->
                     Array(dY) { yi ->
-                        DoubleArray(dX) { xi ->
+                        Array(dX) { xi ->
                             dataSequence.elementAt(ti * dD * dY + di * dY + yi)
                                 .elementAt(xi) //element is guaranteed to exist(if indexing done properly!)
                         }
@@ -239,28 +239,55 @@ class NorKyst800RegexParser {
             }
         }
 
+
+    ///////////////////////////// opendap stores data as ints or floats. most are ints which scaling
+    // READ INT OR FLOAT ARRAY // is applied to, but w-values are stored as floats
+    /////////////////////////////
     /**
-     * read a string of 4D data of ints to a 4D array of doubles(after applying scale and offset)
-     *
-     *
+     * read a string of 4D data of ints to a 4D array of floats(after applying scale and offset)
      */
     private suspend fun readRowsOf4DIntArray(
         str: String,
-        scaleFactor: Double,
-        offset: Double,
-        fillValue: Double
-    ): List<List<Double>> {
+        scale: Float,
+        offset: Float,
+        fillValue: Int
+    ): List<List<Float?>> {
         return str.split("\n")
-            .dropLast(1)
+            .dropLast(1) //drop empty row
             .mapAsync { row ->
                 row.split(", ")
-                    .drop(1)
+                    .drop(1) //drop indexes
                     .map { entry ->
-                        val parsed = entry.toDouble()
+                        val parsed = entry.toInt()
                         if (parsed == fillValue) {
-                            parsed
+                            null
                         } else {
-                            parsed * scaleFactor + offset
+                            parsed * scale + offset
+                        }
+                    }
+            }
+    }
+
+    /**
+     * read a string of 4D data of floats to a 4D array of floats(after applying scale and offset)
+     */
+    private suspend fun readRowsOf4DFloatArray(
+        str: String,
+        scale: Float,
+        offset: Float,
+        fillValue: Float
+    ): List<List<Float?>> {
+        return str.split("\n")
+            .dropLast(1) //drop empty row
+            .mapAsync { row ->
+                row.split(", ")
+                    .drop(1) //drop endexes
+                    .map { entry ->
+                        val parsed = entry.toFloat()
+                        if (parsed == fillValue) {
+                            null
+                        } else {
+                            parsed * scale + offset
                         }
                     }
             }

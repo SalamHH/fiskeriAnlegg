@@ -1,9 +1,6 @@
 package no.uio.ifi.team16.stim.data.dataLoader
 
 import android.util.Log
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import no.uio.ifi.team16.stim.data.InfectiousPressureTimeSeries
 import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.util.Options
@@ -152,29 +149,17 @@ class InfectiousPressureTimeSeriesDataLoader : InfectiousPressureDataLoader() {
                     ) //end threddsload
                 } //end async mapping
             }.filterNotNull().let { data -> //wrap the data in infectiousPressureTimeSeries
-                InfectiousPressureTimeSeries(site.id, data.toTypedArray(), shape, dx, dy)
+                    //unzip list of pairs to pair of lists
+                    val (weeks, contamination) = data.unzip()
+                    InfectiousPressureTimeSeries(
+                        site.id,
+                        contamination.toTypedArray(),
+                        weeks.toTypedArray(),
+                        shape,
+                        dx,
+                        dy
+                    )
             }
         }
-    }
-
-    ///////////////
-    // UTILITIES //
-    ///////////////
-    /**
-     * Asynchronously map on a list. Blocks the caller TODO: I hope, await should do it? but only in scope?
-     *
-     * let one coroutine handle each entry, then join.
-     *
-     * TODO: is Dispatchers.IO appropriate? can I get the coroutine-scope of the calling function?
-     *
-     * @param f function to map with.
-     * @return a list corresponding to this.map, but done asynchronously.
-     */
-    private suspend fun <T, U> List<T>.mapAsync(f: (T) -> U): List<U> = map { t ->
-        CoroutineScope(Dispatchers.IO).async(Dispatchers.IO) {
-            f(t)
-        }
-    }.map { deferred ->
-        deferred.await() //await the result of each mapping, in total blocks til all are finished
     }
 }
