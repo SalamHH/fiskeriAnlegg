@@ -1,9 +1,9 @@
 package no.uio.ifi.team16.stim.data
 
 import no.uio.ifi.team16.stim.util.FloatArray2D
-import no.uio.ifi.team16.stim.util.FloatArray4D
 import no.uio.ifi.team16.stim.util.LatLong
 import no.uio.ifi.team16.stim.util.get
+import no.uio.ifi.team16.stim.util.prettyPrint
 import org.locationtech.proj4j.CoordinateTransform
 import org.locationtech.proj4j.ProjCoordinate
 import java.util.*
@@ -75,5 +75,5 @@ class InfectiousPressure(
             "\nFrom: ${fromDate}, to: $toDate" +
             "\nTime since 2000-01-01: ${time}, GridMapping: -----" +
             "\nConcentration:\n" +
-            concentration.toString()
+            concentration.prettyPrint()
 }

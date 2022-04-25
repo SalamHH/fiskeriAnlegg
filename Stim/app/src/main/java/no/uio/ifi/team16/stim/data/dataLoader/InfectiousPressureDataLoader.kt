@@ -6,6 +6,7 @@ import com.github.kittinunf.fuel.coroutines.awaitString
 import no.uio.ifi.team16.stim.data.InfectiousPressure
 import no.uio.ifi.team16.stim.util.LatLong
 import no.uio.ifi.team16.stim.util.Options
+import no.uio.ifi.team16.stim.util.reformatFLS
 import no.uio.ifi.team16.stim.util.to2DFloatArray
 import ucar.ma2.ArrayFloat
 import ucar.nc2.Variable
@@ -64,7 +65,7 @@ open class InfectiousPressureDataLoader : THREDDSDataLoader() {
 
         return THREDDSLoad(firstEntry) { ncfile ->
             //make some extra ranges to access data
-            val range2 = "${reformatIntProgressionFLS(xRange)},${reformatIntProgressionFLS(yRange)}"
+            val range2 = "${xRange.reformatFLS()},${yRange.reformatFLS()}"
             val range3 = "0,$range2"
             //make the projection
             val gridMapping: Variable = ncfile.findVariable("grid_mapping")
@@ -133,7 +134,7 @@ open class InfectiousPressureDataLoader : THREDDSDataLoader() {
             )
 
             //make some extra ranges to access data
-            val range2 = "${reformatIntProgressionFLS(xRange)},${reformatIntProgressionFLS(yRange)}"
+            val range2 = "${xRange.reformatFLS()},${yRange.reformatFLS()}"
             val range3 = "0,$range2"
 
             //lets make some infectious pressure
@@ -170,6 +171,58 @@ open class InfectiousPressureDataLoader : THREDDSDataLoader() {
             fromClosedRange(0, 901, Options.infectiousPressureStepX),
             fromClosedRange(0, 2601, Options.infectiousPressureStepY)
         )
+
+    /**
+     * load from a specified url. Used in testing.
+     * Not used in general since the other loads are able to slice from the server-side
+     *
+     * @param xRange range of x-coordinates to get
+     * @param yRange range of y-coordinates to get
+     * @return data of infectious pressure in the prescribed data range.
+     *
+     * @see THREDDSDataLoader.THREDDSLoad()
+     */
+    suspend fun load(
+        url: String,
+        xRange: IntProgression,
+        yRange: IntProgression
+    ): InfectiousPressure? {
+        return THREDDSLoad(url) { ncfile ->
+            //make some extra ranges to access data
+            val range2 = "${xRange.reformatFLS()},${yRange.reformatFLS()}"
+            val range3 = "0,$range2"
+            Log.d(TAG, range3)
+            //make the projection
+            val gridMapping: Variable = ncfile.findVariable("grid_mapping")
+                ?: throw NullPointerException("Failed to read variable <gridMapping> from infectiousPressure") //caught by THREDDSLOAD
+            val latLngToStereo =
+                readAndMakeProjectionFromGridMapping(gridMapping) //can throw NullpointerException, caught by THREDDSLOAD
+            //lets make some infectious pressure
+            //Variables are data that are NOT READ YET. findVariable() is not null-safe
+            val concentrations: Variable = ncfile.findVariable("C10")
+                ?: throw NullPointerException("Failed to read variable <C10> from infectiousPressure") //caught by THREDDSLOAD
+            val time: Variable = ncfile.findVariable("time")
+                ?: throw NullPointerException("Failed to read variable <time> from infectiousPressure") //caught by THREDDSLOAD
+            val dx = gridMapping.findAttribute("dx")?.numericValue?.toFloat()
+                ?: throw NullPointerException("Failed to read attribute <dx> from <gridMapping> from infectiousPressure") //caught by THREDDSLOAD
+
+            //make the infectiousPressure
+            InfectiousPressure(
+                (concentrations.read(range3).reduce(0) as ArrayFloat).to2DFloatArray(),
+                time.readScalarFloat(),
+                latLngToStereo,
+                ncfile.findGlobalAttribute("fromdate")?.run {
+                    parseDate(this.stringValue)
+                }, //can be null
+                ncfile.findGlobalAttribute("todate")?.run {
+                    parseDate(this.stringValue)
+                }, //can be null
+                dx * max(Options.infectiousPressureStepX, 1).toFloat(),
+                dx * max(Options.infectiousPressureStepY, 1).toFloat()
+            )
+        }
+    }
+
 
     ///////////////
     // UTILITIES //

@@ -51,3 +51,23 @@ suspend fun <T, U> List<T>.mapAsync(chunks: Int, f: (T) -> U): List<U> =
     }.filter {
         isNotEmpty()
     }.flatten()
+
+
+/////////////////////////////////
+// REFORMATTING INTPROGRESSION //
+/////////////////////////////////
+/**
+ * return an intprogression as a string with format "first:last:step"
+ * indexing used in infectiouspressure, or more specifically ucar.edu.netcdf
+ */
+fun IntProgression.reformatFLS(): String {
+    return "${this.first}:${this.last}:${this.step}"
+}
+
+/**
+ * return an intprogression as a string with format "first:step:last"
+ * indexing used in norkyst800, or more specifically slicing in opendap
+ */
+fun IntProgression.reformatFSL(): String {
+    return "${this.first}:${this.step}:${this.last}"
+}

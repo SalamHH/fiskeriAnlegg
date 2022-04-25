@@ -2,13 +2,11 @@ package no.uio.ifi.team16.stim.data.dataLoader
 
 //import ucar.nc2.dataset.NetcdfDatasets
 import android.util.Log
-import no.uio.ifi.team16.stim.util.*
+import no.uio.ifi.team16.stim.util.LatLong
+import no.uio.ifi.team16.stim.util.project
 import org.locationtech.proj4j.CRSFactory
 import org.locationtech.proj4j.CoordinateTransform
 import org.locationtech.proj4j.CoordinateTransformFactory
-import ucar.ma2.ArrayDouble
-import ucar.ma2.ArrayFloat
-import ucar.ma2.ArrayInt
 import ucar.ma2.InvalidRangeException
 import ucar.nc2.Variable
 import ucar.nc2.dataset.NetcdfDataset
@@ -180,21 +178,4 @@ abstract class THREDDSDataLoader {
             parseDate(this.stringValue)
         } == currentDate
     }
-
-    /**
-     * return an intprogression as a string with format "first:last:step"
-     * indexing used in infectiouspressure, or more specifically ucar.edu.netcdf
-     */
-    fun reformatIntProgressionFLS(p: IntProgression): String {
-        return "${p.first}:${p.last}:${p.step}"
-    }
-
-    /**
-     * return an intprogression as a string with format "first:step:last"
-     * indexing used in norkyst800, or more specifically slicing in opendap
-     */
-    fun reformatIntProgressionFSL(p: IntProgression): String {
-        return "${p.first}:${p.step}:${p.last}"
-    }
-
 }

@@ -60,7 +60,7 @@ fun NullableFloatArray4D.get(depth: Int, time: Int, row: Int, column: Int): Floa
 //"pretty" prints for ND arrays //
 //////////////////////////////////
 fun FloatArray1D.prettyPrint(): String = fold("[") { acc, arr ->
-    "$acc, " + "%5.2f".format(arr)
+    "$acc, " + "%10.7f".format(arr)
 } + "]"
 
 fun FloatArray2D.prettyPrint(): String =
