@@ -6,20 +6,28 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 import no.uio.ifi.team16.stim.data.StaticMapImageLoader
 import no.uio.ifi.team16.stim.databinding.FragmentGeneralInfoBinding
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
+import javax.inject.Inject
 
 
 class GeneralInfoFragment : Fragment() {
 
     private lateinit var binding: FragmentGeneralInfoBinding
     private val viewModel: MainActivityViewModel by activityViewModels()
+    private var salinityChartPressed = false
+
+    @Inject
+    lateinit var chartStyle: SparkLineStyle
 
     /**
-     * Fragment for siden i appen som gir genrell info om sites
+     * Fragment for siden i appen som gir info om salt og vann
      */
 
     override fun onCreateView(
@@ -31,12 +39,8 @@ class GeneralInfoFragment : Fragment() {
 
         val site = viewModel.getCurrentSite() ?: return binding.root
 
-        //header
-        binding.header.text = ("OM ${site.name}")
-
-        //bilde
-        val imageLoader = StaticMapImageLoader(requireContext())
-        imageLoader.loadSiteImage(site, binding.imageViewOverview)
+        //SITE
+        binding.sitename.text = site.name
 
         //Vanntemperatur og saltholdighet
         viewModel.loadNorKyst800AtSite(site)
@@ -51,52 +55,148 @@ class GeneralInfoFragment : Fragment() {
                 binding.saltTextview.text = "N/A"
             }
         }
+        //CHART
+        chartStyle = SparkLineStyle(requireContext())
+
+        setSalinityChart()
+
+        //buttons
+        binding.salinitychartButton.setOnClickListener {
+            if (salinityChartPressed != true) {
+                setSalinityChart()
+            }
+        }
+
+        binding.tempchartButton.setOnClickListener {
+            if (salinityChartPressed) {
+                setTemperatureChart()
+            }
+        }
 
         //posisjon
         binding.posisjonView.text = "${site.latLong.lat}, ${site.latLong.lng}"
 
-        binding.generalInfoBox.setOnClickListener {
-            // If the CardView is already expanded, set its visibility
-            //  to gone and change the expand less icon to expand more.
-            // If the CardView is already expanded, set its visibility
-            //  to gone and change the expand less icon to expand more.
-            if (binding.relativelayout.visibility == View.VISIBLE) {
+        //anleggsnummer
+        binding.anleggsnrView.text = site.id.toString()
 
-                // The transition of the hiddenView is carried out
-                //  by the TransitionManager class.
-                // Here we use an object of the AutoTransition
-                // Class to create a default transition.
-                TransitionManager.beginDelayedTransition(
-                    binding.generalInfoBox,
-                    AutoTransition()
-                )
-                binding.relativelayout.setVisibility(View.GONE)
-            } else {
-                TransitionManager.beginDelayedTransition(
-                    binding.generalInfoBox,
-                    AutoTransition()
-                )
-                binding.relativelayout.visibility = View.VISIBLE
-            }
+        //plassering
+        binding.plasseringView.text = site.placementType ?: "-----"
 
-            //anleggsnummer
-            binding.anleggsnrView.text = site.nr.toString()
+        //kapasitet
+        binding.kapasitetView.text = site.capacity.toString()
 
-            //plassering
-            binding.plasseringView.text = site.placementType ?: "-----"
+        //vanntype
+        binding.vannTypeView.text = site.waterType ?: "-----"
 
-            //kapasitet
-            binding.kapasitetView.text = site.capacity.toString()
-
-            //vanntype
-            binding.vannTypeView.text = site.waterType ?: "-----"
-
-            //kommune
-            binding.prodOmraadeView.text = site.placement?.municipalityName ?: "-----"
-        }
-
+        //kommune
+        binding.prodOmraadeView.text = site.placement?.municipalityName ?: "-----"
 
         return binding.root
+    }
 
+    companion object {
+        const val CHART_LABEL = "Saltholdighet"
+    }
+
+    private fun toggleButtonColors() {
+        if (salinityChartPressed) {
+            binding.salinitychartButton.setBackgroundColor(
+                resources.getColor(
+                    R.color.darkest_skyblue,
+                    null
+                )
+            )
+            binding.tempchartButton.setBackgroundColor(
+                resources.getColor(
+                    R.color.dark_skyblue,
+                    null
+                )
+            )
+        } else {
+            binding.salinitychartButton.setBackgroundColor(
+                resources.getColor(
+                    R.color.dark_skyblue,
+                    null
+                )
+            )
+            binding.tempchartButton.setBackgroundColor(
+                resources.getColor(
+                    R.color.darkest_skyblue,
+                    null
+                )
+            )
+        }
+    }
+
+    private fun setSalinityChart() {
+        var salinityChart = listOf<Entry>()
+
+        viewModel.getNorKyst800AtSiteData(viewModel.getCurrentSite()).observe(viewLifecycleOwner) {
+            it?.apply {
+                //set chart
+                salinityChart = it.getSalinityAtSurfaceAsGraph()
+            }
+            //val hourList = arrayOf(1.0, 2.0, 3,0, 4.0, 5.0, 6.0, 7.0, 8.0)
+            val salinityData = salinityChart.map { entry ->
+                entry.y
+            }
+
+            if (salinityChart.isNotEmpty()) {
+                val linedatasetSalinity =
+                    LineDataSet(salinityChart, GeneralInfoFragment.CHART_LABEL)
+
+                binding.salinityChart.apply {
+                    axisLeft.apply {
+                        axisMaximum =
+                            (salinityData.maxOf { v -> v } + 1).toFloat() //clipping might still occurr
+                    }
+                }
+                //style linedataset
+                chartStyle.styleLineDataSet(linedatasetSalinity, requireContext())
+                binding.salinityChart.data = LineData(linedatasetSalinity)
+                binding.salinityChart.invalidate()
+
+                chartStyle.styleChart(binding.salinityChart)
+
+                salinityChartPressed = true
+                toggleButtonColors()
+            }
+        }
+    }
+
+    private fun setTemperatureChart() {
+        var temperatureChart = listOf<Entry>()
+
+        viewModel.getNorKyst800AtSiteData(viewModel.getCurrentSite()).observe(viewLifecycleOwner) {
+            it?.apply {
+                //set chart
+                temperatureChart = it.getSalinityAtSurfaceAsGraph()
+            }
+            //val hourList = arrayOf(1.0, 2.0, 3,0, 4.0, 5.0, 6.0, 7.0, 8.0)
+            val temperatureData = temperatureChart.map { entry ->
+                entry.y
+            }
+
+            if (temperatureChart.isNotEmpty()) {
+                val linedatasetSalinity =
+                    LineDataSet(temperatureChart, GeneralInfoFragment.CHART_LABEL)
+
+                binding.salinityChart.apply {
+                    axisLeft.apply {
+                        axisMaximum =
+                            (temperatureData.maxOf { v -> v } + 1).toFloat() //clipping might still occurr
+                    }
+                }
+                //style linedataset
+                chartStyle.styleLineDataSet(linedatasetSalinity, requireContext())
+                binding.salinityChart.data = LineData(linedatasetSalinity)
+                binding.salinityChart.invalidate()
+
+                chartStyle.styleChart(binding.salinityChart)
+
+                salinityChartPressed = false
+                toggleButtonColors()
+            }
+        }
     }
 }
