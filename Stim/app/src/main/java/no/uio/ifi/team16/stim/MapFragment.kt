@@ -34,6 +34,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
     private var mapBounds: CameraPosition? = null
     private var zoomLevel = 12F
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+    private val markerMap: MutableMap<Marker, Site> = mutableMapOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -89,6 +90,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         if (query != null && query.isNotBlank()) {
             closeKeyboard()
             map.clear()
+            markerMap.clear()
             if (query.matches(Regex("^[0-9]+\$"))) {
                 // Numeric input, search for municipality number
                 viewModel.loadSitesAtMunicipality(query)
@@ -201,19 +203,19 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
                 markerOptions.title(site.name)
 
                 markerOptions.position(site.latLong.toGoogle())
-                map.addMarker(markerOptions)
+                val marker = map.addMarker(markerOptions)
+                if (marker != null) {
+                    markerMap[marker] = site
+                }
                 site.placement?.let { Log.d("munname", it.municipalityName) }
             }
         }
 
         map.setOnMarkerClickListener ( object: GoogleMap.OnMarkerClickListener{
             override fun onMarkerClick(mark: Marker): Boolean {
-                Log.d("hh", mark.title.toString())
-                viewModel.loadSitesByName(mark.title.toString())
-                val site=viewModel.getCurrentSiteData().value
-               // viewModel.loadSitesAtMunicipality(site?.placement?.municipalityCode.toString())
+                val site = markerMap[mark]
 
-
+                Log.e(TAG, "Site: $site")
 
                 if (site != null) {
                     viewModel.setCurrentSite(site)
