@@ -66,6 +66,7 @@ enum class WeatherIcon(@DrawableRes private val drawable: Int) {
                 "fair" -> SUNNY
                 "fog" -> CLOUDY
                 "partlycloudy" -> CLOUDY
+                "cloudy" -> CLOUDY
                 else -> {
                     Log.e("Weather", "Ukjent værikon: $name")
                     return CLOUDY
