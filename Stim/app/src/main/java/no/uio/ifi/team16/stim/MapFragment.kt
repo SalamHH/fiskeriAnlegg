@@ -1,5 +1,6 @@
 package no.uio.ifi.team16.stim
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,6 +11,8 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -29,11 +32,12 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
     private val TAG = "MapFragment"
     private lateinit var map: GoogleMap
     private lateinit var binding: FragmentMapBinding
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+    private var locationClient: FusedLocationProviderClient? = null
     private val viewModel: MainActivityViewModel by activityViewModels()
     private var mapReady = false
     private var mapBounds: CameraPosition? = null
     private var zoomLevel = 12F
-    private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
     private val markerMap: MutableMap<Marker, Site> = mutableMapOf()
 
     override fun onCreateView(
@@ -43,9 +47,13 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
     ): View {
 
         if (!checkLocationPermission()) {
-            requestPermission {
-                hasLocationPermission = it
+            requestPermission { hasPermission ->
+                if (hasPermission) {
+                    onLocationPermissionGranted()
+                }
             }
+        } else {
+            onLocationPermissionGranted()
         }
 
         binding = FragmentMapBinding.inflate(layoutInflater)
@@ -131,6 +139,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
 
         if (checkLocationPermission()) {
             map.isMyLocationEnabled = true
+            setMapToUserLocation()
         }
     }
 
@@ -269,5 +278,28 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
      */
     override fun onQueryTextChange(newText: String?): Boolean {
         return false
+    }
+
+    /**
+     * Called when access to user location is granted
+     */
+    private fun onLocationPermissionGranted() {
+        hasLocationPermission = true
+        locationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+    }
+
+    /**
+     * Set the map to the users current location
+     */
+    @SuppressLint("MissingPermission")
+    fun setMapToUserLocation() {
+        if (mapReady && hasLocationPermission) {
+            locationClient?.let { client ->
+                client.lastLocation.addOnSuccessListener { location ->
+                    val latLng = LatLng(location.latitude, location.longitude)
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel))
+                }
+            }
+        }
     }
 }
