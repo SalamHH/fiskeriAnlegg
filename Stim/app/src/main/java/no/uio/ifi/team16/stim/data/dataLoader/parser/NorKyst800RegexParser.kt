@@ -149,24 +149,24 @@ class NorKyst800RegexParser {
             //parse dimensions
             val dT = match.groupValues.getOrNull(1)?.toInt() ?: run {
                 Log.e(TAG, "Failed to read <time-dimension-size> from 4DArray")
-                return null
+                return@makeNullable4DFloatArrayOf null
             }
             val dD = match.groupValues.getOrNull(2)?.toInt() ?: run {
                 Log.e(TAG, "Failed to read <depth-dimension-size> from 4DArray")
-                return null
+                return@makeNullable4DFloatArrayOf null
             }
             val dY = match.groupValues.getOrNull(3)?.toInt() ?: run {
                 Log.e(TAG, "Failed to read <y-dimension-size> from 4DArray")
-                return null
+                return@makeNullable4DFloatArrayOf null
             }
             val dX = match.groupValues.getOrNull(4)?.toInt() ?: run {
                 Log.e(TAG, "Failed to read <x-dimension-size> from 4DArray")
-                return null
+                return@makeNullable4DFloatArrayOf null
             }
             //parse the data
             val dataString = match.groupValues.getOrNull(5) ?: run {
                 Log.e(TAG, "Failed to read <data-section> from 4DArray")
-                return null
+                return@makeNullable4DFloatArrayOf null
             }
             //read the rows of ints, apply scale, offset and fillvalues to get the floats
             val dataSequence =
@@ -203,24 +203,24 @@ class NorKyst800RegexParser {
             //parse dimensions
             val dT = match.groupValues.getOrNull(1)?.toInt() ?: run {
                 Log.e(TAG, "Failed to read <time-dimension-size> from 4DArray")
-                return null
+                return@makeNullable4DFloatArrayOfW null
             }
             val dD = match.groupValues.getOrNull(2)?.toInt() ?: run {
                 Log.e(TAG, "Failed to read <depth-dimension-size> from 4DArray")
-                return null
+                return@makeNullable4DFloatArrayOfW null
             }
             val dY = match.groupValues.getOrNull(3)?.toInt() ?: run {
                 Log.e(TAG, "Failed to read <y-dimension-size> from 4DArray")
-                return null
+                return@makeNullable4DFloatArrayOfW null
             }
             val dX = match.groupValues.getOrNull(4)?.toInt() ?: run {
                 Log.e(TAG, "Failed to read <x-dimension-size> from 4DArray")
-                return null
+                return@makeNullable4DFloatArrayOfW null
             }
             //parse the data
             val dataString = match.groupValues.getOrNull(5) ?: run {
                 Log.e(TAG, "Failed to read <data-section> from 4DArray")
-                return null
+                return@makeNullable4DFloatArrayOfW null
             }
 
             val dataSequence = readRowsOf4DFloatArray(dataString, scale, offset, fillValue)
@@ -251,8 +251,8 @@ class NorKyst800RegexParser {
         scale: Float,
         offset: Float,
         fillValue: Int
-    ): List<List<Float?>> {
-        return str.split("\n")
+    ): List<List<Float?>> =
+        str.split("\n")
             .dropLast(1) //drop empty row
             .mapAsync(32) { row ->
                 row.split(", ")
@@ -266,7 +266,7 @@ class NorKyst800RegexParser {
                         }
                     }
             }
-    }
+
 
     /**
      * read a string of 4D data of floats to a 4D array of floats(after applying scale and offset)
@@ -276,8 +276,8 @@ class NorKyst800RegexParser {
         scale: Float,
         offset: Float,
         fillValue: Float
-    ): List<List<Float?>> {
-        return str.split("\n")
+    ): List<List<Float?>> =
+        str.split("\n")
             .dropLast(1) //drop empty row
             .mapAsync { row ->
                 row.split(", ")
@@ -291,5 +291,4 @@ class NorKyst800RegexParser {
                         }
                     }
             }
-    }
 }
