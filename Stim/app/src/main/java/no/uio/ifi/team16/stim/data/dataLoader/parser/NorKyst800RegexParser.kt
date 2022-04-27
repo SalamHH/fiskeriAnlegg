@@ -179,7 +179,7 @@ class NorKyst800RegexParser {
                 //read the rows of ints, apply scale, offset and fillvalues to get the floats
                 val dataSequence =
                     readRowsOf4DIntArray(dataString, scale, offset, fillValue)
-                
+
                 //we have List<List<Int>>, where the inner sequence is a row.
                 //now, reshape it to Array<Array<Array<FloatArray>>>
                 Array(dT) { ti ->
