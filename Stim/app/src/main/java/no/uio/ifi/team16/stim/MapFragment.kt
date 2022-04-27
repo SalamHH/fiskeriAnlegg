@@ -1,6 +1,7 @@
 package no.uio.ifi.team16.stim
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,10 +11,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.maps.*
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MapStyleOptions
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import no.uio.ifi.team16.stim.data.Municipality
 import no.uio.ifi.team16.stim.data.Site
@@ -143,7 +141,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
             currentSite = site.name
 
             val cameraUpdate = CameraUpdateFactory.newLatLngZoom(site.latLong.toGoogle(), zoomLevel)
-            map.animateCamera(cameraUpdate)
+            //map.animateCamera(cameraUpdate)
         }
     }
 
@@ -161,6 +159,8 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
      */
     private fun onMunicipalityUpdate(municipality: Municipality?) {
         if (mapReady && municipality != null && municipality.sites.isNotEmpty()) {
+
+
             onSiteUpdate(municipality.sites)
 
             // Move camera to arbitrary site in municipality
@@ -187,10 +187,31 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
             for (site in sites) {
                 val markerOptions = MarkerOptions()
                 markerOptions.title(site.name)
+
                 markerOptions.position(site.latLong.toGoogle())
                 map.addMarker(markerOptions)
+                site.placement?.let { Log.d("munname", it.municipalityName) }
             }
         }
+
+        map.setOnMarkerClickListener ( object: GoogleMap.OnMarkerClickListener{
+            override fun onMarkerClick(mark: Marker): Boolean {
+                Log.d("hh",mark.title.toString())
+                viewModel.loadSiteByName(mark.title.toString())
+                val site=viewModel.getCurrentSiteData().value
+               // viewModel.loadSitesAtMunicipality(site?.placement?.municipalityCode.toString())
+
+
+
+                if (site != null) {
+                    viewModel.setCurrentSite(site)
+                }
+                view?.findNavController()?.navigate(R.id.action_mapFragment_to_siteInfoFragment)
+
+
+                return false
+            }
+        } )
     }
 
     /**
