@@ -19,11 +19,14 @@ class SitesRepository {
     private val municipalityCache: MutableMap<String, Municipality?> = mutableMapOf()
 
     /**
-     * Maps sitename to site object
+     * Maps sitename to list of sites
      */
-    private val nameCache: MutableMap<String, Site?> = mutableMapOf()
-    private val nameListCache: MutableMap<String, List<Site>?> = mutableMapOf()//ny
+    private val nameCache: MutableMap<String, MutableSet<Site>?> = mutableMapOf()
 
+    /**
+     * Maps sitenr to site object
+     */
+    private val siteNrCache: MutableMap<Int, Site?> = mutableMapOf()
 
     /**
      * load the municipality at the given municipalitycode
@@ -38,7 +41,7 @@ class SitesRepository {
         if(municipality != null) {
             municipalityCache[municipalityCode] = municipality
             for(site in municipality.sites) {
-                nameCache[site.name] = site
+                siteNrCache[site.nr] = site
             }
         }
         return municipality
@@ -47,34 +50,39 @@ class SitesRepository {
     suspend fun getFavouriteSites(favourites: Set<String>?): MutableList<Site> {
         val list = mutableListOf<Site>()
         favourites?.forEach { siteNr ->
-            val loadedSite = dataSource.loadDataByNr(siteNr)
+            val loadedSite = getSiteByNr(siteNr.toInt())
             if (loadedSite != null) list.add(loadedSite)
         }
         return list
     }
 
-    /**
-     * Load the site with the given name
-     */
-    suspend fun getDataByName(name: String): Site? {
-        var site = nameCache[name]
-        if (site != null) {
-            return site
+    suspend fun getSitesByName(name: String): List<Site>? {
+        val sites = nameCache[name]
+        if (sites != null) {
+            return sites.toList()
         }
-        site = dataSource.loadDataByName(name)
-        nameCache[name] = site
-        return site
+        val sitesList = dataSource.loadSitesByName(name)
+
+        if (sitesList != null) {
+            nameCache[name] = sitesList.toMutableSet()
+
+            // lagre sites i nr-cache også
+            for (site in sitesList) {
+                siteNrCache[site.nr] = site
+            }
+        }
+
+        return sitesList
     }
 
-
-
-    suspend fun getSitesByName(name: String): List<Site>? {
-        var site = nameListCache[name]
+    private suspend fun getSiteByNr(nr: Int): Site? {
+        var site = siteNrCache[nr]
         if (site != null) {
             return site
         }
-        site = dataSource.loadSitByName(name)
-        nameListCache[name] = site
+        site = dataSource.loadDataByNr(nr.toString())
+        siteNrCache[nr] = site
+
         return site
     }
 }

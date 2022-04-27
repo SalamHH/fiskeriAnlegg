@@ -41,4 +41,16 @@ data class Site(
      * Current weather forecast at site, null if not loaded yet
      */
     var weatherForecast: WeatherForecast? = null
+
+    override fun hashCode(): Int {
+        return nr.hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other is Site) {
+            return this.nr == other.nr
+        }
+        return false
+    }
 }

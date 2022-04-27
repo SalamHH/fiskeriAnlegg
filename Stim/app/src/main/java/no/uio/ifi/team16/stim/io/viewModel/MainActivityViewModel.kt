@@ -1,9 +1,10 @@
 package no.uio.ifi.team16.stim.io.viewModel
 
-import android.content.Context
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineDataSet
 import kotlinx.coroutines.Dispatchers
@@ -165,14 +166,7 @@ class MainActivityViewModel : ViewModel() {
         }
     }
 
-    fun loadSiteByName(name: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val loaded = sitesRepository.getDataByName(name)
-            currentSiteData.postValue(loaded)
-        }
-    }
-
-    fun loadSitesByName(name: String) {//nyy
+    fun loadSitesByName(name: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val loaded = sitesRepository.getSitesByName(name)
             currentSitesData.postValue(loaded)

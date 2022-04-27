@@ -208,8 +208,8 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
 
         map.setOnMarkerClickListener ( object: GoogleMap.OnMarkerClickListener{
             override fun onMarkerClick(mark: Marker): Boolean {
-                Log.d("hh",mark.title.toString())
-                viewModel.loadSiteByName(mark.title.toString())
+                Log.d("hh", mark.title.toString())
+                viewModel.loadSitesByName(mark.title.toString())
                 val site=viewModel.getCurrentSiteData().value
                // viewModel.loadSitesAtMunicipality(site?.placement?.municipalityCode.toString())
 

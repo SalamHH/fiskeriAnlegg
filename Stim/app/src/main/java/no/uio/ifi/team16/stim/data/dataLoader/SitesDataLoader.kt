@@ -108,7 +108,7 @@ class SitesDataLoader {
         }
 
 
-    suspend fun loadSitByName(name: String): List<Site>? =
+    suspend fun loadSitesByName(name: String): List<Site>? =
         loadWithParameters(
             listOf(
                 "range" to Options.sitesRange,
