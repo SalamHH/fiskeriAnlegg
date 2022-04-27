@@ -23,6 +23,8 @@ class SitesRepository {
      * Maps sitename to site object
      */
     private val nameCache: MutableMap<String, Site?> = mutableMapOf()
+    private val nameListCache: MutableMap<String, List<Site>?> = mutableMapOf()//ny
+
 
     //todo: store as int then load? sitedata on memory might be inconsistent with remote
     var favouriteSites: MutableList<Site> = mutableListOf()
@@ -63,6 +65,18 @@ class SitesRepository {
         }
         site = dataSource.loadDataByName(name)
         nameCache[name] = site
+        return site
+    }
+
+
+
+    suspend fun getSitesByName(name: String): List<Site>? {
+        var site = nameListCache[name]
+        if (site != null) {
+            return site
+        }
+        site = dataSource.loadSitByName(name)
+        nameListCache[name] = site
         return site
     }
 }

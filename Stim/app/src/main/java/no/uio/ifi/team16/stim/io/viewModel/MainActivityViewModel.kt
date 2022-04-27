@@ -36,6 +36,7 @@ class MainActivityViewModel : ViewModel() {
     private val norKyst800AtSiteData = mutableMapOf<Site, MutableLiveData<NorKyst800AtSite?>>()
     private val addressData = MutableLiveData<String?>()
     private val currentSiteData = MutableLiveData<Site?>()
+    private val currentSitesData = MutableLiveData<List<Site>?>() //nyyy
     private var lineDataSet = MutableLiveData<LineDataSet?>(null)
     private val weatherData = MutableLiveData<WeatherForecast?>()
 
@@ -90,6 +91,10 @@ class MainActivityViewModel : ViewModel() {
 
     fun getCurrentSiteData(): LiveData<Site?> {
         return currentSiteData
+    }
+
+    fun getCurrentSitesData(): LiveData<List<Site>?> {///nyyy
+        return currentSitesData
     }
 
     ///////////// used to load the data from its source, does ot return the data but puts it
@@ -159,6 +164,13 @@ class MainActivityViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             val loaded = sitesRepository.getDataByName(name)
             currentSiteData.postValue(loaded)
+        }
+    }
+
+    fun loadSitesByName(name: String) {//nyy
+        viewModelScope.launch(Dispatchers.IO) {
+            val loaded = sitesRepository.getSitesByName(name)
+            currentSitesData.postValue(loaded)
         }
     }
 

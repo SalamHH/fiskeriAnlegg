@@ -61,7 +61,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         viewModel.getMunicipalityData().observe(viewLifecycleOwner, this::onMunicipalityUpdate)
 
         // Observe individual site (searched for by name)
-        viewModel.getCurrentSiteData().observe(viewLifecycleOwner, this::onSiteSearchComplete)
+        viewModel.getCurrentSitesData().observe(viewLifecycleOwner, this::onSiteSearchComplete)
 
         //Bottom Sheet behavior
         bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet)
@@ -94,7 +94,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
                 viewModel.loadSitesAtMunicipality(query)
             } else {
                 // Letters in input, search for site name
-                viewModel.loadSiteByName(query)
+                viewModel.loadSitesByName(query)
             }
             return true
         }
@@ -135,15 +135,21 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
     /**
      * Called when a site has been searched for and found
      */
-    private fun onSiteSearchComplete(site: Site?) {
-        if (site != null) {
-            onSiteUpdate(listOf(site))
-            currentSite = site.name
+    private fun onSiteSearchComplete(sites: List<Site>?) {
+        if (sites != null) {
+            onSiteUpdate(sites)
+            currentSite = sites[0].name
+            val adapter = RecycleViewAdapter(sites, this::adapterOnClick, requireActivity())
+            binding.recyclerView.adapter = adapter
 
-            val cameraUpdate = CameraUpdateFactory.newLatLngZoom(site.latLong.toGoogle(), zoomLevel)
-            //map.animateCamera(cameraUpdate)
+            binding.headerBtmSheet.text = "Liste over anlegg"
+
+            val cameraUpdate = CameraUpdateFactory.newLatLngZoom(sites[0].latLong.toGoogle(), 5F)
+            map.animateCamera(cameraUpdate)
         }
     }
+
+
 
     /**
      * Called when the ViewModel has found a municipality number

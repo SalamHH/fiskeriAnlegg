@@ -107,6 +107,15 @@ class SitesDataLoader {
             )
         }
 
+
+    suspend fun loadSitByName(name: String): List<Site>? =
+        loadWithParameters(
+            listOf(
+                "range" to Options.sitesRange,
+                "name" to name
+            )
+        )
+
     /**
      * @param name ???
      * @return List of sites associated with the given name
