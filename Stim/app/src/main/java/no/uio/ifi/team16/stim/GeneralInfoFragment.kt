@@ -14,6 +14,7 @@ import androidx.transition.TransitionManager
 import no.uio.ifi.team16.stim.data.StaticMapImageLoader
 import no.uio.ifi.team16.stim.databinding.FragmentGeneralInfoBinding
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
+import java.lang.Math.round
 import javax.inject.Inject
 
 
@@ -24,7 +25,7 @@ class GeneralInfoFragment : Fragment() {
     private var salinityChartPressed = false
 
     @Inject
-    lateinit var chartStyle: SparkLineStyle
+    lateinit var chartStyle: GeneralLineStyle
 
     /**
      * Fragment for siden i appen som gir info om salt og vann
@@ -56,7 +57,6 @@ class GeneralInfoFragment : Fragment() {
             }
         }
         //CHART
-        chartStyle = SparkLineStyle(requireContext())
 
         setSalinityChart()
 
@@ -95,7 +95,8 @@ class GeneralInfoFragment : Fragment() {
     }
 
     companion object {
-        const val CHART_LABEL = "Saltholdighet"
+        const val CHART_LABEL_SALT = "Saltholdighet"
+        const val CHART_LABEL_TEMP = "Temperatur"
     }
 
     private fun toggleButtonColors() {
@@ -129,12 +130,16 @@ class GeneralInfoFragment : Fragment() {
     }
 
     private fun setSalinityChart() {
+        resetChart()
+        chartStyle = GeneralLineStyle(requireContext())
         var salinityChart = listOf<Entry>()
 
         viewModel.getNorKyst800AtSiteData(viewModel.getCurrentSite()).observe(viewLifecycleOwner) {
             it?.apply {
                 //set chart
-                salinityChart = it.getSalinityAtSurfaceAsGraph()
+                salinityChart = it.getSalinityAtSurfaceAsGraph().map { entry -> //round each y entry
+                    Entry(entry.x, round(entry.y).toFloat())
+                }
             }
             //val hourList = arrayOf(1.0, 2.0, 3,0, 4.0, 5.0, 6.0, 7.0, 8.0)
             val salinityData = salinityChart.map { entry ->
@@ -143,7 +148,7 @@ class GeneralInfoFragment : Fragment() {
 
             if (salinityChart.isNotEmpty()) {
                 val linedatasetSalinity =
-                    LineDataSet(salinityChart, GeneralInfoFragment.CHART_LABEL)
+                    LineDataSet(salinityChart, CHART_LABEL_SALT)
 
                 binding.salinityChart.apply {
                     axisLeft.apply {
@@ -158,6 +163,7 @@ class GeneralInfoFragment : Fragment() {
 
                 chartStyle.styleChart(binding.salinityChart)
 
+                binding.salinityChartHeader.text = "Graf over saltholdighet"
                 salinityChartPressed = true
                 toggleButtonColors()
             }
@@ -165,6 +171,8 @@ class GeneralInfoFragment : Fragment() {
     }
 
     private fun setTemperatureChart() {
+        resetChart()
+        chartStyle = GeneralLineStyle(requireContext())
         var temperatureChart = listOf<Entry>()
 
         viewModel.getNorKyst800AtSiteData(viewModel.getCurrentSite()).observe(viewLifecycleOwner) {
@@ -178,8 +186,8 @@ class GeneralInfoFragment : Fragment() {
             }
 
             if (temperatureChart.isNotEmpty()) {
-                val linedatasetSalinity =
-                    LineDataSet(temperatureChart, GeneralInfoFragment.CHART_LABEL)
+                val linedataset =
+                    LineDataSet(temperatureChart, CHART_LABEL_TEMP)
 
                 binding.salinityChart.apply {
                     axisLeft.apply {
@@ -188,15 +196,25 @@ class GeneralInfoFragment : Fragment() {
                     }
                 }
                 //style linedataset
-                chartStyle.styleLineDataSet(linedatasetSalinity, requireContext())
-                binding.salinityChart.data = LineData(linedatasetSalinity)
-                binding.salinityChart.invalidate()
 
+                chartStyle.styleLineDataSet(linedataset, requireContext())
+                binding.salinityChart.data = LineData(linedataset)
+                binding.salinityChart.invalidate()
                 chartStyle.styleChart(binding.salinityChart)
 
+                binding.salinityChartHeader.text = "Graf over vanntemperatur"
                 salinityChartPressed = false
                 toggleButtonColors()
             }
         }
+    }
+
+    private fun resetChart() {
+        binding.salinityChart.fitScreen()
+        binding.salinityChart.data?.clearValues()
+        binding.salinityChart.xAxis.valueFormatter = null
+        binding.salinityChart.notifyDataSetChanged()
+        binding.salinityChart.clear()
+        binding.salinityChart.invalidate()
     }
 }
