@@ -93,7 +93,7 @@ class NorKyst800AtSiteDataLoader : NorKyst800DataLoader() {
         var nork: NorKyst800? = null
 
         val parseTime = measureTimeMillis {
-            nork = NorKyst800RegexParser().parse(responseStr)
+            nork = NorKyst800RegexParser.parse(responseStr)
         }
         Log.d(TAG, "Parsed data in $parseTime ms")
 
