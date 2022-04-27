@@ -39,9 +39,10 @@ class MainActivity : StimActivity() {
         window.statusBarColor = getColor(R.color.skyblue)
 
         //initial load of data
+        viewModel.loadPrefrences(prefrences)
         viewModel.loadNorKyst800()
         viewModel.loadDefaultInfectiousPressure()
-        viewModel.loadFavouriteSites(prefrences.getStringSet("Favorites", null))
+        viewModel.loadFavouriteSites()
         viewModel.loadSitesAtMunicipality(Options.initialMunicipality)
         //men vi legger til dataene fra det først municipalities i starten, TODO: må fjernes i release
     }
@@ -53,13 +54,5 @@ class MainActivity : StimActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return item.onNavDestinationSelected(findNavController(R.id.myNavHostFragment))
                 || super.onOptionsItemSelected(item)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        val editor = prefrences.edit()
-
-        editor.putStringSet("Favorites", viewModel.getFavouriteSitesStringSet())
-        editor.apply()
     }
 }

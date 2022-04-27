@@ -1,9 +1,9 @@
 package no.uio.ifi.team16.stim.io.viewModel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import android.content.Context
+import android.content.SharedPreferences
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.*
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineDataSet
 import kotlinx.coroutines.Dispatchers
@@ -16,6 +16,7 @@ import no.uio.ifi.team16.stim.util.Options
 class MainActivityViewModel : ViewModel() {
 
     private val TAG = "MainActivityViewModel"
+    private lateinit var prefrences: SharedPreferences
 
     //REPOSITORIES
     private val infectiousPressureRepository = InfectiousPressureRepository()
@@ -93,6 +94,10 @@ class MainActivityViewModel : ViewModel() {
         return currentSiteData
     }
 
+    fun loadPrefrences(preferences: SharedPreferences) {
+        prefrences = preferences
+    }
+
     fun getCurrentSitesData(): LiveData<List<Site>?> {///nyyy
         return currentSitesData
     }
@@ -152,9 +157,9 @@ class MainActivityViewModel : ViewModel() {
         }
     }
 
-    fun loadFavouriteSites(favourites: Set<String>?) {
+    fun loadFavouriteSites() {
         viewModelScope.launch(Dispatchers.IO) {
-            val loaded = sitesRepository.getFavouriteSites(favourites)
+            val loaded = sitesRepository.getFavouriteSites(prefrences.getStringSet("Favorites", null))
             //invokes the observer
             favouriteSitesData.postValue(loaded)
         }
@@ -211,12 +216,28 @@ class MainActivityViewModel : ViewModel() {
             favouriteSites?.add(site)
             favouriteSitesData.postValue(favouriteSites)
         }
+        prefrences.edit().apply{
+            val editStringSet = prefrences.getStringSet("Favorites", emptySet())?.toMutableSet()
+            if (editStringSet != null) {
+                editStringSet.add(site.nr.toString())
+                putStringSet("Favorites", editStringSet.toSet())
+            }
+            apply()
+        }
     }
 
     fun removeFavouriteSite(site: Site) {
         favouriteSitesData.value.let { favouriteSites ->
             favouriteSites?.remove(site)
             favouriteSitesData.postValue(favouriteSites)
+        }
+        prefrences.edit().apply{
+            val editStringSet = prefrences.getStringSet("Favorites", emptySet())?.toMutableSet()
+            if (editStringSet != null) {
+                editStringSet.remove(site.nr.toString())
+                putStringSet("Favorites", editStringSet.toSet())
+            }
+            apply()
         }
     }
 

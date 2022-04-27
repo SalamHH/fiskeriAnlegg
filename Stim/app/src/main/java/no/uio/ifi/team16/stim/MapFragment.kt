@@ -174,7 +174,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
             val cameraUpdate = CameraUpdateFactory.newLatLngZoom(firstSite.latLong.toGoogle(), zoomLevel)
             map.animateCamera(cameraUpdate)
 
-            var favSites = listOf<Site>()
+            var favSites = emptyList<Site>()
             viewModel.getFavouriteSitesData().observe(viewLifecycleOwner) {
                 if (it != null) {
                     favSites = it.toList()
@@ -182,7 +182,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
             }
             val adapter = RecycleViewAdapter(municipality.sites, favSites, this::adapterOnClick, this::favoriteOnClick, requireActivity())
             binding.recyclerView.adapter = adapter
-
 
             binding.headerBtmSheet.text = getString(
                 R.string.bottomsheet_formatted_header,
