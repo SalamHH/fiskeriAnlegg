@@ -12,7 +12,6 @@ import no.uio.ifi.team16.stim.data.dataLoader.parser.NorKyst800RegexParser
 import no.uio.ifi.team16.stim.util.LatLong
 import no.uio.ifi.team16.stim.util.Options
 import no.uio.ifi.team16.stim.util.reformatFSL
-import kotlin.system.measureTimeMillis
 
 /**
  * DataLoader for data related tot he norkyst800 model.
@@ -324,9 +323,9 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
         timeRange: IntProgression
     ): String {
         val xyString =
-            "[${reformatIntProgressionFSL(xRange)}][${reformatIntProgressionFSL(yRange)}]"
-        val dString = "[${reformatIntProgressionFSL(depthRange)}]"
-        val tString = "[${reformatIntProgressionFSL(timeRange)}]"
+            "[${xRange.reformatFSL()}][${yRange.reformatFSL()}]"
+        val dString = "[${depthRange.reformatFSL()}]"
+        val tString = "[${timeRange.reformatFSL()}]"
         val dtxyString = dString + tString + xyString
         return baseUrl +
                 "depth$dString," +
@@ -343,9 +342,9 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
         timeRange: IntProgression
     ): String {
         val xyString =
-            "[${reformatIntProgressionFSL(xRange)}][${reformatIntProgressionFSL(yRange)}]"
-        val dString = "[${reformatIntProgressionFSL(depthRange)}]"
-        val tString = "[${reformatIntProgressionFSL(timeRange)}]"
+            "[${xRange.reformatFSL()}][${yRange.reformatFSL()}]"
+        val dString = "[${depthRange.reformatFSL()}]"
+        val tString = "[${timeRange.reformatFSL()}]"
         val dtxyString = dString + tString + xyString
         return baseUrl +
                 "u$dtxyString," +

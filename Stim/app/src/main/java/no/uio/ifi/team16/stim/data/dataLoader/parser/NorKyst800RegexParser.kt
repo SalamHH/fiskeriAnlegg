@@ -145,7 +145,7 @@ class NorKyst800RegexParser {
      * returns null if any parsing fails.
      * The array contains null where the data is not available(ie where there are filler values)
      */
-    private suspend fun makeNullable4DFloatArrayOf(
+    suspend fun makeNullable4DFloatArrayOf(
         attribute: String,
         response: String,
         scale: Float,
@@ -180,21 +180,21 @@ class NorKyst800RegexParser {
         }
 
 
-    /**
-     * for some reason the velocity w variable has a double as a fillervalue,
-     * so we have to make an entirely separate function for it. Yay!
-     */
-    private suspend fun makeNullable4DFloatArrayOfW(
-        attribute: String,
-        response: String,
-        scale: Float,
-        offset: Float,
-        fillValue: Float
-    ): NullableFloatArray4D? =
-        dataRegex(attribute).find(response, 0)?.let { match ->
-            //parse dimensions
-            val dT = match.groupValues.getOrNull(1)?.toInt() ?: run {
-                Log.e(TAG, "Failed to read <time-dimension-size> from 4DArray")
+        /**
+         * for some reason the velocity w variable has a double as a fillervalue,
+         * so we have to make an entirely separate function for it. Yay!
+         */
+        suspend fun makeNullable4DFloatArrayOfW(
+            attribute: String,
+            response: String,
+            scale: Float,
+            offset: Float,
+            fillValue: Float
+        ): NullableFloatArray4D? =
+            dataRegex(attribute).find(response, 0)?.let { match ->
+                //parse dimensions
+                val dT = match.groupValues.getOrNull(1)?.toInt() ?: run {
+                    Log.e(TAG, "Failed to read <time-dimension-size> from 4DArray")
                 return@makeNullable4DFloatArrayOfW null
             }
             val dD = match.groupValues.getOrNull(2)?.toInt() ?: run {
