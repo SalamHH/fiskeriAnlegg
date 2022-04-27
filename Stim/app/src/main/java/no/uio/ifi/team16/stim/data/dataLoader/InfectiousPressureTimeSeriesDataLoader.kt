@@ -152,7 +152,7 @@ class InfectiousPressureTimeSeriesDataLoader : InfectiousPressureDataLoader() {
                     //unzip list of pairs to pair of lists
                     val (weeks, contamination) = data.unzip()
                     InfectiousPressureTimeSeries(
-                        site.id,
+                        site.nr,
                         contamination.toTypedArray(),
                         weeks.toTypedArray(),
                         shape,

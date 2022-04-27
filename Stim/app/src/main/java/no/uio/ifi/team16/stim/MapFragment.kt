@@ -139,7 +139,8 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         if (sites != null) {
             onSiteUpdate(sites)
             currentSite = sites[0].name
-            val adapter = RecycleViewAdapter(sites, this::adapterOnClick, requireActivity())
+            val adapter =
+                RecycleViewAdapter(sites, listOf(), this::adapterOnClick, this::favoriteOnClick, requireActivity())
             binding.recyclerView.adapter = adapter
 
             binding.headerBtmSheet.text = "Liste over anlegg"

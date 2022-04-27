@@ -97,6 +97,6 @@ class NorKyst800AtSiteDataLoader : NorKyst800DataLoader() {
         }
         Log.d(TAG, "Parsed data in $parseTime ms")
 
-        return NorKyst800AtSite(site.id, nork ?: return null)
+        return NorKyst800AtSite(site.nr, nork ?: return null)
     }
 }
