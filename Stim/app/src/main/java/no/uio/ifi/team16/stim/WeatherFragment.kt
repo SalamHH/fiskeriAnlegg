@@ -20,7 +20,7 @@ class WeatherFragment : StimFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentWeatherBinding.inflate(inflater, container, false)
 
-        val site = viewModel.getCurrentSite()
+        val site = viewModel.getCurrentSite() ?: return binding.root
 
         viewModel.getWeatherData().observe(viewLifecycleOwner, this::onWeatherLoaded)
         viewModel.loadWeatherAtSite(site)

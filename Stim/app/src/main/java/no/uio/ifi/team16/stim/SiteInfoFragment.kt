@@ -18,7 +18,7 @@ class SiteInfoFragment : StimFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentSiteInfoBinding.inflate(inflater, container, false)
 
-        val site = viewModel.getCurrentSite()
+        val site = viewModel.getCurrentSite() ?: return binding.root
 
         binding.siteName.text = site.name
         binding.sitelocation.text = site.latLong.toString()

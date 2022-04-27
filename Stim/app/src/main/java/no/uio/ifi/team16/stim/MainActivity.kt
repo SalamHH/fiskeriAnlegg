@@ -8,7 +8,6 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.*
 import no.uio.ifi.team16.stim.databinding.ActivityMainBinding
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
-import no.uio.ifi.team16.stim.util.Options
 
 
 class MainActivity : StimActivity() {
@@ -40,11 +39,9 @@ class MainActivity : StimActivity() {
 
         //initial load of data
         viewModel.loadPrefrences(prefrences)
-        viewModel.loadNorKyst800()
-        viewModel.loadDefaultInfectiousPressure()
+        viewModel.loadNorKyst800() // todo hva brukes dette til?
+        viewModel.loadDefaultInfectiousPressure() // todo hva brukes dette til?
         viewModel.loadFavouriteSites()
-        viewModel.loadSitesAtMunicipality(Options.initialMunicipality)
-        //men vi legger til dataene fra det først municipalities i starten, TODO: må fjernes i release
     }
 
     override fun onSupportNavigateUp(): Boolean {

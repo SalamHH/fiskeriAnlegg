@@ -26,7 +26,7 @@ class GeneralInfoFragment : Fragment() {
     ): View {
         binding = FragmentGeneralInfoBinding.inflate(inflater, container, false)
 
-        val site = viewModel.getCurrentSite()
+        val site = viewModel.getCurrentSite() ?: return binding.root
 
         //header
         binding.header.text = ("OM ${site.name}")

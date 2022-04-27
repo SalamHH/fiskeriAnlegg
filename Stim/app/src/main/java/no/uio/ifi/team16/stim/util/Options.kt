@@ -56,9 +56,7 @@ class Options {
         const val sitesRange = "0-99"
 
         //MAINACTIVITY
-        const val initialMunicipality = "4615"
         val fakeSite = Site(420, "fakevik", LatLong(59.910073, 10.743205), null, 3.141592, null, null)
-        val initialFavouriteSites: MutableList<Site> = mutableListOf()
 
         //INFECTIONFRAGMENT OPTIONS
         val high = 5

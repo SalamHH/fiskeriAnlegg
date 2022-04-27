@@ -44,8 +44,7 @@ class InfectionFragment : StimFragment() {
         sharedElementEnterTransition = animation
         sharedElementReturnTransition = animation
 
-        val site = viewModel.getCurrentSite()
-        Log.d(TAG, "site is $site")
+        val site = viewModel.getCurrentSite() ?: return binding.root
         binding.sitename.text = site.name
 
         chartStyle = SparkLineStyle(requireContext())

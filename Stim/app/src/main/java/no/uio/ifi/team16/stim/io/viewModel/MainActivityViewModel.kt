@@ -37,8 +37,7 @@ class MainActivityViewModel : ViewModel() {
     private val norKyst800Data = MutableLiveData<NorKyst800?>()
     private val norKyst800AtSiteData = mutableMapOf<Site, MutableLiveData<NorKyst800AtSite?>>()
     private val addressData = MutableLiveData<String?>()
-    private val currentSiteData = MutableLiveData<Site?>()
-    private val currentSitesData = MutableLiveData<List<Site>?>() //nyyy
+    private val currentSitesData = MutableLiveData<List<Site>?>()
     private var lineDataSet = MutableLiveData<LineDataSet?>(null)
     private val weatherData = MutableLiveData<WeatherForecast?>()
 
@@ -89,10 +88,6 @@ class MainActivityViewModel : ViewModel() {
 
     fun getFavouriteSitesData(): LiveData<MutableList<Site>?> {
         return favouriteSitesData
-    }
-
-    fun getCurrentSiteData(): LiveData<Site?> {
-        return currentSiteData
     }
 
     fun loadPrefrences(preferences: SharedPreferences) {
@@ -189,13 +184,13 @@ class MainActivityViewModel : ViewModel() {
 
     //Methods for communicating chosen Site between fragments
 
-    private var site = Options.fakeSite
+    private var site: Site? = null
 
     fun setCurrentSite(new: Site) {
         site = new
     }
 
-    fun getCurrentSite(): Site {
+    fun getCurrentSite(): Site? {
         return site
     }
 
