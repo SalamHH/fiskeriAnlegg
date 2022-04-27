@@ -45,7 +45,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         if (!checkLocationPermission()) {
             requestPermission { hasPermission ->
                 if (hasPermission) {
@@ -79,7 +78,8 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         bottomSheetBehavior.isHideable = false
 
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
-        val adapter = RecycleViewAdapter(listOf(), listOf(), this::adapterOnClick, this::favoriteOnClick, requireActivity())
+        val adapter =
+            RecycleViewAdapter(listOf(), listOf(), this::adapterOnClick, this::favoriteOnClick, requireActivity())
         binding.recyclerView.adapter = adapter
 
         binding.syncBtn.setOnClickListener {
@@ -162,7 +162,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
     }
 
 
-
     /**
      * Called when the ViewModel has found a municipality number
      */
@@ -192,7 +191,13 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
                     favSites = it.toList()
                 }
             }
-            val adapter = RecycleViewAdapter(municipality.sites, favSites, this::adapterOnClick, this::favoriteOnClick, requireActivity())
+            val adapter = RecycleViewAdapter(
+                municipality.sites,
+                favSites,
+                this::adapterOnClick,
+                this::favoriteOnClick,
+                requireActivity()
+            )
             binding.recyclerView.adapter = adapter
 
             binding.headerBtmSheet.text = getString(
@@ -220,21 +225,19 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
             }
         }
 
-        map.setOnMarkerClickListener ( object: GoogleMap.OnMarkerClickListener{
+        map.setOnMarkerClickListener(object : GoogleMap.OnMarkerClickListener {
             override fun onMarkerClick(mark: Marker): Boolean {
                 val site = markerMap[mark]
 
-                Log.e(TAG, "Site: $site")
-
                 if (site != null) {
                     viewModel.setCurrentSite(site)
+                    view?.findNavController()?.navigate(R.id.action_mapFragment_to_siteInfoFragment)
+                    return true
                 }
-                view?.findNavController()?.navigate(R.id.action_mapFragment_to_siteInfoFragment)
-
 
                 return false
             }
-        } )
+        })
     }
 
     /**
@@ -253,7 +256,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         view?.findNavController()?.navigate(R.id.action_mapFragment_to_siteInfoFragment)
     }
 
-    private fun favoriteOnClick(site : Site, checked : Boolean) {
+    private fun favoriteOnClick(site: Site, checked: Boolean) {
         if (checked) viewModel.registerFavouriteSite(site)
         else viewModel.removeFavouriteSite(site)
     }
