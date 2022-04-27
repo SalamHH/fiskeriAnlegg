@@ -96,6 +96,7 @@ class NorKyst800AtSiteDataLoader : NorKyst800DataLoader() {
             nork = NorKyst800RegexParser.parse(responseStr)
         }
         Log.d(TAG, "Parsed data in $parseTime ms")
+        Log.d(TAG, "${nork?.time?.contentToString()}")
 
         return NorKyst800AtSite(site.nr, nork ?: return null)
     }

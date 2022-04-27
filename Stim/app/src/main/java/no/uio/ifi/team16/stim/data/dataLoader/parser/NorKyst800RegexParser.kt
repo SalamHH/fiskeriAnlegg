@@ -3,7 +3,6 @@ package no.uio.ifi.team16.stim.data.dataLoader.parser
 import android.util.Log
 import no.uio.ifi.team16.stim.data.NorKyst800
 import no.uio.ifi.team16.stim.util.NullableFloatArray4D
-import no.uio.ifi.team16.stim.util.mapAsync
 
 /**
  * Welcome to regex hell!!
@@ -138,166 +137,162 @@ class NorKyst800RegexParser {
             }
 
 
-        ///////////////////
-        // MAKE 4D ARRAY //
-        ///////////////////
-        /**
-         * try to parse out a 4D intarray from an ascii opendap response,
-         * returns null if any parsing fails.
-         * The array contains null where the data is not available(ie where there are filler values)
-         */
-        suspend fun makeNullable4DFloatArrayOf(
-            attribute: String,
-            response: String,
-            scale: Float,
-            offset: Float,
-            fillValue: Int //the data is read from the ascii as ints, then scled to floats
-        ): NullableFloatArray4D? =
-            dataRegex(attribute).find(response, 0)?.let { match ->
-                //parse dimensions
-                val dT = match.groupValues.getOrNull(1)?.toInt() ?: run {
-                    Log.e(TAG, "Failed to read <time-dimension-size> from 4DArray")
-                    return null
-                }
-                val dD = match.groupValues.getOrNull(2)?.toInt() ?: run {
-                    Log.e(TAG, "Failed to read <depth-dimension-size> from 4DArray")
-                    return null
-                }
-                val dY = match.groupValues.getOrNull(3)?.toInt() ?: run {
-                    Log.e(TAG, "Failed to read <y-dimension-size> from 4DArray")
-                    return null
-                }
-                val dX = match.groupValues.getOrNull(4)?.toInt() ?: run {
-                    Log.e(TAG, "Failed to read <x-dimension-size> from 4DArray")
-                    return null
-                }
-                //parse the data
-                val dataString = match.groupValues.getOrNull(5) ?: run {
-                    Log.e(TAG, "Failed to read <data-section> from 4DArray")
-                    return null
-                }
-                //read the rows of ints, apply scale, offset and fillvalues to get the floats
-                val dataSequence =
-                    readRowsOf4DIntArray(dataString, scale, offset, fillValue)
-
-                //we have List<List<Int>>, where the inner sequence is a row.
-                //now, reshape it to Array<Array<Array<FloatArray>>>
-                Array(dT) { ti ->
-                    Array(dD) { di ->
-                        Array(dY) { yi ->
-                            Array(dX) { xi ->
-                                dataSequence.elementAt(ti * dD * dY + di * dY + yi)
-                                    .elementAt(xi) //element is guaranteed to exist(if indexing done properly!)
-                            }
-                        }
-                    }
-                }
+    ///////////////////
+    // MAKE 4D ARRAY //
+    ///////////////////
+    /**
+     * try to parse out a 4D intarray from an ascii opendap response,
+     * returns null if any parsing fails.
+     * The array contains null where the data is not available(ie where there are filler values)
+     */
+    private suspend fun makeNullable4DFloatArrayOf(
+        attribute: String,
+        response: String,
+        scale: Float,
+        offset: Float,
+        fillValue: Int //the data is read from the ascii as ints, then scled to floats
+    ): NullableFloatArray4D? =
+        dataRegex(attribute).find(response, 0)?.let { match ->
+            //parse dimensions
+            val dT = match.groupValues.getOrNull(1)?.toInt() ?: run {
+                Log.e(TAG, "Failed to read <time-dimension-size> from 4DArray")
+                return@makeNullable4DFloatArrayOf null
             }
-
-
-        /**
-         * for some reason the velocity w variable has a double as a fillervalue,
-         * so we have to make an entirely separate function for it. Yay!
-         */
-        suspend fun makeNullable4DFloatArrayOfW(
-            attribute: String,
-            response: String,
-            scale: Float,
-            offset: Float,
-            fillValue: Float
-        ): NullableFloatArray4D? =
-            dataRegex(attribute).find(response, 0)?.let { match ->
-                //parse dimensions
-                val dT = match.groupValues.getOrNull(1)?.toInt() ?: run {
-                    Log.e(TAG, "Failed to read <time-dimension-size> from 4DArray")
-                    return null
-                }
-                val dD = match.groupValues.getOrNull(2)?.toInt() ?: run {
-                    Log.e(TAG, "Failed to read <depth-dimension-size> from 4DArray")
-                    return null
-                }
-                val dY = match.groupValues.getOrNull(3)?.toInt() ?: run {
-                    Log.e(TAG, "Failed to read <y-dimension-size> from 4DArray")
-                    return null
-                }
-                val dX = match.groupValues.getOrNull(4)?.toInt() ?: run {
-                    Log.e(TAG, "Failed to read <x-dimension-size> from 4DArray")
-                    return null
-                }
-                //parse the data
-                val dataString = match.groupValues.getOrNull(5) ?: run {
-                    Log.e(TAG, "Failed to read <data-section> from 4DArray")
-                    return null
-                }
-
-                val dataSequence = readRowsOf4DFloatArray(dataString, scale, offset, fillValue)
-
-                //we have Sequence<Sequence<Int>>, where the inner sequence is a row.
-                //now, reshape it to Array<Array<Array<FloatArray>>>
-                Array(dT) { ti ->
-                    Array(dD) { di ->
-                        Array(dY) { yi ->
-                            Array(dX) { xi ->
-                                dataSequence.elementAt(ti * dD * dY + di * dY + yi)
-                                    .elementAt(xi) //element is guaranteed to exist(if indexing done properly!)
-                            }
-                        }
-                    }
-                }
+            val dD = match.groupValues.getOrNull(2)?.toInt() ?: run {
+                Log.e(TAG, "Failed to read <depth-dimension-size> from 4DArray")
+                return@makeNullable4DFloatArrayOf null
             }
-
-
-        ///////////////////////////// opendap stores data as ints or floats. most are ints which scaling
-        // READ INT OR FLOAT ARRAY // is applied to, but w-values are stored as floats
-        /////////////////////////////
-        /**
-         * read a string of 4D data of ints to a 4D array of floats(after applying scale and offset)
-         */
-        suspend fun readRowsOf4DIntArray(
-            str: String,
-            scale: Float,
-            offset: Float,
-            fillValue: Int
-        ): List<List<Float?>> {
-            return str.split("\n")
-                .dropLast(1) //drop empty row
-                .mapAsync { row ->
-                    row.split(", ")
-                        .drop(1) //drop indexes
-                        .map { entry ->
-                            val parsed = entry.toInt()
-                            if (parsed == fillValue) {
-                                null
-                            } else {
-                                parsed * scale + offset
-                            }
-                        }
-                }
+            val dY = match.groupValues.getOrNull(3)?.toInt() ?: run {
+                Log.e(TAG, "Failed to read <y-dimension-size> from 4DArray")
+                return@makeNullable4DFloatArrayOf null
+            }
+            val dX = match.groupValues.getOrNull(4)?.toInt() ?: run {
+                Log.e(TAG, "Failed to read <x-dimension-size> from 4DArray")
+                return@makeNullable4DFloatArrayOf null
+            }
+            //parse the data
+            val dataString = match.groupValues.getOrNull(5) ?: run {
+                Log.e(TAG, "Failed to read <data-section> from 4DArray")
+                return@makeNullable4DFloatArrayOf null
+            }
+            //read the rows of ints, apply scale, offset and fillvalues to get the floats
+            readRowsOf4DIntArray(dT, dD, dY, dX, dataString, scale, offset, fillValue)
         }
 
-        /**
-         * read a string of 4D data of floats to a 4D array of floats(after applying scale and offset)
-         */
-        suspend fun readRowsOf4DFloatArray(
-            str: String,
-            scale: Float,
-            offset: Float,
-            fillValue: Float
-        ): List<List<Float?>> {
-            return str.split("\n")
-                .dropLast(1) //drop empty row
-                .mapAsync { row ->
-                    row.split(", ")
-                        .drop(1) //drop endexes
-                        .map { entry ->
-                            val parsed = entry.toFloat()
-                            if (parsed == fillValue) {
-                                null
-                            } else {
-                                parsed * scale + offset
-                            }
-                        }
-                }
+
+    /**
+     * for some reason the velocity w variable has a double as a fillervalue,
+     * so we have to make an entirely separate function for it. Yay!
+     */
+    private suspend fun makeNullable4DFloatArrayOfW(
+        attribute: String,
+        response: String,
+        scale: Float,
+        offset: Float,
+        fillValue: Float
+    ): NullableFloatArray4D? =
+        dataRegex(attribute).find(response, 0)?.let { match ->
+            //parse dimensions
+            val dT = match.groupValues.getOrNull(1)?.toInt() ?: run {
+                Log.e(TAG, "Failed to read <time-dimension-size> from 4DArray")
+                return@makeNullable4DFloatArrayOfW null
+            }
+            val dD = match.groupValues.getOrNull(2)?.toInt() ?: run {
+                Log.e(TAG, "Failed to read <depth-dimension-size> from 4DArray")
+                return@makeNullable4DFloatArrayOfW null
+            }
+            val dY = match.groupValues.getOrNull(3)?.toInt() ?: run {
+                Log.e(TAG, "Failed to read <y-dimension-size> from 4DArray")
+                return@makeNullable4DFloatArrayOfW null
+            }
+            val dX = match.groupValues.getOrNull(4)?.toInt() ?: run {
+                Log.e(TAG, "Failed to read <x-dimension-size> from 4DArray")
+                return@makeNullable4DFloatArrayOfW null
+            }
+            //parse the data
+            val dataString = match.groupValues.getOrNull(5) ?: run {
+                Log.e(TAG, "Failed to read <data-section> from 4DArray")
+                return@makeNullable4DFloatArrayOfW null
+            }
+
+            //val dataSequence = readRowsOf4DFloatArray(dataString, scale, offset, fillValue)
+
+            readRowsOf4DFloatArray(dT, dD, dY, dX, dataString, scale, offset, fillValue)
         }
-    }
+
+
+    ///////////////////////////// opendap stores data as ints or floats. most are ints which scaling
+    // READ INT OR FLOAT ARRAY // is applied to, but w-values are stored as floats
+    /////////////////////////////
+    /**
+     * read a string of 4D data of ints to a 4D array of floats(after applying scale and offset)
+     */
+    private suspend fun readRowsOf4DIntArray(
+        dT: Int,
+        dD: Int,
+        dY: Int,
+        dX: Int,
+        str: String,
+        scale: Float,
+        offset: Float,
+        fillValue: Int
+    ): NullableFloatArray4D =
+        str.split("\n")
+            .chunked(dD * dY) //chunk into time-slices, there should be dT of them
+            .map { timeChunk -> //list of string-rows representing depth, y, x at a given time
+                timeChunk.chunked(dY)
+                    .map { depthChunk -> //list of string-rows representing a xy grid at given time, depth
+                        //read depthChunk, a XY grid, to a 2D array
+                        depthChunk.map { row ->
+                            row.split(", ")
+                                .drop(1) //drop indexes
+                                .map { entry ->
+                                    val parsed = entry.toInt()
+                                    if (parsed == fillValue) {
+                                        null
+                                    } else {
+                                        parsed * scale + offset
+                                    }
+                                }
+                                .toTypedArray()
+                        }.toTypedArray()
+                    }.toTypedArray()
+            }.toTypedArray()
+
+
+    /**
+     * read a string of 4D data of floats to a 4D array of floats(after applying scale and offset)
+     */
+    private suspend fun readRowsOf4DFloatArray(
+        dT: Int,
+        dD: Int,
+        dY: Int,
+        dX: Int,
+        str: String,
+        scale: Float,
+        offset: Float,
+        fillValue: Float
+    ): NullableFloatArray4D =
+        str.split("\n")
+            .dropLast(1) //drop empty row
+            .chunked(dD * dY) //chunk into time-slices, there should be dT of them
+            .map { timeChunk -> //list of string-rows representing depth, y, x at a given time
+                timeChunk.chunked(dY)
+                    .map { depthChunk -> //list of string-rows representing a xy grid at given time, depth
+                        //read depthChunk, a XY grid, to a 2D array
+                        depthChunk.map { row ->
+                            row.split(", ")
+                                .drop(1) //drop indexes
+                                .map { entry ->
+                                    val parsed = entry.toFloat()
+                                    if (parsed == fillValue) {
+                                        null
+                                    } else {
+                                        parsed * scale + offset
+                                    }
+                                }.toTypedArray()
+                        }.toTypedArray()
+                    }.toTypedArray()
+            }.toTypedArray()
+}
 }
