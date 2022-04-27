@@ -33,7 +33,7 @@ suspend fun <T, U> List<T>.mapAsync(f: (T) -> U): List<U> = map { t ->
  * coroutines working on the same chunk rather than their own.
  */
 suspend fun <T, U> List<T>.mapAsync(chunks: Int, f: (T) -> U): List<U> =
-    chunked(chunks) { chunk -> //list of rows
+    chunked(chunks).map { chunk -> //list of rows
         //Log.d(TAG, "processing CHUNK[${chunk.size}]: ${chunk}")
         CoroutineScope(Dispatchers.IO).async(Dispatchers.IO) {
             //val mc = chunk

@@ -254,7 +254,7 @@ class NorKyst800RegexParser {
     ): List<List<Float?>> {
         return str.split("\n")
             .dropLast(1) //drop empty row
-            .mapAsync { row ->
+            .mapAsync(32) { row ->
                 row.split(", ")
                     .drop(1) //drop indexes
                     .map { entry ->
@@ -281,7 +281,7 @@ class NorKyst800RegexParser {
             .dropLast(1) //drop empty row
             .mapAsync { row ->
                 row.split(", ")
-                    .drop(1) //drop endexes
+                    .drop(1) //drop indexes
                     .map { entry ->
                         val parsed = entry.toFloat()
                         if (parsed == fillValue) {

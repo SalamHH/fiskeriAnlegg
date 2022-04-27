@@ -22,7 +22,7 @@ fun NullableFloatArray4D.scaleAndOffset(factor: Float, offset: Float): NullableF
     }.toTypedArray()
 
 class NorKyst800DataLoaderTest {
-    val fakeResponse = """
+    private val fakeResponse = """
         Dataset {
             Float64 depth[depth = 3];
             Grid {
@@ -250,7 +250,7 @@ class NorKyst800DataLoaderTest {
         0.0, 880000.0, 1760000.0
     """.trimIndent()
     val TAG = "NorKyst800DataLoaderTest"
-    val dataLoader = NorKyst800DataLoader()
+    private val dataLoader = NorKyst800DataLoader()
     //val testUrl = "https://thredds.met.no/thredds/dodsC/fou-hi/norkyst800m-1h/NorKyst-800m_ZDEPTHS_his.fc.2022042500.nc.ascii?depth[0:7:14],lat[0:700:700][0:1100:2200],lon[0:700:700][0:1100:2200],salinity[0:7:14][0:9:9][0:700:700][0:1100:2200],temperature[0:7:14][0:9:9][0:700:700][0:1100:2200],time[0:9:9],u[0:7:14][0:9:9][0:700:700][0:1100:2200],v[0:7:14][0:9:9][0:700:700][0:1100:2200],w[0:7:14][0:9:9][0:700:700][0:1100:2200]"
 
     /**
