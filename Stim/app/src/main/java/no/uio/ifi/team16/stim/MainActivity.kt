@@ -8,6 +8,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.*
 import no.uio.ifi.team16.stim.databinding.ActivityMainBinding
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
+import no.uio.ifi.team16.stim.util.Options
 
 
 class MainActivity : StimActivity() {
@@ -23,7 +24,7 @@ class MainActivity : StimActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        prefrences = getSharedPreferences("prefrences", MODE_PRIVATE)
+        prefrences = getSharedPreferences(Options.SHARED_PREFERENCES_KEY, MODE_PRIVATE)
 
         // Navigation control for fragments
         setSupportActionBar(binding.toolbar)

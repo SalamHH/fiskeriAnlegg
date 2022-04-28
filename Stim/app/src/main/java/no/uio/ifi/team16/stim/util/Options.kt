@@ -64,5 +64,8 @@ class Options {
         val increase = 0.5
         val decrease = 0.5
 
+        // Key for favourites in SharedPreferences
+        const val FAVOURITES = "Favorites"
+        const val SHARED_PREFERENCES_KEY = "prefrences"
     }
 }

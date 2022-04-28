@@ -155,7 +155,7 @@ class MainActivityViewModel : ViewModel() {
 
     fun loadFavouriteSites() {
         viewModelScope.launch(Dispatchers.IO) {
-            val loaded = sitesRepository.getFavouriteSites(prefrences.getStringSet("Favorites", null))
+            val loaded = sitesRepository.getFavouriteSites(prefrences.getStringSet(Options.FAVOURITES, null))
             //invokes the observer
             favouriteSitesData.postValue(loaded)
         }
@@ -206,10 +206,10 @@ class MainActivityViewModel : ViewModel() {
             favouriteSitesData.postValue(favouriteSites)
         }
         prefrences.edit().apply{
-            val editStringSet = prefrences.getStringSet("Favorites", emptySet())?.toMutableSet()
+            val editStringSet = prefrences.getStringSet(Options.FAVOURITES, emptySet())?.toMutableSet()
             if (editStringSet != null) {
                 editStringSet.add(site.nr.toString())
-                putStringSet("Favorites", editStringSet.toSet())
+                putStringSet(Options.FAVOURITES, editStringSet.toSet())
             }
             apply()
         }
@@ -221,10 +221,10 @@ class MainActivityViewModel : ViewModel() {
             favouriteSitesData.postValue(favouriteSites)
         }
         prefrences.edit().apply{
-            val editStringSet = prefrences.getStringSet("Favorites", emptySet())?.toMutableSet()
+            val editStringSet = prefrences.getStringSet(Options.FAVOURITES, emptySet())?.toMutableSet()
             if (editStringSet != null) {
                 editStringSet.remove(site.nr.toString())
-                putStringSet("Favorites", editStringSet.toSet())
+                putStringSet(Options.FAVOURITES, editStringSet.toSet())
             }
             apply()
         }
