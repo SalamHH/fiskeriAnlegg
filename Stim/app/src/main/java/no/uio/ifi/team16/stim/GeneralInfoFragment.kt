@@ -1,7 +1,6 @@
 package no.uio.ifi.team16.stim
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,7 +36,6 @@ class GeneralInfoFragment : Fragment() {
     /**
      * Fragment for siden i appen som gir info om salt og vann !
      * inneholder grafer og tabeller med info.
-     * TODO - lower loading time
      */
 
     override fun onCreateView(
@@ -59,14 +57,16 @@ class GeneralInfoFragment : Fragment() {
         ////////////////////
 
 
-        viewModel.loadNorKyst800AtSite(site)
+        viewModel.loadNorKyst800AtSite(site) //TODO: flytt til forrige fragment
 
-        viewModel.getNorKyst800AtSiteData(site).observe(viewLifecycleOwner) {
+        //observer for å få temperatur og saltholdighet i nåtid
+        viewModel.getNorKyst800Data().observe(viewLifecycleOwner) {
             it?.apply {
                 //forecast data is also available in the norkyst object! (about 66 hours, time indexes hours)
-                binding.temperatureTextview.text = "%4.1f".format(getTemperature()) + "°"
-                binding.saltTextview.text = "%4.1f".format(getSalinity())
-
+                binding.temperatureTextview.text =
+                    "%4.1f".format(getSorroundingTemperature(site.latLong, 0, 0)) + "°"
+                binding.saltTextview.text =
+                    "%4.1f".format(getSorroundingSalinity(site.latLong, 0, 0))
             } ?: run {
                 binding.temperatureTextview.text = "N/A"
                 binding.saltTextview.text = "N/A"

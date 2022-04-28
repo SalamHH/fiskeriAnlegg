@@ -2,10 +2,13 @@ package no.uio.ifi.team16.stim.util
 
 import ucar.ma2.ArrayFloat
 import ucar.ma2.ArrayInt
+import kotlin.ranges.IntProgression.Companion.fromClosedRange
 
 /**
  * TODO: optimize access by implementing ND arrays as a single array which stores its dimensions.
  */
+
+data class Quadruple<S, T, U, V>(val first: S, val second: T, val third: U, val fourth: V)
 
 
 ///////////////////////////////
@@ -55,6 +58,66 @@ fun NullableFloatArray2D.get(row: Int, column: Int): Float? = this[row][column]
 fun NullableFloatArray3D.get(depth: Int, row: Int, column: Int): Float? = this[depth][row][column]
 fun NullableFloatArray4D.get(depth: Int, time: Int, row: Int, column: Int): Float? =
     this[depth][time][row][column]
+
+/////////////
+// SLICING //
+/////////////
+fun NullableFloatArray1D.get(indexes: IntProgression): NullableFloatArray1D =
+    indexes.map { i -> this[i] }.toTypedArray()
+
+fun NullableFloatArray2D.get(rows: IntProgression, columns: IntProgression): NullableFloatArray2D =
+    rows.map { r -> this[r].get(columns) }.toTypedArray()
+
+fun NullableFloatArray3D.get(
+    depths: IntProgression,
+    rows: IntProgression,
+    columns: IntProgression
+): NullableFloatArray3D =
+    depths.map { d -> this[d].get(rows, columns) }.toTypedArray()
+
+fun NullableFloatArray4D.get(
+    times: IntProgression,
+    depths: IntProgression,
+    rows: IntProgression,
+    columns: IntProgression
+): NullableFloatArray4D =
+    times.map { t -> this[t].get(depths, rows, columns) }.toTypedArray()
+
+//////////////////////
+// GET SORROUNNDING //
+//////////////////////
+fun NullableFloatArray2D.getSorrounding(row: Int, col: Int, radius: Int): NullableFloatArray2D {
+    val (rows, cols) = shape()
+    val maxRow = Math.min(rows - 1, row + radius)
+    val minRow = Math.max(0, row - radius)
+    val maxCol = Math.min(cols - 1, col + radius)
+    val minCol = Math.max(0, col - radius)
+    //Log.d("", "$minRow-$maxRow, $minCol-$maxCol")
+    return get(
+        fromClosedRange(minRow, maxRow, 1),
+        fromClosedRange(minCol, maxCol, 1)
+    )
+}
+
+///////////////
+// GET SHAPE //
+///////////////
+fun NullableFloatArray1D.shape() = this.size
+fun NullableFloatArray2D.shape(): Pair<Int, Int> = Pair(this.size, this.firstOrNull()?.size ?: 0)
+fun NullableFloatArray3D.shape(): Triple<Int, Int, Int> =
+    Triple(
+        this.size,
+        this.firstOrNull()?.size ?: 0,
+        this.firstOrNull()?.firstOrNull()?.size ?: 0
+    )
+
+fun NullableFloatArray4D.shape(): Quadruple<Int, Int, Int, Int> =
+    Quadruple(
+        this.size,
+        this.firstOrNull()?.size ?: 0,
+        this.firstOrNull()?.firstOrNull()?.size ?: 0,
+        this.firstOrNull()?.firstOrNull()?.firstOrNull()?.size ?: 0
+    )
 
 //////////////////////////////////
 //"pretty" prints for ND arrays //

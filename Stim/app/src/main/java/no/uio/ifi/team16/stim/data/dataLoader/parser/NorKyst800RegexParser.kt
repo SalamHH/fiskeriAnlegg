@@ -3,6 +3,7 @@ package no.uio.ifi.team16.stim.data.dataLoader.parser
 import android.util.Log
 import no.uio.ifi.team16.stim.data.NorKyst800
 import no.uio.ifi.team16.stim.util.NullableFloatArray4D
+import no.uio.ifi.team16.stim.util.mapAsync
 
 /**
  * Welcome to regex hell!!
@@ -238,8 +239,9 @@ class NorKyst800RegexParser {
         fillValue: Int
     ): NullableFloatArray4D =
         str.split("\n")
+            .dropLast(1) //drop empty row
             .chunked(dD * dY) //chunk into time-slices, there should be dT of them
-            .map { timeChunk -> //list of string-rows representing depth, y, x at a given time
+            .mapAsync(16) { timeChunk -> //list of string-rows representing depth, y, x at a given time
                 timeChunk.chunked(dY)
                     .map { depthChunk -> //list of string-rows representing a xy grid at given time, depth
                         //read depthChunk, a XY grid, to a 2D array
@@ -276,7 +278,7 @@ class NorKyst800RegexParser {
         str.split("\n")
             .dropLast(1) //drop empty row
             .chunked(dD * dY) //chunk into time-slices, there should be dT of them
-            .map { timeChunk -> //list of string-rows representing depth, y, x at a given time
+            .mapAsync(16) { timeChunk -> //list of string-rows representing depth, y, x at a given time
                 timeChunk.chunked(dY)
                     .map { depthChunk -> //list of string-rows representing a xy grid at given time, depth
                         //read depthChunk, a XY grid, to a 2D array

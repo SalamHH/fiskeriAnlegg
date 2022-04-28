@@ -1,5 +1,6 @@
 package no.uio.ifi.team16.stim.data
 
+import android.util.Log
 import no.uio.ifi.team16.stim.util.*
 import kotlin.math.atan2
 import kotlin.math.roundToInt
@@ -25,8 +26,24 @@ data class NorKyst800(
      * See time and depth explanation in class definition
      */
     fun getSalinity(latLng: LatLong, time: Int, depth: Int): Float? {
-        val index = getClosestIndex(latLng)
-        return salinity.get(time, depth, index.first, index.second)
+        val (y, x) = getClosestIndex(latLng)
+        return salinity.get(time, depth, y, x)
+    }
+
+    /**
+     * Get salinity closest to given coordinates at given time and depth.
+     * See time and depth explanation in class definition
+     *
+     * If the salinity at the given coordinates is null, take the average of a larger area around
+     * that coordinate to hopefully get something that is not null.
+     */
+    fun getSorroundingSalinity(latLng: LatLong, time: Int, depth: Int): Float? {
+        val (x, y) = getClosestIndex(latLng) //TODO: I might have flipped x-y
+        return (0..Options.norKyst800MaxRadius) //for each possible radius
+            .asSequence() //do as sequence, ie evaluae lazily
+            .firstNotNullOf { radius -> //take out first value in lazy-sequnce returning not-null
+                averageOf(salinity[time][depth].getSorrounding(y, x, radius))
+            }
     }
 
     /**
@@ -34,8 +51,28 @@ data class NorKyst800(
      * See time and depth explanation in class definition
      */
     fun getTemperature(latLng: LatLong, time: Int, depth: Int): Float? {
-        val index = getClosestIndex(latLng)
-        return temperature.get(time, depth, index.first, index.second)
+        val (y, x) = getClosestIndex(latLng)
+        return temperature.get(time, depth, y, x)
+    }
+
+    /**
+     * Get temperature closest to given coordinates at given time and depth.
+     * See time and depth explanation in class definition
+     *
+     * If the salinity at the given coordinates is null, take the average of a larger area around
+     * that coordinate to hopefully get something that is not null.
+     */
+    fun getSorroundingTemperature(latLng: LatLong, time: Int, depth: Int): Float? {
+        val (x, y) = getClosestIndex(latLng) //TODO: I might have flipped x-y
+        return (0..Options.norKyst800MaxRadius) //for each possible radius
+            .asSequence() //do as sequence, ie evaluae lazily
+            .firstNotNullOfOrNull { radius -> //take out first value in lazy-sequnce returning not-null
+
+                val v = averageOf(temperature[time][depth].getSorrounding(y, x, radius))
+                Log.d(TAG, temperature[time][depth].getSorrounding(y, x, radius).prettyPrint())
+                Log.d(TAG, "[$y, $x] radius ${radius}, got $v")
+                v
+            }
     }
 
     /**
@@ -43,11 +80,11 @@ data class NorKyst800(
      * See time and depth explanation in class definition
      */
     fun getVelocityVector(latLng: LatLong, time: Int, depth: Int): Triple<Float, Float, Float>? {
-        val index = getClosestIndex(latLng)
+        val (y, x) = getClosestIndex(latLng)
         return Triple(
-            velocity.first.get(time, depth, index.first, index.second) ?: return null,
-            velocity.second.get(time, depth, index.first, index.second) ?: return null,
-            velocity.third.get(time, depth, index.first, index.second) ?: return null
+            velocity.first.get(time, depth, y, x) ?: return null,
+            velocity.second.get(time, depth, y, x) ?: return null,
+            velocity.third.get(time, depth, y, x) ?: return null
         )
     }
 
@@ -93,6 +130,30 @@ data class NorKyst800(
     ///////////////
     // UTILITIES //
     ///////////////
+    /**
+     * take out all non-null, then average them.
+     *
+     * Used when getters find null, so we get all sorrounnding entries and average them to get a meaningful result
+     */
+    private fun averageOf(depth: Int, time: Int, arr: NullableFloatArray4D): Float =
+        arr[depth][time]
+            .flatMap { row -> row.toList() } //flatten
+            .filterNotNull() //take out null
+            .let { elements -> //with the flattened array of non-null values
+                elements.fold(0f) { acc, element -> //sum all
+                    acc + element
+                } / elements.size //divide by amount of elements
+            }
+
+    private fun averageOf(arr: NullableFloatArray2D): Float? =
+        arr.flatMap { row -> row.toList() } //flatten
+            .filterNotNull() //take out null, might return empty
+            .let { elements -> //with the flattened array of non-null values
+                elements.reduceOrNull { acc, element -> //sum all
+                    acc + element
+                }?.div(elements.size) //divide by amount of elements
+            }
+
     override fun toString() =
         "NorKyst800: \n" +
                 "\tdepth: $depth\n" +

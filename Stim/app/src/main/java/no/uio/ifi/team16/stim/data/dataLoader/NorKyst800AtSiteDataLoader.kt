@@ -51,8 +51,8 @@ class NorKyst800AtSiteDataLoader : NorKyst800DataLoader() {
             return null
         }
 
-        val (y, x) = projection.project(site.latLong).let { (xf, yf) ->
-            Pair((xf / 800).roundToInt(), (yf / 800).roundToInt())
+        val (y, x) = projection.project(site.latLong).let { (yf, xf) ->
+            Pair((yf / 800).roundToInt(), (xf / 800).roundToInt())
         }
 
         val minX = max(x - radius, 0)
