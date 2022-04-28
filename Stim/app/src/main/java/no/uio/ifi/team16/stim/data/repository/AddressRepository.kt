@@ -13,16 +13,46 @@ class AddressRepository {
     private val municipalityNrCache: MutableMap<LatLong, String?> = mutableMapOf()
 
     /**
+     * Key = municipality name (in uppercase!!), value = municipality nr
+     */
+    private val municipalityNameCache: MutableMap<String, String?> = mutableMapOf()
+
+    /**
      * Get municipality number for a given coordinate
      */
     suspend fun getMunicipalityNr(latLong: LatLong): String? {
-        var nr = municipalityNrCache[latLong]
-        if (nr != null) {
+        val cachedNr = municipalityNrCache[latLong]
+        if (cachedNr != null) {
+            return cachedNr
+        }
+
+        val data = dataSource.loadMunicipalityNr(latLong)
+        if (data != null) {
+            municipalityNrCache[latLong] = data.first
+            municipalityNameCache[data.first] = data.second
+        }
+
+        return data?.first
+    }
+
+    /**
+     * Get a municipality code from a search string
+     */
+    suspend fun searchMunicipalityNr(query: String): String? {
+        val name = query.uppercase()
+        var nr = municipalityNameCache[name]
+        if (nr != null && nr.isNotBlank()) {
             return nr
         }
 
-        nr = dataSource.loadMunicipalityNr(latLong)
-        municipalityNrCache[latLong] = nr
+        nr = dataSource.loadMunicipalityNr(name)
+        if (nr != null) {
+            municipalityNameCache[query] = nr
+        } else {
+            // add empty string to cache so we don't check API again later
+            municipalityNameCache[query] = ""
+        }
+
         return nr
     }
 }

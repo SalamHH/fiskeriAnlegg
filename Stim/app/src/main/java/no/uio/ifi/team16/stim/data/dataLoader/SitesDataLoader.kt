@@ -54,6 +54,10 @@ class SitesDataLoader {
         val sites = JSONArray(responseStr)
         val out: MutableList<Site> = mutableListOf()
 
+        if (sites.length() == 0) {
+            return null
+        }
+
         for (i in 0 until sites.length()) {
             //try to parse, if succesfull add to out, otherwise just try next
             sites.getJSONObject(i)?.runCatching {

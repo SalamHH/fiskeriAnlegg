@@ -8,16 +8,19 @@ import org.json.JSONObject
 
 class AddressDataLoader {
 
-    private val TAG = "AddressDataLoader"
-    private val BASE_URL = "https://ws.geonorge.no/adresser/v1/punktsok"
-    private val RADIUS = 1000
+    companion object {
+        private const val TAG = "AddressDataLoader"
+        private const val POINT_SEARCH_URL = "https://ws.geonorge.no/adresser/v1/punktsok"
+        private const val SEARCH_URL = "https://ws.geonorge.no/adresser/v1/sok"
+        private const val RADIUS = 1000
+    }
 
     /**
      * Load the municipalityNr at the given latLong
      * @param latLong latLong to find MunicipalityNr of
-     * @return municipalitynr
+     * @return pair of municipality-number and name
      */
-    suspend fun loadMunicipalityNr(latLong: LatLong): String? {
+    suspend fun loadMunicipalityNr(latLong: LatLong): Pair<String, String>? {
 
         val side = "side" to 0
         val radius = "radius" to RADIUS
@@ -30,13 +33,13 @@ class AddressDataLoader {
 
         var result = ""
         try {
-            result = Fuel.get(BASE_URL, params).awaitString()
+            result = Fuel.get(POINT_SEARCH_URL, params).awaitString()
         } catch (e: Exception) {
             Log.e(TAG, "Kunne ikke hente kommune for latlng: $latLong", e)
         }
 
         if (result.isBlank()) {
-            Log.w(TAG, "Empty response")
+            Log.e(TAG, "Empty response from Kartverket API")
             return null
         }
 
@@ -45,6 +48,41 @@ class AddressDataLoader {
 
         if (addresses.length() > 0) {
             val first = addresses.getJSONObject(0)
+            return Pair(first.getString("kommunenummer"), first.getString("kommunenavn"))
+        }
+
+        return null
+    }
+
+    /**
+     * Load the municipalitynumber of a municipalityname
+     */
+    suspend fun loadMunicipalityNr(name: String): String? {
+
+        val side = "side" to 0
+        val utkoordsys = "utkoordsys" to 4258
+        val treffPerSide = "treffPerSide" to 1
+        val kommunenavn = "kommunenavn" to name
+
+        val params = listOf<Pair<String, Any>>(side, utkoordsys, treffPerSide, kommunenavn)
+
+        var result = ""
+        try {
+            result = Fuel.get(SEARCH_URL, params).awaitString()
+        } catch (e: Exception) {
+            Log.e(TAG, "Kunne ikke hente kommunenummer for kommunenavn: $name", e)
+        }
+
+        if (result.isBlank()) {
+            Log.e(TAG, "Empty response from Kartverket API")
+            return null
+        }
+
+        val response = JSONObject(result)
+        val adresser = response.getJSONArray("adresser")
+
+        if (adresser.length() > 0) {
+            val first = adresser.getJSONObject(0)
             return first.getString("kommunenummer")
         }
 

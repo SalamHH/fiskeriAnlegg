@@ -36,7 +36,7 @@ class MainActivityViewModel : ViewModel() {
     private val favouriteSitesData = MutableLiveData<MutableList<Site>?>()
     private val norKyst800Data = MutableLiveData<NorKyst800?>()
     private val norKyst800AtSiteData = mutableMapOf<Site, MutableLiveData<NorKyst800AtSite?>>()
-    private val addressData = MutableLiveData<String?>()
+    private val municipalityNrData = MutableLiveData<String?>()
     private val currentSitesData = MutableLiveData<List<Site>?>()
     private var lineDataSet = MutableLiveData<LineDataSet?>(null)
     private val weatherData = MutableLiveData<WeatherForecast?>()
@@ -83,7 +83,7 @@ class MainActivityViewModel : ViewModel() {
     }
 
     fun getMunicipalityNr(): LiveData<String?> {
-        return addressData
+        return municipalityNrData
     }
 
     fun getFavouriteSitesData(): LiveData<MutableList<Site>?> {
@@ -161,13 +161,6 @@ class MainActivityViewModel : ViewModel() {
         }
     }
 
-    fun loadSitesByName(name: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val loaded = sitesRepository.getSitesByName(name)
-            currentSitesData.postValue(loaded)
-        }
-    }
-
     fun loadWeatherAtSite(site: Site) {
         viewModelScope.launch(Dispatchers.IO) {
             val forecast = weatherRepository.getWeatherForecast(site)
@@ -178,7 +171,31 @@ class MainActivityViewModel : ViewModel() {
     fun loadMunicipalityNr(latLong: LatLong) {
         viewModelScope.launch(Dispatchers.IO) {
             val nr = addressRepository.getMunicipalityNr(latLong)
-            addressData.postValue(nr)
+            municipalityNrData.postValue(nr)
+        }
+    }
+
+    /**
+     * Processes a search string from the map.
+     * input is numeric -> searches by municipality number
+     * if not, searches municipality name first, then by site name
+     */
+    fun doMapSearch(query: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (query.matches(Regex("^[0-9]+\$"))) {
+                // search is purely numeric, so this is probably municipality number
+                loadSitesAtMunicipality(query)
+            } else {
+                // string search, check first if this is the name of a municipality
+                val municipalityNr = addressRepository.searchMunicipalityNr(query)
+                if (municipalityNr != null) {
+                    municipalityNrData.postValue(municipalityNr)
+                } else {
+                    // not a municipality, search for sites by name
+                    val sites = sitesRepository.getSitesByName(query)
+                    currentSitesData.postValue(sites)
+                }
+            }
         }
     }
 

@@ -99,13 +99,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
             closeKeyboard()
             map.clear()
             markerMap.clear()
-            if (query.matches(Regex("^[0-9]+\$"))) {
-                // Numeric input, search for municipality number
-                viewModel.loadSitesAtMunicipality(query)
-            } else {
-                // Letters in input, search for site name
-                viewModel.loadSitesByName(query)
-            }
+            viewModel.doMapSearch(query)
             return true
         }
         return false
@@ -299,8 +293,10 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         if (mapReady && hasLocationPermission) {
             locationClient?.let { client ->
                 client.lastLocation.addOnSuccessListener { location ->
-                    val latLng = LatLng(location.latitude, location.longitude)
-                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel))
+                    if (location != null) {
+                        val latLng = LatLng(location.latitude, location.longitude)
+                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel))
+                    }
                 }
             }
         }
