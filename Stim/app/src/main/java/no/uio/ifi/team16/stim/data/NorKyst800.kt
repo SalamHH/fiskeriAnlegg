@@ -1,5 +1,6 @@
 package no.uio.ifi.team16.stim.data
 
+import android.util.Log
 import no.uio.ifi.team16.stim.util.*
 import org.locationtech.proj4j.CoordinateTransform
 import kotlin.math.atan2
