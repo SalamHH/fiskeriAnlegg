@@ -12,789 +12,798 @@
 
 
     <!-- Name of site-->
-    <TextView
-        android:id="@+id/siteName"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:fontFamily="@font/montserrat_bold"
-        android:gravity="center"
-        android:text="@string/site_name"
-        android:textColor="@color/colorAccent"
-        android:textSize="30sp"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/generalInfoBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        app:cardBackgroundColor="@color/transparent"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="0dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="0dp"
-        app:cardPreventCornerOverlap="true"
-        app:cardUseCompatPadding="true"
-        app:layout_constraintTop_toBottomOf="@+id/siteName">
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
             android:orientation="vertical">
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/siteName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp">
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/montserrat_bold"
+                android:gravity="center"
+                android:text="@string/site_name"
+                android:textColor="@color/colorAccent"
+                android:textSize="30sp" />
 
-                <!-- GENERAL INFO ABOUT THE SITE -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/generalInfoBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginRight="15dp"
+                app:cardBackgroundColor="@color/transparent"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="0dp"
+                app:cardPreventCornerOverlap="true"
+                app:cardUseCompatPadding="true">
 
-                <TextView
-                    android:id="@+id/generellInformasjon"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"
-                    android:fontFamily="@font/montserrat_semibold"
-                    android:layout_gravity="center"
-                    android:text="Trykk for generell informasjon om anlegget"
-                    android:textColor="@color/colorAccent" />
+                    android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/pil"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="5dp"
-                    app:srcCompat="@drawable/down_icon" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:orientation="vertical">
+
+                        <!-- GENERAL INFO ABOUT THE SITE -->
+
+                        <TextView
+                            android:id="@+id/generellInformasjon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginEnd="5dp"
+                            android:fontFamily="@font/montserrat_semibold"
+                            android:text="Trykk for generell informasjon om anlegget"
+                            android:textColor="@color/colorAccent" />
+
+                        <ImageView
+                            android:id="@+id/pil"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginEnd="5dp"
+                            app:srcCompat="@drawable/down_icon" />
+
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/relativelayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:visibility="gone">
+
+                        <!-- POSISJON -->
+
+                        <TextView
+                            android:id="@+id/posisjon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginTop="5dp"
+                            android:fontFamily="@font/montserrat_semibold"
+                            android:text="Posisjon: "
+                            android:textColor="@color/colorAccent" />
+
+                        <TextView
+                            android:id="@+id/posisjonView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginEnd="5dp"
+                            android:fontFamily="@font/montserrat_semibold"
+                            android:text="@string/blank"
+                            android:textColor="@color/colorAccent" />
+
+                        <!-- ANLEGGSNUMMER -->
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/posisjonView"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginEnd="5dp"
+                            android:fontFamily="@font/montserrat_semibold"
+                            android:text="Anleggsnummer:"
+                            android:textColor="@color/colorAccent" />
+
+                        <TextView
+                            android:id="@+id/anleggsnrView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/posisjonView"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginEnd="5dp"
+                            android:fontFamily="@font/montserrat_semibold"
+                            android:text="@string/blank"
+                            android:textColor="@color/colorAccent" />
+
+                        <!-- PLASSERING -->
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/anleggsnrView"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginEnd="5dp"
+                            android:fontFamily="@font/montserrat_semibold"
+                            android:text="Plassering:"
+                            android:textColor="@color/colorAccent" />
+
+                        <TextView
+                            android:id="@+id/plasseringView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/anleggsnrView"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginEnd="5dp"
+                            android:fontFamily="@font/montserrat_semibold"
+                            android:text="@string/blank"
+                            android:textColor="@color/colorAccent" />
+
+                        <!-- KAPASITET -->
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/plasseringView"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginEnd="5dp"
+                            android:fontFamily="@font/montserrat_semibold"
+                            android:text="Kapasitet:"
+                            android:textColor="@color/colorAccent" />
+
+                        <TextView
+                            android:id="@+id/kapasitetView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/plasseringView"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginEnd="5dp"
+                            android:fontFamily="@font/montserrat_semibold"
+                            android:text="@string/blank"
+                            android:textColor="@color/colorAccent" />
+
+                        <!-- VANNTYPE -->
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/kapasitetView"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginEnd="5dp"
+                            android:fontFamily="@font/montserrat_semibold"
+                            android:text="Vanntype:"
+                            android:textColor="@color/colorAccent" />
+
+                        <TextView
+                            android:id="@+id/vannTypeView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/kapasitetView"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginEnd="5dp"
+                            android:fontFamily="@font/montserrat_semibold"
+                            android:text="@string/blank"
+                            android:textColor="@color/colorAccent" />
+
+                        <!-- KOMMUNE -->
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/vannTypeView"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginEnd="5dp"
+                            android:fontFamily="@font/montserrat_semibold"
+                            android:text="Kommune:"
+                            android:textColor="@color/colorAccent" />
+
+                        <TextView
+                            android:id="@+id/prodOmraadeView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/vannTypeView"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginEnd="5dp"
+                            android:fontFamily="@font/montserrat_semibold"
+                            android:text="@string/blank"
+                            android:textColor="@color/colorAccent" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="15dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+
+                <!-- Water information card -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline12"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.8" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline13"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.2" />
+
+                    <ImageView
+                        android:id="@+id/wavesIcon"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="12dp"
+                        android:elevation="11dp"
+                        android:transitionName="image_small"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/waterInfoCard"
+                        app:srcCompat="@drawable/mdi___waves" />
+
+                    <ImageView
+                        android:id="@+id/circleFilledWhiteIcon"
+                        android:layout_width="71dp"
+                        android:layout_height="66dp"
+                        android:layout_gravity="center"
+                        android:elevation="10dp"
+                        android:transitionName="image_small"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/waterInfoCard"
+                        app:srcCompat="@drawable/circle_filled_white" />
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/waterInfoCard"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardBackgroundColor="@color/colorAccent"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="5dp"
+                        app:cardMaxElevation="10dp"
+                        app:cardPreventCornerOverlap="true"
+                        app:cardUseCompatPadding="true"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/constraintLayout2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp">
+
+                            <TextView
+                                android:id="@+id/waterInfoValue"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="32dp"
+                                android:fontFamily="@font/montserrat_bold"
+                                android:text="@string/vann"
+                                android:textAlignment="center"
+                                android:textColor="@color/primaryTextColor"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/stromninger"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:fontFamily="@font/montserrat_semibold"
+                                android:text="STRØMN."
+                                android:textColor="@color/primaryTextColor"
+                                app:layout_constraintBottom_toBottomOf="@+id/temperatur"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="0.08"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/waterInfoValue"
+                                app:layout_constraintVertical_bias="0.0" />
+
+                            <TextView
+                                android:id="@+id/temperatur"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:fontFamily="@font/montserrat_semibold"
+                                android:text="TEMP."
+                                android:textColor="@color/primaryTextColor"
+                                app:layout_constraintBottom_toTopOf="@+id/temp"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="0.501"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/waterInfoValue"
+                                app:layout_constraintVertical_bias="0.0" />
+
+                            <TextView
+                                android:id="@+id/saltholdighet"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:fontFamily="@font/montserrat_semibold"
+                                android:text="SALT."
+                                android:textColor="@color/primaryTextColor"
+                                app:layout_constraintBottom_toTopOf="@id/varsel"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="0.88"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/waterInfoValue" />
+
+                            <TextView
+                                android:id="@+id/strom"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="TextView"
+                                android:textColor="@color/primaryTextColor"
+                                android:textSize="10sp"
+                                app:layout_constraintBaseline_toBaselineOf="@+id/temp"
+                                app:layout_constraintEnd_toStartOf="@+id/temp"
+                                app:layout_constraintHorizontal_bias="0.274"
+                                app:layout_constraintStart_toStartOf="parent"
+                                tools:text="0.04m/s" />
+
+                            <TextView
+                                android:id="@+id/temp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="TextView"
+                                android:textColor="@color/primaryTextColor"
+                                android:textSize="10sp"
+                                app:layout_constraintBaseline_toBaselineOf="@+id/varsel"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                tools:text="-3*" />
+
+                            <TextView
+                                android:id="@+id/varsel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="1dp"
+                                android:text="TextView"
+                                android:textColor="@color/primaryTextColor"
+                                android:textSize="10sp"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="0.673"
+                                app:layout_constraintStart_toEndOf="@+id/temp"
+                                app:layout_constraintTop_toBottomOf="@+id/saltholdighet"
+                                tools:text="2.3" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    </androidx.cardview.widget.CardView>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <!-- Infection card -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayout3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline10"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.2"
+                        tools:visibility="invisible" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline11"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.8"
+                        tools:visibility="invisible" />
+
+                    <ImageView
+                        android:id="@+id/infectionIcon"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="12dp"
+                        android:elevation="11dp"
+                        android:transitionName="image_big"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/infectionInfoCard"
+                        app:srcCompat="@drawable/mdi___virus" />
+
+                    <ImageView
+                        android:id="@+id/circleFilledWhiteIcon2"
+                        android:layout_width="71dp"
+                        android:layout_height="66dp"
+                        android:layout_gravity="center"
+                        android:elevation="10dp"
+                        android:transitionName="image_small"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/infectionInfoCard"
+                        app:srcCompat="@drawable/circle_filled_white" />
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/infectionInfoCard"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardBackgroundColor="@color/colorAccent"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="5dp"
+                        app:cardMaxElevation="10dp"
+                        app:cardPreventCornerOverlap="true"
+                        app:cardUseCompatPadding="true"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/constraintLayout4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp">
+
+                            <TextView
+                                android:id="@+id/infectionValue"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="32dp"
+                                android:fontFamily="@font/montserrat_bold"
+                                android:text="@string/infection"
+                                android:textAlignment="center"
+                                android:textColor="@color/primaryTextColor"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/lakselus"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:fontFamily="@font/montserrat_semibold"
+                                android:text="LUS"
+                                android:textColor="@color/primaryTextColor"
+                                app:layout_constraintBottom_toBottomOf="@+id/pd"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="0.13"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/infectionValue"
+                                app:layout_constraintVertical_bias="1.0" />
+
+                            <TextView
+                                android:id="@+id/pd"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:fontFamily="@font/montserrat_semibold"
+                                android:text="PD"
+                                android:textColor="@color/primaryTextColor"
+                                app:layout_constraintBottom_toBottomOf="@+id/ila"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/infectionValue"
+                                app:layout_constraintVertical_bias="0.0" />
+
+                            <TextView
+                                android:id="@+id/ila"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginEnd="44dp"
+                                android:fontFamily="@font/montserrat_semibold"
+                                android:text="ILA"
+                                android:textColor="@color/primaryTextColor"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/infectionValue"
+                                app:layout_constraintVertical_bias="0.0" />
+
+                            <ImageView
+                                android:id="@+id/fare"
+                                android:layout_width="12dp"
+                                android:layout_height="16dp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="0.15"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/lakselus"
+                                app:layout_constraintVertical_bias="0.0"
+                                app:srcCompat="@drawable/farevarsel" />
+
+                            <ImageView
+                                android:id="@+id/meldtPD"
+                                android:layout_width="12dp"
+                                android:layout_height="16dp"
+                                android:layout_marginTop="1dp"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/pd"
+                                app:srcCompat="@drawable/checkmark" />
+
+                            <ImageView
+                                android:id="@+id/meldtILA"
+                                android:layout_width="12dp"
+                                android:layout_height="16dp"
+                                android:layout_marginTop="1dp"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="0.64"
+                                app:layout_constraintStart_toEndOf="@+id/meldtPD"
+                                app:layout_constraintTop_toBottomOf="@+id/ila"
+                                app:srcCompat="@drawable/checkmark" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    </androidx.cardview.widget.CardView>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <!-- Weather card -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayout5"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline9"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.8"
+                        tools:visibility="invisible" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.2"
+                        tools:visibility="invisible" />
+
+                    <ImageView
+                        android:id="@+id/cloudIcon"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="12dp"
+                        android:elevation="11dp"
+                        android:transitionName="image_small"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/weatherInfoCard"
+                        app:srcCompat="@drawable/mdi___cloud_outline" />
+
+                    <ImageView
+                        android:id="@+id/circleFilledWhiteIcon3"
+                        android:layout_width="71dp"
+                        android:layout_height="66dp"
+                        android:layout_gravity="center"
+                        android:elevation="10dp"
+                        android:transitionName="image_small"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/weatherInfoCard"
+                        app:srcCompat="@drawable/circle_filled_white" />
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/weatherInfoCard"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardBackgroundColor="@color/colorAccent"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="5dp"
+                        app:cardMaxElevation="10dp"
+                        app:cardPreventCornerOverlap="true"
+                        app:cardUseCompatPadding="true"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/constraintLayout6"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp">
+
+                            <TextView
+                                android:id="@+id/weatherValue"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="32dp"
+                                android:fontFamily="@font/montserrat_bold"
+                                android:text="@string/vaer"
+                                android:textAlignment="center"
+                                android:textColor="@color/primaryTextColor"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/idag"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="36dp"
+                                android:layout_marginTop="5dp"
+                                android:fontFamily="@font/montserrat_medium"
+                                android:text="@string/todayText"
+                                android:textColor="@color/primaryTextColor"
+                                app:layout_constraintBottom_toBottomOf="@+id/imorgen"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="@+id/imorgen"
+                                app:layout_constraintVertical_bias="1.0" />
+
+                            <ImageView
+                                android:id="@+id/vaer_idag"
+                                android:layout_width="13dp"
+                                android:layout_height="11dp"
+                                android:layout_marginTop="2dp"
+                                android:src="@drawable/sun_icon"
+                                app:layout_constraintEnd_toEndOf="@+id/temp_idag"
+                                app:layout_constraintStart_toStartOf="@+id/temp_idag"
+                                app:layout_constraintTop_toBottomOf="@+id/idag" />
+
+                            <TextView
+                                android:id="@+id/temp_idag"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="48dp"
+                                android:text="6*"
+                                android:textColor="@color/primaryTextColor"
+                                android:textSize="10sp"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/vaer_idag" />
+
+                            <TextView
+                                android:id="@+id/imorgen"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/montserrat_medium"
+                                android:text="@string/tomorrow"
+                                android:textColor="@color/primaryTextColor"
+                                app:layout_constraintBottom_toBottomOf="@+id/storm"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="@+id/storm"
+                                app:layout_constraintVertical_bias="0.0" />
+
+                            <ImageView
+                                android:id="@+id/vaer_imorgen"
+                                android:layout_width="13dp"
+                                android:layout_height="11dp"
+                                android:layout_marginTop="2dp"
+                                android:src="@drawable/sun_icon"
+                                app:layout_constraintEnd_toEndOf="@+id/temp_imorgen"
+                                app:layout_constraintStart_toStartOf="@+id/temp_imorgen"
+                                app:layout_constraintTop_toBottomOf="@+id/imorgen" />
+
+                            <TextView
+                                android:id="@+id/temp_imorgen"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="7*"
+                                android:textColor="@color/primaryTextColor"
+                                android:textSize="10sp"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/vaer_imorgen" />
+
+                            <TextView
+                                android:id="@+id/storm"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginEnd="28dp"
+                                android:fontFamily="@font/montserrat_medium"
+                                android:text="@string/storm"
+                                android:textColor="@color/primaryTextColor"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/weatherValue"
+                                app:layout_constraintVertical_bias="0.0" />
+
+                            <ImageView
+                                android:id="@+id/storm_vaer"
+                                android:layout_width="13dp"
+                                android:layout_height="11dp"
+                                android:layout_marginTop="2dp"
+                                android:layout_marginEnd="47dp"
+                                android:src="@drawable/sun_icon"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="1.0"
+                                app:layout_constraintStart_toEndOf="@+id/vaer_imorgen"
+                                app:layout_constraintTop_toBottomOf="@+id/storm" />
+
+                            <TextView
+                                android:id="@+id/meldt_storm"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="12dp"
+                                android:text="Ingen storm meldt"
+                                android:textColor="@color/primaryTextColor"
+                                android:textSize="10sp"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/storm_vaer" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    </androidx.cardview.widget.CardView>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             </LinearLayout>
 
-            <RelativeLayout
-                android:id="@+id/relativelayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginBottom="5dp"
-                android:visibility="gone">
-
-                <!-- POSISJON -->
-
-                <TextView
-                    android:id="@+id/posisjon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginTop="5dp"
-                    android:fontFamily="@font/montserrat_semibold"
-                    android:text="Posisjon: "
-                    android:textColor="@color/colorAccent" />
-
-                <TextView
-                    android:id="@+id/posisjonView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:fontFamily="@font/montserrat_semibold"
-                    android:text="@string/blank"
-                    android:textColor="@color/colorAccent" />
-
-                <!-- ANLEGGSNUMMER -->
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/posisjonView"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:fontFamily="@font/montserrat_semibold"
-                    android:text="Anleggsnummer:"
-                    android:textColor="@color/colorAccent" />
-
-                <TextView
-                    android:id="@+id/anleggsnrView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/posisjonView"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:fontFamily="@font/montserrat_semibold"
-                    android:text="@string/blank"
-                    android:textColor="@color/colorAccent" />
-
-                <!-- PLASSERING -->
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/anleggsnrView"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:fontFamily="@font/montserrat_semibold"
-                    android:text="Plassering:"
-                    android:textColor="@color/colorAccent" />
-
-                <TextView
-                    android:id="@+id/plasseringView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/anleggsnrView"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:fontFamily="@font/montserrat_semibold"
-                    android:text="@string/blank"
-                    android:textColor="@color/colorAccent" />
-
-                <!-- KAPASITET -->
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/plasseringView"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:fontFamily="@font/montserrat_semibold"
-                    android:text="Kapasitet:"
-                    android:textColor="@color/colorAccent" />
-
-                <TextView
-                    android:id="@+id/kapasitetView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/plasseringView"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:fontFamily="@font/montserrat_semibold"
-                    android:text="@string/blank"
-                    android:textColor="@color/colorAccent" />
-
-                <!-- VANNTYPE -->
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/kapasitetView"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:fontFamily="@font/montserrat_semibold"
-                    android:text="Vanntype:"
-                    android:textColor="@color/colorAccent" />
-
-                <TextView
-                    android:id="@+id/vannTypeView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/kapasitetView"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:fontFamily="@font/montserrat_semibold"
-                    android:text="@string/blank"
-                    android:textColor="@color/colorAccent" />
-
-                <!-- KOMMUNE -->
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/vannTypeView"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:fontFamily="@font/montserrat_semibold"
-                    android:text="Kommune:"
-                    android:textColor="@color/colorAccent" />
-
-                <TextView
-                    android:id="@+id/prodOmraadeView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/vannTypeView"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:fontFamily="@font/montserrat_semibold"
-                    android:text="@string/blank"
-                    android:textColor="@color/colorAccent" />
-
-            </RelativeLayout>
-
         </LinearLayout>
-
-    </androidx.cardview.widget.CardView>
-
+    </ScrollView>
 
 
     <!-- Information cards -->
-
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginBottom="15dp"
-        app:layout_constraintTop_toBottomOf="@id/generalInfoBox">
-
-
-
-        <!-- Water information card -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline12"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.8" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline13"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.2" />
-
-            <ImageView
-                android:id="@+id/wavesIcon"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="12dp"
-                android:elevation="11dp"
-                android:transitionName="image_small"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/waterInfoCard"
-                app:srcCompat="@drawable/mdi___waves" />
-
-            <ImageView
-                android:id="@+id/circleFilledWhiteIcon"
-                android:layout_width="71dp"
-                android:layout_height="66dp"
-                android:layout_gravity="center"
-                android:elevation="10dp"
-                android:transitionName="image_small"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/waterInfoCard"
-                app:srcCompat="@drawable/circle_filled_white" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/waterInfoCard"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardBackgroundColor="@color/colorAccent"
-                app:cardCornerRadius="10dp"
-                app:cardElevation="5dp"
-                app:cardMaxElevation="10dp"
-                app:cardPreventCornerOverlap="true"
-                app:cardUseCompatPadding="true"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/constraintLayout2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp">
-
-                    <TextView
-                        android:id="@+id/waterInfoValue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="32dp"
-                        android:fontFamily="@font/montserrat_bold"
-                        android:text="@string/vann"
-                        android:textAlignment="center"
-                        android:textColor="@color/primaryTextColor"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/stromninger"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:fontFamily="@font/montserrat_semibold"
-                        android:text="STRØMN."
-                        android:textColor="@color/primaryTextColor"
-                        app:layout_constraintBottom_toBottomOf="@+id/temperatur"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.08"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/waterInfoValue"
-                        app:layout_constraintVertical_bias="0.0" />
-
-                    <TextView
-                        android:id="@+id/temperatur"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:fontFamily="@font/montserrat_semibold"
-                        android:text="TEMP."
-                        android:textColor="@color/primaryTextColor"
-                        app:layout_constraintBottom_toTopOf="@+id/temp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.501"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/waterInfoValue"
-                        app:layout_constraintVertical_bias="0.0" />
-
-                    <TextView
-                        android:id="@+id/saltholdighet"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:fontFamily="@font/montserrat_semibold"
-                        android:text="SALT."
-                        android:textColor="@color/primaryTextColor"
-                        app:layout_constraintBottom_toTopOf="@id/varsel"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.88"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/waterInfoValue" />
-
-                    <TextView
-                        android:id="@+id/strom"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="TextView"
-                        android:textColor="@color/primaryTextColor"
-                        android:textSize="10sp"
-                        app:layout_constraintBaseline_toBaselineOf="@+id/temp"
-                        app:layout_constraintEnd_toStartOf="@+id/temp"
-                        app:layout_constraintHorizontal_bias="0.274"
-                        app:layout_constraintStart_toStartOf="parent"
-                        tools:text="0.04m/s" />
-
-                    <TextView
-                        android:id="@+id/temp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="TextView"
-                        android:textColor="@color/primaryTextColor"
-                        android:textSize="10sp"
-                        app:layout_constraintBaseline_toBaselineOf="@+id/varsel"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        tools:text="-3*" />
-
-                    <TextView
-                        android:id="@+id/varsel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="1dp"
-                        android:text="TextView"
-                        android:textColor="@color/primaryTextColor"
-                        android:textSize="10sp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.673"
-                        app:layout_constraintStart_toEndOf="@+id/temp"
-                        app:layout_constraintTop_toBottomOf="@+id/saltholdighet"
-                        tools:text="2.3" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-            </androidx.cardview.widget.CardView>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <!-- Infection card -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout3"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline10"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.2"
-                tools:visibility="invisible" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline11"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.8"
-                tools:visibility="invisible" />
-
-            <ImageView
-                android:id="@+id/infectionIcon"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="12dp"
-                android:elevation="11dp"
-                android:transitionName="image_big"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/infectionInfoCard"
-                app:srcCompat="@drawable/mdi___virus" />
-
-            <ImageView
-                android:id="@+id/circleFilledWhiteIcon2"
-                android:layout_width="71dp"
-                android:layout_height="66dp"
-                android:layout_gravity="center"
-                android:elevation="10dp"
-                android:transitionName="image_small"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/infectionInfoCard"
-                app:srcCompat="@drawable/circle_filled_white" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/infectionInfoCard"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardBackgroundColor="@color/colorAccent"
-                app:cardCornerRadius="10dp"
-                app:cardElevation="5dp"
-                app:cardMaxElevation="10dp"
-                app:cardPreventCornerOverlap="true"
-                app:cardUseCompatPadding="true"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/constraintLayout4"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp">
-
-                    <TextView
-                        android:id="@+id/infectionValue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="32dp"
-                        android:fontFamily="@font/montserrat_bold"
-                        android:text="@string/infection"
-                        android:textAlignment="center"
-                        android:textColor="@color/primaryTextColor"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/lakselus"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:fontFamily="@font/montserrat_semibold"
-                        android:text="LUS"
-                        android:textColor="@color/primaryTextColor"
-                        app:layout_constraintBottom_toBottomOf="@+id/pd"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.13"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/infectionValue"
-                        app:layout_constraintVertical_bias="1.0" />
-
-                    <TextView
-                        android:id="@+id/pd"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:fontFamily="@font/montserrat_semibold"
-                        android:text="PD"
-                        android:textColor="@color/primaryTextColor"
-                        app:layout_constraintBottom_toBottomOf="@+id/ila"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/infectionValue"
-                        app:layout_constraintVertical_bias="0.0" />
-
-                    <TextView
-                        android:id="@+id/ila"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="44dp"
-                        android:fontFamily="@font/montserrat_semibold"
-                        android:text="ILA"
-                        android:textColor="@color/primaryTextColor"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/infectionValue"
-                        app:layout_constraintVertical_bias="0.0" />
-
-                    <ImageView
-                        android:id="@+id/fare"
-                        android:layout_width="12dp"
-                        android:layout_height="16dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.15"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/lakselus"
-                        app:layout_constraintVertical_bias="0.0"
-                        app:srcCompat="@drawable/farevarsel" />
-
-                    <ImageView
-                        android:id="@+id/meldtPD"
-                        android:layout_width="12dp"
-                        android:layout_height="16dp"
-                        android:layout_marginTop="1dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/pd"
-                        app:srcCompat="@drawable/checkmark" />
-
-                    <ImageView
-                        android:id="@+id/meldtILA"
-                        android:layout_width="12dp"
-                        android:layout_height="16dp"
-                        android:layout_marginTop="1dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.64"
-                        app:layout_constraintStart_toEndOf="@+id/meldtPD"
-                        app:layout_constraintTop_toBottomOf="@+id/ila"
-                        app:srcCompat="@drawable/checkmark" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-            </androidx.cardview.widget.CardView>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <!-- Weather card -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout5"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline9"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.8"
-                tools:visibility="invisible" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.2"
-                tools:visibility="invisible" />
-
-            <ImageView
-                android:id="@+id/cloudIcon"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="12dp"
-                android:elevation="11dp"
-                android:transitionName="image_small"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/weatherInfoCard"
-                app:srcCompat="@drawable/mdi___cloud_outline" />
-
-            <ImageView
-                android:id="@+id/circleFilledWhiteIcon3"
-                android:layout_width="71dp"
-                android:layout_height="66dp"
-                android:layout_gravity="center"
-                android:elevation="10dp"
-                android:transitionName="image_small"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/weatherInfoCard"
-                app:srcCompat="@drawable/circle_filled_white" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/weatherInfoCard"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardBackgroundColor="@color/colorAccent"
-                app:cardCornerRadius="10dp"
-                app:cardElevation="5dp"
-                app:cardMaxElevation="10dp"
-                app:cardPreventCornerOverlap="true"
-                app:cardUseCompatPadding="true"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/constraintLayout6"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp">
-
-                    <TextView
-                        android:id="@+id/weatherValue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="32dp"
-                        android:fontFamily="@font/montserrat_bold"
-                        android:text="@string/vaer"
-                        android:textAlignment="center"
-                        android:textColor="@color/primaryTextColor"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/idag"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="36dp"
-                        android:layout_marginTop="5dp"
-                        android:fontFamily="@font/montserrat_medium"
-                        android:text="@string/todayText"
-                        android:textColor="@color/primaryTextColor"
-                        app:layout_constraintBottom_toBottomOf="@+id/imorgen"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/imorgen"
-                        app:layout_constraintVertical_bias="1.0" />
-
-                    <ImageView
-                        android:id="@+id/vaer_idag"
-                        android:layout_width="13dp"
-                        android:layout_height="11dp"
-                        android:layout_marginTop="2dp"
-                        android:src="@drawable/sun_icon"
-                        app:layout_constraintEnd_toEndOf="@+id/temp_idag"
-                        app:layout_constraintStart_toStartOf="@+id/temp_idag"
-                        app:layout_constraintTop_toBottomOf="@+id/idag" />
-
-                    <TextView
-                        android:id="@+id/temp_idag"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="48dp"
-                        android:text="6*"
-                        android:textColor="@color/primaryTextColor"
-                        android:textSize="10sp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/vaer_idag" />
-
-                    <TextView
-                        android:id="@+id/imorgen"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/montserrat_medium"
-                        android:text="@string/tomorrow"
-                        android:textColor="@color/primaryTextColor"
-                        app:layout_constraintBottom_toBottomOf="@+id/storm"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/storm"
-                        app:layout_constraintVertical_bias="0.0" />
-
-                    <ImageView
-                        android:id="@+id/vaer_imorgen"
-                        android:layout_width="13dp"
-                        android:layout_height="11dp"
-                        android:layout_marginTop="2dp"
-                        android:src="@drawable/sun_icon"
-                        app:layout_constraintEnd_toEndOf="@+id/temp_imorgen"
-                        app:layout_constraintStart_toStartOf="@+id/temp_imorgen"
-                        app:layout_constraintTop_toBottomOf="@+id/imorgen" />
-
-                    <TextView
-                        android:id="@+id/temp_imorgen"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="7*"
-                        android:textColor="@color/primaryTextColor"
-                        android:textSize="10sp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/vaer_imorgen" />
-
-                    <TextView
-                        android:id="@+id/storm"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="28dp"
-                        android:fontFamily="@font/montserrat_medium"
-                        android:text="@string/storm"
-                        android:textColor="@color/primaryTextColor"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/weatherValue"
-                        app:layout_constraintVertical_bias="0.0" />
-
-                    <ImageView
-                        android:id="@+id/storm_vaer"
-                        android:layout_width="13dp"
-                        android:layout_height="11dp"
-                        android:layout_marginTop="2dp"
-                        android:layout_marginEnd="47dp"
-                        android:src="@drawable/sun_icon"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="1.0"
-                        app:layout_constraintStart_toEndOf="@+id/vaer_imorgen"
-                        app:layout_constraintTop_toBottomOf="@+id/storm" />
-
-                    <TextView
-                        android:id="@+id/meldt_storm"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="12dp"
-                        android:text="Ingen storm meldt"
-                        android:textColor="@color/primaryTextColor"
-                        android:textSize="10sp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/storm_vaer" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-            </androidx.cardview.widget.CardView>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

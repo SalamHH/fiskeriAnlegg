@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -42,7 +40,7 @@ class SiteInfoFragment : StimFragment() {
             //  to gone and change the expand less icon to expand more.
             // If the CardView is already expanded, set its visibility
             //  to gone and change the expand less icon to expand more.
-            if (binding.relativelayout.getVisibility() === View.VISIBLE) {
+            if (binding.relativelayout.visibility == View.VISIBLE) {
 
                 // The transition of the hiddenView is carried out
                 //  by the TransitionManager class.
@@ -59,12 +57,12 @@ class SiteInfoFragment : StimFragment() {
                     binding.generalInfoBox,
                     AutoTransition()
                 )
-                binding.relativelayout.setVisibility(View.VISIBLE)
+                binding.relativelayout.visibility = View.VISIBLE
                 binding.pil.setImageResource(R.drawable.up_icon)
             }
 
             //anleggsnummer
-            binding.anleggsnrView.text = site.id.toString()
+            binding.anleggsnrView.text = site.nr.toString()
 
             //plassering
             binding.plasseringView.text = site.placementType ?: "-----"

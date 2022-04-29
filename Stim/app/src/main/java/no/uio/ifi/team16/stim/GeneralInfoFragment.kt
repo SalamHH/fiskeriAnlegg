@@ -1,6 +1,5 @@
 package no.uio.ifi.team16.stim
 
-import android.R
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -61,7 +60,7 @@ class GeneralInfoFragment : Fragment() {
             //  to gone and change the expand less icon to expand more.
             // If the CardView is already expanded, set its visibility
             //  to gone and change the expand less icon to expand more.
-            if (binding.relativelayout.getVisibility() === View.VISIBLE) {
+            if (binding.relativelayout.visibility == View.VISIBLE) {
 
                 // The transition of the hiddenView is carried out
                 //  by the TransitionManager class.
@@ -77,11 +76,11 @@ class GeneralInfoFragment : Fragment() {
                     binding.generalInfoBox,
                     AutoTransition()
                 )
-                binding.relativelayout.setVisibility(View.VISIBLE)
+                binding.relativelayout.visibility = View.VISIBLE
             }
 
             //anleggsnummer
-            binding.anleggsnrView.text = site.id.toString()
+            binding.anleggsnrView.text = site.nr.toString()
 
             //plassering
             binding.plasseringView.text = site.placementType ?: "-----"
