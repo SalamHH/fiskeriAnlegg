@@ -32,6 +32,9 @@ class NorKyst800RegexParser {
         //capture a single entry (in a row)
         private val entryRegex = Regex(""" ?(.+?)(?:,|$)""")
 
+        //capture a variable and its list of attributes of das-response
+        private val dasVariableRegex = Regex("""    (.*?) \{\n((?:.*\n)*?) *?\}""")
+        private val dasAttributeRegex = Regex("""        (.+?) (.+?) (.+);""")
         /////////////
         // PARSING //
         /////////////
@@ -52,13 +55,13 @@ class NorKyst800RegexParser {
 
             val depth = make1DFloatArrayOf("depth", response) ?: run {
                 Log.e(TAG, "Failed to read <depth> from NorKyst800")
-                return@parse null
+                return null
             }
             val salinity =
                 makeNullable4DFloatArrayOf("salinity", response, 0.001f, 30.0f, salinityFillValue)
                     ?: run {
                         Log.e(TAG, "Failed to read <salinity> from NorKyst800")
-                        return@parse null
+                        return null
                     }
             val temperature =
                 makeNullable4DFloatArrayOf(
@@ -70,24 +73,24 @@ class NorKyst800RegexParser {
                 )
                     ?: run {
                         Log.e(TAG, "Failed to read <temperature> from NorKyst800")
-                        return@parse null
+                        return null
                     }
             val time = make1DFloatArrayOf("time", response) ?: run {
                 Log.e(TAG, "Failed to read <time> from NorKyst800")
-                return@parse null
+                return null
             }
             val velocity = Triple(
                 makeNullable4DFloatArrayOf("u", response, 0.001f, 0.0f, uFillValue) ?: run {
                     Log.e(TAG, "Failed to read <u> from NorKyst800")
-                    return@parse null
+                    return null
                 },
                 makeNullable4DFloatArrayOf("v", response, 0.001f, 0.0f, vFillValue) ?: run {
                     Log.e(TAG, "Failed to read <v> from NorKyst800")
-                    return@parse null
+                    return null
                 },
                 makeNullable4DFloatArrayOfW("w", response, 1.0f, 0.0f, wFillValue) ?: run {
                     Log.e(TAG, "Failed to read <w> from NorKyst800")
-                    return@parse null
+                    return null
                 }
             )
 
@@ -97,9 +100,45 @@ class NorKyst800RegexParser {
                 salinity,
                 temperature,
                 time,
-                velocity
+                velocity,
+                projection
             )
         }
+
+
+        //all indexing is guaranteed to exist by virtue of the regex capture patterns
+        /**
+         * Takes a DAS response(from opendap), and parses its variables and their attributes toa map, mapping
+         * the variables name to a sequence of that variable attributes. Each attribute is represented
+         * as a triple, the first being the attributes type, the second its name, and the third its value.
+         *
+         * @param das: das response from opendap, as a string
+         * @return map from variable name to variables attribute
+         */
+        fun parseDas(das: String): Map<String, Sequence<Triple<String, String, String>>> =
+            dasVariableRegex.findAll(das).associate { match ->
+                match.groupValues[1] to
+                        dasAttributeRegex.findAll(match.groupValues[2]).map { attributeMatch ->
+                            Triple(
+                                attributeMatch.groupValues[1],
+                                attributeMatch.groupValues[2],
+                                attributeMatch.groupValues[3]
+                            )
+                        }
+            }
+
+        /**
+         * takes the attribute declaration of a variable and returns a map from the name of its attributes to
+         * pairs of the attributes type and value(as strings)
+         *
+         * @param variableDas: attributes of a variable in the das response
+         * @return map from attribute names to attribute type and value
+         */
+        fun parseVariableAttributes(variableDas: Sequence<Triple<String, String, String>>): Map<String, Pair<String, String>> =
+            variableDas.associate { (type, name, value) ->
+                name to Pair(type, value)
+            }
+
 
         ///////////////////
         // MAKE 1D ARRAY //
@@ -113,12 +152,12 @@ class NorKyst800RegexParser {
                 //parse dimensions
                 val dT = match.groupValues.getOrNull(1)?.toInt() ?: run {
                     Log.e(TAG, "Failed to read <dimension-size> from 1DArray")
-                    return@make1DFloatArrayOf null
+                    return null
                 }
                 //parse the data
                 val dataString = match.groupValues.getOrNull(5) ?: run {
                     Log.e(TAG, "Failed to read <data-section> from 1DArray")
-                    return@make1DFloatArrayOf null
+                    return null
                 }
 
                 //match all rows, for each one parse out entries
@@ -132,7 +171,7 @@ class NorKyst800RegexParser {
                 FloatArray(dT) { id ->
                     dataSequence.elementAtOrNull(0)?.elementAtOrNull(id) ?: run {
                         Log.e(TAG, "Failed to read an entry in data-section from 1DArray")
-                        return@make1DFloatArrayOf null
+                        return null
                     }
                 }
             }
@@ -149,11 +188,10 @@ class NorKyst800RegexParser {
     suspend fun makeNullable4DFloatArrayOf(
         attribute: String,
         response: String,
-        scale: Float,
-        offset: Float,
-        fillValue: Int //the data is read from the ascii as ints, then scled to floats
+        fso: Triple<Int, Float, Float>
     ): NullableFloatArray4D? =
         dataRegex(attribute).find(response, 0)?.let { match ->
+            val (fillValue, scale, offset) = fso
             //parse dimensions
             val dT = match.groupValues.getOrNull(1)?.toInt() ?: run {
                 Log.e(TAG, "Failed to read <time-dimension-size> from 4DArray")
@@ -188,37 +226,36 @@ class NorKyst800RegexParser {
         suspend fun makeNullable4DFloatArrayOfW(
             attribute: String,
             response: String,
-            scale: Float,
-            offset: Float,
-            fillValue: Float
+            fso: Triple<Float, Float, Float>
         ): NullableFloatArray4D? =
             dataRegex(attribute).find(response, 0)?.let { match ->
+                val (fillValue, scale, offset) = fso
                 //parse dimensions
                 val dT = match.groupValues.getOrNull(1)?.toInt() ?: run {
                     Log.e(TAG, "Failed to read <time-dimension-size> from 4DArray")
-                return@makeNullable4DFloatArrayOfW null
-            }
-            val dD = match.groupValues.getOrNull(2)?.toInt() ?: run {
-                Log.e(TAG, "Failed to read <depth-dimension-size> from 4DArray")
-                return@makeNullable4DFloatArrayOfW null
-            }
-            val dY = match.groupValues.getOrNull(3)?.toInt() ?: run {
-                Log.e(TAG, "Failed to read <y-dimension-size> from 4DArray")
-                return@makeNullable4DFloatArrayOfW null
-            }
-            val dX = match.groupValues.getOrNull(4)?.toInt() ?: run {
-                Log.e(TAG, "Failed to read <x-dimension-size> from 4DArray")
-                return@makeNullable4DFloatArrayOfW null
-            }
-            //parse the data
-            val dataString = match.groupValues.getOrNull(5) ?: run {
-                Log.e(TAG, "Failed to read <data-section> from 4DArray")
-                return@makeNullable4DFloatArrayOfW null
-            }
+                    return@makeNullable4DFloatArrayOfW null
+                }
+                val dD = match.groupValues.getOrNull(2)?.toInt() ?: run {
+                    Log.e(TAG, "Failed to read <depth-dimension-size> from 4DArray")
+                    return@makeNullable4DFloatArrayOfW null
+                }
+                val dY = match.groupValues.getOrNull(3)?.toInt() ?: run {
+                    Log.e(TAG, "Failed to read <y-dimension-size> from 4DArray")
+                    return@makeNullable4DFloatArrayOfW null
+                }
+                val dX = match.groupValues.getOrNull(4)?.toInt() ?: run {
+                    Log.e(TAG, "Failed to read <x-dimension-size> from 4DArray")
+                    return@makeNullable4DFloatArrayOfW null
+                }
+                //parse the data
+                val dataString = match.groupValues.getOrNull(5) ?: run {
+                    Log.e(TAG, "Failed to read <data-section> from 4DArray")
+                    return@makeNullable4DFloatArrayOfW null
+                }
 
-            //val dataSequence = readRowsOf4DFloatArray(dataString, scale, offset, fillValue)
+                //val dataSequence = readRowsOf4DFloatArray(dataString, scale, offset, fillValue)
 
-            readRowsOf4DFloatArray(dT, dD, dY, dX, dataString, scale, offset, fillValue)
+                readRowsOf4DFloatArray(dT, dD, dY, dX, dataString, scale, offset, fillValue)
         }
 
 
@@ -296,5 +333,5 @@ class NorKyst800RegexParser {
                         }.toTypedArray()
                     }.toTypedArray()
             }.toTypedArray()
-}
+    }
 }

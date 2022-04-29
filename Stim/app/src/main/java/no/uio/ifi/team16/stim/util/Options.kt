@@ -23,7 +23,7 @@ class Options {
             fromClosedRange(0, defaultNorKyst800DepthEnd, defaultNorKyst800DepthStride)
         val defaultNorKyst800TimeRange =
             fromClosedRange(0, defaultNorKyst800TimeEnd, defaultNorKyst800TimeStride)
-        private const val defaultProj4String =
+        const val defaultProj4String =
             "+proj=stere +ellps=WGS84 +lat_0=90.0 +lat_ts=60.0 +x_0=3192800 +y_0=1784000 +lon_0=70"  //retrieved from opendap grid_mapping attribute
         val defaultProjection: () -> CoordinateTransform =
             { //functional, to avoid initialization problems with static

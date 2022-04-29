@@ -2,6 +2,7 @@ package no.uio.ifi.team16.stim.data
 
 import android.util.Log
 import no.uio.ifi.team16.stim.util.*
+import org.locationtech.proj4j.CoordinateTransform
 import kotlin.math.atan2
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
@@ -14,10 +15,10 @@ data class NorKyst800(
     val salinity: NullableFloatArray4D,
     val temperature: NullableFloatArray4D,
     val time: FloatArray1D,
-    val velocity: Triple<NullableFloatArray4D, NullableFloatArray4D, NullableFloatArray4D>
+    val velocity: Triple<NullableFloatArray4D, NullableFloatArray4D, NullableFloatArray4D>,
+    val projection: CoordinateTransform, //transforms between latlong and projection coordinates
 ) {
     val TAG = "NORKYST800"
-    val projection = Options.defaultProjection()
     //////////////////////
     // GETTER FUNCTIONS //
     //////////////////////
