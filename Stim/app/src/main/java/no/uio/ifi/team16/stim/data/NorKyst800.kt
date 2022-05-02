@@ -42,7 +42,7 @@ data class NorKyst800(
         val (x, y) = getClosestIndex(latLng) //TODO: I might have flipped x-y
         return (0..Options.norKyst800MaxRadius) //for each possible radius
             .asSequence() //do as sequence, ie evaluae lazily
-            .firstNotNullOf { radius -> //take out first value in lazy-sequnce returning not-null
+            .firstNotNullOfOrNull { radius -> //take out first value in lazy-sequnce returning not-null
                 averageOf(salinity[time][depth].getSorrounding(y, x, radius))
             }
     }

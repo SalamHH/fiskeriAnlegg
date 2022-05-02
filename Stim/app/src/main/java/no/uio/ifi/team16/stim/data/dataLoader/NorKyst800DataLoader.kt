@@ -17,7 +17,7 @@ import org.locationtech.proj4j.CoordinateTransform
 import org.locationtech.proj4j.CoordinateTransformFactory
 
 /**
- * DataLoader for data related tot he norkyst800 model.
+ * DataLoader for data related to the norkyst800 model.
  * Temperature, salinity, water velocity etc
  **/
 open class NorKyst800DataLoader : THREDDSDataLoader() {

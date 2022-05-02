@@ -62,11 +62,15 @@ class GeneralInfoFragment : Fragment() {
         //observer for å få temperatur og saltholdighet i nåtid
         viewModel.getNorKyst800Data().observe(viewLifecycleOwner) {
             it?.apply {
-                //forecast data is also available in the norkyst object! (about 66 hours, time indexes hours)
                 binding.temperatureTextview.text =
-                    "%4.1f".format(getSorroundingTemperature(site.latLong, 0, 0)) + "°"
+                    getSorroundingTemperature(site.latLong, 0, 0)?.let { temp ->
+                        "%4.1f".format(temp) + "°"
+                    } ?: "N/A"
+
                 binding.saltTextview.text =
-                    "%4.1f".format(getSorroundingSalinity(site.latLong, 0, 0))
+                    getSorroundingSalinity(site.latLong, 0, 0)?.let { salt ->
+                        "%4.1f".format(salt)
+                    } ?: "N/A"
             } ?: run {
                 binding.temperatureTextview.text = "N/A"
                 binding.saltTextview.text = "N/A"
