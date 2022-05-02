@@ -1,11 +1,14 @@
 package no.uio.ifi.team16.stim
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,6 +18,8 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.maps.android.heatmaps.HeatmapTileProvider
+import com.leinardi.android.speeddial.SpeedDialActionItem
+import com.leinardi.android.speeddial.SpeedDialView
 import no.uio.ifi.team16.stim.data.Municipality
 import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.databinding.FragmentMapBinding
@@ -89,6 +94,9 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         binding.recyclerView.adapter = adapter
 
         setHasOptionsMenu(true)
+
+        initSpeedDial(requireContext())
+
         return binding.root
     }
 
@@ -360,5 +368,68 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
                 }
             }
         }
+    }
+
+
+    fun initSpeedDial(context: Context) {
+        val speedDial: SpeedDialView = binding.speedDial
+
+        speedDial.addActionItem(
+            SpeedDialActionItem.Builder(R.id.heatmap_infectiousPressure, R.drawable.mdi___virus)
+                .setFabBackgroundColor(ContextCompat.getColor(context, R.color.dark_skyblue))
+                .setFabImageTintColor(ContextCompat.getColor(context, R.color.white))
+                .create()
+        )
+        speedDial.addActionItem(
+            SpeedDialActionItem.Builder(R.id.heatmap_salinity, R.drawable.salt)
+                .setFabBackgroundColor(ContextCompat.getColor(context, R.color.dark_skyblue))
+                .setFabImageTintColor(ContextCompat.getColor(context, R.color.white))
+                .create()
+        )
+        speedDial.addActionItem(
+            SpeedDialActionItem.Builder(R.id.heatmap_temperature, R.drawable.farevarsel)
+                .setFabBackgroundColor(ContextCompat.getColor(context, R.color.dark_skyblue))
+                .setFabImageTintColor(ContextCompat.getColor(context, R.color.white))
+                .create()
+        )
+        speedDial.addActionItem(
+            SpeedDialActionItem.Builder(R.id.heatmap_velocity, R.drawable.down_icon)
+                .setFabBackgroundColor(ContextCompat.getColor(context, R.color.dark_skyblue))
+                .setFabImageTintColor(ContextCompat.getColor(context, R.color.white))
+                .create()
+        )
+
+        speedDial.setOnActionSelectedListener(SpeedDialView.OnActionSelectedListener { actionItem ->
+            when (actionItem.id) {
+                R.id.heatmap_infectiousPressure -> {
+                    Toast.makeText(
+                        context,
+                        "Speed Dial 'infectiousPressure' klikket!",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    speedDial.close() // To close the Speed Dial with animation
+                    return@OnActionSelectedListener true // false will close it without animation
+                }
+                R.id.heatmap_salinity -> {
+                    Toast.makeText(context, "Speed Dial 'salinity' klikket!", Toast.LENGTH_LONG)
+                        .show()
+                    speedDial.close() // To close the Speed Dial with animation
+                    return@OnActionSelectedListener true // false will close it without animation
+                }
+                R.id.heatmap_temperature -> {
+                    Toast.makeText(context, "Speed Dial 'temperature' klikket!", Toast.LENGTH_LONG)
+                        .show()
+                    speedDial.close() // To close the Speed Dial with animation
+                    return@OnActionSelectedListener true // false will close it without animation
+                }
+                R.id.heatmap_velocity -> {
+                    Toast.makeText(context, "Speed Dial 'velocity' klikket!", Toast.LENGTH_LONG)
+                        .show()
+                    speedDial.close() // To close the Speed Dial with animation
+                    return@OnActionSelectedListener true // false will close it without animation
+                }
+            }
+            false
+        })
     }
 }

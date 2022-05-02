@@ -54,6 +54,17 @@
             app:layout_constraintTop_toTopOf="parent" />
 
 
+        <com.leinardi.android.speeddial.SpeedDialView
+            android:id="@+id/speedDial"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:layout_constraintEnd_toEndOf="@+id/mapView"
+            app:layout_constraintStart_toEndOf="@+id/searchView"
+            app:layout_constraintTop_toTopOf="@+id/searchView"
+            app:sdMainFabClosedIconColor="@color/white"
+            app:sdMainFabOpenedIconColor="@color/white" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- Bottom Sheet -->

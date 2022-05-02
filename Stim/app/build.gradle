@@ -114,6 +114,9 @@ dependencies {
 
     // gjør det mulig å bruke nye java features
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+
+    //Speed dial
+    implementation "com.leinardi.android:speed-dial:3.2.0"
 }
 
 kapt {
