@@ -1,7 +1,6 @@
 package no.uio.ifi.team16.stim.data.dataLoader.parser
 
 import android.util.Log
-import no.uio.ifi.team16.stim.data.NorKyst800
 import no.uio.ifi.team16.stim.util.NullableFloatArray4D
 import no.uio.ifi.team16.stim.util.mapAsync
 
@@ -38,75 +37,6 @@ class NorKyst800RegexParser {
         /////////////
         // PARSING //
         /////////////
-        /**
-         * Take an ascii response from the norkystdataset and parse it into a norkyst-object
-         *
-         * @param response ascii response from the norjkyst dataset.
-         * @return corresponding NorKyst800 object.
-         */
-        suspend fun parse(response: String): NorKyst800? {
-            //get filler values TODO get from data itself, fram .dds
-
-            val salinityFillValue = -32767
-            val temperatureFillValue = -32767
-            val uFillValue = -32767
-            val vFillValue = -32767
-            val wFillValue = 1.0E37f
-
-            val depth = make1DFloatArrayOf("depth", response) ?: run {
-                Log.e(TAG, "Failed to read <depth> from NorKyst800")
-                return null
-            }
-            val salinity =
-                makeNullable4DFloatArrayOf("salinity", response, 0.001f, 30.0f, salinityFillValue)
-                    ?: run {
-                        Log.e(TAG, "Failed to read <salinity> from NorKyst800")
-                        return null
-                    }
-            val temperature =
-                makeNullable4DFloatArrayOf(
-                    "temperature",
-                    response,
-                    0.01f,
-                    0.0f,
-                    temperatureFillValue
-                )
-                    ?: run {
-                        Log.e(TAG, "Failed to read <temperature> from NorKyst800")
-                        return null
-                    }
-            val time = make1DFloatArrayOf("time", response) ?: run {
-                Log.e(TAG, "Failed to read <time> from NorKyst800")
-                return null
-            }
-            val velocity = Triple(
-                makeNullable4DFloatArrayOf("u", response, 0.001f, 0.0f, uFillValue) ?: run {
-                    Log.e(TAG, "Failed to read <u> from NorKyst800")
-                    return null
-                },
-                makeNullable4DFloatArrayOf("v", response, 0.001f, 0.0f, vFillValue) ?: run {
-                    Log.e(TAG, "Failed to read <v> from NorKyst800")
-                    return null
-                },
-                makeNullable4DFloatArrayOfW("w", response, 1.0f, 0.0f, wFillValue) ?: run {
-                    Log.e(TAG, "Failed to read <w> from NorKyst800")
-                    return null
-                }
-            )
-
-
-            return NorKyst800(
-                depth,
-                salinity,
-                temperature,
-                time,
-                velocity,
-                projection
-            )
-        }
-
-
-        //all indexing is guaranteed to exist by virtue of the regex capture patterns
         /**
          * Takes a DAS response(from opendap), and parses its variables and their attributes toa map, mapping
          * the variables name to a sequence of that variable attributes. Each attribute is represented
@@ -188,31 +118,31 @@ class NorKyst800RegexParser {
     suspend fun makeNullable4DFloatArrayOf(
         attribute: String,
         response: String,
-        fso: Triple<Int, Float, Float>
+        fso: Triple<Number, Number, Number>
     ): NullableFloatArray4D? =
         dataRegex(attribute).find(response, 0)?.let { match ->
             val (fillValue, scale, offset) = fso
             //parse dimensions
             val dT = match.groupValues.getOrNull(1)?.toInt() ?: run {
                 Log.e(TAG, "Failed to read <time-dimension-size> from 4DArray")
-                return@makeNullable4DFloatArrayOf null
+                return null
             }
             val dD = match.groupValues.getOrNull(2)?.toInt() ?: run {
                 Log.e(TAG, "Failed to read <depth-dimension-size> from 4DArray")
-                return@makeNullable4DFloatArrayOf null
+                return null
             }
             val dY = match.groupValues.getOrNull(3)?.toInt() ?: run {
                 Log.e(TAG, "Failed to read <y-dimension-size> from 4DArray")
-                return@makeNullable4DFloatArrayOf null
+                return null
             }
             val dX = match.groupValues.getOrNull(4)?.toInt() ?: run {
                 Log.e(TAG, "Failed to read <x-dimension-size> from 4DArray")
-                return@makeNullable4DFloatArrayOf null
+                return null
             }
             //parse the data
             val dataString = match.groupValues.getOrNull(5) ?: run {
                 Log.e(TAG, "Failed to read <data-section> from 4DArray")
-                return@makeNullable4DFloatArrayOf null
+                return null
             }
             //read the rows of ints, apply scale, offset and fillvalues to get the floats
             readRowsOf4DIntArray(dT, dD, dY, dX, dataString, scale, offset, fillValue)
@@ -226,31 +156,31 @@ class NorKyst800RegexParser {
         suspend fun makeNullable4DFloatArrayOfW(
             attribute: String,
             response: String,
-            fso: Triple<Float, Float, Float>
+            fso: Triple<Number, Number, Number>
         ): NullableFloatArray4D? =
             dataRegex(attribute).find(response, 0)?.let { match ->
                 val (fillValue, scale, offset) = fso
                 //parse dimensions
                 val dT = match.groupValues.getOrNull(1)?.toInt() ?: run {
                     Log.e(TAG, "Failed to read <time-dimension-size> from 4DArray")
-                    return@makeNullable4DFloatArrayOfW null
+                    return null
                 }
                 val dD = match.groupValues.getOrNull(2)?.toInt() ?: run {
                     Log.e(TAG, "Failed to read <depth-dimension-size> from 4DArray")
-                    return@makeNullable4DFloatArrayOfW null
+                    return null
                 }
                 val dY = match.groupValues.getOrNull(3)?.toInt() ?: run {
                     Log.e(TAG, "Failed to read <y-dimension-size> from 4DArray")
-                    return@makeNullable4DFloatArrayOfW null
+                    return null
                 }
                 val dX = match.groupValues.getOrNull(4)?.toInt() ?: run {
                     Log.e(TAG, "Failed to read <x-dimension-size> from 4DArray")
-                    return@makeNullable4DFloatArrayOfW null
+                    return null
                 }
                 //parse the data
                 val dataString = match.groupValues.getOrNull(5) ?: run {
                     Log.e(TAG, "Failed to read <data-section> from 4DArray")
-                    return@makeNullable4DFloatArrayOfW null
+                    return null
                 }
 
                 //val dataSequence = readRowsOf4DFloatArray(dataString, scale, offset, fillValue)
@@ -271,9 +201,9 @@ class NorKyst800RegexParser {
         dY: Int,
         dX: Int,
         str: String,
-        scale: Float,
-        offset: Float,
-        fillValue: Int
+        scale: Number,
+        offset: Number,
+        fillValue: Number
     ): NullableFloatArray4D =
         str.split("\n")
             .dropLast(1) //drop empty row
@@ -290,7 +220,7 @@ class NorKyst800RegexParser {
                                     if (parsed == fillValue) {
                                         null
                                     } else {
-                                        parsed * scale + offset
+                                        parsed.times(scale.toFloat()) + offset.toFloat()
                                     }
                                 }
                                 .toTypedArray()
@@ -308,9 +238,9 @@ class NorKyst800RegexParser {
         dY: Int,
         dX: Int,
         str: String,
-        scale: Float,
-        offset: Float,
-        fillValue: Float
+        scale: Number,
+        offset: Number,
+        fillValue: Number
     ): NullableFloatArray4D =
         str.split("\n")
             .dropLast(1) //drop empty row
@@ -327,7 +257,7 @@ class NorKyst800RegexParser {
                                     if (parsed == fillValue) {
                                         null
                                     } else {
-                                        parsed * scale + offset
+                                        parsed * scale.toFloat() + offset.toFloat()
                                     }
                                 }.toTypedArray()
                         }.toTypedArray()

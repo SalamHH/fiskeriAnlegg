@@ -1,11 +1,7 @@
 package no.uio.ifi.team16.stim.data.dataLoader
 
-import android.util.Log
 import kotlinx.coroutines.runBlocking
-import no.uio.ifi.team16.stim.data.NorKyst800
-import no.uio.ifi.team16.stim.data.dataLoader.parser.NorKyst800RegexParser
 import no.uio.ifi.team16.stim.util.NullableFloatArray4D
-import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Test
 import kotlin.ranges.IntProgression.Companion.fromClosedRange
@@ -269,6 +265,7 @@ class NorKyst800DataLoaderTest {
         assertNotNull(data)
     }
 
+    /*
     /**
      * Test wether the Infectiouspressure-object that is made from the parsing has correctly
      * parsed out the concentration. It might be oriented the wrong way, or get the wrong indexes.
@@ -485,4 +482,5 @@ class NorKyst800DataLoaderTest {
         )
 
     }
+     */
 }

@@ -1,6 +1,5 @@
 package no.uio.ifi.team16.stim.data.dataLoader
 
-import android.util.Log
 import no.uio.ifi.team16.stim.data.NorKyst800AtSite
 import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.util.Options
@@ -36,14 +35,6 @@ class NorKyst800AtSiteDataLoader : NorKyst800DataLoader() {
     suspend fun load(
         site: Site
     ): NorKyst800AtSite? {
-        val baseUrl = loadForecastUrl() ?: run {
-            Log.e(
-                TAG,
-                "Failed to load the forecast URL form the catalog, is the catalog URL correct?"
-            )
-            return null
-        }
-
         val (y, x) = projection.project(site.latLong).let { (yf, xf) ->
             Pair((yf / 800).roundToInt(), (xf / 800).roundToInt())
         }

@@ -31,7 +31,11 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
     // LOADERS //
     /////////////
     /**
-     * Get NorKyst800 data in the given range
+     * Get NorKyst800 data in the given range.
+     *
+     * First we have to load the catalog(unless previously loaded and cached). Then we have to load
+     * the das of the data(attribuutes of variables). Finally we load the data itself, but beacuse the response is
+     * large we do it in two separate requests.
      *
      * @param xRange range of x-values to get from
      * @param yRange range of y-values to get from
@@ -107,9 +111,10 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
         ///////////////
         //make a map from variable names to strings of their attributes
         val variablesToAttributes = NorKyst800RegexParser.parseDas(dasString)
+        Log.d(TAG, variablesToAttributes.toString())
         //SALINITY, make standard, then parse and put any non-null into it
-        val salinityFSO = Triple(-32767, 0.001f, 0.0f).let { defaultFSO ->
-            val (f, s, o) = getFSO<Int, Float, Float>(variablesToAttributes, "salinity")
+        val salinityFSO = Triple(-32767, 0.001f, 30.0f).let { defaultFSO ->
+            val (f, s, o) = getFSO(variablesToAttributes, "salinity")
             Triple(
                 f ?: defaultFSO.first,
                 s ?: defaultFSO.second,
@@ -117,8 +122,8 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
             )
         }
         //TEMPERATURE, make standard, then parse and put any non-null into it
-        val temperatureFSO = Triple(-32767, 0.001f, 0.0f).let { defaultFSO ->
-            val (f, s, o) = getFSO<Int, Float, Float>(variablesToAttributes, "temperature")
+        val temperatureFSO = Triple(-32767, 0.01f, 0.0f).let { defaultFSO ->
+            val (f, s, o) = getFSO(variablesToAttributes, "temperature")
             Triple(
                 f ?: defaultFSO.first,
                 s ?: defaultFSO.second,
@@ -127,7 +132,7 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
         }
         //U, make standard, then parse and put any non-null into it
         val uFSO = Triple(-32767, 0.001f, 0.0f).let { defaultFSO ->
-            val (f, s, o) = getFSO<Int, Float, Float>(variablesToAttributes, "u")
+            val (f, s, o) = getFSO(variablesToAttributes, "u")
             Triple(
                 f ?: defaultFSO.first,
                 s ?: defaultFSO.second,
@@ -136,7 +141,7 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
         }
         //V, make standard, then parse and put any non-null into it
         val vFSO = Triple(-32767, 0.001f, 0.0f).let { defaultFSO ->
-            val (f, s, o) = getFSO<Int, Float, Float>(variablesToAttributes, "v")
+            val (f, s, o) = getFSO(variablesToAttributes, "v")
             Triple(
                 f ?: defaultFSO.first,
                 s ?: defaultFSO.second,
@@ -144,8 +149,8 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
             )
         }
         //W, make standard, then parse and put any non-null into it
-        val wFSO = Triple(1.0E37f, 0.001f, 0.0f).let { defaultFSO ->
-            val (f, s, o) = getFSO<Float, Float, Float>(variablesToAttributes, "w")
+        val wFSO = Triple(1.0E37f, 1.0f, 0.0f).let { defaultFSO ->
+            val (f, s, o) = getFSO(variablesToAttributes, "w")
             Triple(
                 f ?: defaultFSO.first,
                 s ?: defaultFSO.second,
@@ -154,13 +159,15 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
         }
 
         //PROJECTION
-        val proj4String = variablesToAttributes["projection"]?.toList() //evaluate sequence
-            ?.find { (_, name, _) ->
+        val proj4String = variablesToAttributes["projection"]
+            ?.toList() //evaluate sequence
+            ?.find { (_, name, _) -> //find the correct attribute
                 name == "proj4String"
             }
-            ?.third
+            ?.third //take the value of that attribute
             ?: Options.defaultProj4String
 
+        //make the projection from string
         val projection: CoordinateTransform =
             CRSFactory().createFromParameters(null, proj4String).let { stereoCRT ->
                 val latLngCRT = stereoCRT.createGeographic()
@@ -243,14 +250,14 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
             NorKyst800RegexParser.make1DFloatArrayOf("depth", salinityTemperatureTimeAndDepthString)
                 ?: run {
                     Log.e(TAG, "Failed to read <depth> from NorKyst800")
-                    return@load null
+                    return null
                 }
 
         val time =
             NorKyst800RegexParser.make1DFloatArrayOf("time", salinityTemperatureTimeAndDepthString)
                 ?: run {
                     Log.e(NorKyst800RegexParser.TAG, "Failed to read <time> from NorKyst800")
-                    return@load null
+                    return null
                 }
 
         val salinity =
@@ -260,7 +267,7 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
                 salinityFSO
             ) ?: run {
                 Log.e(NorKyst800RegexParser.TAG, "Failed to read <salinity> from NorKyst800")
-                return@load null
+                return null
             }
 
         val temperature =
@@ -272,33 +279,6 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
                 Log.e(NorKyst800RegexParser.TAG, "Failed to read <temperature> from NorKyst800")
                 return@load null
             }
-
-        /*val parametrizedUrl = makeParametrizedUrl(baseUrl, xRange, yRange, depthRange, timeRange)
-        Log.d(TAG, parametrizedUrl)
-
-        val responseStr = Fuel.get(parametrizedUrl).awaitStringResult().onError { error ->
-            Log.e(TAG, "Failed to load norkyst800data due to:\n $error")
-            return@load null
-        }.getOrElse {
-            Log.e(
-                TAG,
-                "No errors thrown, but unable to get NorKyst800 data from get request. Is the URL correct?"
-            )
-            return@load null
-        }
-
-        if (responseStr.isEmpty()) {
-            Log.e(TAG, "Empty response")
-            return null
-        }
-
-        //open the file
-        var nork: NorKyst800? = null
-
-        val parseTime = measureTimeMillis {
-            nork = NorKyst800RegexParser().parse(responseStr)
-        }
-        Log.d(TAG, "Parsed data in $parseTime ms")*/
 
         return NorKyst800(
             depth,
@@ -335,7 +315,7 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
             latLongLowerRight,
             xStride,
             yStride,
-            Options.defaultProjection() //TODO: cannot be read from file in .ascii solution, but MIGHT be wrong
+            Options.defaultProjection() //TODO: exchange with request version, but without repeated code
         )
         return load(xRange, yRange, depthRange, timeRange)
     }
@@ -376,34 +356,35 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
      * get FIllvalue, Scaling and Offset of a given attribute associated to a given variable
      *
      */
-    private inline fun <reified S, reified T, reified U> getFSO(
+    private fun getFSO(
         variablesToAttributes:
         Map<String, Sequence<Triple<String, String, String>>>,
         variable: String
-    ): Triple<S?, T?, U?> {
-        var fillValue: S? = null
-        var scale: T? = null
-        var offset: U? = null
+    ): Triple<Number?, Number?, Number?> {
+        var fillValue: Number? = null
+        var scale: Number? = null
+        var offset: Number? = null
+        Log.d("----------------->", variablesToAttributes[variable]?.toList().toString())
         variablesToAttributes[variable]?.let { attributes ->
             val attributeMap = NorKyst800RegexParser.parseVariableAttributes(attributes)
-            attributeMap["FillValue"]?.let { (_, valueString) -> //try to cast to S
-                parseFSOAttributeAs<S>(valueString)
+            attributeMap["_FillValue"]?.let { (typeString, valueString) -> //try to cast to S
+                parseFSOAttributeAs(typeString, valueString)
             }?.let { value ->
                 fillValue = value
             } ?: Log.w(
                 TAG,
                 "Failed to load norkyst800data - ${variable}FillValue from das, using default"
             )
-            attributeMap["scaling"]?.let { (_, valueString) -> //try to cast to T
-                parseFSOAttributeAs<T>(valueString)
+            attributeMap["scale_factor"]?.let { (typeString, valueString) -> //try to cast to T
+                parseFSOAttributeAs(typeString, valueString)
             }?.let { value ->
                 scale = value
             } ?: Log.w(
                 TAG,
                 "Failed to load norkyst800data - ${variable}Scaling from das, using default"
             )
-            attributeMap["offset"]?.let { (_, valueString) -> //try to cast to U
-                parseFSOAttributeAs<U>(valueString)
+            attributeMap["add_offset"]?.let { (typeString, valueString) -> //try to cast to U
+                parseFSOAttributeAs(typeString, valueString)
             }?.let { value ->
                 offset = value
             } ?: Log.w(
@@ -414,10 +395,15 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
         return Triple(fillValue, scale, offset)
     }
 
-    private inline fun <reified S> parseFSOAttributeAs(attr: String): S? {
-        return attr as S
-    }
-
+    private fun parseFSOAttributeAs(type: String, attr: String): Number? =
+        when (type) {
+            "Float32" -> attr.toFloat()
+            "Int16" -> attr.toInt()
+            else -> run {
+                Log.w(TAG, "Unknown type $type, returning null")
+                null
+            }
+        }
 
     protected fun makeParametrizedUrl(
         baseUrl: String,
@@ -491,7 +477,7 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
     private val forecastUrlRegex =
         Regex("""'catalog\.html\?dataset=norkyst800m_1h_files/(.*?\.fc\..*?)'""")
 
-    protected suspend fun loadForecastUrl(): String? = try {
+    private suspend fun loadForecastUrl(): String? = try {
         Fuel.get(catalogUrl).awaitString()
     } catch (e: Exception) {
         Log.e(TAG, "Unable to retrieve NorKyst800 catalog due to", e)
