@@ -14,6 +14,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.maps.android.heatmaps.HeatmapTileProvider
 import no.uio.ifi.team16.stim.data.Municipality
 import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.databinding.FragmentMapBinding
@@ -158,6 +159,17 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         if (checkLocationPermission()) {
             map.isMyLocationEnabled = true
             setMapToUserLocation()
+        }
+
+        // INFECTIOUSPRESSURE HEATMAP
+        viewModel.getInfectiousPressureData().observe(viewLifecycleOwner) { infectiousPressure ->
+            infectiousPressure?.let {
+                val heatMapProvider = HeatmapTileProvider.Builder()
+                    .weightedData(it.getHeatMapData()) // load our weighted data
+                    .radius(50) // finn måte å gjøre om til 800x800 m
+                    .build()
+                googleMap?.addTileOverlay(TileOverlayOptions().tileProvider(heatMapProvider))
+            }
         }
         closeKeyboard()
     }

@@ -1,10 +1,10 @@
 package no.uio.ifi.team16.stim.data
 
-import no.uio.ifi.team16.stim.util.FloatArray2D
-import no.uio.ifi.team16.stim.util.LatLong
-import no.uio.ifi.team16.stim.util.get
-import no.uio.ifi.team16.stim.util.prettyPrint
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.heatmaps.WeightedLatLng
+import no.uio.ifi.team16.stim.util.*
 import org.locationtech.proj4j.CoordinateTransform
+import org.locationtech.proj4j.CoordinateTransformFactory
 import org.locationtech.proj4j.ProjCoordinate
 import kotlin.math.round
 
@@ -41,6 +41,32 @@ class InfectiousPressure(
         val (row, column) = getClosestIndex(latLong)
         return concentration.get(row, column)
     }
+
+    fun getHeatMapData(): List<WeightedLatLng> {
+        //make inverse projection, mapping from grid indexes to latlng
+        val ctFactory = CoordinateTransformFactory()
+        val stereoCRT = projection.targetCRS
+        val latLngCRT = projection.sourceCRS
+        val inverseProjection = ctFactory.createTransform(stereoCRT, latLngCRT)
+        //make list of weighted latlngs
+        return concentration.flatMapIndexed { y, row ->
+            row.filter { entry -> entry > 0.000001f }
+                .mapIndexed { x, entry ->
+                    WeightedLatLng(
+                        inverseProjection.projectXY(
+                            Pair(
+                                x.toFloat() * (dx),
+                                y.toFloat() * (dy)
+                            )
+                        ).let { latLong ->
+                            LatLng(latLong.lat, latLong.lng)
+                        },
+                        entry.toDouble()
+                    )
+                }
+        }
+    }
+
 
     ///////////////
     // UTILITIES //
