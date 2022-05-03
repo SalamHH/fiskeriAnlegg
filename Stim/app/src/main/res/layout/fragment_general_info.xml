@@ -107,22 +107,27 @@
                     app:cardPreventCornerOverlap="true"
                     app:cardUseCompatPadding="true">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Vanntemperatur:"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginBottom="10dp"
-                        android:textColor="@color/primaryTextColor" />
-
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:orientation="horizontal"
-                        android:layout_marginTop="10dp">
+                        android:layout_marginTop="10dp"
+                        android:layout_margin="5dp">
 
                         <!-- TODO: fix temperature icon -->
+
+                        <TextView
+                            android:id="@+id/boxTempText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Vanntemperatur:"
+                            android:gravity="center_horizontal"
+                            android:layout_marginBottom="10dp"
+                            android:textColor="@color/primaryTextColor"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
                         <ImageView
                             android:id="@+id/tempIcon"
@@ -135,21 +140,22 @@
                             app:layout_constraintEnd_toStartOf="@+id/temperatureTextview"
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/boxTempText"
                             app:tint="@color/black" />
 
                         <TextView
                             android:id="@+id/temperatureTextview"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="0dp"
                             android:text="----°"
                             android:textColor="@color/primaryTextColor"
                             android:textSize="30sp"
+                            android:gravity="center_vertical"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@+id/tempIcon"
+                            app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toEndOf="@+id/tempIcon"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toBottomOf="@id/boxTempText" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -167,49 +173,51 @@
                     app:cardPreventCornerOverlap="true"
                     app:cardUseCompatPadding="true">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Saltholdighet i vannet:"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginStart="5dp"
-                        android:layout_marginEnd="5dp"
-                        android:layout_marginBottom="10dp"
-                        android:textColor="@color/primaryTextColor" />
-
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:gravity="center"
                         android:layout_gravity="center_horizontal"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="10dp">
+                        android:layout_margin="5dp"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/boxSaltText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:text="Saltholdighet i vannet:"
+                            android:textColor="@color/primaryTextColor"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
                         <ImageView
                             android:id="@+id/saltIcon"
                             android:layout_width="70dp"
                             android:layout_height="70dp"
-                            android:layout_marginEnd="5dp"
                             android:padding="10dp"
                             android:src="@drawable/salt"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/saltTextview"
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toBottomOf="@id/boxSaltText" />
 
                         <TextView
                             android:id="@+id/saltTextview"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="0dp"
                             android:text="----"
                             android:textColor="@color/primaryTextColor"
                             android:textSize="30sp"
+                            android:gravity="center_vertical"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toEndOf="@+id/saltIcon"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toBottomOf="@id/boxSaltText" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -411,7 +419,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:stretchColumns="*"></TableLayout>
+                        android:stretchColumns="*" />
 
                 </LinearLayout>
 
@@ -464,7 +472,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:stretchColumns="*"></TableLayout>
+                        android:stretchColumns="*" />
 
                 </LinearLayout>
 

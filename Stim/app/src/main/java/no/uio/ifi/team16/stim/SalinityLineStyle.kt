@@ -14,7 +14,7 @@ import javax.inject.Inject
 /**
  * Class defining how a chart should be styled in the Spark Line Style
  */
-class GeneralLineStyle @Inject constructor(private val context: Context) {
+class SalinityLineStyle @Inject constructor(private val context: Context) {
 
     /***
      * stylizes the chart
