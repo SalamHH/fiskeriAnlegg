@@ -64,6 +64,11 @@ data class NorKyst800AtSite(
         norKyst800.salinity.get(depth, time, radius + y, radius + x)
             ?: averageOf(depth, time, norKyst800.salinity)
 
+    //TIME
+    fun getTime(index: Int): Float {
+        return norKyst800.time[index]
+    }
+
     /**
      * return a graph(List of Entry) of salinity over time(hours)
      */

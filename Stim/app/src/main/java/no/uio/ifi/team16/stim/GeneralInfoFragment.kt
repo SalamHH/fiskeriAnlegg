@@ -5,6 +5,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TableLayout
+import android.widget.TableRow
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.github.mikephil.charting.data.Entry
@@ -17,6 +20,7 @@ import androidx.transition.TransitionManager
 import no.uio.ifi.team16.stim.data.StaticMapImageLoader
 import no.uio.ifi.team16.stim.databinding.FragmentGeneralInfoBinding
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
+import no.uio.ifi.team16.stim.util.Options
 import java.lang.Math.round
 import java.text.DecimalFormat
 import javax.inject.Inject
@@ -56,13 +60,14 @@ class GeneralInfoFragment : Fragment() {
                 //forecast data is also available in the norkyst object! (about 66 hours, time indexes hours)
                 binding.temperatureTextview.text = "%4.1f".format(getTemperature()) + "°"
                 binding.saltTextview.text = "%4.1f".format(getSalinity())
+
             } ?: run {
                 binding.temperatureTextview.text = "N/A"
                 binding.saltTextview.text = "N/A"
             }
         }
-        //CHART
 
+        //CHART
         setSalinityChart()
 
         //buttons
@@ -77,6 +82,67 @@ class GeneralInfoFragment : Fragment() {
                 setTemperatureChart()
             }
         }
+
+        //TABLE
+
+        viewModel.getNorKyst800AtSiteData(viewModel.getCurrentSite()).observe(viewLifecycleOwner) {
+            it?.apply {
+                binding.tablelayout.removeAllViews()
+
+                for (i in Options.norKyst800AtSiteTimeRange.first..Options.norKyst800AtSiteTimeRange.last) {
+                    if (!getTemperature(0, i, 0, 0).toString().contains("NaN")) {
+                        val newRow = TableRow(requireContext())
+                        val view = inflater.inflate(R.layout.infection_table_row, container, false)
+                        view.findViewById<TextView>(R.id.table_display_week).text =
+                            getTime(i).toString()
+                        view.findViewById<TextView>(R.id.table_display_float).text =
+                            getTemperature(0, i, 0, 0).toString()
+                        view.layoutParams = TableRow.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT
+                        )
+                        newRow.addView(view)
+                        binding.tablelayout.addView(newRow, 0)
+                        newRow.layoutParams = TableLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT
+                        )
+                        Log.d(TAG, "Row added: $i")
+                    }
+                    binding.tablelayout.requestLayout()
+                }
+            }
+        }
+        viewModel.getNorKyst800AtSiteData(viewModel.getCurrentSite()).observe(viewLifecycleOwner) {
+            it?.apply {
+
+                binding.Salttablelayout.removeAllViews()
+
+                for (i in Options.norKyst800AtSiteTimeRange.first..Options.norKyst800AtSiteTimeRange.last) {
+                    if (!getSalinity(0, i, 0, 0).toString().contains("NaN")) {
+                        val newRow = TableRow(requireContext())
+                        val view = inflater.inflate(R.layout.infection_table_row, container, false)
+                        view.findViewById<TextView>(R.id.table_display_week).text =
+                            getTime(i).toString()
+                        view.findViewById<TextView>(R.id.table_display_float).text =
+                            getSalinity(0, i, 0, 0).toString()
+                        view.layoutParams = TableRow.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT
+                        )
+                        newRow.addView(view)
+                        binding.Salttablelayout.addView(newRow, 0)
+                        newRow.layoutParams = TableLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT
+                        )
+                        Log.d(TAG, "Row added: $i")
+                    }
+                }
+                binding.Salttablelayout.requestLayout()
+            }
+        }
+
 
         //posisjon
         binding.posisjonView.text = "${site.latLong.lat}, ${site.latLong.lng}"
@@ -95,6 +161,7 @@ class GeneralInfoFragment : Fragment() {
 
         //kommune
         binding.prodOmraadeView.text = site.placement?.municipalityName ?: "-----"
+
 
         return binding.root
     }
@@ -194,7 +261,7 @@ class GeneralInfoFragment : Fragment() {
         viewModel.getNorKyst800AtSiteData(viewModel.getCurrentSite()).observe(viewLifecycleOwner) {
             it?.apply {
                 //set chart
-                temperatureChart = it.getSalinityAtSurfaceAsGraph()
+                temperatureChart = it.getTemperatureAtSurfaceAsGraph()
             }
             //val hourList = arrayOf(1.0, 2.0, 3,0, 4.0, 5.0, 6.0, 7.0, 8.0)
             val temperatureData = temperatureChart.map { entry ->
@@ -229,5 +296,9 @@ class GeneralInfoFragment : Fragment() {
                 toggleButtonColors()
             }
         }
+    }
+
+    private fun setSalttable() {
+
     }
 }
