@@ -12,7 +12,7 @@ import javax.inject.Inject
 /**
  * Class defining how a chart should be styled in the Spark Line Style
  */
-class SparkLineStyle @Inject constructor(private val context: Context) {
+class TemperatureLineStyle @Inject constructor(private val context: Context) {
 
     /***
      * stylizes the chart
@@ -22,17 +22,17 @@ class SparkLineStyle @Inject constructor(private val context: Context) {
 
         axisLeft.apply {
             isEnabled = true
-            setDrawGridLines(true)
+            setDrawGridLines(false)
             setDrawAxisLine(false)
             isGranularityEnabled = true
             granularity = 1f
             axisMinimum = 0f //to avoid clipping from bezier curve
-            axisMaximum = 10f //must be overwritten later!
+            axisMaximum = 20f //must be overwritten later!
         }
 
         xAxis.apply {
             //axisMinimum = 0f
-            //axisMaximum = 24f
+            //axisMaximum = 100f
             isGranularityEnabled = true
             granularity = 1f
             setDrawGridLines(false)
@@ -59,7 +59,7 @@ class SparkLineStyle @Inject constructor(private val context: Context) {
     /***
      * stylizes the chart line
      */
-    fun styleLineDataSet(lineDataSet: LineDataSet, context: Context) = lineDataSet.apply{
+    fun styleLineDataSet(lineDataSet: LineDataSet, context: Context) = lineDataSet.apply {
         color = ContextCompat.getColor(context, R.color.chartlinecolor)
         valueTextColor = ContextCompat.getColor(context, R.color.black)
         setDrawValues(false)

@@ -5,9 +5,11 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.LineDataSet
 import javax.inject.Inject
+
 
 /**
  * Class defining how a chart should be styled in the Spark Line Style
@@ -72,6 +74,5 @@ class GeneralLineStyle @Inject constructor(private val context: Context) {
 
         setDrawFilled(true)
         fillDrawable = ContextCompat.getDrawable(context, R.drawable.backgr_spark_line)
-
     }
 }
