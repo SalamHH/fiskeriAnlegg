@@ -32,9 +32,14 @@ class GeneralInfoFragment : Fragment() {
     private lateinit var binding: FragmentGeneralInfoBinding
     private val viewModel: MainActivityViewModel by activityViewModels()
     private var salinityChartPressed = false
+    private var salinityChart = listOf<Entry>()
+    private var temperatureChart = listOf<Entry>()
 
     @Inject
-    lateinit var chartStyle: GeneralLineStyle
+    lateinit var saltChartStyle: GeneralLineStyle
+
+    @Inject
+    lateinit var tempChartStyle: TemperatureLineStyle
 
     /**
      * Fragment for siden i appen som gir info om salt og vann
@@ -72,7 +77,7 @@ class GeneralInfoFragment : Fragment() {
 
         //buttons
         binding.salinitychartButton.setOnClickListener {
-            if (salinityChartPressed != true) {
+            if (!salinityChartPressed) {
                 setSalinityChart()
             }
         }
@@ -143,26 +148,6 @@ class GeneralInfoFragment : Fragment() {
             }
         }
 
-
-        //posisjon
-        binding.posisjonView.text = "${site.latLong.lat}, ${site.latLong.lng}"
-
-        //anleggsnummer
-        binding.anleggsnrView.text = site.id.toString()
-
-        //plassering
-        binding.plasseringView.text = site.placementType ?: "-----"
-
-        //kapasitet
-        binding.kapasitetView.text = site.capacity.toString()
-
-        //vanntype
-        binding.vannTypeView.text = site.waterType ?: "-----"
-
-        //kommune
-        binding.prodOmraadeView.text = site.placement?.municipalityName ?: "-----"
-
-
         return binding.root
     }
 
@@ -205,20 +190,14 @@ class GeneralInfoFragment : Fragment() {
         binding.salinityChart.visibility = View.VISIBLE
         binding.watertempChart.visibility = View.GONE
 
-        chartStyle = GeneralLineStyle(requireContext())
-        var salinityChart = listOf<Entry>()
+        saltChartStyle = GeneralLineStyle(requireContext())
 
         viewModel.getNorKyst800AtSiteData(viewModel.getCurrentSite()).observe(viewLifecycleOwner) {
             it?.apply {
                 //set chart
-                salinityChart = it.getSalinityAtSurfaceAsGraph().map { entry -> //round each y entry
-                    Entry(entry.x, entry.y)
-                }
+                salinityChart = it.getSalinityAtSurfaceAsGraph()
             }
-            Log.d("wtfman", salinityChart[0].toString())
-            val testmFormat = DecimalFormat("0.00")
-            Log.d("Doesiteven?", testmFormat.format(salinityChart[0].x))
-            //val hourList = arrayOf(1.0, 2.0, 3,0, 4.0, 5.0, 6.0, 7.0, 8.0)
+
             val salinityData = salinityChart.map { entry ->
                 entry.y
             }
@@ -228,21 +207,19 @@ class GeneralInfoFragment : Fragment() {
                 val linedatasetSalinity =
                     LineDataSet(salinityChart, CHART_LABEL_SALT)
 
-                linedatasetSalinity.valueFormatter = LargeValueFormatter()
-
                 binding.salinityChart.apply {
                     axisLeft.apply {
                         axisMaximum =
                             (salinityData.maxOf { v -> v } + 1) //clipping might still occurr
-                        valueFormatter = LargeValueFormatter()
                     }
                 }
                 //style linedataset
-                chartStyle.styleLineDataSet(linedatasetSalinity, requireContext())
+                saltChartStyle.styleLineDataSet(linedatasetSalinity, requireContext())
                 binding.salinityChart.data = LineData(linedatasetSalinity)
+                binding.salinityChart.notifyDataSetChanged()
                 binding.salinityChart.invalidate()
 
-                chartStyle.styleChart(binding.salinityChart)
+                saltChartStyle.styleChart(binding.salinityChart)
 
                 binding.salinityChartHeader.text = "Graf over saltholdighet"
                 salinityChartPressed = true
@@ -255,12 +232,10 @@ class GeneralInfoFragment : Fragment() {
         binding.salinityChart.visibility = View.GONE
         binding.watertempChart.visibility = View.VISIBLE
 
-        chartStyle = GeneralLineStyle(requireContext())
-        var temperatureChart = listOf<Entry>()
+        tempChartStyle = TemperatureLineStyle(requireContext())
 
         viewModel.getNorKyst800AtSiteData(viewModel.getCurrentSite()).observe(viewLifecycleOwner) {
             it?.apply {
-                //set chart
                 temperatureChart = it.getTemperatureAtSurfaceAsGraph()
             }
             //val hourList = arrayOf(1.0, 2.0, 3,0, 4.0, 5.0, 6.0, 7.0, 8.0)
@@ -272,24 +247,19 @@ class GeneralInfoFragment : Fragment() {
                 val linedataset =
                     LineDataSet(temperatureChart, CHART_LABEL_TEMP)
 
-                linedataset.valueFormatter = ChartValueFormatter()
-
                 binding.watertempChart.apply {
                     axisLeft.apply {
                         axisMaximum =
                             (temperatureData.maxOf { v -> v } + 1).toFloat() //clipping might still occurr
-                        valueFormatter = ChartValueFormatter()
-                    }
-                    axisRight.apply {
-                        valueFormatter = ChartValueFormatter()
                     }
                 }
                 //style linedataset
 
-                chartStyle.styleLineDataSet(linedataset, requireContext())
+                tempChartStyle.styleLineDataSet(linedataset, requireContext())
                 binding.watertempChart.data = LineData(linedataset)
                 binding.watertempChart.invalidate()
-                chartStyle.styleChart(binding.watertempChart)
+
+                tempChartStyle.styleChart(binding.watertempChart)
 
                 binding.salinityChartHeader.text = "Graf over vanntemperatur"
                 salinityChartPressed = false

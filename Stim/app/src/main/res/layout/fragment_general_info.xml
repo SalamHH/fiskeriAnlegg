@@ -144,7 +144,7 @@
                             android:layout_height="match_parent"
                             android:text="----°"
                             android:textColor="@color/primaryTextColor"
-                            android:textSize="40sp"
+                            android:textSize="30sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/tempIcon"
                             app:layout_constraintHorizontal_bias="0.5"
@@ -204,7 +204,7 @@
                             android:layout_height="match_parent"
                             android:text="----"
                             android:textColor="@color/primaryTextColor"
-                            android:textSize="40sp"
+                            android:textSize="30sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.5"
@@ -276,38 +276,91 @@
                         android:textColor="@color/primaryTextColor"
                         android:textSize="15sp" />
 
-                    <com.github.mikephil.charting.charts.LineChart
-                        android:id="@+id/salinityChart"
-                        android:layout_width="match_parent"
-                        android:layout_height="250dp"
+                    <LinearLayout
+                        android:id="@+id/graphview"
                         android:layout_below="@id/salinityChartHeader"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent" />
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
 
-                    <com.github.mikephil.charting.charts.LineChart
-                        android:id="@+id/watertempChart"
-                        android:layout_width="match_parent"
-                        android:layout_height="250dp"
-                        android:layout_below="@id/salinityChartHeader"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        android:visibility="gone" />
+                        <com.github.mikephil.charting.charts.LineChart
+                            android:id="@+id/watertempChart"
+                            android:layout_width="match_parent"
+                            android:layout_height="250dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            android:visibility="gone" />
+
+                        <com.github.mikephil.charting.charts.LineChart
+                            android:id="@+id/salinityChart"
+                            android:layout_width="match_parent"
+                            android:layout_height="250dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent" />
+
+
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/ukenrtag"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/salinityChart"
+                        android:layout_below="@id/graphview"
                         android:layout_centerHorizontal="true"
                         android:layout_marginBottom="5dp"
                         android:fontFamily="@font/montserrat_light"
-                        android:text="Uke Nr."
+                        android:text="Tid i timer"
                         android:textColor="@color/primaryTextColor"
                         android:textSize="12sp" />
 
                 </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/InformationCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/colorAccent"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="5dp"
+                app:cardMaxElevation="10dp"
+                app:cardPreventCornerOverlap="true"
+                app:cardUseCompatPadding="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/infoHeader"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:textStyle="bold"
+                        android:gravity="center_horizontal"
+                        android:text="Informasjon om vanntemperatur og saltholdighetdata"
+                        android:textColor="@color/primaryTextColor"
+                        android:textSize="15sp"
+                        android:layout_gravity="center" />
+
+                    <TextView
+                        android:id="@+id/infoText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_gravity="center_horizontal"
+                        android:fontFamily="@font/montserrat_light"
+                        android:text="Denne grafen viser til saltholdighet og vanntemperatur funnet i anlegget. (MER INFO TRENGS). For å se grafer klikker du på knappene lenger oppe. Du kan også zoome inn og navigere grafen med touch."
+                        android:textColor="@color/primaryTextColor"
+                        android:textSize="13sp"
+                        android:gravity="center" />
+
+                </LinearLayout>
 
             </androidx.cardview.widget.CardView>
 
@@ -414,164 +467,6 @@
                         android:stretchColumns="*"></TableLayout>
 
                 </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/generalInfoBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardBackgroundColor="@color/grey"
-                app:cardCornerRadius="10dp"
-                app:cardElevation="5dp"
-                app:cardMaxElevation="10dp"
-                app:cardPreventCornerOverlap="true"
-                app:cardUseCompatPadding="true"
-                android:layout_gravity="center">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp">
-
-                    <!-- POSISJON -->
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginEnd="5dp"
-                        android:text="Posisjon: "
-                        android:textColor="@color/primaryTextColor" />
-
-                    <TextView
-                        android:id="@+id/posisjonView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginEnd="5dp"
-                        android:text="@string/blank"
-                        android:textColor="@color/primaryTextColor" />
-
-                    <!-- ANLEGGSNUMMER -->
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/posisjonView"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginEnd="5dp"
-                        android:text="Anleggsnummer:"
-                        android:textColor="@color/primaryTextColor" />
-
-                    <TextView
-                        android:id="@+id/anleggsnrView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/posisjonView"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginEnd="5dp"
-                        android:text="@string/blank"
-                        android:textColor="@color/primaryTextColor" />
-
-                    <!-- PLASSERING -->
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/anleggsnrView"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginEnd="5dp"
-                        android:text="Plassering:"
-                        android:textColor="@color/primaryTextColor" />
-
-                    <TextView
-                        android:id="@+id/plasseringView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/anleggsnrView"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginEnd="5dp"
-                        android:text="@string/blank"
-                        android:textColor="@color/primaryTextColor" />
-
-                    <!-- KAPASITET -->
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/plasseringView"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginEnd="5dp"
-                        android:text="Kapasitet:"
-                        android:textColor="@color/primaryTextColor" />
-
-                    <TextView
-                        android:id="@+id/kapasitetView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/plasseringView"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginEnd="5dp"
-                        android:text="@string/blank"
-                        android:textColor="@color/primaryTextColor" />
-
-                    <!-- VANNTYPE -->
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/kapasitetView"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginEnd="5dp"
-                        android:text="Vanntype:"
-                        android:textColor="@color/primaryTextColor" />
-
-                    <TextView
-                        android:id="@+id/vannTypeView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/kapasitetView"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginEnd="5dp"
-                        android:text="@string/blank"
-                        android:textColor="@color/primaryTextColor" />
-
-                    <!-- KOMMUNE -->
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/vannTypeView"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginEnd="5dp"
-                        android:text="Kommune:"
-                        android:textColor="@color/primaryTextColor" />
-
-                    <TextView
-                        android:id="@+id/prodOmraadeView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/vannTypeView"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginEnd="5dp"
-                        android:text="@string/blank"
-                        android:textColor="@color/primaryTextColor" />
-
-                </RelativeLayout>
 
             </androidx.cardview.widget.CardView>
 
