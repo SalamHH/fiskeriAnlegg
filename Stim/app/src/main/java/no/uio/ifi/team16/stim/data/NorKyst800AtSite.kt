@@ -5,6 +5,9 @@ import no.uio.ifi.team16.stim.util.NullableFloatArray2D
 import no.uio.ifi.team16.stim.util.NullableFloatArray4D
 import no.uio.ifi.team16.stim.util.Options
 import no.uio.ifi.team16.stim.util.get
+import java.time.Instant
+import java.time.temporal.ChronoUnit
+import kotlin.math.roundToInt
 
 /**
  * Class representing NorKyst800 data at a specific site.
@@ -75,12 +78,14 @@ data class NorKyst800AtSite(
     fun getSalinityAtSurfaceAsGraph(): List<Entry> =
         norKyst800.time.zip(
             norKyst800.salinity
-                .first() //get at surface
                 .map { arr -> //for each latlong grid at a given time
-                    aggregation(arr) //apply aggregation
+                    aggregation(arr.first()) //apply aggregation at surface
                 }
-        ).map { (hour, salt) -> //we have List<Pair<...>> make it into List<Entry>
-            Entry(hour, salt)
+        ).map { (seconds, salt) -> //we have List<Pair<...>> make it into List<Entry>
+            //also map seconds from dat to hours from now
+            //seconds is seconds since 1970-01-01 00:00:00
+            val secondsFrom1970ToNow = Instant.EPOCH.until(Instant.now(), ChronoUnit.SECONDS)
+            Entry(((seconds - secondsFrom1970ToNow) / 3600).roundToInt().toFloat(), salt)
         }
 
     /**
@@ -105,12 +110,14 @@ data class NorKyst800AtSite(
     fun getTemperatureAtSurfaceAsGraph(): List<Entry> =
         norKyst800.time.zip(
             norKyst800.temperature
-                .first() //get at surface
                 .map { arr -> //for each latlong grid at a given time
-                    aggregation(arr) //apply aggregation
+                    aggregation(arr.first()) //apply aggregation at surface
                 }
-        ).map { (hour, temp) -> //we have List<Pair<...>> make it into List<Entry>
-            Entry(hour, temp)
+        ).map { (seconds, temp) -> //we have List<Pair<...>> make it into List<Entry>
+            //also map seconds from dat to hours from now
+            //seconds is seconds since 1970-01-01 00:00:00
+            val secondsFrom1970ToNow = Instant.EPOCH.until(Instant.now(), ChronoUnit.SECONDS)
+            Entry(((seconds - secondsFrom1970ToNow) / 3600).roundToInt().toFloat(), temp)
         }
 
     /**
