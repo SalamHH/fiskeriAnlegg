@@ -1,6 +1,7 @@
 package no.uio.ifi.team16.stim
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,13 +10,17 @@ import androidx.fragment.app.activityViewModels
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.DefaultValueFormatter
+import com.github.mikephil.charting.formatter.LargeValueFormatter
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 import no.uio.ifi.team16.stim.data.StaticMapImageLoader
 import no.uio.ifi.team16.stim.databinding.FragmentGeneralInfoBinding
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 import java.lang.Math.round
+import java.text.DecimalFormat
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 
 class GeneralInfoFragment : Fragment() {
@@ -130,7 +135,9 @@ class GeneralInfoFragment : Fragment() {
     }
 
     private fun setSalinityChart() {
-        resetChart()
+        binding.salinityChart.visibility = View.VISIBLE
+        binding.watertempChart.visibility = View.GONE
+
         chartStyle = GeneralLineStyle(requireContext())
         var salinityChart = listOf<Entry>()
 
@@ -138,22 +145,29 @@ class GeneralInfoFragment : Fragment() {
             it?.apply {
                 //set chart
                 salinityChart = it.getSalinityAtSurfaceAsGraph().map { entry -> //round each y entry
-                    Entry(entry.x, round(entry.y).toFloat())
+                    Entry(entry.x, entry.y)
                 }
             }
+            Log.d("wtfman", salinityChart[0].toString())
+            val testmFormat = DecimalFormat("0.00")
+            Log.d("Doesiteven?", testmFormat.format(salinityChart[0].x))
             //val hourList = arrayOf(1.0, 2.0, 3,0, 4.0, 5.0, 6.0, 7.0, 8.0)
             val salinityData = salinityChart.map { entry ->
                 entry.y
             }
 
             if (salinityChart.isNotEmpty()) {
+
                 val linedatasetSalinity =
                     LineDataSet(salinityChart, CHART_LABEL_SALT)
+
+                linedatasetSalinity.valueFormatter = LargeValueFormatter()
 
                 binding.salinityChart.apply {
                     axisLeft.apply {
                         axisMaximum =
-                            (salinityData.maxOf { v -> v } + 1).toFloat() //clipping might still occurr
+                            (salinityData.maxOf { v -> v } + 1) //clipping might still occurr
+                        valueFormatter = LargeValueFormatter()
                     }
                 }
                 //style linedataset
@@ -171,7 +185,9 @@ class GeneralInfoFragment : Fragment() {
     }
 
     private fun setTemperatureChart() {
-        resetChart()
+        binding.salinityChart.visibility = View.GONE
+        binding.watertempChart.visibility = View.VISIBLE
+
         chartStyle = GeneralLineStyle(requireContext())
         var temperatureChart = listOf<Entry>()
 
@@ -189,32 +205,29 @@ class GeneralInfoFragment : Fragment() {
                 val linedataset =
                     LineDataSet(temperatureChart, CHART_LABEL_TEMP)
 
-                binding.salinityChart.apply {
+                linedataset.valueFormatter = ChartValueFormatter()
+
+                binding.watertempChart.apply {
                     axisLeft.apply {
                         axisMaximum =
                             (temperatureData.maxOf { v -> v } + 1).toFloat() //clipping might still occurr
+                        valueFormatter = ChartValueFormatter()
+                    }
+                    axisRight.apply {
+                        valueFormatter = ChartValueFormatter()
                     }
                 }
                 //style linedataset
 
                 chartStyle.styleLineDataSet(linedataset, requireContext())
-                binding.salinityChart.data = LineData(linedataset)
-                binding.salinityChart.invalidate()
-                chartStyle.styleChart(binding.salinityChart)
+                binding.watertempChart.data = LineData(linedataset)
+                binding.watertempChart.invalidate()
+                chartStyle.styleChart(binding.watertempChart)
 
                 binding.salinityChartHeader.text = "Graf over vanntemperatur"
                 salinityChartPressed = false
                 toggleButtonColors()
             }
         }
-    }
-
-    private fun resetChart() {
-        binding.salinityChart.fitScreen()
-        binding.salinityChart.data?.clearValues()
-        binding.salinityChart.xAxis.valueFormatter = null
-        binding.salinityChart.notifyDataSetChanged()
-        binding.salinityChart.clear()
-        binding.salinityChart.invalidate()
     }
 }

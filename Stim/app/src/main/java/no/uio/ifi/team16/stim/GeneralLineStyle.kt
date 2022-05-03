@@ -32,9 +32,9 @@ class GeneralLineStyle @Inject constructor(private val context: Context) {
 
         xAxis.apply {
             //axisMinimum = 0f
-            //axisMaximum = 24f
+            //axisMaximum = 100f
             isGranularityEnabled = true
-            granularity = 3600f
+            granularity = 1f
             setDrawGridLines(false)
             setDrawAxisLine(false)
             position = XAxis.XAxisPosition.BOTTOM
