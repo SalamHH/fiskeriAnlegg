@@ -24,6 +24,7 @@ import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 import no.uio.ifi.team16.stim.util.LatLong
 import no.uio.ifi.team16.stim.util.capitalizeEachWord
 
+
 /**
  * Map fragment
  */
@@ -73,7 +74,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
 
         //Bottom Sheet behavior
         bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet)
-        bottomSheetBehavior.setPeekHeight(250, true)
+        bottomSheetBehavior.setPeekHeight(290, true)
         bottomSheetBehavior.isDraggable = true
         bottomSheetBehavior.isHideable = false
 
@@ -93,12 +94,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         }
 
         binding.searchView.setOnQueryTextListener(this)
-
-        binding.searchView.setOnFocusChangeListener { _, b ->
-            if (!b) {
-                closeKeyboard()
-            }
-        }
         return binding.root
     }
 
@@ -133,6 +128,12 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
 
         map.setOnCameraMoveListener(this::onCameraMove)
         map.setMapStyle(MapStyleOptions.loadRawResourceStyle(requireContext(), R.raw.map_style))
+        map.setOnCameraMoveStartedListener {
+            if (it == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                closeKeyboard()
+            }
+        }
 
         mapBounds?.let { bounds ->
             // Move to last camera position
@@ -146,6 +147,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
             map.isMyLocationEnabled = true
             setMapToUserLocation()
         }
+        closeKeyboard()
     }
 
     /**
@@ -156,10 +158,19 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
             onSiteUpdate(sites)
             currentSite = sites[0].name
             val adapter =
-                RecycleViewAdapter(sites, listOf(), this::adapterOnClick, this::favoriteOnClick, requireActivity())
+                RecycleViewAdapter(
+                    sites,
+                    listOf(),
+                    this::adapterOnClick,
+                    this::favoriteOnClick,
+                    requireActivity()
+                )
             binding.recyclerView.adapter = adapter
 
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+
+            binding.openHeaderBottomsheet.kommuneText.text = getString(R.string.blank)
+
 
             val cameraUpdate = CameraUpdateFactory.newLatLngZoom(sites[0].latLong.toGoogle(), 5F)
             map.animateCamera(cameraUpdate)
@@ -282,7 +293,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
      */
     override fun onCameraMove() {
         zoomLevel = map.cameraPosition.zoom
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
     /**
