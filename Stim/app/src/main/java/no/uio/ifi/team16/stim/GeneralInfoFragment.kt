@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
+import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.github.mikephil.charting.data.Entry
@@ -45,6 +46,12 @@ class GeneralInfoFragment : Fragment() {
     ): View {
         binding = FragmentGeneralInfoBinding.inflate(inflater, container, false)
 
+        ///////////
+        //LOADING//
+        ///////////
+
+        binding.LoadingScreen.loadingLayout.visibility = View.VISIBLE
+
         ////////
         //SITE//
         ////////
@@ -56,8 +63,11 @@ class GeneralInfoFragment : Fragment() {
         //QUICK INFO GRIDS//
         ////////////////////
 
+
         viewModel.loadNorKyst800AtSite(site)
+
         viewModel.getNorKyst800AtSiteData(site).observe(viewLifecycleOwner) {
+            binding.LoadingScreen.loadingLayout.visibility = View.GONE
             it?.apply {
                 //forecast data is also available in the norkyst object! (about 66 hours, time indexes hours)
                 binding.temperatureTextview.text = "%4.1f".format(getTemperature()) + "°"
@@ -135,6 +145,9 @@ class GeneralInfoFragment : Fragment() {
                         axisMaximum =
                             (salinityData.maxOf { v -> v } + 1) //clipping might still occurr
                     }
+                    xAxis.apply {
+                        valueFormatter = TimeValueFormatter()
+                    }
                 }
                 //style linedataset
                 saltChartStyle.styleLineDataSet(linedatasetSalinity, requireContext())
@@ -177,10 +190,13 @@ class GeneralInfoFragment : Fragment() {
                     axisLeft.apply {
                         axisMaximum =
                             (temperatureData.maxOf { v -> v } + 1).toFloat() //clipping might still occurr
+                        valueFormatter = TempValueFormatter()
+                    }
+                    xAxis.apply {
+                        valueFormatter = TimeValueFormatter()
                     }
                 }
                 //style linedataset
-
                 tempChartStyle.styleLineDataSet(linedataset, requireContext())
                 binding.watertempChart.data = LineData(linedataset)
                 binding.watertempChart.invalidate()
@@ -207,7 +223,7 @@ class GeneralInfoFragment : Fragment() {
                     val newRow = TableRow(requireContext())
                     val view = inflater.inflate(R.layout.infection_table_row, container, false)
                     view.findViewById<TextView>(R.id.table_display_week).text =
-                        tempgraphdata[i].x.toString()
+                        String.format("%.0f:00", tempgraphdata[i].x)
                     if (!tempgraphdata[i].y.toString().contains("NaN")) {
                         view.findViewById<TextView>(R.id.table_display_float).text =
                             tempgraphdata[i].y.toString()
@@ -220,7 +236,7 @@ class GeneralInfoFragment : Fragment() {
                         ViewGroup.LayoutParams.WRAP_CONTENT
                     )
                     newRow.addView(view)
-                    binding.tablelayout.addView(newRow, 0)
+                    binding.tablelayout.addView(newRow, i)
                     newRow.layoutParams = TableLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT
@@ -247,7 +263,7 @@ class GeneralInfoFragment : Fragment() {
                     val newRow = TableRow(requireContext())
                     val view = inflater.inflate(R.layout.infection_table_row, container, false)
                     view.findViewById<TextView>(R.id.table_display_week).text =
-                        saltgraphdata[i].x.toString()
+                        String.format("%.0f:00", saltgraphdata[i].x)
                     if (!saltgraphdata[i].y.toString().contains("NaN")) {
                         view.findViewById<TextView>(R.id.table_display_float).text =
                             saltgraphdata[i].y.toString()
@@ -260,7 +276,7 @@ class GeneralInfoFragment : Fragment() {
                         ViewGroup.LayoutParams.WRAP_CONTENT
                     )
                     newRow.addView(view)
-                    binding.Salttablelayout.addView(newRow, 0)
+                    binding.Salttablelayout.addView(newRow, i)
                     newRow.layoutParams = TableLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT

@@ -1,485 +1,505 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/background_blue"
-    android:backgroundTint="@color/skyblue"
-    android:backgroundTintMode="multiply"
-    android:gravity="center"
-    tools:context=".GeneralInfoFragment">
+    android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <include
+        android:id="@+id/LoadingScreen"
+        layout="@layout/loading_screen"
+        android:layout_centerInParent="true"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent" />
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:background="@drawable/background_blue"
+        android:backgroundTint="@color/skyblue"
+        android:backgroundTintMode="multiply"
+        android:gravity="center"
+        tools:context=".GeneralInfoFragment">
 
-
-        <!-- SALTHOLDIGHET OF VANN -->
-
-
-        <!--TODO: fix header icon -->
-
-
-        <ImageView
-            android:id="@+id/circleFilledWhiteIcon2"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:paddingTop="10dp"
-            android:transitionName="image_big"
-            app:layout_constraintBottom_toBottomOf="@id/guideline3"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/guideline3"
-            app:srcCompat="@drawable/circle_filled_white" />
-
-        <ImageView
-            android:id="@+id/saltwaterIcon"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:transitionName="image_big"
-            app:layout_constraintBottom_toBottomOf="@id/guideline3"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/guideline3"
-            app:srcCompat="@android:drawable/ic_menu_gallery"
-            tools:layout_editor_absoluteY="31dp" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_begin="50dp" />
-
-        <TextView
-            android:id="@+id/header"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Saltholdighet og vann"
-            android:textColor="@color/white"
-            android:textSize="40sp"
-            android:fontFamily="@font/plasticbeach"
-            app:layout_constraintTop_toBottomOf="@id/circleFilledWhiteIcon2"
-            tools:layout_editor_absoluteX="0dp" />
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/sitename"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            android:fontFamily="@font/montserrat_bold"
-            android:gravity="center"
-            android:text="@string/site_name"
-            app:layout_constraintTop_toBottomOf="@id/header" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@id/sitename">
+            <!-- SALTHOLDIGHET OF VANN -->
 
-            <!-- infoboxes -->
 
-            <GridLayout
-                android:id="@+id/infoBoxes"
+            <!--TODO: fix header icon -->
+
+
+            <ImageView
+                android:id="@+id/circleFilledWhiteIcon2"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:paddingTop="10dp"
+                android:transitionName="image_big"
+                app:layout_constraintBottom_toBottomOf="@id/guideline3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/guideline3"
+                app:srcCompat="@drawable/circle_filled_white" />
+
+            <ImageView
+                android:id="@+id/saltwaterIcon"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:transitionName="image_big"
+                app:layout_constraintBottom_toBottomOf="@id/guideline3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/guideline3"
+                app:srcCompat="@drawable/mdi___waves"
+                tools:layout_editor_absoluteY="31dp" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:rowCount="1"
-                android:columnCount="2"
                 android:orientation="horizontal"
-                android:layout_gravity="center">
+                app:layout_constraintGuide_begin="50dp" />
 
-                <!-- Water temperature card-->
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/tempratureInfoCard"
+            <TextView
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/plasticbeach"
+                android:gravity="center"
+                android:text="Saltholdighet og vann"
+                android:textColor="@color/white"
+                android:textSize="40sp"
+                app:layout_constraintTop_toBottomOf="@id/circleFilledWhiteIcon2"
+                tools:layout_editor_absoluteX="0dp" />
+
+            <TextView
+                android:id="@+id/sitename"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:fontFamily="@font/montserrat_bold"
+                android:gravity="center"
+                android:text="@string/site_name"
+                app:layout_constraintTop_toBottomOf="@id/header" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="5dp"
+                app:layout_constraintTop_toBottomOf="@id/sitename">
+
+                <!-- infoboxes -->
+
+                <GridLayout
+                    android:id="@+id/infoBoxes"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:cardBackgroundColor="@color/grey"
+                    android:layout_gravity="center"
+                    android:columnCount="2"
+                    android:orientation="horizontal"
+                    android:rowCount="1">
+
+                    <!-- Water temperature card-->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/tempratureInfoCard"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:cardBackgroundColor="@color/grey"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="5dp"
+                        app:cardMaxElevation="10dp"
+                        app:cardPreventCornerOverlap="true"
+                        app:cardUseCompatPadding="true">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_margin="5dp"
+                            android:layout_marginTop="10dp"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <!-- TODO: fix temperature icon -->
+
+                            <TextView
+                                android:id="@+id/boxTempText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="10dp"
+                                android:gravity="center_horizontal"
+                                android:text="Vanntemperatur:"
+                                android:textColor="@color/primaryTextColor"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <ImageView
+                                android:id="@+id/tempIcon"
+                                android:layout_width="70dp"
+                                android:layout_height="70dp"
+                                android:maxHeight="70dp"
+                                android:padding="10dp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toStartOf="@+id/temperatureTextview"
+                                app:layout_constraintHorizontal_bias="0.5"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/boxTempText"
+                                app:srcCompat="@drawable/watertemp_icon" />
+
+                            <TextView
+                                android:id="@+id/temperatureTextview"
+                                android:layout_width="wrap_content"
+                                android:layout_height="0dp"
+                                android:gravity="center_vertical"
+                                android:text="----°"
+                                android:textColor="@color/primaryTextColor"
+                                android:textSize="30sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="0.5"
+                                app:layout_constraintStart_toEndOf="@+id/tempIcon"
+                                app:layout_constraintTop_toBottomOf="@id/boxTempText" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Salt card-->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/saltInfoCard"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:cardBackgroundColor="@color/grey"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="5dp"
+                        app:cardMaxElevation="10dp"
+                        app:cardPreventCornerOverlap="true"
+                        app:cardUseCompatPadding="true">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_margin="5dp"
+                            android:layout_marginTop="10dp"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/boxSaltText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:text="Saltholdighet i vannet:"
+                                android:textColor="@color/primaryTextColor"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <ImageView
+                                android:id="@+id/saltIcon"
+                                android:layout_width="70dp"
+                                android:layout_height="70dp"
+                                android:padding="10dp"
+                                android:src="@drawable/salt_icon"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toStartOf="@+id/saltTextview"
+                                app:layout_constraintHorizontal_bias="0.5"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/boxSaltText" />
+
+                            <TextView
+                                android:id="@+id/saltTextview"
+                                android:layout_width="wrap_content"
+                                android:layout_height="0dp"
+                                android:gravity="center_vertical"
+                                android:text="----"
+                                android:textColor="@color/primaryTextColor"
+                                android:textSize="30sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="0.5"
+                                app:layout_constraintStart_toEndOf="@+id/saltIcon"
+                                app:layout_constraintTop_toBottomOf="@id/boxSaltText" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                </GridLayout>
+
+                <!-- Salinity chart -->
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/salintyInfoCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@color/colorAccent"
                     app:cardCornerRadius="10dp"
                     app:cardElevation="5dp"
                     app:cardMaxElevation="10dp"
                     app:cardPreventCornerOverlap="true"
                     app:cardUseCompatPadding="true">
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="10dp"
-                        android:layout_margin="5dp">
 
-                        <!-- TODO: fix temperature icon -->
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <GridLayout
+                            android:id="@+id/buttonGrid"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_margin="5dp"
+                            android:columnCount="2"
+                            android:orientation="horizontal"
+                            android:rowCount="1">
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/tempchartButton"
+                                android:layout_columnWeight="0.5"
+                                android:layout_marginEnd="2dp"
+                                android:backgroundTint="@color/dark_skyblue"
+                                android:text="Vanntemperatur" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/salinitychartButton"
+                                android:layout_columnWeight="0.5"
+                                android:layout_marginStart="2dp"
+                                android:backgroundTint="@color/dark_skyblue"
+                                android:text="Saltholdighet" />
+
+                        </GridLayout>
 
                         <TextView
-                            android:id="@+id/boxTempText"
+                            android:id="@+id/salinityChartHeader"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Vanntemperatur:"
-                            android:gravity="center_horizontal"
-                            android:layout_marginBottom="10dp"
+                            android:layout_below="@id/buttonGrid"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginEnd="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:fontFamily="@font/montserrat_light_italic"
+                            android:text="Graf over saltholdighet"
                             android:textColor="@color/primaryTextColor"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            android:textSize="15sp" />
 
-                        <ImageView
-                            android:id="@+id/tempIcon"
-                            android:layout_width="70dp"
-                            android:layout_height="70dp"
-                            android:maxHeight="70dp"
-                            android:padding="10dp"
-                            app:srcCompat="@android:drawable/ic_menu_gallery"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@+id/temperatureTextview"
-                            app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/boxTempText"
-                            app:tint="@color/black" />
+                        <LinearLayout
+                            android:id="@+id/graphview"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/salinityChartHeader"
+                            android:orientation="horizontal">
+
+                            <com.github.mikephil.charting.charts.LineChart
+                                android:id="@+id/watertempChart"
+                                android:layout_width="match_parent"
+                                android:layout_height="250dp"
+                                android:layout_margin="8dp"
+                                android:visibility="gone"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent" />
+
+                            <com.github.mikephil.charting.charts.LineChart
+                                android:id="@+id/salinityChart"
+                                android:layout_width="match_parent"
+                                android:layout_height="250dp"
+                                android:layout_margin="8dp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent" />
+
+
+                        </LinearLayout>
 
                         <TextView
-                            android:id="@+id/temperatureTextview"
+                            android:id="@+id/ukenrtag"
                             android:layout_width="wrap_content"
-                            android:layout_height="0dp"
-                            android:text="----°"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/graphview"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginBottom="5dp"
+                            android:fontFamily="@font/montserrat_light"
+                            android:text="Tid i timer"
                             android:textColor="@color/primaryTextColor"
-                            android:textSize="30sp"
-                            android:gravity="center_vertical"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toEndOf="@+id/tempIcon"
-                            app:layout_constraintTop_toBottomOf="@id/boxTempText" />
+                            android:textSize="12sp" />
 
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    </RelativeLayout>
 
                 </androidx.cardview.widget.CardView>
 
-                <!-- Salt card-->
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/saltInfoCard"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/InformationCard"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardBackgroundColor="@color/grey"
+                    app:cardBackgroundColor="@color/colorAccent"
                     app:cardCornerRadius="10dp"
                     app:cardElevation="5dp"
                     app:cardMaxElevation="10dp"
                     app:cardPreventCornerOverlap="true"
                     app:cardUseCompatPadding="true">
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_margin="5dp"
-                        android:layout_marginTop="10dp"
-                        android:gravity="center"
-                        android:orientation="horizontal">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/boxSaltText"
+                            android:id="@+id/infoHeader"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_margin="10dp"
+                            android:fontFamily="@font/montserrat_bold"
+                            android:gravity="center_horizontal"
+                            android:text="Informasjon om vanntemperatur og saltholdighetdata"
+                            android:textColor="@color/primaryTextColor"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/infoText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
-                            android:text="Saltholdighet i vannet:"
+                            android:layout_margin="10dp"
+                            android:fontFamily="@font/montserrat_light"
+                            android:gravity="center"
+                            android:text="Denne grafen viser til saltholdighet og vanntemperatur funnet i anlegget. (MER INFO TRENGS). For å se grafer klikker du på knappene lenger oppe. Du kan også zoome inn og navigere grafen med touch."
                             android:textColor="@color/primaryTextColor"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            android:textSize="13sp" />
 
-                        <ImageView
-                            android:id="@+id/saltIcon"
-                            android:layout_width="70dp"
-                            android:layout_height="70dp"
-                            android:padding="10dp"
-                            android:src="@drawable/salt"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@+id/saltTextview"
-                            app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/boxSaltText" />
-
-                        <TextView
-                            android:id="@+id/saltTextview"
-                            android:layout_width="wrap_content"
-                            android:layout_height="0dp"
-                            android:text="----"
-                            android:textColor="@color/primaryTextColor"
-                            android:textSize="30sp"
-                            android:gravity="center_vertical"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toEndOf="@+id/saltIcon"
-                            app:layout_constraintTop_toBottomOf="@id/boxSaltText" />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
 
-            </GridLayout>
-
-            <!-- Salinity chart -->
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/salintyInfoCard"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardBackgroundColor="@color/colorAccent"
-                app:cardCornerRadius="10dp"
-                app:cardElevation="5dp"
-                app:cardMaxElevation="10dp"
-                app:cardPreventCornerOverlap="true"
-                app:cardUseCompatPadding="true">
-
-
-                <RelativeLayout
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/tableCard"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <GridLayout
-                        android:id="@+id/buttonGrid"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:rowCount="1"
-                        android:columnCount="2"
-                        android:orientation="horizontal"
-                        android:layout_gravity="center"
-                        android:layout_margin="5dp">
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/tempchartButton"
-                            android:backgroundTint="@color/dark_skyblue"
-                            android:text="Vanntemperatur"
-                            android:layout_columnWeight="0.5"
-                            android:layout_marginEnd="2dp" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/salinitychartButton"
-                            android:backgroundTint="@color/dark_skyblue"
-                            android:text="Saltholdighet"
-                            android:layout_columnWeight="0.5"
-                            android:layout_marginStart="2dp" />
-
-                    </GridLayout>
-
-                    <TextView
-                        android:id="@+id/salinityChartHeader"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/buttonGrid"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginStart="5dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginEnd="5dp"
-                        android:layout_marginBottom="5dp"
-                        android:fontFamily="@font/montserrat_light_italic"
-                        android:text="Graf over saltholdighet"
-                        android:textColor="@color/primaryTextColor"
-                        android:textSize="15sp" />
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@color/colorAccent"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="5dp"
+                    app:cardMaxElevation="10dp"
+                    app:cardPreventCornerOverlap="true"
+                    app:cardUseCompatPadding="true">
 
                     <LinearLayout
-                        android:id="@+id/graphview"
-                        android:layout_below="@id/salinityChartHeader"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="vertical">
 
-                        <com.github.mikephil.charting.charts.LineChart
-                            android:id="@+id/watertempChart"
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="250dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            android:visibility="gone" />
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
 
-                        <com.github.mikephil.charting.charts.LineChart
-                            android:id="@+id/salinityChart"
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.25"
+                                android:background="@color/darker_skyblue"
+                                android:fontFamily="@font/montserrat_bold"
+                                android:gravity="center"
+                                android:text="Tid"
+                                android:textColor="@color/secondaryTextColor"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0.75"
+                                android:background="@color/darker_skyblue"
+                                android:fontFamily="@font/montserrat_light"
+                                android:gravity="center"
+                                android:text="Vanntemperatur"
+                                android:textColor="@color/secondaryTextColor"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <TableLayout
+                            android:id="@+id/tablelayout"
                             android:layout_width="match_parent"
-                            android:layout_height="250dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent" />
-
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:stretchColumns="*" />
 
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/ukenrtag"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/graphview"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginBottom="5dp"
-                        android:fontFamily="@font/montserrat_light"
-                        android:text="Tid i timer"
-                        android:textColor="@color/primaryTextColor"
-                        android:textSize="12sp" />
+                </androidx.cardview.widget.CardView>
 
-                </RelativeLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/InformationCard"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardBackgroundColor="@color/colorAccent"
-                app:cardCornerRadius="10dp"
-                app:cardElevation="5dp"
-                app:cardMaxElevation="10dp"
-                app:cardPreventCornerOverlap="true"
-                app:cardUseCompatPadding="true">
-
-                <LinearLayout
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/salttableCard"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/infoHeader"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:fontFamily="@font/montserrat_bold"
-                        android:textStyle="bold"
-                        android:gravity="center_horizontal"
-                        android:text="Informasjon om vanntemperatur og saltholdighetdata"
-                        android:textColor="@color/primaryTextColor"
-                        android:textSize="15sp"
-                        android:layout_gravity="center" />
-
-                    <TextView
-                        android:id="@+id/infoText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:layout_gravity="center_horizontal"
-                        android:fontFamily="@font/montserrat_light"
-                        android:text="Denne grafen viser til saltholdighet og vanntemperatur funnet i anlegget. (MER INFO TRENGS). For å se grafer klikker du på knappene lenger oppe. Du kan også zoome inn og navigere grafen med touch."
-                        android:textColor="@color/primaryTextColor"
-                        android:textSize="13sp"
-                        android:gravity="center" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/tableCard"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardBackgroundColor="@color/colorAccent"
-                app:cardCornerRadius="10dp"
-                app:cardElevation="5dp"
-                app:cardMaxElevation="10dp"
-                app:cardPreventCornerOverlap="true"
-                app:cardUseCompatPadding="true">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    app:cardBackgroundColor="@color/colorAccent"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="5dp"
+                    app:cardMaxElevation="10dp"
+                    app:cardPreventCornerOverlap="true"
+                    app:cardUseCompatPadding="true">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="vertical">
 
-                        <TextView
-                            android:layout_width="0dp"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.25"
-                            android:gravity="center"
-                            android:text="Tid"
-                            android:fontFamily="@font/montserrat_bold"
-                            android:textStyle="bold"
-                            android:background="@color/colorSecondary" />
+                            android:orientation="horizontal">
 
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:text="Vanntemperatur"
-                            android:textColor="@color/primaryTextColor"
-                            android:layout_weight="0.75"
-                            android:gravity="center"
-                            android:fontFamily="@font/montserrat_light" />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.25"
+                                android:background="@color/darker_skyblue"
+                                android:fontFamily="@font/montserrat_bold"
+                                android:gravity="center"
+                                android:text="Tid"
+                                android:textColor="@color/secondaryTextColor"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0.75"
+                                android:background="@color/darker_skyblue"
+                                android:fontFamily="@font/montserrat_light"
+                                android:gravity="center"
+                                android:text="Saltholdighet"
+                                android:textColor="@color/secondaryTextColor"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <TableLayout
+                            android:id="@+id/Salttablelayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:stretchColumns="*" />
 
                     </LinearLayout>
 
-                    <TableLayout
-                        android:id="@+id/tablelayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:stretchColumns="*" />
+                </androidx.cardview.widget.CardView>
 
-                </LinearLayout>
+            </LinearLayout>
 
-            </androidx.cardview.widget.CardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/salttableCard"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardBackgroundColor="@color/colorAccent"
-                app:cardCornerRadius="10dp"
-                app:cardElevation="5dp"
-                app:cardMaxElevation="10dp"
-                app:cardPreventCornerOverlap="true"
-                app:cardUseCompatPadding="true">
+    </ScrollView>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.25"
-                            android:gravity="center"
-                            android:text="Tid"
-                            android:fontFamily="@font/montserrat_bold"
-                            android:textStyle="bold"
-                            android:background="@color/colorSecondary" />
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:text="Saltholdighet"
-                            android:textColor="@color/primaryTextColor"
-                            android:layout_weight="0.75"
-                            android:gravity="center"
-                            android:fontFamily="@font/montserrat_light" />
-
-                    </LinearLayout>
-
-                    <TableLayout
-                        android:id="@+id/Salttablelayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:stretchColumns="*" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-        </LinearLayout>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</ScrollView>
+</RelativeLayout>

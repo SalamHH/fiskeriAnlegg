@@ -31,5 +31,6 @@
     <color name="darker_skyblue">#435675</color>
     <color name="dark_skyblue">#6785B5</color>
     <color name="light_skyblue">#D6E3F7</color>
+    <color name="transparant_grey">#4D3C3C3C</color>
 
 </resources>

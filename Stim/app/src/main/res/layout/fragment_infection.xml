@@ -10,6 +10,13 @@
     android:gravity="center"
     tools:context=".InfectionFragment">
 
+    <include
+        android:id="@+id/LoadingScreen"
+        layout="@layout/loading_screen"
+        android:layout_centerInParent="true"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent" />
+
     <!-- INFECTION-->
 
     <ScrollView

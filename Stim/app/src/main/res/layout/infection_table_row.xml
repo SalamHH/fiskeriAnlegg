@@ -14,7 +14,7 @@
         android:fontFamily="@font/montserrat_bold"
         android:textStyle="bold"
         android:textColor="@color/primaryTextColor"
-        android:background="@color/colorSecondary" />
+        android:background="@color/skyblue" />
 
     <TextView
         android:layout_width="0dp"
