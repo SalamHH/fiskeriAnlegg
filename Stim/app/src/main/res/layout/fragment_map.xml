@@ -19,22 +19,9 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/syncBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="28dp"
-            android:layout_marginBottom="100dp"
-            android:backgroundTint="@color/dark_skyblue"
+            app:layout_constraintVertical_bias="1.0"
             android:clickable="true"
-            android:contentDescription="Sync button"
-            android:focusable="true"
-            app:backgroundTint="@color/dark_skyblue"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@android:drawable/stat_notify_sync" />
+            android:focusable="true" />
 
         <androidx.appcompat.widget.SearchView
             android:id="@+id/searchView"
@@ -59,34 +46,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        app:layout_insetEdge="bottom"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
-        <RelativeLayout
-            android:id="@+id/toolbar_btmSheet"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/dark_skyblue">
-
-            <ImageView
-                android:id="@+id/icon_pull"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_centerHorizontal="true"
-                app:srcCompat="@android:drawable/button_onoff_indicator_off" />
-
-            <TextView
-                android:id="@+id/header_btmSheet"
-                style="@style/Widget.AppCompat.Toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/icon_pull"
-                android:gravity="center"
-                android:fontFamily="@font/montserrat_semibold"
-                android:text="@string/bottomsheet_default_header"
-                android:textColor="@color/white"
-                android:textSize="15sp" />
-        </RelativeLayout>
+        <include
+            layout="@layout/header_bottomsheet"
+            android:id="@+id/open_header_bottomsheet" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
@@ -95,5 +60,20 @@
             tools:listitem="@layout/recycleview_element_overview" />
 
     </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/syncBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/light_skyblue"
+        android:clickable="true"
+        android:contentDescription="Sync button"
+        android:focusable="true"
+        app:layout_anchor="@id/bottom_sheet"
+        app:layout_anchorGravity="top|right|end"
+        android:layout_margin="10dp"
+        app:layout_dodgeInsetEdges="bottom"
+        app:srcCompat="@android:drawable/stat_notify_sync" />
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

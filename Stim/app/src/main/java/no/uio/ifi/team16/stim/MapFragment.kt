@@ -73,13 +73,19 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
 
         //Bottom Sheet behavior
         bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet)
-        bottomSheetBehavior.setPeekHeight(200, true)
+        bottomSheetBehavior.setPeekHeight(250, true)
         bottomSheetBehavior.isDraggable = true
         bottomSheetBehavior.isHideable = false
 
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         val adapter =
-            RecycleViewAdapter(listOf(), listOf(), this::adapterOnClick, this::favoriteOnClick, requireActivity())
+            RecycleViewAdapter(
+                listOf(),
+                listOf(),
+                this::adapterOnClick,
+                this::favoriteOnClick,
+                requireActivity()
+            )
         binding.recyclerView.adapter = adapter
 
         binding.syncBtn.setOnClickListener {
@@ -88,6 +94,11 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
 
         binding.searchView.setOnQueryTextListener(this)
 
+        binding.searchView.setOnFocusChangeListener { _, b ->
+            if (!b) {
+                closeKeyboard()
+            }
+        }
         return binding.root
     }
 
@@ -148,7 +159,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
                 RecycleViewAdapter(sites, listOf(), this::adapterOnClick, this::favoriteOnClick, requireActivity())
             binding.recyclerView.adapter = adapter
 
-            binding.headerBtmSheet.text = "Liste over anlegg"
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
 
             val cameraUpdate = CameraUpdateFactory.newLatLngZoom(sites[0].latLong.toGoogle(), 5F)
             map.animateCamera(cameraUpdate)
@@ -194,10 +205,10 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
             )
             binding.recyclerView.adapter = adapter
 
-            binding.headerBtmSheet.text = getString(
-                R.string.bottomsheet_formatted_header,
+            //get municipality name in bottom header
+            binding.openHeaderBottomsheet.kommuneText.text =
                 firstSite.placement?.municipalityName?.capitalizeEachWord()
-            )
+
         }
     }
 
@@ -218,6 +229,8 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
                 site.placement?.let { Log.d("munname", it.municipalityName) }
             }
         }
+
+        binding.openHeaderBottomsheet.infoText.text = sites?.size.toString()
 
         map.setOnMarkerClickListener(object : GoogleMap.OnMarkerClickListener {
             override fun onMarkerClick(mark: Marker): Boolean {
@@ -240,6 +253,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
     private fun onRefresh() {
         val center = LatLong.fromGoogle(map.cameraPosition.target)
         viewModel.loadMunicipalityNr(center)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
     }
 
     /**
@@ -268,6 +282,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
      */
     override fun onCameraMove() {
         zoomLevel = map.cameraPosition.zoom
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
     /**
