@@ -226,7 +226,7 @@ class GeneralInfoFragment : Fragment() {
                         String.format("%.0f:00", tempgraphdata[i].x)
                     if (!tempgraphdata[i].y.toString().contains("NaN")) {
                         view.findViewById<TextView>(R.id.table_display_float).text =
-                            tempgraphdata[i].y.toString()
+                            String.format("%.4f°", tempgraphdata[i].y)
                     } else {
                         view.findViewById<TextView>(R.id.table_display_float).text =
                             "Ingen data tilgjengelig"

@@ -111,7 +111,7 @@
                         android:id="@+id/tempratureInfoCard"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:cardBackgroundColor="@color/grey"
+                        app:cardBackgroundColor="@color/colorAccent"
                         app:cardCornerRadius="10dp"
                         app:cardElevation="5dp"
                         app:cardMaxElevation="10dp"
@@ -136,6 +136,7 @@
                                 android:gravity="center_horizontal"
                                 android:text="Vanntemperatur:"
                                 android:textColor="@color/primaryTextColor"
+                                android:fontFamily="@font/montserrat_light"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
@@ -176,7 +177,7 @@
                         android:id="@+id/saltInfoCard"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:cardBackgroundColor="@color/grey"
+                        app:cardBackgroundColor="@color/colorAccent"
                         app:cardCornerRadius="10dp"
                         app:cardElevation="5dp"
                         app:cardMaxElevation="10dp"
@@ -199,6 +200,7 @@
                                 android:layout_gravity="center_horizontal"
                                 android:text="Saltholdighet i vannet:"
                                 android:textColor="@color/primaryTextColor"
+                                android:fontFamily="@font/montserrat_light"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
@@ -268,6 +270,8 @@
                                 android:layout_columnWeight="0.5"
                                 android:layout_marginEnd="2dp"
                                 android:backgroundTint="@color/dark_skyblue"
+                                android:fontFamily="@font/montserrat_bold"
+                                android:textStyle="bold"
                                 android:text="Vanntemperatur" />
 
                             <com.google.android.material.button.MaterialButton
@@ -275,7 +279,9 @@
                                 android:layout_columnWeight="0.5"
                                 android:layout_marginStart="2dp"
                                 android:backgroundTint="@color/dark_skyblue"
-                                android:text="Saltholdighet" />
+                                android:text="Saltholdighet"
+                                android:fontFamily="@font/montserrat_bold"
+                                android:textStyle="bold" />
 
                         </GridLayout>
 
@@ -332,6 +338,7 @@
                             android:layout_marginBottom="5dp"
                             android:fontFamily="@font/montserrat_light"
                             android:text="Tid i timer"
+                            android:textStyle="italic"
                             android:textColor="@color/primaryTextColor"
                             android:textSize="12sp" />
 
