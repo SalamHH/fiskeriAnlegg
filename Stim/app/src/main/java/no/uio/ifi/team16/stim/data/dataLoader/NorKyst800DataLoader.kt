@@ -89,7 +89,7 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
 
         //we now have time, and we want to find the index corresponding to our time
         val now = Instant.now().epochSecond //seconds since 1970-01-01,
-        //find th
+        //find th TODO
         val timeIndex: Int = time
             .takeWhile { t -> t < now }
             .size
@@ -178,16 +178,18 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
         }
 
         //PROJECTION
-        val proj4String = variablesToAttributes["projection"]
+        val proj4String = variablesToAttributes["projection_stere"]
             ?.toList() //evaluate sequence
             ?.find { (_, name, _) -> //find the correct attribute
-                name == "proj4String"
+                name == "proj4"
             }
             ?.third //take the value of that attribute
             ?: run {
                 Log.w(TAG, "Failed to parse projection from DAS response, using default")
                 Options.defaultProj4String
             }
+        Log.d(TAG, proj4String)
+        Log.d(TAG, Options.defaultProj4String)
 
         //make the projection from string
         val projection: CoordinateTransform =

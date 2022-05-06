@@ -1,5 +1,6 @@
 package no.uio.ifi.team16.stim
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -58,7 +59,7 @@ class GeneralInfoFragment : Fragment() {
         ////////////////////
 
 
-        viewModel.loadNorKyst800AtSite(site) //TODO: flytt til forrige fragment
+        viewModel.loadNorKyst800AtSite(site) //TODO: flytt til forrige fragment?
 
         //observer for å få temperatur og saltholdighet i nåtid
         viewModel.getNorKyst800Data().observe(viewLifecycleOwner) {
@@ -79,12 +80,9 @@ class GeneralInfoFragment : Fragment() {
         }
 
         //lag toasts til salt og temp
-        setOnTemperatureOrSalinityClickListener(binding.temperatureTextview)
-        setOnTemperatureOrSalinityClickListener(binding.saltTextview)
-
-        //posisjon
-        //binding.
-        //binding.posisjonView.text = "${site.latLong.lat}, ${site.latLong.lng}"
+        setOnTemperatureOrSalinityClickListener(binding.temperatureTextview, requireContext())
+        setOnTemperatureOrSalinityClickListener(binding.saltTextview, requireContext())
+        
         ///////////////////
         //CHART + BUTTONS//
         ///////////////////
@@ -325,7 +323,7 @@ class GeneralInfoFragment : Fragment() {
     /**
      * make toasts explaining certain textvalues of the salinity or temperature textview.
      */
-    fun setOnTemperatureOrSalinityClickListener(textView: TextView) {
+    fun setOnTemperatureOrSalinityClickListener(textView: TextView, context: Context) {
         textView.setOnClickListener {
             val txt = it as TextView
             if (txt.text == "N/A") {
@@ -344,32 +342,4 @@ class GeneralInfoFragment : Fragment() {
             }
         }
     }
-
-
-    }
-
-    /**
-     * make toasts explaining certain textvalues of the salinity or temperature textview.
-     */
-    fun setOnTemperatureOrSalinityClickListener(textView: TextView) {
-        textView.setOnClickListener {
-            val txt = it as TextView
-            if (txt.text == "N/A") {
-                Toast.makeText(
-                    context,
-                    "Ingen data i nærliggende områder",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-            if (txt.text == "---") {
-                Toast.makeText(
-                    context,
-                    "Ingen data lastet inn ennå",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-        }
-    }
-
-
 }

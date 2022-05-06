@@ -3,7 +3,6 @@ package no.uio.ifi.team16.stim.data.repository
 import no.uio.ifi.team16.stim.data.NorKyst800
 import no.uio.ifi.team16.stim.data.dataLoader.NorKyst800DataLoader
 import no.uio.ifi.team16.stim.data.dataLoader.THREDDSDataLoader
-import no.uio.ifi.team16.stim.util.LatLong
 
 class NorKyst800Repository {
     private val TAG = "NorKyst800Repository"
@@ -27,41 +26,6 @@ class NorKyst800Repository {
                 cache = dataSource.loadDefault()
                 dirty = false
             }
-        }
-        return cache
-    }
-
-    /**
-     * return data in a box specified by the given coordinates.
-     *
-     * @param latLongUpperLeft latlong of upper left corner in a box
-     * @param latLongLowerRight latlong of lower right corner in a box
-     * @param depthRange range of depth indexes to load from
-     * @param timeRange range of time indexes to load from
-     * @param xStride stride between x coordinates
-     * @param yStride stride between y coordinates
-     * @return data of infectious pressure in the prescribed data range.
-     *
-     * @see THREDDSDataLoader.THREDDSLoad()
-     */
-    suspend fun get(
-        latLongUpperLeft: LatLong,
-        latLongLowerRight: LatLong,
-        depthRange: IntProgression,
-        timeRange: IntProgression,
-        xStride: Int,
-        yStride: Int
-    ): NorKyst800? {
-        if (!mocked && dirty) {
-            cache = dataSource.load(
-                latLongUpperLeft,
-                latLongLowerRight,
-                xStride,
-                yStride,
-                depthRange,
-                timeRange
-            )
-            dirty = false
         }
         return cache
     }
