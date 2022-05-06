@@ -86,4 +86,11 @@ class InfectiousPressureTimeSeriesRepository() {
                 value
             }
         }
+
+    /**
+     * Empties the cache. Call this in case of low memory warning
+     */
+    fun clearCache() {
+        cache.clear()
+    }
 }

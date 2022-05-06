@@ -85,4 +85,13 @@ class SitesRepository {
 
         return site
     }
+
+    /**
+     * Empties the cache. Call this in case of low memory warning
+     */
+    fun clearCache() {
+        municipalityCache.clear()
+        nameCache.clear()
+        siteNrCache.clear()
+    }
 }

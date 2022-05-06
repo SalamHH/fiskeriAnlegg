@@ -55,4 +55,12 @@ class AddressRepository {
 
         return nr
     }
+
+    /**
+     * Empties the cache. Call this in case of low memory warning
+     */
+    fun clearCache() {
+        municipalityNrCache.clear()
+        municipalityNameCache.clear()
+    }
 }

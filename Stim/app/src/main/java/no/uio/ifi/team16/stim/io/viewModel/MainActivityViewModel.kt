@@ -257,11 +257,24 @@ class MainActivityViewModel : ViewModel() {
         }
     }
 
-    fun getFavouriteSitesStringSet() : Set<String> {
+    fun getFavouriteSitesStringSet(): Set<String> {
         val favSet = mutableSetOf<String>()
         favouriteSitesData.value?.forEach {
             favSet.add(it.nr.toString())
         }
         return favSet
+    }
+
+    /**
+     * Empties the cache so the app uses less memory
+     */
+    fun clearCache() {
+        infectiousPressureRepository.clearCache()
+        infectiousPressureTimeSeriesRepository.clearCache()
+        sitesRepository.clearCache()
+        norKyst800Repository.clearCache()
+        norKyst800AtSiteRepository.clearCache()
+        addressRepository.clearCache()
+        weatherRepository.clearCache()
     }
 }

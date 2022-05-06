@@ -95,4 +95,12 @@ class NorKyst800Repository {
         }
         return cache
     }
+
+    /**
+     * Empties the cache. Call this in case of low memory warning
+     */
+    fun clearCache() {
+        cache = null
+        dirty = true
+    }
 }

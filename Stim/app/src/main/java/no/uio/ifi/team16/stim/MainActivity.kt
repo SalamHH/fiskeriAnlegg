@@ -2,6 +2,7 @@ package no.uio.ifi.team16.stim
 
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.navigation.findNavController
@@ -45,8 +46,17 @@ class MainActivity : StimActivity() {
         viewModel.loadFavouriteSites()
     }
 
+    /**
+     * Kalles når telefonen har sykt lite minne
+     */
+    override fun onLowMemory() {
+        super.onLowMemory()
+        Log.w(TAG, "Tømmer cache pga. lite minne!")
+        viewModel.clearCache()
+    }
+
     override fun onSupportNavigateUp(): Boolean {
-       return findNavController(R.id.myNavHostFragment).navigateUp(appBarConfiguration)
+        return findNavController(R.id.myNavHostFragment).navigateUp(appBarConfiguration)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

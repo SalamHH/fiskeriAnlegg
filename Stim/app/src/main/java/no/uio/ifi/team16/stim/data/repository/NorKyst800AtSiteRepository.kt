@@ -47,4 +47,12 @@ class NorKyst800AtSiteRepository {
                 value
             }
         }
+
+    /**
+     * Empties the cache. Call this in case of low memory warning
+     */
+    fun clearCache() {
+        cache.clear()
+        dirty = true
+    }
 }

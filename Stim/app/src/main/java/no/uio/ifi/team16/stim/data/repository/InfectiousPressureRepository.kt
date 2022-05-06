@@ -23,7 +23,7 @@ import no.uio.ifi.team16.stim.util.LatLong
  */
 class InfectiousPressureRepository() {
     private val TAG = "InfectiousPressureRepository"
-    val dataSource = InfectiousPressureDataLoader()
+    private val dataSource = InfectiousPressureDataLoader()
     private var cache: InfectiousPressure? = null
     var mocked: Boolean = false
     var dirty: Boolean = true
@@ -102,5 +102,12 @@ class InfectiousPressureRepository() {
             dirty = false
         }
         return cache
+    }
+
+    /**
+     * Empties the cache. Call this in case of low memory warning
+     */
+    fun clearCache() {
+        cache = null
     }
 }
