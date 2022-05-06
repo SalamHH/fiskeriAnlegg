@@ -8,12 +8,12 @@ import android.view.ViewGroup
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
-import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.databinding.FragmentGeneralInfoBinding
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 import no.uio.ifi.team16.stim.util.Options
@@ -26,6 +26,7 @@ class GeneralInfoFragment : Fragment() {
     private var salinityChartPressed = true
     private var salinityChart = listOf<Entry>()
     private var temperatureChart = listOf<Entry>()
+    private lateinit var site: Site
 
     @Inject
     lateinit var saltChartStyle: SalinityLineStyle
@@ -46,17 +47,11 @@ class GeneralInfoFragment : Fragment() {
     ): View {
         binding = FragmentGeneralInfoBinding.inflate(inflater, container, false)
 
-        ///////////
-        //LOADING//
-        ///////////
-
-        binding.LoadingScreen.loadingLayout.visibility = View.VISIBLE
-
         ////////
         //SITE//
         ////////
 
-        val site = viewModel.getCurrentSite() ?: return binding.root
+        site = viewModel.getCurrentSite() ?: return binding.root
         binding.sitename.text = site.name
 
         ////////////////////
@@ -67,7 +62,6 @@ class GeneralInfoFragment : Fragment() {
         viewModel.loadNorKyst800AtSite(site)
 
         viewModel.getNorKyst800AtSiteData(site).observe(viewLifecycleOwner) {
-            binding.LoadingScreen.loadingLayout.visibility = View.GONE
             it?.apply {
                 //forecast data is also available in the norkyst object! (about 66 hours, time indexes hours)
                 binding.temperatureTextview.text = "%4.1f".format(getTemperature()) + "°"
@@ -125,7 +119,7 @@ class GeneralInfoFragment : Fragment() {
 
         saltChartStyle = SalinityLineStyle(requireContext())
 
-        viewModel.getNorKyst800AtSiteData(viewModel.getCurrentSite()).observe(viewLifecycleOwner) {
+        viewModel.getNorKyst800AtSiteData(site).observe(viewLifecycleOwner) {
             it?.apply {
                 //set chart
                 salinityChart = it.getSalinityAtSurfaceAsGraph()
@@ -173,7 +167,7 @@ class GeneralInfoFragment : Fragment() {
 
         tempChartStyle = TemperatureLineStyle(requireContext())
 
-        viewModel.getNorKyst800AtSiteData(viewModel.getCurrentSite()).observe(viewLifecycleOwner) {
+        viewModel.getNorKyst800AtSiteData(site).observe(viewLifecycleOwner) {
             it?.apply {
                 temperatureChart = it.getTemperatureAtSurfaceAsGraph()
             }
@@ -214,7 +208,7 @@ class GeneralInfoFragment : Fragment() {
      * Uses same layout as the infection table.
      */
     private fun setTemperatureTable(inflater: LayoutInflater, container: ViewGroup?) {
-        viewModel.getNorKyst800AtSiteData(viewModel.getCurrentSite()).observe(viewLifecycleOwner) {
+        viewModel.getNorKyst800AtSiteData(site).observe(viewLifecycleOwner) {
             it?.apply {
                 binding.tablelayout.removeAllViews()
                 val tempgraphdata = getTemperatureAtSurfaceAsGraph()
@@ -254,7 +248,7 @@ class GeneralInfoFragment : Fragment() {
      */
 
     private fun setSalinityTable(inflater: LayoutInflater, container: ViewGroup?) {
-        viewModel.getNorKyst800AtSiteData(viewModel.getCurrentSite()).observe(viewLifecycleOwner) {
+        viewModel.getNorKyst800AtSiteData(site).observe(viewLifecycleOwner) {
             it?.apply {
                 val saltgraphdata = getSalinityAtSurfaceAsGraph()
                 binding.Salttablelayout.removeAllViews()

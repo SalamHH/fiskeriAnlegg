@@ -5,13 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include
-        android:id="@+id/LoadingScreen"
-        layout="@layout/loading_screen"
-        android:layout_centerInParent="true"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent" />
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -261,27 +254,37 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_margin="5dp"
-                            android:columnCount="2"
                             android:orientation="horizontal"
-                            android:rowCount="1">
+                            android:rowCount="1"
+                            android:columnCount="2">
 
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/tempchartButton"
-                                android:layout_columnWeight="0.5"
-                                android:layout_marginEnd="2dp"
-                                android:backgroundTint="@color/dark_skyblue"
-                                android:fontFamily="@font/montserrat_bold"
-                                android:textStyle="bold"
-                                android:text="Vanntemperatur" />
+                            <LinearLayout android:layout_columnWeight="0.5">
 
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/salinitychartButton"
-                                android:layout_columnWeight="0.5"
-                                android:layout_marginStart="2dp"
-                                android:backgroundTint="@color/dark_skyblue"
-                                android:text="Saltholdighet"
-                                android:fontFamily="@font/montserrat_bold"
-                                android:textStyle="bold" />
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/tempchartButton"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginEnd="2dp"
+                                    android:backgroundTint="@color/dark_skyblue"
+                                    android:fontFamily="@font/montserrat_bold"
+                                    android:text="Vanntemperatur"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                            <LinearLayout android:layout_columnWeight="0.5">
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/salinitychartButton"
+                                    android:layout_height="match_parent"
+                                    android:layout_width="wrap_content"
+                                    android:layout_marginStart="2dp"
+                                    android:backgroundTint="@color/dark_skyblue"
+                                    android:text="Saltholdighet"
+                                    android:fontFamily="@font/montserrat_bold"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
 
                         </GridLayout>
 

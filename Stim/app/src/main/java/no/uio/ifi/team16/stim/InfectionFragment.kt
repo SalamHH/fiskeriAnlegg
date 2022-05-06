@@ -39,8 +39,6 @@ class InfectionFragment : StimFragment() {
         Log.d(TAG, "oncreate")
         binding = FragmentInfectionBinding.inflate(inflater, container, false)
 
-        binding.LoadingScreen.loadingLayout.visibility = View.VISIBLE
-
         val animation =
             TransitionInflater.from(requireContext()).inflateTransition(android.R.transition.move)
         sharedElementEnterTransition = animation
@@ -56,7 +54,6 @@ class InfectionFragment : StimFragment() {
         //val _lineDataSet = MutableLiveData(LineDataSet(contamData, CHART_LABEL))
 
         viewModel.getInfectiousPressureTimeSeriesData(site).observe(viewLifecycleOwner) {
-            binding.LoadingScreen.loadingLayout.visibility = View.GONE
             it?.getConcentrationsAsGraph()?.also { graph ->
                 val infectionData =
                     graph.map { xy -> xy.y }.toTypedArray() //get contamination as separate list
