@@ -10,12 +10,6 @@ import androidx.fragment.app.Fragment
 
 abstract class StimFragment : Fragment() {
 
-
-    companion object {
-        var currentSite: String? = null
-        var hasLocationPermission = false
-    }
-
     /**
      * Check if you can use the user's location
      */

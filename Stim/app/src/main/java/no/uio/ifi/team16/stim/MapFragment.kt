@@ -156,7 +156,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
     private fun onSiteSearchComplete(sites: List<Site>?) {
         if (sites != null) {
             onSiteUpdate(sites)
-            currentSite = sites[0].name
             val adapter =
                 RecycleViewAdapter(
                     sites,
@@ -306,7 +305,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
      * Called when access to user location is granted
      */
     private fun onLocationPermissionGranted() {
-        hasLocationPermission = true
         locationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
     }
 
@@ -315,13 +313,11 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
      */
     @SuppressLint("MissingPermission")
     fun setMapToUserLocation() {
-        if (mapReady && hasLocationPermission) {
-            locationClient?.let { client ->
-                client.lastLocation.addOnSuccessListener { location ->
-                    if (location != null) {
-                        val latLng = LatLng(location.latitude, location.longitude)
-                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel))
-                    }
+        locationClient?.let { client ->
+            client.lastLocation.addOnSuccessListener { location ->
+                if (location != null) {
+                    val latLng = LatLng(location.latitude, location.longitude)
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel))
                 }
             }
         }
