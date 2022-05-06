@@ -8,7 +8,7 @@ import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 /**
- * data from the NorKyst800 model. Mostly we will use stream data.
+ * data from the NorKyst800 model.
  */
 data class NorKyst800(
     val depth: FloatArray1D,

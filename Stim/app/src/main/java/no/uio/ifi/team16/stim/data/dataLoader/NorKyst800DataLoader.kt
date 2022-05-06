@@ -9,12 +9,13 @@ import com.github.kittinunf.result.getOrElse
 import com.github.kittinunf.result.onError
 import no.uio.ifi.team16.stim.data.NorKyst800
 import no.uio.ifi.team16.stim.data.dataLoader.parser.NorKyst800RegexParser
-import no.uio.ifi.team16.stim.util.LatLong
 import no.uio.ifi.team16.stim.util.Options
 import no.uio.ifi.team16.stim.util.reformatFSL
 import org.locationtech.proj4j.CRSFactory
 import org.locationtech.proj4j.CoordinateTransform
 import org.locationtech.proj4j.CoordinateTransformFactory
+import java.time.Instant
+import kotlin.ranges.IntProgression.Companion.fromClosedRange
 
 /**
  * DataLoader for data related to the norkyst800 model.
@@ -65,12 +66,45 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
         ///////////////////
         // MAKE THE URLS //
         ///////////////////
-        val salinityTemperatureTimeAndDepthUrl = makeSalinityTemperatureTimeAndDepthUrl(
+        val timeAndDepthUrl = makeTimeAndDepthUrl(baseUrl)
+
+        ////////////////////
+        // TIME AND DEPTH //
+        ////////////////////
+        val timeAndDepthString = requestData(timeAndDepthUrl, "time and depth") ?: return null
+
+        val depth =
+            NorKyst800RegexParser.make1DFloatArrayOf("depth", timeAndDepthString)
+                ?: run {
+                    Log.e(TAG, "Failed to read <depth> from NorKyst800")
+                    return null
+                }
+
+        val time =
+            NorKyst800RegexParser.make1DFloatArrayOf("time", timeAndDepthString)
+                ?: run {
+                    Log.e(NorKyst800RegexParser.TAG, "Failed to read <time> from NorKyst800")
+                    return null
+                }
+
+        //we now have time, and we want to find the index corresponding to our time
+        val now = Instant.now().epochSecond //seconds since 1970-01-01,
+        //find th
+        val timeIndex: Int = time
+            .takeWhile { t -> t < now }
+            .size
+        /*?: run {
+            Log.w(TAG, "failed to find time corresponding to now in dataset, using first") //TODO: or fail
+        }*/
+        Log.w(TAG, "using timeindex $timeIndex")
+        val t = fromClosedRange(timeIndex, timeIndex, 1)
+
+        val salinityTemperatureUrl = makeSalinityTemperatureUrl(
             baseUrl,
             xRange,
             yRange,
             depthRange,
-            timeRange
+            t
         )
 
         val velocityUrl = makeVelocityUrl(
@@ -78,7 +112,7 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
             xRange,
             yRange,
             depthRange,
-            timeRange
+            t
         )
 
         val dasUrl = makeDasUrl(baseUrl)
@@ -89,22 +123,7 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
         /////////////
         // GET DAS //
         /////////////
-        val dasString =
-            Fuel.get(dasUrl).awaitStringResult().onError { error ->
-                Log.e(TAG, "Failed to load norkyst800data - das response due to:\n $error")
-                return null
-            }.getOrElse { err ->
-                Log.e(
-                    TAG,
-                    "Unable to get NorKyst800-das data from get request. Is the URL correct? $err"
-                )
-                return null
-            }
-
-        if (dasString.isEmpty()) {
-            Log.e(TAG, "Empty das response")
-            return null
-        }
+        val dasString = requestData(dasUrl, "das") ?: return null
 
         ///////////////
         // PARSE DAS //
@@ -181,22 +200,8 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
         //////////////
         // VELOCITY //
         //////////////
-        val velocityString =
-            Fuel.get(velocityUrl).awaitStringResult().onError { error ->
-                Log.e(TAG, "Failed to load norkyst800data - velocity due to:\n $error")
-                return null
-            }.getOrElse { err ->
-                Log.e(
-                    TAG,
-                    "Unable to get NorKyst800-velocity data from get request. Is the URL correct? $err"
-                )
-                return null
-            }
+        val velocityString = requestData(velocityUrl, "velocity") ?: return null
 
-        if (velocityString.isEmpty()) {
-            Log.e(TAG, "Empty velocity response")
-            return null
-        }
         //PARSE VELOCITY
         val velocity = Triple(
             NorKyst800RegexParser.makeNullable4DFloatArrayOf(
@@ -225,48 +230,17 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
             }
         )
 
-        ///////////////////////////////////////////
-        // SALINITY, TEMPERATURE, TIME AND DEPTH //
-        ///////////////////////////////////////////
-        var salinityTemperatureTimeAndDepthString =
-            Fuel.get(salinityTemperatureTimeAndDepthUrl).awaitStringResult().onError { error ->
-                Log.e(
-                    TAG,
-                    "Failed to load NorKyst800-salinity-temperature-depth-time due to:\n $error"
-                )
-                return null
-            }.getOrElse { err ->
-                Log.e(
-                    TAG,
-                    "Unable to get NorKyst800-salinity-temperature-depth-time data from get request. Is the URL correct? $err"
-                )
-                return null
-            }
+        //////////////////////////
+        // SALINITY, TEMPERATURE//
+        //////////////////////////
+        var salinityTemperatureString =
+            requestData(salinityTemperatureUrl, "salinity and temperature") ?: return null
 
-        if (salinityTemperatureTimeAndDepthString.isEmpty()) {
-            Log.e(TAG, "Empty NorKyst800-salinity-temperature-depth-time response")
-            return null
-        }
-
-        //PARSE salinityTemperatureTimeAndDepth
-        val depth =
-            NorKyst800RegexParser.make1DFloatArrayOf("depth", salinityTemperatureTimeAndDepthString)
-                ?: run {
-                    Log.e(TAG, "Failed to read <depth> from NorKyst800")
-                    return null
-                }
-
-        val time =
-            NorKyst800RegexParser.make1DFloatArrayOf("time", salinityTemperatureTimeAndDepthString)
-                ?: run {
-                    Log.e(NorKyst800RegexParser.TAG, "Failed to read <time> from NorKyst800")
-                    return null
-                }
-
+        //PARSE
         val salinity =
             NorKyst800RegexParser.makeNullable4DFloatArrayOf(
                 "salinity",
-                salinityTemperatureTimeAndDepthString,
+                salinityTemperatureString,
                 salinityFSO
             ) ?: run {
                 Log.e(NorKyst800RegexParser.TAG, "Failed to read <salinity> from NorKyst800")
@@ -276,7 +250,7 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
         val temperature =
             NorKyst800RegexParser.makeNullable4DFloatArrayOf(
                 "temperature",
-                salinityTemperatureTimeAndDepthString,
+                salinityTemperatureString,
                 temperatureFSO
             ) ?: run {
                 Log.e(NorKyst800RegexParser.TAG, "Failed to read <temperature> from NorKyst800")
@@ -291,38 +265,6 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
             velocity,
             projection
         )
-    }
-
-    /**
-     * return data in a box specified by the given coordinates.
-     *
-     * TODO SCRAP?
-     *
-     * @param latLongUpperLeft upper left coordinate in a box
-     * @param latLongLowerRight lower right coordinate in a box
-     * @param xStride stride between x-values in grid. 1=max resolution
-     * @param yStride stride between y-values in grid. 1=max resolution
-     * @param depthRange depth as a range with format from:stride:to
-     * @param timeRange time as a range with format from:stride:to
-     * @return NorKyst800 data in the prescribed data range
-     */
-    suspend fun load(
-        latLongUpperLeft: LatLong,
-        latLongLowerRight: LatLong,
-        xStride: Int,
-        yStride: Int,
-        depthRange: IntProgression,
-        timeRange: IntProgression
-    ): NorKyst800? {
-        //convert parameters to ranges
-        val (xRange, yRange) = geographicCoordinateToRange(
-            latLongUpperLeft,
-            latLongLowerRight,
-            xStride,
-            yStride,
-            Options.defaultProjection() //TODO: exchange with request version, but without repeated code
-        )
-        return load(xRange, yRange, depthRange, timeRange)
     }
 
     //load with default parameters(as specified in Options)
@@ -357,6 +299,27 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
     ///////////////
     // UTILITIES //
     ///////////////
+    private suspend fun requestData(url: String, name: String): String? {
+        val string =
+            Fuel.get(url).awaitStringResult().onError { error ->
+                Log.e(TAG, "Failed to load norkyst800data - $name response due to:\n $error")
+                return null
+            }.getOrElse { err ->
+                Log.e(
+                    TAG,
+                    "Unable to get NorKyst800-$name data from get request. Is the URL correct? $err"
+                )
+                return null
+            }
+
+        if (string.isEmpty()) {
+            Log.e(TAG, "Empty $name response")
+            return null
+        }
+
+        return string
+    }
+
     /**
      * get Fillvalue, Scaling and Offset of a given attribute associated to a given variable
      * Note that not all variables have all three attributes, for example w in the norkyst dataset.
@@ -420,32 +383,7 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
         }
 
     /**
-     * TODO: SCRAP?
-     */
-    protected fun makeParametrizedUrl(
-        baseUrl: String,
-        xRange: IntProgression,
-        yRange: IntProgression,
-        depthRange: IntProgression,
-        timeRange: IntProgression
-    ): String {
-        val xyString =
-            "[${xRange.reformatFSL()}][${yRange.reformatFSL()}]"
-        val dString = "[${depthRange.reformatFSL()}]"
-        val tString = "[${timeRange.reformatFSL()}]"
-        val dtxyString = dString + tString + xyString
-        return baseUrl +
-                "depth$dString," +
-                "salinity$dtxyString," +
-                "temperature$dtxyString," +
-                "time$tString," +
-                "u$dtxyString," +
-                "v$dtxyString," +
-                "w$dtxyString"
-    }
-
-    /**
-     * make an url to get temperature, salinity, time and depth
+     * make an url to get temperature, salinity
      *
      * @param baseUrl base url of dataset, usually retrieved by loadForecastURL().
      * @param xRange range of x-values to get from
@@ -453,7 +391,7 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
      * @param depthRange depth as a range with format from:stride:to
      * @param timeRange time as a range with format from:stride:to
      */
-    private fun makeSalinityTemperatureTimeAndDepthUrl(
+    private fun makeSalinityTemperatureUrl(
         baseUrl: String,
         xRange: IntProgression,
         yRange: IntProgression,
@@ -467,10 +405,24 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
         val dtxyString = dString + tString + xyString
         return baseUrl +
                 ".ascii?" +
-                "depth$dString," +
                 "salinity$dtxyString," +
-                "temperature$dtxyString," +
-                "time$tString"
+                "temperature$dtxyString"
+    }
+
+    /**
+     * make an url to get time and depth
+     *
+     * @param baseUrl base url of dataset, usually retrieved by loadForecastURL().
+     * @param depthRange depth as a range with format from:stride:to
+     * @param timeRange time as a range with format from:stride:to
+     */
+    private fun makeTimeAndDepthUrl(
+        baseUrl: String
+    ): String {
+        return baseUrl +
+                ".ascii?" +
+                "depth," +
+                "time"
     }
 
 
