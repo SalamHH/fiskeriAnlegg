@@ -1,5 +1,6 @@
 package no.uio.ifi.team16.stim
 
+import android.content.ComponentCallbacks2
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -41,18 +42,17 @@ class MainActivity : StimActivity() {
 
         //initial load of data
         viewModel.loadPrefrences(prefrences)
-        viewModel.loadNorKyst800() // todo hva brukes dette til?
-        viewModel.loadDefaultInfectiousPressure() // todo hva brukes dette til?
+        viewModel.loadNorKyst800()
+        viewModel.loadDefaultInfectiousPressure()
         viewModel.loadFavouriteSites()
     }
 
-    /**
-     * Kalles når telefonen har sykt lite minne
-     */
-    override fun onLowMemory() {
-        super.onLowMemory()
-        Log.w(TAG, "Tømmer cache pga. lite minne!")
-        viewModel.clearCache()
+    override fun onTrimMemory(level: Int) {
+        super.onTrimMemory(level)
+        if (level >= ComponentCallbacks2.TRIM_MEMORY_RUNNING_CRITICAL) {
+            Log.w(TAG, "Tømmer cache pga. lite minne!")
+            viewModel.clearCache()
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
