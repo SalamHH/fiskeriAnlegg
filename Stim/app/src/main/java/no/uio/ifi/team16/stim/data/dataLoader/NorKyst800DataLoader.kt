@@ -34,7 +34,7 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
      * Get NorKyst800 data in the given range.
      *
      * First we have to load the catalog(unless previously loaded and cached). Then we have to load
-     * the das of the data(attribuutes of variables). Finally we load the data itself, but beacuse the response is
+     * the das of the data(attributes of variables). Finally we load the data itself, but beacuse the response is
      * large we do it in two separate requests.
      *
      * @param xRange range of x-values to get from
@@ -165,7 +165,10 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
                 name == "proj4String"
             }
             ?.third //take the value of that attribute
-            ?: Options.defaultProj4String
+            ?: run {
+                Log.w(TAG, "Failed to parse projection from DAS response, using default")
+                Options.defaultProj4String
+            }
 
         //make the projection from string
         val projection: CoordinateTransform =
@@ -293,6 +296,8 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
     /**
      * return data in a box specified by the given coordinates.
      *
+     * TODO SCRAP?
+     *
      * @param latLongUpperLeft upper left coordinate in a box
      * @param latLongLowerRight lower right coordinate in a box
      * @param xStride stride between x-values in grid. 1=max resolution
@@ -353,8 +358,13 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
     // UTILITIES //
     ///////////////
     /**
-     * get FIllvalue, Scaling and Offset of a given attribute associated to a given variable
+     * get Fillvalue, Scaling and Offset of a given attribute associated to a given variable
+     * Note that not all variables have all three attributes, for example w in the norkyst dataset.
      *
+     * @param variablesToAttributes map from variable-names to sequences of their attirbutes
+     * an attribute has a type(first), name(second) and value(third)
+     * @param variable name of variable to look up attributes for
+     * @retrun fillvalue, scale and offset of the given variable
      */
     private fun getFSO(
         variablesToAttributes:
@@ -364,47 +374,54 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
         var fillValue: Number? = null
         var scale: Number? = null
         var offset: Number? = null
-        Log.d("----------------->", variablesToAttributes[variable]?.toList().toString())
+
+        //open attributes of the given variable, the nparse out FSO from it
         variablesToAttributes[variable]?.let { attributes ->
             val attributeMap = NorKyst800RegexParser.parseVariableAttributes(attributes)
-            attributeMap["_FillValue"]?.let { (typeString, valueString) -> //try to cast to S
-                parseFSOAttributeAs(typeString, valueString)
-            }?.let { value ->
-                fillValue = value
+
+            fillValue = attributeMap["_FillValue"]?.let { (typeString, valueString) ->
+                parseFSOAttributeAs(typeString, valueString) //parse valuestring to typestring
             } ?: Log.w(
                 TAG,
                 "Failed to load norkyst800data - ${variable}FillValue from das, using default"
             )
-            attributeMap["scale_factor"]?.let { (typeString, valueString) -> //try to cast to T
-                parseFSOAttributeAs(typeString, valueString)
-            }?.let { value ->
-                scale = value
+
+            scale = attributeMap["scale_factor"]?.let { (typeString, valueString) ->
+                parseFSOAttributeAs(typeString, valueString) //parse valuestring to typestring
             } ?: Log.w(
                 TAG,
                 "Failed to load norkyst800data - ${variable}Scaling from das, using default"
             )
-            attributeMap["add_offset"]?.let { (typeString, valueString) -> //try to cast to U
-                parseFSOAttributeAs(typeString, valueString)
-            }?.let { value ->
-                offset = value
+
+            offset = attributeMap["add_offset"]?.let { (typeString, valueString) ->
+                parseFSOAttributeAs(typeString, valueString) //parse valuestring to typestring
             } ?: Log.w(
                 TAG,
                 "Failed to load norkyst800data - ${variable}Offset from das, using default"
             )
         }
+
         return Triple(fillValue, scale, offset)
     }
 
+    /**
+     * parse an attribute with given type and value
+     *
+     * this function is not exhaustive, but sufficient.
+     */
     private fun parseFSOAttributeAs(type: String, attr: String): Number? =
         when (type) {
             "Float32" -> attr.toFloat()
             "Int16" -> attr.toInt()
             else -> run {
-                Log.w(TAG, "Unknown type $type, returning null")
+                Log.w(TAG, "Failed to parse FSO attribute with unknown type $type, returning null")
                 null
             }
         }
 
+    /**
+     * TODO: SCRAP?
+     */
     protected fun makeParametrizedUrl(
         baseUrl: String,
         xRange: IntProgression,
@@ -427,6 +444,15 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
                 "w$dtxyString"
     }
 
+    /**
+     * make an url to get temperature, salinity, time and depth
+     *
+     * @param baseUrl base url of dataset, usually retrieved by loadForecastURL().
+     * @param xRange range of x-values to get from
+     * @param yRange range of y-values to get from
+     * @param depthRange depth as a range with format from:stride:to
+     * @param timeRange time as a range with format from:stride:to
+     */
     private fun makeSalinityTemperatureTimeAndDepthUrl(
         baseUrl: String,
         xRange: IntProgression,
@@ -447,6 +473,16 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
                 "time$tString"
     }
 
+
+    /**
+     * make an url to get velocity
+     *
+     * @param baseUrl base url of dataset, usually retrieved by loadForecastURL().
+     * @param xRange range of x-values to get from
+     * @param yRange range of y-values to get from
+     * @param depthRange depth as a range with format from:stride:to
+     * @param timeRange time as a range with format from:stride:to
+     */
     private fun makeVelocityUrl(
         baseUrl: String,
         xRange: IntProgression,
@@ -466,6 +502,9 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
                 "w$dtxyString"
     }
 
+    /**
+     * given a baseurl, return an url that gives the DAS of the dataset
+     */
     private fun makeDasUrl(baseUrl: String): String {
         return "$baseUrl.das?"
     }
