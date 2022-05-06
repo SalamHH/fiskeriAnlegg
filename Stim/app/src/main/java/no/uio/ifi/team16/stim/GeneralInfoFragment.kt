@@ -77,6 +77,12 @@ class GeneralInfoFragment : Fragment() {
             }
         }
 
+        //lag toasts til salt og temp
+        setOnTemperatureOrSalinityClickListener(binding.temperatureTextview)
+        setOnTemperatureOrSalinityClickListener(binding.saltTextview)
+
+        //posisjon
+        binding.posisjonView.text = "${site.latLong.lat}, ${site.latLong.lng}"
         ///////////////////
         //CHART + BUTTONS//
         ///////////////////
@@ -315,4 +321,29 @@ class GeneralInfoFragment : Fragment() {
             )
         }
     }
+
+    /**
+     * make toasts explaining certain textvalues of the salinity or temperature textview.
+     */
+    fun setOnTemperatureOrSalinityClickListener(textView: TextView) {
+        textView.setOnClickListener {
+            val txt = it as TextView
+            if (txt.text == "N/A") {
+                Toast.makeText(
+                    context,
+                    "Ingen data i nærliggende områder",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+            if (txt.text == "---") {
+                Toast.makeText(
+                    context,
+                    "Ingen data lastet inn ennå",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+    }
+
+
 }
