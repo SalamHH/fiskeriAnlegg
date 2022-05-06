@@ -26,6 +26,9 @@ import no.uio.ifi.team16.stim.databinding.FragmentMapBinding
 import no.uio.ifi.team16.stim.io.adapter.RecycleViewAdapter
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 import no.uio.ifi.team16.stim.util.LatLong
+import no.uio.ifi.team16.stim.util.capitalizeEachWord
+import kotlin.math.roundToInt
+
 
 /**
  * Map fragment
@@ -95,7 +98,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
 
         setHasOptionsMenu(true)
 
-        initSpeedDial(requireContext())
+
 
         return binding.root
     }
@@ -180,6 +183,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
             }
         }
         closeKeyboard()
+        initSpeedDial(requireContext(), googleMap)
     }
 
     /**
@@ -371,8 +375,16 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
     }
 
 
-    fun initSpeedDial(context: Context) {
+    enum class HeatmapType { INFECTIOUSPRESSURE, SALINITY, TEMPERATURE, VELOCITY, NONE }
+
+    var tileOverlay: TileOverlay? = null
+
+    fun initSpeedDial(context: Context, googleMap: GoogleMap) {
         val speedDial: SpeedDialView = binding.speedDial
+        val screenBound = googleMap.projection.visibleRegion.latLngBounds
+        //val xRange = fromClosedRange(0,2602,50) //IMPORTANT: THESE ARE THE CORRECT WAYS TO INDEX!
+        //val yRange = fromClosedRange(0,902,50)
+        val scale = 0.5f
 
         speedDial.addActionItem(
             SpeedDialActionItem.Builder(R.id.heatmap_infectiousPressure, R.drawable.mdi___virus)
@@ -400,6 +412,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         )
 
         speedDial.setOnActionSelectedListener(SpeedDialView.OnActionSelectedListener { actionItem ->
+            tileOverlay?.remove()
             when (actionItem.id) {
                 R.id.heatmap_infectiousPressure -> {
                     Toast.makeText(
@@ -407,24 +420,60 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
                         "Speed Dial 'infectiousPressure' klikket!",
                         Toast.LENGTH_LONG
                     ).show()
+                    // INFECTIOUSPRESSURE HEATMAP
+                    viewModel.getInfectiousPressureData()
+                        .observe(viewLifecycleOwner) { infectiousPressure ->
+                            infectiousPressure?.let {
+                                val heatMapProvider = HeatmapTileProvider.Builder()
+                                    .weightedData(it.getHeatMapData()) // load our weighted data
+                                    .radius((50 * scale).roundToInt()) // finn måte å gjøre om til 800x800 m
+                                    .build()
+                                tileOverlay = googleMap?.addTileOverlay(
+                                    TileOverlayOptions().tileProvider(heatMapProvider)
+                                )
+                            }
+                        }
                     speedDial.close() // To close the Speed Dial with animation
                     return@OnActionSelectedListener true // false will close it without animation
                 }
                 R.id.heatmap_salinity -> {
                     Toast.makeText(context, "Speed Dial 'salinity' klikket!", Toast.LENGTH_LONG)
                         .show()
+                    viewModel.getNorKyst800Data().observe(viewLifecycleOwner) { norKyst800 ->
+                        norKyst800?.let {
+                            val heatMapProvider = HeatmapTileProvider.Builder()
+                                .weightedData(it.getSalinityHeatMapData(screenBound)) // load our weighted data
+                                .radius((50 * scale).roundToInt()) // finn måte å gjøre om til 800x800 m
+                                .build()
+                            tileOverlay = googleMap?.addTileOverlay(
+                                TileOverlayOptions().tileProvider(heatMapProvider)
+                            )
+                        }
+                    }
                     speedDial.close() // To close the Speed Dial with animation
                     return@OnActionSelectedListener true // false will close it without animation
                 }
                 R.id.heatmap_temperature -> {
                     Toast.makeText(context, "Speed Dial 'temperature' klikket!", Toast.LENGTH_LONG)
                         .show()
+                    viewModel.getNorKyst800Data().observe(viewLifecycleOwner) { norKyst800 ->
+                        norKyst800?.let {
+                            val heatMapProvider = HeatmapTileProvider.Builder()
+                                .weightedData(it.getTemperatureHeatMapData(screenBound)) // load our weighted data
+                                .radius((50 * scale).roundToInt()) // finn måte å gjøre om til 800x800 m
+                                .build()
+                            tileOverlay = googleMap?.addTileOverlay(
+                                TileOverlayOptions().tileProvider(heatMapProvider)
+                            )
+                        }
+                    }
                     speedDial.close() // To close the Speed Dial with animation
                     return@OnActionSelectedListener true // false will close it without animation
                 }
                 R.id.heatmap_velocity -> {
                     Toast.makeText(context, "Speed Dial 'velocity' klikket!", Toast.LENGTH_LONG)
                         .show()
+                    //VELOCITY HEATMAP, NOt IMPLEMENTED, TODO: NOT NEEDED?
                     speedDial.close() // To close the Speed Dial with animation
                     return@OnActionSelectedListener true // false will close it without animation
                 }

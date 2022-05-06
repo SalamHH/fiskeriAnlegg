@@ -1,11 +1,16 @@
 package no.uio.ifi.team16.stim.data
 
 import android.util.Log
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
+import com.google.maps.android.heatmaps.WeightedLatLng
 import no.uio.ifi.team16.stim.util.*
 import org.locationtech.proj4j.CoordinateTransform
+import org.locationtech.proj4j.CoordinateTransformFactory
 import kotlin.math.atan2
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
+import kotlin.ranges.IntProgression.Companion.fromClosedRange
 
 /**
  * data from the NorKyst800 model.
@@ -19,6 +24,9 @@ data class NorKyst800(
     val projection: CoordinateTransform, //transforms between latlong and projection coordinates
 ) {
     val TAG = "NORKYST800"
+    val currentHour =
+        0 //TODO: make into current hour relative to dataset, remember that the time(which maps onto first axis of every dataset)
+    //TODO: is seconds from 1980-00-00. see hours in the norkyst salinity and temp graph for example how to get.
     //////////////////////
     // GETTER FUNCTIONS //
     //////////////////////
@@ -84,6 +92,103 @@ data class NorKyst800(
                 } else {
                     Math.sqrt((u * u + v * v).toDouble()).toFloat()
                 }
+            }
+    }
+
+    fun getTemperatureHeatMapData(screenBound: LatLngBounds): List<WeightedLatLng> {
+        //make inverse projection, mapping from grid indexes to latlng TODO: move outside
+        val ctFactory = CoordinateTransformFactory()
+        val stereoCRT = projection.targetCRS
+        val latLngCRT = projection.sourceCRS
+        val inverseProjection = ctFactory.createTransform(stereoCRT, latLngCRT)
+
+        //find indexes of screenbound
+        val northEastIndex = projection.project(screenBound.northeast.asLatLong())
+        val southWestIndex = projection.project(screenBound.southwest.asLatLong())
+
+        val maxX = Math.min(northEastIndex.second.roundToInt(), Options.norKyst800XEnd)
+        val minX = Math.max(southWestIndex.second.roundToInt(), 0)
+        val maxY = Math.min(northEastIndex.first.roundToInt(), Options.norKyst800YEnd)
+        val minY = Math.max(southWestIndex.first.roundToInt(), 0)
+
+        val xStride = Math.max(1, ((maxX - minX) / Options.heatMapResolution).roundToInt())
+        val yStride = Math.max(1, ((maxY - minY) / Options.heatMapResolution).roundToInt())
+
+        val xRange = fromClosedRange(minX, maxX, xStride) //
+        val yRange = fromClosedRange(minY, maxY, yStride) //
+        Log.d(
+            TAG,
+            "MAKING HEATMAP ${xRange.first} - ${xRange.last} | ${xRange.step} ... ${yRange.first} - ${yRange.last} | ${yRange.step}"
+        )
+
+
+        val dx = Options.defaultNorKyst800XStride * 800
+        val dy = Options.defaultNorKyst800YStride * 800
+        return temperature[currentHour][0].get(yRange, xRange)
+            .flatMapIndexed { y, row -> //get at surface(0), current time.flatMapIndexed { y, row ->
+                row.filterNotNull()
+                    .mapIndexed { x, entry ->
+                        WeightedLatLng(
+                            inverseProjection.projectXY(
+                                Pair(
+                                    (xRange.first + xRange.step * x) * (dx).toFloat(), //from index to meters along gridproj
+                                    (yRange.first + yRange.step * y) * (dy.toFloat())  //from index to meters along gridproj
+                                )
+                            ).let { latLong ->
+                                LatLng(latLong.lat, latLong.lng)
+                            },
+                            entry.toDouble()
+                        )
+                    }
+            }
+    }
+
+    fun getSalinityHeatMapData(screenBound: LatLngBounds): List<WeightedLatLng> {
+        //make inverse projection, mapping from grid indexes to latlng TODO: move outside
+        val ctFactory = CoordinateTransformFactory()
+        val stereoCRT = projection.targetCRS
+        val latLngCRT = projection.sourceCRS
+        val inverseProjection = ctFactory.createTransform(stereoCRT, latLngCRT)
+
+        //find indexes of screenbound
+        val northEastIndex = projection.project(screenBound.northeast.asLatLong())
+        val southWestIndex = projection.project(screenBound.southwest.asLatLong())
+
+        val maxX = Math.min(northEastIndex.second.roundToInt(), Options.norKyst800XEnd)
+        val minX = Math.max(southWestIndex.second.roundToInt(), 0)
+        val maxY = Math.min(northEastIndex.first.roundToInt(), Options.norKyst800YEnd)
+        val minY = Math.max(southWestIndex.first.roundToInt(), 0)
+
+        val xStride = Math.max(1, ((maxX - minX) / Options.heatMapResolution).roundToInt())
+        val yStride = Math.max(1, ((maxY - minY) / Options.heatMapResolution).roundToInt())
+
+        val xRange = fromClosedRange(minX, maxX, xStride) //
+        val yRange = fromClosedRange(minY, maxY, yStride) //
+        Log.d(
+            TAG,
+            "MAKING HEATMAP ${xRange.first} - ${xRange.last} | ${xRange.step} ... ${yRange.first} - ${yRange.last} | ${yRange.step}"
+        )
+
+        val dx = Options.defaultNorKyst800XStride * 800
+        val dy = Options.defaultNorKyst800YStride * 800
+        Log.d(TAG, "making salinity-heatmap")
+        return salinity[currentHour][0].get(yRange, xRange)
+            .flatMapIndexed { y, row -> //get at surface(0), current time.flatMapIndexed { y, row ->
+                row.filterNotNull()
+                    .mapIndexed { x, entry ->
+                        Log.d(TAG, entry.toString())
+                        WeightedLatLng(
+                            inverseProjection.projectXY(
+                                Pair(
+                                    (xRange.first + xRange.step * x) * (dx).toFloat(), //from index to meters along gridproj
+                                    (yRange.first + yRange.step * y) * (dy.toFloat())  //from index to meters along gridproj
+                                )
+                            ).let { latLong ->
+                                LatLng(latLong.lat, latLong.lng)
+                            },
+                            entry.toDouble()
+                        )
+                    }
             }
     }
 

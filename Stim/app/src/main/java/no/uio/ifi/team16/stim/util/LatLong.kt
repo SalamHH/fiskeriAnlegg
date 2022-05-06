@@ -62,3 +62,5 @@ data class LatLong(val lat: Double, val lng: Double) {
         return result
     }
 }
+
+fun LatLng.asLatLong() = LatLong(this.latitude, this.longitude)

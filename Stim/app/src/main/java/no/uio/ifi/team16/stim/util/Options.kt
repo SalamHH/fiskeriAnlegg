@@ -64,6 +64,12 @@ class Options {
         const val FAVOURITES = "Favorites"
         const val SHARED_PREFERENCES_KEY = "prefrences"
 
+        // HEATMAP
+        const val heatMapResolution =
+            50.0f //roughly translates to how many points along a given axis(x or y)
+        //that are drawn in the heatmap. resolution of 2602 draws absolutely all (using a lot of memory)
+        //and 1 draws exactly one point on the heatmap
+
         //decrease resolution of the largest datasets by half
         fun decreaseDataResolution() {
             //norkyst
