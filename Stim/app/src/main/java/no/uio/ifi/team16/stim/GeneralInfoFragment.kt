@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.github.mikephil.charting.data.Entry
@@ -82,7 +83,8 @@ class GeneralInfoFragment : Fragment() {
         setOnTemperatureOrSalinityClickListener(binding.saltTextview)
 
         //posisjon
-        binding.posisjonView.text = "${site.latLong.lat}, ${site.latLong.lng}"
+        //binding.
+        //binding.posisjonView.text = "${site.latLong.lat}, ${site.latLong.lng}"
         ///////////////////
         //CHART + BUTTONS//
         ///////////////////
@@ -245,7 +247,6 @@ class GeneralInfoFragment : Fragment() {
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT
                     )
-                    Log.d(TAG, "Row added: $i")
                     binding.tablelayout.requestLayout()
                 }
             }
@@ -285,7 +286,6 @@ class GeneralInfoFragment : Fragment() {
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT
                     )
-                    Log.d(TAG, "Row added: $i")
                 }
                 binding.Salttablelayout.requestLayout()
             }
