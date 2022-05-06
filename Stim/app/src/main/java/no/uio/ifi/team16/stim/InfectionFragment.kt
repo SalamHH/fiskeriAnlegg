@@ -130,7 +130,6 @@ class InfectionFragment : StimFragment() {
 
     private fun calculateInfectionStatusText(infectiondata: Array<Float>): String {
 
-
         if (infectiondata.lastIndex > 1 && infectiondata.average() > Options.infectionExists) {
             //sjekker om det er signifikant økning/miskning på de siste 3 datapunktene
             val lastThree = arrayOf(
@@ -155,7 +154,6 @@ class InfectionFragment : StimFragment() {
     }
 
     private fun calculateInfectionStatusIcon(infectiondata: Array<Float>): Drawable? {
-
 
         if (infectiondata.lastIndex > 1 && infectiondata.average() > Options.infectionExists) {
             //sjekker om det er signifikant økning/miskning på de siste 3 datapunktene

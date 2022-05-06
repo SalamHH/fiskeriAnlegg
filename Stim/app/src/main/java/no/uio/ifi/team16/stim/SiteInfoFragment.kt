@@ -1,11 +1,14 @@
 package no.uio.ifi.team16.stim
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -15,6 +18,7 @@ import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.data.WeatherForecast
 import no.uio.ifi.team16.stim.databinding.FragmentSiteInfoBinding
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
+import no.uio.ifi.team16.stim.util.Options
 
 
 class SiteInfoFragment : StimFragment() {
@@ -43,8 +47,10 @@ class SiteInfoFragment : StimFragment() {
         //posisjon
         binding.posisjonView.text = "${site.latLong.lat}, ${site.latLong.lng}"
         viewModel.loadNorKyst800AtSite(site)
+        viewModel.loadInfectiousPressureTimeSeriesAtSite(site)
 
-        val waterInfoSet = setWaterInfo()
+        val waterInfofinished = setWaterInfo()
+        setInfectionInfo()
 
         binding.generalInfoBox.setOnClickListener {
             // If the CardView is already expanded, set its visibility
@@ -94,7 +100,7 @@ class SiteInfoFragment : StimFragment() {
         }
 
         binding.waterInfoCard.setOnClickListener {
-            if (waterInfoSet) {
+            if (waterInfofinished) {
                 view?.findNavController()
                     ?.navigate(R.id.action_siteInfoFragment_to_generalInfoFragment)
             } else {
@@ -144,6 +150,68 @@ class SiteInfoFragment : StimFragment() {
             return false
         }
         return true
+    }
+
+    private fun setInfectionInfo() {
+        viewModel.getInfectiousPressureTimeSeriesData(site).observe(viewLifecycleOwner) {
+            it?.getConcentrationsAsGraph()?.apply {
+                val infectiondata = map { xy -> xy.y }.toTypedArray()
+                binding.fare.setImageDrawable(calculateInfectionStatusIcon(infectiondata))
+            } ?: run {
+                binding.fare.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.no_data,
+                        null
+                    )
+                )
+            }
+        }
+    }
+
+    private fun calculateInfectionStatusIcon(infectiondata: Array<Float>): Drawable? {
+
+        if (infectiondata.lastIndex > 1 && infectiondata.average() > Options.infectionExists) {
+            //sjekker om det er signifikant økning/miskning på de siste 3 datapunktene
+            val lastThree = arrayOf(
+                infectiondata[infectiondata.lastIndex - 2],
+                infectiondata[infectiondata.lastIndex - 1],
+                infectiondata[infectiondata.lastIndex]
+            )
+            return if (lastThree.average() - infectiondata.average() > Options.increase) {
+                ResourcesCompat.getDrawable(
+                    resources,
+                    no.uio.ifi.team16.stim.R.drawable.arrow_up,
+                    null
+                )
+            } else if (infectiondata.average() - lastThree.average() > Options.decrease) {
+                ResourcesCompat.getDrawable(
+                    resources,
+                    no.uio.ifi.team16.stim.R.drawable.arrow_down,
+                    null
+                )
+            } else {
+                return if (infectiondata.average() > Options.high) {
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        no.uio.ifi.team16.stim.R.drawable.farevarsel,
+                        null
+                    )
+                } else {
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        no.uio.ifi.team16.stim.R.drawable.no_change,
+                        null
+                    )
+                }
+            }
+        } else {
+            return ResourcesCompat.getDrawable(
+                resources,
+                no.uio.ifi.team16.stim.R.drawable.checkmark,
+                null
+            )
+        }
     }
 
 }
