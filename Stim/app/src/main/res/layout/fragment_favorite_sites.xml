@@ -3,7 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/background_blue"
+    android:backgroundTint="@color/skyblue"
+    android:backgroundTintMode="multiply">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview"
@@ -14,9 +17,125 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/recycleview_element_overview" />
+
+    <!-- Dersom ingen anlegg er valgt -->
+
+    <RelativeLayout
+        android:id="@+id/ingenAnlegg"
+        android:layout_width="0dp"
+        android:orientation="vertical"
+        android:elevation="50dp"
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/obs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="128dp"
+            android:gravity="center_horizontal"
+            android:text="Du har ikke valgt noen favoritt anlegg enda… "
+            android:textColor="@color/colorAccent"
+            android:textSize="14sp"
+            android:fontFamily="@font/montserrat_semibold">
+        </TextView>
+
+        <TextView
+            android:id="@+id/obs2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/obs"
+            android:layout_centerInParent="true"
+            android:gravity="center_horizontal"
+            android:text="Følg stegene under for å legge til dine favoritter:"
+            android:textColor="@color/colorAccent"
+            android:textSize="14sp"
+            android:fontFamily="@font/montserrat_semibold">
+        </TextView>
+
+        <ImageView
+            android:id="@+id/tall1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/obs2"
+            android:layout_marginTop="40dp"
+            android:layout_centerHorizontal="true"
+            app:srcCompat="@drawable/numeric_1_circle_outline">
+
+        </ImageView>
+
+        <TextView
+            android:id="@+id/forste"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tall1"
+            android:layout_centerInParent="true"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="15dp"
+            android:layout_marginStart="30dp"
+            android:text="Trykk på menyen i øverste venstre hjørnet og velg Kart"
+            android:textColor="@color/colorAccent"
+            android:textSize="12sp"
+            android:fontFamily="@font/montserrat">
+        </TextView>
+
+        <ImageView
+            android:id="@+id/tall2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_below="@+id/forste"
+            android:layout_centerInParent="true"
+            app:srcCompat="@drawable/numeric_2_circle_outline">
+        </ImageView>
+
+        <TextView
+            android:id="@+id/andre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tall2"
+            android:layout_centerInParent="true"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="15dp"
+            android:layout_marginStart="30dp"
+            android:text="Søk etter anlegg ved å skrive kommunenummer eller navn på anlegget"
+            android:textColor="@color/colorAccent"
+            android:textSize="12sp"
+            android:fontFamily="@font/montserrat">
+        </TextView>
+
+        <ImageView
+            android:id="@+id/tall3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_below="@+id/andre"
+            android:layout_centerInParent="true"
+            app:srcCompat="@drawable/numeric_3_circle_outline">
+        </ImageView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tall3"
+            android:layout_centerInParent="true"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="15dp"
+            android:layout_marginStart="30dp"
+            android:text="Trekk opp menyen fra bunn og trykk på hjerte ikonet for å lagre et anlegg"
+            android:textColor="@color/colorAccent"
+            android:textSize="12sp"
+            android:fontFamily="@font/montserrat">
+        </TextView>
+
+    </RelativeLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

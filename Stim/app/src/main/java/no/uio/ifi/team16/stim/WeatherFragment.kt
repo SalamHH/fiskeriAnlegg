@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.transition.TransitionInflater
 import no.uio.ifi.team16.stim.data.WeatherForecast
 import no.uio.ifi.team16.stim.databinding.FragmentWeatherBinding
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
@@ -19,6 +20,11 @@ class WeatherFragment : StimFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentWeatherBinding.inflate(inflater, container, false)
+
+        val animation =
+            TransitionInflater.from(requireContext()).inflateTransition(android.R.transition.move)
+        sharedElementEnterTransition = animation
+        sharedElementReturnTransition = animation
 
         val site = viewModel.getCurrentSite() ?: return binding.root
 

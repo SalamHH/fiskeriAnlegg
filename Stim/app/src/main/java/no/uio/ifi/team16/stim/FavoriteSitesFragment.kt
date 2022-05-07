@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import no.uio.ifi.team16.stim.data.Site
@@ -37,6 +38,7 @@ class FavoriteSitesFragment : StimFragment() {
                 adapter.favs = sites
                 adapter.notifyDataSetChanged()
             }
+            binding.ingenAnlegg.isVisible = sites?.size == 0
         }
         return binding.root
     }

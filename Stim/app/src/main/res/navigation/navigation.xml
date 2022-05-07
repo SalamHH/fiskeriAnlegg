@@ -30,8 +30,7 @@
         tools:layout="@layout/fragment_site_info" >
         <action
             android:id="@+id/action_siteInfoFragment_to_weatherFragment"
-            app:destination="@id/weatherFragment"
-            app:enterAnim="@android:anim/slide_in_left" />
+            app:destination="@id/weatherFragment" />
         <action
             android:id="@+id/action_siteInfoFragment_to_generalInfoFragment"
             app:destination="@id/generalInfoFragment"

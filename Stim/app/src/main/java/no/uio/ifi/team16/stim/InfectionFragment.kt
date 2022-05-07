@@ -165,26 +165,26 @@ class InfectionFragment : StimFragment() {
             return if (lastThree.average() - infectiondata.average() > Options.increase) {
                 ResourcesCompat.getDrawable(
                     resources,
-                    no.uio.ifi.team16.stim.R.drawable.arrow_up,
+                    R.drawable.arrow_up,
                     null
                 )
             } else if (infectiondata.average() - lastThree.average() > Options.decrease) {
                 ResourcesCompat.getDrawable(
                     resources,
-                    no.uio.ifi.team16.stim.R.drawable.arrow_down,
+                    R.drawable.arrow_down,
                     null
                 )
             } else {
                 return if (infectiondata.average() > Options.high) {
                     ResourcesCompat.getDrawable(
                         resources,
-                        no.uio.ifi.team16.stim.R.drawable.farevarsel,
+                        R.drawable.farevarsel,
                         null
                     )
                 } else {
                     ResourcesCompat.getDrawable(
                         resources,
-                        no.uio.ifi.team16.stim.R.drawable.no_change,
+                        R.drawable.no_change,
                         null
                     )
                 }
@@ -192,7 +192,7 @@ class InfectionFragment : StimFragment() {
         } else {
             return ResourcesCompat.getDrawable(
                 resources,
-                no.uio.ifi.team16.stim.R.drawable.checkmark,
+                R.drawable.checkmark,
                 null
             )
         }

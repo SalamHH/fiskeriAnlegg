@@ -30,10 +30,10 @@ data class Weather(
 
 enum class WeatherIcon(@DrawableRes private val drawable: Int) {
 
-    SUNNY(R.drawable.ic_clearsky_day),
-    CLOUDY(R.drawable.ic_cloudy),
-    RAINY(R.drawable.ic_lightrain),
-    SNOWY(R.drawable.ic_lightsnow);
+    SUNNY(R.drawable.sunny),
+    CLOUDY(R.drawable.cloudy),
+    RAINY(R.drawable.rainy),
+    SNOWY(R.drawable.snowy);
 
     /**
      * Get this icon as an Android drawable

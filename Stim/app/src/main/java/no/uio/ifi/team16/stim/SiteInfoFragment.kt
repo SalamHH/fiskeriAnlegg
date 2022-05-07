@@ -96,13 +96,22 @@ class SiteInfoFragment : StimFragment() {
 
 
         binding.weatherInfoCard.setOnClickListener {
-            view?.findNavController()?.navigate(R.id.action_siteInfoFragment_to_weatherFragment)
+            val extras = FragmentNavigatorExtras(binding.weatherIcon to "image_weather")
+            view?.findNavController()?.navigate(
+                R.id.action_siteInfoFragment_to_weatherFragment,
+                null,
+                null,
+                extras)
         }
 
         binding.waterInfoCard.setOnClickListener {
+            val extras = FragmentNavigatorExtras(binding.infectionIcon to "image_big")
             if (waterInfofinished) {
                 view?.findNavController()
-                    ?.navigate(R.id.action_siteInfoFragment_to_generalInfoFragment)
+                    ?.navigate(R.id.action_siteInfoFragment_to_generalInfoFragment,
+                        null,
+                        null,
+                        extras)
             } else {
                 val text = "Ikke tilgjenglig"
                 val duration = Toast.LENGTH_SHORT

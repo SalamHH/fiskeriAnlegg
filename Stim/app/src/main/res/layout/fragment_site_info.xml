@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:fontFamily="@font/montserrat_bold"
-                android:gravity="center"
+                android:gravity="center_horizontal"
                 android:text="@string/site_name"
                 android:textColor="@color/colorAccent"
                 android:textSize="30sp" />
@@ -51,9 +51,10 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="0dp"
                 android:layout_marginRight="15dp"
-                app:cardBackgroundColor="@color/transparent"
+                app:cardBackgroundColor="@color/colorAccent"
                 app:cardCornerRadius="10dp"
-                app:cardElevation="0dp"
+                app:cardElevation="5dp"
+                app:cardMaxElevation="10dp"
                 app:cardPreventCornerOverlap="true"
                 app:cardUseCompatPadding="true">
 
@@ -77,12 +78,14 @@
                             android:id="@+id/generellInformasjon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center"
+                            android:layout_gravity="center_horizontal"
+                            android:gravity="center_horizontal"
+                            android:layout_marginTop="5dp"
                             android:layout_marginStart="5dp"
                             android:layout_marginEnd="5dp"
-                            android:fontFamily="@font/montserrat_semibold"
-                            android:text="Trykk for generell informasjon om anlegget"
-                            android:textColor="@color/colorAccent" />
+                            android:fontFamily="@font/montserrat_light_italic"
+                            android:text="Generell informasjon om anlegget"
+                            android:textColor="@color/primaryTextColor" />
 
                         <ImageView
                             android:id="@+id/pil"
@@ -115,7 +118,7 @@
                             android:layout_marginTop="5dp"
                             android:fontFamily="@font/montserrat_semibold"
                             android:text="Posisjon: "
-                            android:textColor="@color/colorAccent" />
+                            android:textColor="@color/primaryTextColor" />
 
                         <TextView
                             android:id="@+id/posisjonView"
@@ -127,7 +130,7 @@
                             android:layout_marginEnd="5dp"
                             android:fontFamily="@font/montserrat_semibold"
                             android:text="@string/blank"
-                            android:textColor="@color/colorAccent" />
+                            android:textColor="@color/primaryTextColor" />
 
                         <!-- ANLEGGSNUMMER -->
 
@@ -140,7 +143,7 @@
                             android:layout_marginEnd="5dp"
                             android:fontFamily="@font/montserrat_semibold"
                             android:text="Anleggsnummer:"
-                            android:textColor="@color/colorAccent" />
+                            android:textColor="@color/primaryTextColor" />
 
                         <TextView
                             android:id="@+id/anleggsnrView"
@@ -152,7 +155,7 @@
                             android:layout_marginEnd="5dp"
                             android:fontFamily="@font/montserrat_semibold"
                             android:text="@string/blank"
-                            android:textColor="@color/colorAccent" />
+                            android:textColor="@color/primaryTextColor" />
 
                         <!-- PLASSERING -->
 
@@ -165,7 +168,7 @@
                             android:layout_marginEnd="5dp"
                             android:fontFamily="@font/montserrat_semibold"
                             android:text="Plassering:"
-                            android:textColor="@color/colorAccent" />
+                            android:textColor="@color/primaryTextColor" />
 
                         <TextView
                             android:id="@+id/plasseringView"
@@ -177,7 +180,7 @@
                             android:layout_marginEnd="5dp"
                             android:fontFamily="@font/montserrat_semibold"
                             android:text="@string/blank"
-                            android:textColor="@color/colorAccent" />
+                            android:textColor="@color/primaryTextColor" />
 
                         <!-- KAPASITET -->
 
@@ -190,7 +193,7 @@
                             android:layout_marginEnd="5dp"
                             android:fontFamily="@font/montserrat_semibold"
                             android:text="Kapasitet:"
-                            android:textColor="@color/colorAccent" />
+                            android:textColor="@color/primaryTextColor" />
 
                         <TextView
                             android:id="@+id/kapasitetView"
@@ -202,7 +205,7 @@
                             android:layout_marginEnd="5dp"
                             android:fontFamily="@font/montserrat_semibold"
                             android:text="@string/blank"
-                            android:textColor="@color/colorAccent" />
+                            android:textColor="@color/primaryTextColor" />
 
                         <!-- VANNTYPE -->
 
@@ -215,7 +218,7 @@
                             android:layout_marginEnd="5dp"
                             android:fontFamily="@font/montserrat_semibold"
                             android:text="Vanntype:"
-                            android:textColor="@color/colorAccent" />
+                            android:textColor="@color/primaryTextColor" />
 
                         <TextView
                             android:id="@+id/vannTypeView"
@@ -227,7 +230,7 @@
                             android:layout_marginEnd="5dp"
                             android:fontFamily="@font/montserrat_semibold"
                             android:text="@string/blank"
-                            android:textColor="@color/colorAccent" />
+                            android:textColor="@color/primaryTextColor" />
 
                         <!-- KOMMUNE -->
 
@@ -240,7 +243,7 @@
                             android:layout_marginEnd="5dp"
                             android:fontFamily="@font/montserrat_semibold"
                             android:text="Kommune:"
-                            android:textColor="@color/colorAccent" />
+                            android:textColor="@color/primaryTextColor" />
 
                         <TextView
                             android:id="@+id/prodOmraadeView"
@@ -252,7 +255,7 @@
                             android:layout_marginEnd="5dp"
                             android:fontFamily="@font/montserrat_semibold"
                             android:text="@string/blank"
-                            android:textColor="@color/colorAccent" />
+                            android:textColor="@color/primaryTextColor" />
 
                     </RelativeLayout>
 
@@ -404,7 +407,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="TextView"
                                 android:textColor="@color/primaryTextColor"
-                                android:textSize="10sp"
+                                android:textSize="11sp"
                                 app:layout_constraintBaseline_toBaselineOf="@+id/temp"
                                 app:layout_constraintEnd_toStartOf="@+id/temp"
                                 app:layout_constraintHorizontal_bias="0.274"
@@ -417,7 +420,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="TextView"
                                 android:textColor="@color/primaryTextColor"
-                                android:textSize="10sp"
+                                android:textSize="11sp"
                                 app:layout_constraintBaseline_toBaselineOf="@+id/varsel"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
@@ -430,7 +433,7 @@
                                 android:layout_marginTop="1dp"
                                 android:text="TextView"
                                 android:textColor="@color/primaryTextColor"
-                                android:textSize="10sp"
+                                android:textSize="11sp"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintHorizontal_bias="0.673"
                                 app:layout_constraintStart_toEndOf="@+id/temp"
@@ -572,7 +575,7 @@
 
                             <ImageView
                                 android:id="@+id/fare"
-                                android:layout_width="12dp"
+                                android:layout_width="16dp"
                                 android:layout_height="16dp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -584,7 +587,7 @@
 
                             <ImageView
                                 android:id="@+id/meldtPD"
-                                android:layout_width="12dp"
+                                android:layout_width="16dp"
                                 android:layout_height="16dp"
                                 android:layout_marginTop="1dp"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -594,7 +597,7 @@
 
                             <ImageView
                                 android:id="@+id/meldtILA"
-                                android:layout_width="12dp"
+                                android:layout_width="16dp"
                                 android:layout_height="16dp"
                                 android:layout_marginTop="1dp"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -631,13 +634,13 @@
                         tools:visibility="invisible" />
 
                     <ImageView
-                        android:id="@+id/cloudIcon"
+                        android:id="@+id/weatherIcon"
                         android:layout_width="35dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center"
                         android:layout_marginTop="12dp"
                         android:elevation="11dp"
-                        android:transitionName="image_small"
+                        android:transitionName="image_weather"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toStartOf="parent"
@@ -709,10 +712,10 @@
 
                             <ImageView
                                 android:id="@+id/vaer_idag"
-                                android:layout_width="13dp"
-                                android:layout_height="11dp"
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
                                 android:layout_marginTop="2dp"
-                                android:src="@drawable/sun_icon"
+                                android:src="@drawable/sunny"
                                 app:layout_constraintEnd_toEndOf="@+id/temp_idag"
                                 app:layout_constraintStart_toStartOf="@+id/temp_idag"
                                 app:layout_constraintTop_toBottomOf="@+id/idag" />
@@ -724,7 +727,7 @@
                                 android:layout_marginStart="48dp"
                                 android:text="6*"
                                 android:textColor="@color/primaryTextColor"
-                                android:textSize="10sp"
+                                android:textSize="11sp"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@+id/vaer_idag" />
 
@@ -743,10 +746,10 @@
 
                             <ImageView
                                 android:id="@+id/vaer_imorgen"
-                                android:layout_width="13dp"
-                                android:layout_height="11dp"
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
                                 android:layout_marginTop="2dp"
-                                android:src="@drawable/sun_icon"
+                                android:src="@drawable/sunny"
                                 app:layout_constraintEnd_toEndOf="@+id/temp_imorgen"
                                 app:layout_constraintStart_toStartOf="@+id/temp_imorgen"
                                 app:layout_constraintTop_toBottomOf="@+id/imorgen" />
@@ -757,7 +760,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="7*"
                                 android:textColor="@color/primaryTextColor"
-                                android:textSize="10sp"
+                                android:textSize="11sp"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@+id/vaer_imorgen" />
@@ -778,11 +781,11 @@
 
                             <ImageView
                                 android:id="@+id/storm_vaer"
-                                android:layout_width="13dp"
-                                android:layout_height="11dp"
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
                                 android:layout_marginTop="2dp"
                                 android:layout_marginEnd="47dp"
-                                android:src="@drawable/sun_icon"
+                                android:src="@drawable/sunny"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintHorizontal_bias="1.0"
                                 app:layout_constraintStart_toEndOf="@+id/vaer_imorgen"
@@ -795,7 +798,7 @@
                                 android:layout_marginEnd="12dp"
                                 android:text="Ingen storm meldt"
                                 android:textColor="@color/primaryTextColor"
-                                android:textSize="10sp"
+                                android:textSize="11sp"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintTop_toBottomOf="@+id/storm_vaer" />
 
