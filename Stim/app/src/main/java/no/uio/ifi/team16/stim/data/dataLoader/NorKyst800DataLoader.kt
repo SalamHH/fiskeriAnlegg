@@ -41,14 +41,12 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
      * @param xRange range of x-values to get from
      * @param yRange range of y-values to get from
      * @param depthRange depth as a range with format from:stride:to
-     * @param timeRange time as a range with format from:stride:to
      * @return Norkyst800 data in the given range
      */
     suspend fun load(
         xRange: IntProgression,
         yRange: IntProgression,
         depthRange: IntProgression,
-        timeRange: IntProgression
     ): NorKyst800? {
         /*
         * Due to the abscence of certain critical java libraries for doing requests over https with
@@ -96,7 +94,10 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
         /*?: run {
             Log.w(TAG, "failed to find time corresponding to now in dataset, using first") //TODO: or fail
         }*/
-        Log.w(TAG, "using timeindex $timeIndex")
+        Log.d(TAG, timeAndDepthString)
+        Log.d(TAG, time[0].toString())
+        Log.d(TAG, now.toString())
+        Log.d(TAG, "using timeindex $timeIndex")
         val t = fromClosedRange(timeIndex, timeIndex, 1)
 
         val salinityTemperatureUrl = makeSalinityTemperatureUrl(
@@ -184,6 +185,7 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
                 name == "proj4"
             }
             ?.third //take the value of that attribute
+            ?.drop(1)?.dropLast(1) //trim off " "-s
             ?: run {
                 Log.w(TAG, "Failed to parse projection from DAS response, using default")
                 Options.defaultProj4String
@@ -202,6 +204,7 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
         //////////////
         // VELOCITY //
         //////////////
+        Log.d(TAG, velocityUrl)
         val velocityString = requestData(velocityUrl, "velocity") ?: return null
 
         //PARSE VELOCITY
@@ -275,8 +278,7 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
             load(
                 Options.defaultNorKyst800XRange,
                 Options.defaultNorKyst800YRange,
-                Options.defaultNorKyst800DepthRange,
-                Options.defaultNorKyst800TimeRange
+                Options.defaultNorKyst800DepthRange
             )
         } catch (err: OutOfMemoryError) {
             Log.e(TAG, "out of memory while loading Norkyst800, increasing stride and trying again")
@@ -404,11 +406,11 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
             "[${xRange.reformatFSL()}][${yRange.reformatFSL()}]"
         val dString = "[${depthRange.reformatFSL()}]"
         val tString = "[${timeRange.reformatFSL()}]"
-        val dtxyString = dString + tString + xyString
+        val tdxyString = tString + dString + xyString
         return baseUrl +
                 ".ascii?" +
-                "salinity$dtxyString," +
-                "temperature$dtxyString"
+                "salinity$tdxyString," +
+                "temperature$tdxyString"
     }
 
     /**
@@ -448,12 +450,12 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
             "[${xRange.reformatFSL()}][${yRange.reformatFSL()}]"
         val dString = "[${depthRange.reformatFSL()}]"
         val tString = "[${timeRange.reformatFSL()}]"
-        val dtxyString = dString + tString + xyString
+        val tdxyString = tString + dString + xyString
         return baseUrl +
                 ".ascii?" +
-                "u$dtxyString," +
-                "v$dtxyString," +
-                "w$dtxyString"
+                "u$tdxyString," +
+                "v$tdxyString," +
+                "w$tdxyString"
     }
 
     /**
@@ -468,7 +470,10 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
      * for the forecast data(which changes periodically)
      */
     private val forecastUrlRegex =
-        Regex("""'catalog\.html\?dataset=norkyst800m_1h_files/(.*?\.fc\..*?)'""")
+        Regex("""'catalog\.html\?dataset=norkyst800m_1h_files/(.*?\.an\..*?)'""") //TODO separate out fc version!
+
+    private val currentUrlRegex =
+        Regex("""'catalog\.html\?dataset=norkyst800m_1h_files/(.*?\.an\..*?)'""")
 
     private suspend fun loadForecastUrl(): String? = try {
         Fuel.get(catalogUrl).awaitString()

@@ -39,8 +39,8 @@ class Options {
 
 
         const val norKyst800AtSiteRadius = 2
-        val norKyst800AtSiteDepthRange = fromClosedRange(0, 10, 1)
-        val norKyst800AtSiteTimeRange = fromClosedRange(0, 10, 1)
+        val norKyst800AtSiteDepthRange = fromClosedRange(0, 1, 1)
+        val norKyst800AtSiteTimeRange = fromClosedRange(0, 23, 1)
 
         //INFECTIOUSPRESSURE - DATALOADER
         const val infectiousPressureStepX =

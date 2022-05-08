@@ -37,7 +37,6 @@ class NorKyst800Repository {
      * @param xRange range of x-coordinates to get
      * @param yRange range of y-coordinates to get
      * @param depthRange range of depth indexes to load from
-     * @param timeRange range of time indexes to load from
      * @return data of infectious pressure in the prescribed data range.
      *
      * @see THREDDSDataLoader.THREDDSLoad()
@@ -45,15 +44,13 @@ class NorKyst800Repository {
     suspend fun get(
         xRange: IntProgression,
         yRange: IntProgression,
-        depthRange: IntProgression,
-        timeRange: IntProgression
+        depthRange: IntProgression
     ): NorKyst800? {
         if (!mocked && dirty) {
             cache = dataSource.load(
                 xRange,
                 yRange,
-                depthRange,
-                timeRange
+                depthRange
             )
             dirty = false
         }
