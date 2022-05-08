@@ -15,6 +15,7 @@ import org.locationtech.proj4j.CRSFactory
 import org.locationtech.proj4j.CoordinateTransform
 import org.locationtech.proj4j.CoordinateTransformFactory
 import java.time.Instant
+import java.time.ZonedDateTime
 import kotlin.ranges.IntProgression.Companion.fromClosedRange
 
 /**
@@ -53,13 +54,20 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
         * netcdf java, we have to fetch the data "ourselves", with a fuel request. We then open the file in memory.
         * The downside is that we cannot stream the data, but the data can be retrieved pre-sliced
         */
-        val baseUrl = loadForecastUrl() ?: run {
-            Log.e(
-                TAG,
-                "Failed to load the forecast URL from the catalog, is the catalog URL correct?"
-            )
-            return null
-        }
+
+        //TODO find better delineatrion? this seems to be a deficiency in the dataset(maintenance)
+        val now = Instant.now() //seconds since 1970-01-01,
+        val baseUrl =
+            (if (ZonedDateTime.now().hour < 18) //use forecast until 18, then its a forecast from next day
+                loadUrl(forecastUrlRegex)
+            else
+                loadUrl(currentUrlRegex)) ?: run {
+                Log.e(
+                    TAG,
+                    "Failed to load the forecast URL from the catalog, is the catalog URL correct?"
+                )
+                return null
+            }
 
         ///////////////////
         // MAKE THE URLS //
@@ -86,17 +94,12 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
                 }
 
         //we now have time, and we want to find the index corresponding to our time
-        val now = Instant.now().epochSecond //seconds since 1970-01-01,
-        //find th TODO
+
+        //find index in array corresponding to current time
         val timeIndex: Int = time
-            .takeWhile { t -> t < now }
+            .takeWhile { t -> t < now.epochSecond }
             .size
-        /*?: run {
-            Log.w(TAG, "failed to find time corresponding to now in dataset, using first") //TODO: or fail
-        }*/
-        Log.d(TAG, timeAndDepthString)
-        Log.d(TAG, time[0].toString())
-        Log.d(TAG, now.toString())
+
         Log.d(TAG, "using timeindex $timeIndex")
         val t = fromClosedRange(timeIndex, timeIndex, 1)
 
@@ -190,8 +193,6 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
                 Log.w(TAG, "Failed to parse projection from DAS response, using default")
                 Options.defaultProj4String
             }
-        Log.d(TAG, proj4String)
-        Log.d(TAG, Options.defaultProj4String)
 
         //make the projection from string
         val projection: CoordinateTransform =
@@ -470,18 +471,18 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
      * for the forecast data(which changes periodically)
      */
     private val forecastUrlRegex =
-        Regex("""'catalog\.html\?dataset=norkyst800m_1h_files/(.*?\.an\..*?)'""") //TODO separate out fc version!
+        Regex("""'catalog\.html\?dataset=norkyst800m_1h_files/(.*?\.fc\..*?)'""")
 
     private val currentUrlRegex =
         Regex("""'catalog\.html\?dataset=norkyst800m_1h_files/(.*?\.an\..*?)'""")
 
-    private suspend fun loadForecastUrl(): String? = try {
+    private suspend fun loadUrl(regex: Regex): String? = try {
         Fuel.get(catalogUrl).awaitString()
     } catch (e: Exception) {
         Log.e(TAG, "Unable to retrieve NorKyst800 catalog due to", e)
         null
     }?.let { responseStr -> //regex out the url with .fc. in it
-        forecastUrlRegex.find(responseStr)?.let { match ->
+        regex.find(responseStr)?.let { match ->
             "https://thredds.met.no/thredds/dodsC/fou-hi/norkyst800m-1h/" +
                     match.groupValues[1]  //if there is a match, the group (entry[1]) is guaranteed to exist
         } ?: run { //"catch" unsucssessfull parse

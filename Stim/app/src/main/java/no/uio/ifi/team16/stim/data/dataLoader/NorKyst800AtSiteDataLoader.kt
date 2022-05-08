@@ -101,7 +101,6 @@ class NorKyst800AtSiteDataLoader {
      */
     suspend fun loadWithUrl(site: Site, baseUrl: String): NorKyst800? {
         val depthRange = Options.norKyst800AtSiteDepthRange
-        val timeRange = Options.norKyst800AtSiteTimeRange
 
         /*
         * Due to the abscence of certain critical java libraries for doing requests over https with
@@ -230,6 +229,7 @@ class NorKyst800AtSiteDataLoader {
                     Log.e(NorKyst800RegexParser.TAG, "Failed to read <time> from NorKyst800")
                     return null
                 }
+        val timeRange = fromClosedRange(0, time.size - 1, 1)
 
         val salinityTemperatureUrl = makeSalinityTemperatureUrl(
             baseUrl,
