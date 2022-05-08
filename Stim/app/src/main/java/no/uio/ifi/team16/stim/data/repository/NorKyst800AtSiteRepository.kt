@@ -8,14 +8,10 @@ class NorKyst800AtSiteRepository {
     private val TAG = "NorKyst800AtSiteRepository"
     private val dataSource = NorKyst800AtSiteDataLoader()
     private var cache: MutableMap<Int, NorKyst800AtSite> = mutableMapOf()
-    var mocked: Boolean = false
-    var dirty: Boolean = true
 
     /**
      * get NorKyst800 data around a specified site
      *
-     * If in testmode(mocked data), return the testdata
-     * otherwise;
      * if the cache is not up to date(dirty), load the data anew,
      * otherwise just return the data in the cache.
      *
@@ -53,6 +49,5 @@ class NorKyst800AtSiteRepository {
      */
     fun clearCache() {
         cache.clear()
-        dirty = true
     }
 }

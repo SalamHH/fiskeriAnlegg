@@ -52,6 +52,7 @@ class MainActivity : AppCompatActivity() {
         Timer().schedule(
             object : TimerTask() {
                 override fun run() {
+                    Log.d(TAG, "Reloading stale datasets")
                     viewModel.loadNorKyst800Anew()
                     /*TODO: infectiouspressure updates once a week, but it is impossible to predict when, maybe
                     update every hour just in case? or just ignore and assume app does not live beyond an update cycle*/

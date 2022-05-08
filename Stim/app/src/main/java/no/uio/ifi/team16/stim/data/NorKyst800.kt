@@ -165,6 +165,21 @@ data class NorKyst800(
                 "\tvelocity.y: ${velocity.second.prettyPrint()}" +
                 "\tvelocity.z: ${velocity.third.prettyPrint()}"
 
+    //join two datasets at time dimension. Assumess all other dimensions of equal size
+    fun append(other: NorKyst800): NorKyst800 =
+        NorKyst800(
+            depth,
+            salinity.plus(other.salinity),
+            temperature.plus(other.temperature),
+            time.plus(other.time),
+            Triple(
+                velocity.first.plus(other.velocity.first),
+                velocity.second.plus(other.velocity.second),
+                velocity.third.plus(other.velocity.third)
+            ),
+            projection
+        )
+
     ////////////////////
     // AUTO-GENERATED //
     ////////////////////

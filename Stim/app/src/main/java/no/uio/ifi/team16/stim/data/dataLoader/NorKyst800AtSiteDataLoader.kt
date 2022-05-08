@@ -16,6 +16,7 @@ import no.uio.ifi.team16.stim.util.reformatFSL
 import org.locationtech.proj4j.CRSFactory
 import org.locationtech.proj4j.CoordinateTransform
 import org.locationtech.proj4j.CoordinateTransformFactory
+import java.time.Instant
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -36,6 +37,56 @@ class NorKyst800AtSiteDataLoader {
     /////////////
     // LOADERS //
     /////////////
+
+    suspend fun load(
+        site: Site
+    ): NorKyst800AtSite? {
+        val forecastUrl = loadForecastUrl() ?: run {
+            Log.e(
+                TAG,
+                "Failed to load the forecast URL from the catalog, is the catalog URL correct?"
+            )
+            return null
+        }
+        val currentUrl = forecastUrlIntoCurrentUrl(forecastUrl)
+        //load for each set
+        val forecastAtSite = loadWithUrl(site, forecastUrl)
+        val currentAtSite = loadWithUrl(site, currentUrl)
+        //now merge the two datasets
+        return if (currentAtSite == null) {
+            if (forecastAtSite == null) { //both unsuccesfull
+                null
+            } else {
+                NorKyst800AtSite(
+                    site.nr,
+                    forecastAtSite
+                )
+            }
+        } else {
+            if (forecastAtSite == null) {
+                NorKyst800AtSite(
+                    site.nr,
+                    currentAtSite
+                )
+            } else { //both succesfull
+                Log.d(
+                    TAG,
+                    "adding ${forecastAtSite.time.contentToString()} and ${currentAtSite.time.contentToString()}"
+                )
+                Log.d(TAG, "made ${currentAtSite.append(forecastAtSite).time.contentToString()}")
+                Log.d(TAG, currentAtSite.append(forecastAtSite).time.map { f ->
+                    (f - Instant.now().epochSecond) / 3600
+                }.toString())
+
+                NorKyst800AtSite(
+                    site.nr,
+                    currentAtSite.append(forecastAtSite)
+                )
+            }
+        }
+    }
+
+
     /**
      * Get NorKyst800AtSite data at the given site.
      *
@@ -43,11 +94,12 @@ class NorKyst800AtSiteDataLoader {
      * the das of the data(attributes of variables). Finally we load the data itself, but beacuse the response is
      * large we do it in two separate requests.
      *
+     * @param site site to load around
+     * @param url url to load from
+     *
      * @return Norkyst800 data in the given range
      */
-    suspend fun load(
-        site: Site
-    ): NorKyst800AtSite? {
+    suspend fun loadWithUrl(site: Site, baseUrl: String): NorKyst800? {
         val depthRange = Options.norKyst800AtSiteDepthRange
         val timeRange = Options.norKyst800AtSiteTimeRange
 
@@ -56,13 +108,7 @@ class NorKyst800AtSiteDataLoader {
         * netcdf java, we have to fetch the data "ourselves", with a fuel request. We then open the file in memory.
         * The downside is that we cannot stream the data, but the data can be retrieved pre-sliced
         */
-        val baseUrl = loadForecastUrl() ?: run {
-            Log.e(
-                TAG,
-                "Failed to load the forecast URL from the catalog, is the catalog URL correct?"
-            )
-            return null
-        }
+
         //////////////////////
         // DAS / ATTRIBUTES //
         //////////////////////
@@ -260,19 +306,16 @@ class NorKyst800AtSiteDataLoader {
                 temperatureFSO
             ) ?: run {
                 Log.e(NorKyst800RegexParser.TAG, "Failed to read <temperature> from NorKyst800")
-                return@load null
+                return null
             }
 
-        return NorKyst800AtSite(
-            site.nr,
-            NorKyst800(
-                depth,
-                salinity,
-                temperature,
-                time,
-                velocity,
-                projection
-            )
+        return NorKyst800(
+            depth,
+            salinity,
+            temperature,
+            time,
+            velocity,
+            projection
         )
     }
 
@@ -446,10 +489,7 @@ class NorKyst800AtSiteDataLoader {
      * for the forecast data(which changes periodically)
      */
     private val forecastUrlRegex =
-        Regex("""'catalog\.html\?dataset=norkyst800m_1h_files/(.*?\.an\..*?)'""") //TODO separate out fc version!
-
-    private val currentUrlRegex =
-        Regex("""'catalog\.html\?dataset=norkyst800m_1h_files/(.*?\.an\..*?)'""")
+        Regex("""'catalog\.html\?dataset=norkyst800m_1h_files/(.*?\.fc\..*?)'""")
 
     private suspend fun loadForecastUrl(): String? = try {
         Fuel.get(catalogUrl).awaitString()
@@ -468,4 +508,8 @@ class NorKyst800AtSiteDataLoader {
             null
         }
     }
+
+    //replace .fc. with .an.
+    private fun forecastUrlIntoCurrentUrl(fcast: String): String =
+        fcast.replace(".fc.", ".an.")
 }

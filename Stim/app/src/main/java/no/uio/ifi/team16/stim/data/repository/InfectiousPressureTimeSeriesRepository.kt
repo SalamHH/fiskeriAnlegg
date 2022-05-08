@@ -10,29 +10,16 @@ import kotlin.ranges.IntProgression.Companion.fromClosedRange
  * The Single Source of Truth(SST) for the viewmodel.
  * This is the class that should be queried for data when a class in the model layer wants a set of data.
  *
- * The repository can load data and return data, return cached data or provide mocked data(for testing)
- *
- * If constructed without parameters, it behaves normally.
- *
- * If constructed with a InfectiousPressureTimeSeries object it uses test behaviour; always returning
- * the given data for every query
+ * The repository can load data and return data or return cached data
  */
 class InfectiousPressureTimeSeriesRepository() {
     private val TAG = "InfectiousPressureTimeSeriesRepository"
     private val dataSource = InfectiousPressureTimeSeriesDataLoader()
     private var cache: MutableMap<Int, InfectiousPressureTimeSeries> = mutableMapOf()
-    var mocked: Boolean = false
-
-    constructor(infectiousPressureTimeSeries: Map<Int, InfectiousPressureTimeSeries>) : this() {
-        mocked = true
-        cache = infectiousPressureTimeSeries.toMutableMap()
-    }
 
     /**
      * get infectious pressure timeseries data at a given site.
      *
-     * If in testmode(mocked data), return the testdata
-     * otherwise;
      * if the cache is not up to date(dirty), load the data anew,
      * otherwise just return the data in the cache.
      *
@@ -49,8 +36,6 @@ class InfectiousPressureTimeSeriesRepository() {
     /**
      * get infectious pressure timeseries data at a given site.
      *
-     * If in testmode(mocked data), return the testdata
-     * otherwise;
      * if the cache is not up to date(dirty), load the data anew,
      * otherwise just return the data in the cache.
      *

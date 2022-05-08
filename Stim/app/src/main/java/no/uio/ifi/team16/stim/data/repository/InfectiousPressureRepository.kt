@@ -18,33 +18,23 @@ import no.uio.ifi.team16.stim.util.LatLong
  * the given data for every query
  *
  * TODO: implement system to check if cache is not up-to-date
- *
- * TODO: find a cacheing strategy, these will conflict!
  */
 class InfectiousPressureRepository() {
     private val TAG = "InfectiousPressureRepository"
     private val dataSource = InfectiousPressureDataLoader()
     private var cache: InfectiousPressure? = null
-    var mocked: Boolean = false
     var dirty: Boolean = true
 
-    constructor(infectiousPressure: InfectiousPressure) : this() {
-        mocked = true
-        cache = infectiousPressure
-        dirty = false
-    }
-
     /**
-     * get SOME of the data.
-     * If in testmode(mocked data), return the testdata
-     * otherwise;
+     * get the entire dataset at current time
+     *
      * if the cache is not up to date(dirty), load the data anew,
      * otherwise just return the data in the cache.
      *
      * @return mocked, cached or newly loaded data.
      */
     suspend fun getDefault(): InfectiousPressure? {
-        if (!mocked && dirty) {
+        if (dirty) {
             cache = dataSource.loadDefault()
             dirty = false
         }
@@ -60,6 +50,8 @@ class InfectiousPressureRepository() {
      * @param yStride stride between y coordinates
      * @return data of infectious pressure in the prescribed data range.
      *
+     * TODO: CUT?
+     *
      * @see THREDDSDataLoader.THREDDSLoad()
      */
     suspend fun get(
@@ -68,7 +60,7 @@ class InfectiousPressureRepository() {
         xStride: Int,
         yStride: Int
     ): InfectiousPressure? {
-        if (!mocked && dirty) {
+        if (dirty) {
             cache = dataSource.load(
                 latLongUpperLeft,
                 latLongLowerRight,
@@ -88,13 +80,15 @@ class InfectiousPressureRepository() {
      * @param yRange range of y-coordinates to get
      * @return data of infectious pressure in the prescribed data range.
      *
+     * TODO: CUT?
+     *
      * @see THREDDSDataLoader.THREDDSLoad()
      */
     suspend fun get(
         xRange: IntProgression,
         yRange: IntProgression
     ): InfectiousPressure? {
-        if (!mocked && dirty) {
+        if (dirty) {
             cache = dataSource.load(
                 xRange,
                 yRange

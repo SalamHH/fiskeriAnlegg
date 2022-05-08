@@ -223,6 +223,7 @@ class GeneralInfoFragment : Fragment() {
                 binding.tablelayout.removeAllViews()
                 val tempgraphdata = getTemperatureAtSurfaceAsGraph()
 
+                //TODO: does ot correspond with merged data, use tempgraphdata.size maybe?
                 for (i in Options.norKyst800AtSiteTimeRange.first..Options.norKyst800AtSiteTimeRange.last) {
                     val newRow = TableRow(requireContext())
                     val view = inflater.inflate(R.layout.infection_table_row, container, false)
@@ -262,6 +263,7 @@ class GeneralInfoFragment : Fragment() {
                 val saltgraphdata = getSalinityAtSurfaceAsGraph()
                 binding.Salttablelayout.removeAllViews()
 
+                //TODO: does ot correspond with merged data, use tempgraphdata.size maybe?
                 for (i in Options.norKyst800AtSiteTimeRange.first..Options.norKyst800AtSiteTimeRange.last) {
                     val newRow = TableRow(requireContext())
                     val view = inflater.inflate(R.layout.infection_table_row, container, false)
