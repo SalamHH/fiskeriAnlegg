@@ -9,6 +9,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/circle"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_margin="7dp"
+            android:elevation="5dp"/>
+
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/mapView"
             android:name="com.google.android.gms.maps.SupportMapFragment"
@@ -23,19 +32,19 @@
             android:clickable="true"
             android:focusable="true" />
 
-        <androidx.appcompat.widget.SearchView
+        <!--<androidx.appcompat.widget.SearchView
             android:id="@+id/searchView"
             android:layout_width="313dp"
             android:layout_height="56dp"
-            android:layout_margin="10dp"
             android:layout_marginStart="12dp"
-            android:layout_marginTop="84dp"
+            android:layout_marginTop="50dp"
             android:background="@color/dark_skyblue"
             android:elevation="5dp"
             app:iconifiedByDefault="false"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/mapView"
+            app:layout_constraintTop_toTopOf="parent"
             app:queryHint="Search Here" />
+          -->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

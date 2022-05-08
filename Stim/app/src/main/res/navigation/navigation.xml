@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/mapFragment"
         android:name="no.uio.ifi.team16.stim.MapFragment"
-        android:label="Kart">
+        android:label="">
         <action
             android:id="@+id/action_mapFragment_to_siteInfoFragment"
             app:destination="@id/siteInfoFragment" />
@@ -33,8 +33,7 @@
             app:destination="@id/weatherFragment" />
         <action
             android:id="@+id/action_siteInfoFragment_to_generalInfoFragment"
-            app:destination="@id/generalInfoFragment"
-            app:enterAnim="@android:anim/slide_in_left" />
+            app:destination="@id/generalInfoFragment" />
         <action
             android:id="@+id/action_siteInfoFragment_to_infectionFragment"
             app:destination="@id/infectionFragment"

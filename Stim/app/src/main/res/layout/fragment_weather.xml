@@ -10,6 +10,24 @@
     android:gravity="center"
     tools:context=".WeatherFragment">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/circle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:padding="7dp"
+            android:elevation="20dp"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <!-- WEATHER-->
 

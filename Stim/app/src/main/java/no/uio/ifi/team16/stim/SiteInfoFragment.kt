@@ -2,11 +2,11 @@ package no.uio.ifi.team16.stim
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.util.Log
+import android.view.*
 import android.widget.Toast
+import androidx.core.view.get
+import androidx.core.view.iterator
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.activityViewModels
@@ -26,11 +26,15 @@ class SiteInfoFragment : StimFragment() {
     private lateinit var binding: FragmentSiteInfoBinding
     private val viewModel: MainActivityViewModel by activityViewModels()
     private lateinit var site: Site
+    private var checked : Boolean = false
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentSiteInfoBinding.inflate(inflater, container, false)
 
         site = viewModel.getCurrentSite() ?: return binding.root
+
+        if  (viewModel.getFavouriteSitesData().value?.contains(site) == true) checked = true
 
         binding.LoadingScreen.loadingLayout.visibility = View.VISIBLE
 
@@ -130,8 +134,36 @@ class SiteInfoFragment : StimFragment() {
             )
         }
 
+        setHasOptionsMenu(true)
+
         return binding.root
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.site_info_toolbar, menu)
+        val item = menu[0]
+        if (checked) item.setIcon(R.drawable.heart)
+        else item.setIcon(R.drawable.heart_outline)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.toString()) {
+            "Fav" -> {
+                if (checked) item.setIcon(R.drawable.heart_outline)
+                else item.setIcon(R.drawable.heart)
+                checked = !checked
+                favoriteOnClick(site, checked)
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun favoriteOnClick(site : Site, checked : Boolean) {
+        if (checked) viewModel.registerFavouriteSite(site)
+        else viewModel.removeFavouriteSite(site)
     }
 
     private fun onWeatherLoaded(forecast: WeatherForecast?) {

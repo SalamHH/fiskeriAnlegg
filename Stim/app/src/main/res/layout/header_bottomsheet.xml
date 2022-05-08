@@ -23,11 +23,11 @@
         style="@style/Widget.AppCompat.Toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/plasticbeach"
+        android:fontFamily="@font/overwave"
         android:gravity="center"
         android:text="@string/bottomsheet_default_header"
         android:textColor="@color/skyblue"
-        android:textSize="40sp" />
+        android:textSize="30sp" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -35,8 +35,8 @@
         android:layout_gravity="center_horizontal">
 
         <ImageView
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:src="@drawable/map"
             app:tint="@color/darker_skyblue"
             android:padding="12dp" />
@@ -68,8 +68,8 @@
         </LinearLayout>
 
         <ImageView
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:src="@drawable/info"
             app:tint="@color/darker_skyblue"
             android:padding="12dp" />

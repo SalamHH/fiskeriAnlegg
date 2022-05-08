@@ -1,11 +1,10 @@
 package no.uio.ifi.team16.stim
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.LinearLayout
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.activityViewModels
@@ -28,7 +27,7 @@ import no.uio.ifi.team16.stim.util.capitalizeEachWord
 /**
  * Map fragment
  */
-class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveListener, SearchView.OnQueryTextListener {
+class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveListener {
 
     private val TAG = "MapFragment"
     private lateinit var map: GoogleMap
@@ -93,13 +92,45 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
             onRefresh()
         }
 
-        binding.searchView.setOnQueryTextListener(this)
+        //binding.searchView.setOnQueryTextListener(this)
+        setHasOptionsMenu(true)
         return binding.root
+    }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.map_toolbar, menu)
+        val mSearch = menu.findItem(R.id.search)
+        val mSearchView = mSearch.actionView as SearchView
+        mSearchView.queryHint = "Søk her"
+        mSearchView.setIconifiedByDefault(false)
+        mSearchView.setBackgroundResource(R.drawable.long_circle)
+
+
+        mSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if (query != null && query.isNotBlank()) {
+                    closeKeyboard()
+                    map.clear()
+                    markerMap.clear()
+                    viewModel.doMapSearch(query)
+                    //mSearchView.clearFocus()
+                    //mSearchView.setQuery("", false)
+                    return true
+                }
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                return false
+            }
+        })
+
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     /**
      * Called when the user searches for something
      */
+    /*
     override fun onQueryTextSubmit(query: String?): Boolean {
         if (query != null && query.isNotBlank()) {
             closeKeyboard()
@@ -110,6 +141,8 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         }
         return false
     }
+
+     */
 
     /**
      * Called when the fragment goes out of focus
@@ -297,9 +330,12 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
     /**
      * Called on text input in search field, does nothing
      */
+    /*
     override fun onQueryTextChange(newText: String?): Boolean {
         return false
     }
+
+     */
 
     /**
      * Called when access to user location is granted

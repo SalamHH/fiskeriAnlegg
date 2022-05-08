@@ -25,7 +25,7 @@
     </style>
 
     <style name="toolbar_text_blue" parent="ThemeOverlay.AppCompat.Light">
-        <item name="fontFamily">@font/plasticbeach</item>
-        <item name="android:textSize">60sp</item>
+        <item name="fontFamily">@font/overwave</item>
+        <item name="android:textSize">45sp</item>
     </style>
 </resources>
