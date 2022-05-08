@@ -1,7 +1,6 @@
 package no.uio.ifi.team16.stim
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -161,6 +160,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
 
         map.setOnCameraMoveListener(this::onCameraMove)
         map.setMapStyle(MapStyleOptions.loadRawResourceStyle(requireContext(), R.raw.map_style))
+        map.uiSettings.isMyLocationButtonEnabled = false
         map.setOnCameraMoveStartedListener {
             if (it == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
