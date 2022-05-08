@@ -84,22 +84,6 @@ data class NorKyst800AtSite(
         }
 
     /**
-     * return a list of graphs(list of entries) where each entry is a graph of salinity
-     * at the depth indicated by index
-     */
-    fun getSalinitiesAsGraphs(): List<List<Entry>> =
-        norKyst800.salinity
-            .map { salinityOverTime -> //for each depth
-                salinityOverTime.map { salinity -> //for each latlong grid at a given time
-                    aggregation(salinity) //apply aggregation
-                }.zip(
-                    norKyst800.time.toList()
-                ).map { (hour, salt) -> //we have List<Pair<...>> make it into List<Entry>
-                    Entry(hour, salt)
-                }
-            }
-
-    /**
      * return a graph(List of Entry) of salinity over time(hours)
      */
     fun getTemperatureAtSurfaceAsGraph(): List<Entry> =
@@ -114,22 +98,6 @@ data class NorKyst800AtSite(
             val secondsFrom1970ToNow = Instant.EPOCH.until(Instant.now(), ChronoUnit.SECONDS)
             Entry(((seconds - secondsFrom1970ToNow) / 3600).roundToInt().toFloat(), temp)
         }
-
-    /**
-     * return a list of graphs(list of entries) where each entry is a graph of salinity
-     * at the depth indicated by index
-     */
-    fun getTemperaturesAsGraphs(): List<List<Entry>> =
-        norKyst800.temperature
-            .map { temperatureOverTime -> //for each depth
-                temperatureOverTime.map { temperature -> //for each latlong grid at a given time
-                    aggregation(temperature) //apply aggregation
-                }.zip(
-                    norKyst800.time.toList()
-                ).map { (hour, temp) -> //we have List<Pair<...>> make it into List<Entry>
-                    Entry(hour, temp)
-                }
-            }
 
     ///////////////
     // UTILITIES //

@@ -12,6 +12,7 @@ import androidx.navigation.ui.*
 import no.uio.ifi.team16.stim.databinding.ActivityMainBinding
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 import no.uio.ifi.team16.stim.util.Options
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -46,13 +47,36 @@ class MainActivity : AppCompatActivity() {
         viewModel.loadNorKyst800()
         viewModel.loadDefaultInfectiousPressure()
         viewModel.loadFavouriteSites()
+
+        //setup periodical loading of data
+        Timer().schedule(
+            object : TimerTask() {
+                override fun run() {
+                    viewModel.loadNorKyst800Anew()
+                    /*TODO: infectiouspressure updates once a week, but it is impossible to predict when, maybe
+                    update every hour just in case? or just ignore and assume app does not live beyond an update cycle*/
+                }
+            },
+            (Calendar.getInstance().run {
+                60 * 60 - (60 * get(Calendar.MINUTE) + get(Calendar.SECOND)) //seconds until next hour
+            } * 1000).toLong(), //milliseconds until next hour
+            60 * 60 * 1000
+        )
     }
 
     override fun onTrimMemory(level: Int) {
         super.onTrimMemory(level)
         if (level >= ComponentCallbacks2.TRIM_MEMORY_RUNNING_CRITICAL) {
             Log.w(TAG, "Tømmer cache pga. lite minne!")
+            Options.decreaseDataResolution()
             viewModel.clearCache()
+            //reload the datasets, now with much lower resolution.
+            //these must be reloaded here since they are only loaded at start or timed events.
+            //TODO: what happens if onTrimMemory called in middle of initial loading?
+            //TODO: if onTrim called during the two next calls?
+            //TODO: evaluate thread-safety
+            viewModel.loadNorKyst800()
+            viewModel.loadDefaultInfectiousPressure()
         }
     }
 

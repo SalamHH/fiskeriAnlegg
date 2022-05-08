@@ -1,9 +1,6 @@
 package no.uio.ifi.team16.stim.util
 
 import no.uio.ifi.team16.stim.data.Site
-import org.locationtech.proj4j.CRSFactory
-import org.locationtech.proj4j.CoordinateTransform
-import org.locationtech.proj4j.CoordinateTransformFactory
 import kotlin.ranges.IntProgression.Companion.fromClosedRange
 
 class Options {
@@ -11,28 +8,21 @@ class Options {
         //NorKyst800
         var defaultNorKyst800XStride = 1
         var defaultNorKyst800YStride = 1
-        const val defaultNorKyst800DepthStride = 1
-        const val defaultNorKyst800TimeStride = 1
+        var defaultNorKyst800DepthStride = 1
+        var defaultNorKyst800TimeStride = 1
+
         const val defaultNorKyst800DepthEnd = 0 //15
         const val defaultNorKyst800TimeEnd = 0 //16
         const val norKyst800XEnd = 901
         const val norKyst800YEnd = 2601
         var defaultNorKyst800XRange = fromClosedRange(0, norKyst800XEnd, defaultNorKyst800XStride)
         var defaultNorKyst800YRange = fromClosedRange(0, norKyst800YEnd, defaultNorKyst800YStride)
-        val defaultNorKyst800DepthRange =
+        var defaultNorKyst800DepthRange =
             fromClosedRange(0, defaultNorKyst800DepthEnd, defaultNorKyst800DepthStride)
-        val defaultNorKyst800TimeRange =
+        var defaultNorKyst800TimeRange =
             fromClosedRange(0, defaultNorKyst800TimeEnd, defaultNorKyst800TimeStride)
         const val defaultProj4String =
             "+proj=stere +ellps=WGS84 +lat_0=90.0 +lat_ts=60.0 +x_0=3192800 +y_0=1784000 +lon_0=70"  //retrieved from opendap grid_mapping attribute
-        val defaultProjection: () -> CoordinateTransform =
-            { //functional, to avoid initialization problems with static
-                CRSFactory().createFromParameters(null, defaultProj4String).let { stereoCRT ->
-                    val latLngCRT = stereoCRT.createGeographic()
-                    val ctFactory = CoordinateTransformFactory()
-                    ctFactory.createTransform(latLngCRT, stereoCRT)
-                }
-            }
 
         const val norKyst800MaxRadius =
             1 //the largest radius of circle around a site to search for non-null values
@@ -43,10 +33,10 @@ class Options {
         val norKyst800AtSiteTimeRange = fromClosedRange(0, 23, 1)
 
         //INFECTIOUSPRESSURE - DATALOADER
-        const val infectiousPressureStepX =
-            50 //amount of steps between data points, 1=use entire x axis
-        const val infectiousPressureStepY =
-            50 //amount of steps between data points, 1=use entire y axis
+        var infectiousPressureStepX =
+            1 //amount of steps between data points, 1=use entire x axis
+        var infectiousPressureStepY =
+            1 //amount of steps between data points, 1=use entire y axis
 
         //InfectiousPressureTimeseries
         const val infectiousPressureTimeSeriesSpan =
@@ -70,5 +60,26 @@ class Options {
         // Key for favourites in SharedPreferences
         const val FAVOURITES = "Favorites"
         const val SHARED_PREFERENCES_KEY = "prefrences"
+
+        //decrease resolution of the largest datasets by half
+        fun decreaseDataResolution() {
+            //norkyst
+            defaultNorKyst800XStride *= 2
+            defaultNorKyst800YStride *= 2
+            defaultNorKyst800DepthStride *= 2
+            defaultNorKyst800TimeStride *= 2
+            //infectiousPressure
+            infectiousPressureStepX *= 2
+            infectiousPressureStepY *= 2
+
+            //update the ranges that depend on the now changed strides
+            defaultNorKyst800XRange = fromClosedRange(0, norKyst800XEnd, defaultNorKyst800XStride)
+            defaultNorKyst800YRange = fromClosedRange(0, norKyst800YEnd, defaultNorKyst800YStride)
+            defaultNorKyst800DepthRange =
+                fromClosedRange(0, defaultNorKyst800DepthEnd, defaultNorKyst800DepthStride)
+            defaultNorKyst800TimeRange =
+                fromClosedRange(0, defaultNorKyst800TimeEnd, defaultNorKyst800TimeStride)
+            //infectiouspressure is made into range in separate function
+        }
     }
 }

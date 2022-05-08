@@ -8,8 +8,8 @@ class NorKyst800Repository {
     private val TAG = "NorKyst800Repository"
     private val dataSource = NorKyst800DataLoader()
     private var cache: NorKyst800? = null
-    var mocked: Boolean = false
     var dirty: Boolean = true
+
 
     /**
      * get the default data, as specified by Options
@@ -21,11 +21,9 @@ class NorKyst800Repository {
      * @return mocked, cached or newly loaded data.
      */
     suspend fun getDefaultData(): NorKyst800? {
-        if (!mocked) {
-            if (dirty) {
-                cache = dataSource.loadDefault()
-                dirty = false
-            }
+        if (dirty) {
+            cache = dataSource.loadDefault()
+            dirty = false
         }
         return cache
     }
@@ -46,7 +44,7 @@ class NorKyst800Repository {
         yRange: IntProgression,
         depthRange: IntProgression
     ): NorKyst800? {
-        if (!mocked && dirty) {
+        if (dirty) {
             cache = dataSource.load(
                 xRange,
                 yRange,

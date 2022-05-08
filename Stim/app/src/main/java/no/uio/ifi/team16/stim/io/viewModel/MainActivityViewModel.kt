@@ -41,10 +41,6 @@ class MainActivityViewModel : ViewModel() {
     private var lineDataSet = MutableLiveData<LineDataSet?>(null)
     private val weatherData = MutableLiveData<WeatherForecast?>()
 
-    //
-    //private val WeatherRepository = WeatherRepository()
-    //private val WeatherData  = MutableLiveData<Weather>()
-
     ///////////// used to get the mutablelivedata, which again is probably used
     // GETTERS // to attach listeners etc in activities.
     /////////////
@@ -125,10 +121,21 @@ class MainActivityViewModel : ViewModel() {
 
     fun loadNorKyst800() {
         viewModelScope.launch(Dispatchers.IO) {
-            val loaded =
-                norKyst800Repository.getDefaultData() //either loaded, retrieved from cache or faked
             //invokes the observer
-            norKyst800Data.postValue(loaded)
+            norKyst800Data.postValue(
+                norKyst800Repository.getDefaultData() //either loaded or retrieved from cache
+            )
+        }
+    }
+
+    //load norkyst800, clearing the cache first
+    fun loadNorKyst800Anew() {
+        viewModelScope.launch(Dispatchers.IO) {
+            norKyst800Repository.clearCache()
+            //invokes the observer
+            norKyst800Data.postValue(
+                norKyst800Repository.getDefaultData() //either loaded or retrieved from cache
+            )
         }
     }
 
@@ -142,9 +149,7 @@ class MainActivityViewModel : ViewModel() {
         }
     }
 
-    /**
-     * Load the 100 first sited from the given municipality
-     */
+    //Load the 100 first sites from the given municipality
     fun loadSitesAtMunicipality(municipalityCode: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val loaded = sitesRepository.getMunicipality(municipalityCode)
