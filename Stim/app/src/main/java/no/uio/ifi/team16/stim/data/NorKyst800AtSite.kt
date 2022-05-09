@@ -5,9 +5,6 @@ import no.uio.ifi.team16.stim.util.NullableFloatArray2D
 import no.uio.ifi.team16.stim.util.NullableFloatArray4D
 import no.uio.ifi.team16.stim.util.Options
 import no.uio.ifi.team16.stim.util.get
-import java.time.Instant
-import java.time.temporal.ChronoUnit
-import kotlin.math.roundToInt
 
 /**
  * Class representing NorKyst800 data at a specific site.
@@ -77,10 +74,8 @@ data class NorKyst800AtSite(
                     aggregation(arr.first()) //apply aggregation at surface
                 }
         ).map { (seconds, salt) -> //we have List<Pair<...>> make it into List<Entry>
-            //also map seconds from dat to hours from now
-            //seconds is seconds since 1970-01-01 00:00:00
-            val secondsFrom1970ToNow = Instant.EPOCH.until(Instant.now(), ChronoUnit.SECONDS)
-            Entry(((seconds - secondsFrom1970ToNow) / 3600).roundToInt().toFloat(), salt)
+            //also map seconds to hours
+            Entry(seconds / 3600, salt)
         }
 
     /**
@@ -93,10 +88,8 @@ data class NorKyst800AtSite(
                     aggregation(arr.first()) //apply aggregation at surface
                 }
         ).map { (seconds, temp) -> //we have List<Pair<...>> make it into List<Entry>
-            //also map seconds from dat to hours from now
-            //seconds is seconds since 1970-01-01 00:00:00
-            val secondsFrom1970ToNow = Instant.EPOCH.until(Instant.now(), ChronoUnit.SECONDS)
-            Entry(((seconds - secondsFrom1970ToNow) / 3600).roundToInt().toFloat(), temp)
+            //also map seconds to hours
+            Entry(seconds / 3600, temp)
         }
 
     ///////////////

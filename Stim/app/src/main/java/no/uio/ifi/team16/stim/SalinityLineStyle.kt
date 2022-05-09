@@ -27,16 +27,13 @@ class SalinityLineStyle @Inject constructor(private val context: Context) {
             setDrawAxisLine(false)
             isGranularityEnabled = true
             granularity = 0.5f
-            //axisMinimum = 0f //to avoid clipping from bezier curve
-            //axisMaximum = 50f //must be overwritten later!
         }
 
         xAxis.apply {
-            //axisMinimum = 0f
-            //axisMaximum = 100f
+            setDrawGridLinesBehindData(true)
             isGranularityEnabled = true
             granularity = 1f
-            setDrawGridLines(false)
+            setDrawGridLines(true)
             setDrawAxisLine(false)
             position = XAxis.XAxisPosition.BOTTOM
             typeface = ResourcesCompat.getFont(context, R.font.montserrat_bold)
@@ -56,7 +53,7 @@ class SalinityLineStyle @Inject constructor(private val context: Context) {
 
         legend.isEnabled = false // legend is not necessary
 
-        animateY(1000, Easing.Linear) // animates the chart line
+        animateY(1500, Easing.EaseInOutCubic) // animates the chart line
     }
 
     /***

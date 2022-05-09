@@ -2,6 +2,7 @@ package no.uio.ifi.team16.stim
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.github.mikephil.charting.components.LimitLine
 import androidx.transition.TransitionInflater
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
@@ -20,6 +22,7 @@ import no.uio.ifi.team16.stim.databinding.FragmentGeneralInfoBinding
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 import no.uio.ifi.team16.stim.util.Options
 import java.text.SimpleDateFormat
+import java.time.Instant
 import java.util.*
 import javax.inject.Inject
 
@@ -143,22 +146,18 @@ class GeneralInfoFragment : Fragment() {
                 salinityChart = it.getSalinityAtSurfaceAsGraph()
             }
 
-            val salinityData = salinityChart.map { entry ->
-                entry.y
-            }
-
             if (salinityChart.isNotEmpty()) {
 
                 val linedatasetSalinity =
                     LineDataSet(salinityChart, CHART_LABEL_SALT)
 
                 binding.salinityChart.apply {
-                    //axisLeft.apply {
-                    //axisMaximum =
-                    //    (salinityData.maxOf { v -> v } + 1) //clipping might still occurr
-                    //}
                     xAxis.apply {
                         valueFormatter = TimeValueFormatter()
+                        //find hours from 1970 to now
+                        val currentHour = Instant.now().epochSecond.toFloat() / 3600
+                        addLimitLine(LimitLine(currentHour, "nåtid"))
+                        setDrawLimitLinesBehindData(true)
                     }
                 }
                 //style linedataset
@@ -189,10 +188,6 @@ class GeneralInfoFragment : Fragment() {
             it?.apply {
                 temperatureChart = it.getTemperatureAtSurfaceAsGraph()
             }
-            //val hourList = arrayOf(1.0, 2.0, 3,0, 4.0, 5.0, 6.0, 7.0, 8.0)
-            val temperatureData = temperatureChart.map { entry ->
-                entry.y
-            }
 
             if (temperatureChart.isNotEmpty()) {
                 val linedataset =
@@ -200,12 +195,16 @@ class GeneralInfoFragment : Fragment() {
 
                 binding.watertempChart.apply {
                     axisLeft.apply {
-                        //axisMaximum =
-                        //    (temperatureData.maxOf { v -> v } + 1).toFloat() //clipping might still occurr
                         valueFormatter = TempValueFormatter()
                     }
                     xAxis.apply {
                         valueFormatter = TimeValueFormatter()
+                        //find hours from 1970 to now
+                        val currentHour = Instant.now().epochSecond.toFloat() / 3600
+                        Log.d("GRAPH", currentHour.toString())
+                        //SimpleDateFormat("HH:MM:SS").format(instant.now())
+                        addLimitLine(LimitLine(currentHour, "nåtid"))
+                        setDrawLimitLinesBehindData(true)
                     }
                 }
                 //style linedataset

@@ -5,11 +5,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.LimitLine
 import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.highlight.Highlight
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import javax.inject.Inject
 
 /**
@@ -34,11 +33,17 @@ class TemperatureLineStyle @Inject constructor(private val context: Context) {
         }
 
         xAxis.apply {
-            //axisMinimum = 0f
-            //axisMaximum = 100f
+            addLimitLine(
+                LimitLine(
+                    0f,
+                    "nåtid"
+                ) //TODO ok this is not ENTIRELY correct, due to some rounding etc
+            )
+            setDrawLimitLinesBehindData(true)
+            setDrawGridLinesBehindData(true)
             isGranularityEnabled = true
             granularity = 1f
-            setDrawGridLines(false)
+            setDrawGridLines(true)
             setDrawAxisLine(false)
             position = XAxis.XAxisPosition.BOTTOM
             typeface = ResourcesCompat.getFont(context, R.font.montserrat_bold)
@@ -54,31 +59,17 @@ class TemperatureLineStyle @Inject constructor(private val context: Context) {
         setPinchZoom(true)
         isDoubleTapToZoomEnabled = true
 
+        // highlight the entry and x-position 50 in the first (0) DataSet
+        // highlight the entry and x-position 50 in the first (0) DataSet
+        val highlight: Highlight = Highlight(0f, 0, 0)
+        highlightValue(highlight, false) // highlight this value, don't call listener
+
+
         description = null // description is not necessary
 
         legend.isEnabled = false // legend is not necessary
 
-        animateY(1000, Easing.Linear) // animates the chart line
-
-        this.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
-            /**
-             * Called when a value has been selected inside the chart.
-             *
-             * @param e The selected Entry.
-             * @param h The corresponding highlight object that contains information
-             * about the highlighted position
-             */
-            override fun onValueSelected(e: Entry, h: Highlight) {
-
-            }
-
-            /**
-             * Called when nothing has been selected or an "un-select" has been made.
-             */
-            override fun onNothingSelected() {
-
-            }
-        })
+        animateY(1500, Easing.EaseInOutCubic) // animates the chart line
     }
 
     /***
