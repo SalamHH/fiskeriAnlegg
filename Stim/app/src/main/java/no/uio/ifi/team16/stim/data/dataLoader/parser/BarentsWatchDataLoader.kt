@@ -3,6 +3,7 @@ package no.uio.ifi.team16.stim.data.dataLoader.parser
 import android.util.Log
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.Headers
+import org.json.JSONObject
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
 
@@ -30,12 +31,18 @@ class BarentsWatchDataLoader {
                 .header(Headers.ACCEPT_ENCODING,"gzip, deflate, br")
                 .header("Connection","keep-alive")
                 .body(body)
-                .response()
+                .responseString()
 
             Log.d(TAG, request.toString())
             Log.d(TAG, response.toString())
             Log.d(TAG, result.toString())
-            return response.toString()
+
+        val tokenStr = result.component1()
+        Log.d(TAG, tokenStr.toString())
+        val jsonObject = JSONObject(tokenStr)
+        val token = jsonObject.getString("access_token")
+        Log.d(TAG, token)
+        return token
     }
 
     @Throws(UnsupportedEncodingException::class)
