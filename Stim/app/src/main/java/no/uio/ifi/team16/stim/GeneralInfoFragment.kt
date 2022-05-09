@@ -11,6 +11,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
@@ -18,6 +19,9 @@ import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.databinding.FragmentGeneralInfoBinding
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 import no.uio.ifi.team16.stim.util.Options
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 class GeneralInfoFragment : Fragment() {
@@ -228,7 +232,7 @@ class GeneralInfoFragment : Fragment() {
                     val newRow = TableRow(requireContext())
                     val view = inflater.inflate(R.layout.infection_table_row, container, false)
                     view.findViewById<TextView>(R.id.table_display_week).text =
-                        String.format("%.0f:00", tempgraphdata[i].x)
+                        convertTime(tempgraphdata[i].x)
                     if (!tempgraphdata[i].y.toString().contains("NaN")) {
                         view.findViewById<TextView>(R.id.table_display_float).text =
                             String.format("%.4f°", tempgraphdata[i].y)
@@ -268,7 +272,7 @@ class GeneralInfoFragment : Fragment() {
                     val newRow = TableRow(requireContext())
                     val view = inflater.inflate(R.layout.infection_table_row, container, false)
                     view.findViewById<TextView>(R.id.table_display_week).text =
-                        String.format("%.0f:00", saltgraphdata[i].x)
+                        convertTime(saltgraphdata[i].x)
                     if (!saltgraphdata[i].y.toString().contains("NaN")) {
                         view.findViewById<TextView>(R.id.table_display_float).text =
                             saltgraphdata[i].y.toString()
@@ -343,5 +347,12 @@ class GeneralInfoFragment : Fragment() {
                 ).show()
             }
         }
+    }
+
+    private fun convertTime(value: Float): String {
+        val dateformat = SimpleDateFormat("HH")
+        val currentTime = Calendar.getInstance(Locale.getDefault()).time.time
+        val valueDate = Date(currentTime + (3600000 * value).toLong())
+        return dateformat.format(valueDate) + ":00"
     }
 }
