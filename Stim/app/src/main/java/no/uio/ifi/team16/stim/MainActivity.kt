@@ -71,13 +71,6 @@ class MainActivity : AppCompatActivity() {
             Log.w(TAG, "Tømmer cache pga. lite minne!")
             Options.decreaseDataResolution()
             viewModel.clearCache()
-            //reload the datasets, now with much lower resolution.
-            //these must be reloaded here since they are only loaded at start or timed events.
-            //TODO: what happens if onTrimMemory called in middle of initial loading?
-            //TODO: if onTrim called during the two next calls?
-            //TODO: evaluate thread-safety
-            viewModel.loadNorKyst800()
-            viewModel.loadDefaultInfectiousPressure()
         }
     }
 
