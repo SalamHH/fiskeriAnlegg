@@ -1,6 +1,5 @@
 package no.uio.ifi.team16.stim
 
-import android.util.Log
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.formatter.ValueFormatter
@@ -12,13 +11,11 @@ class TimeValueFormatter : ValueFormatter() {
 
     private val formatter = DateTimeFormatter.ofPattern("HH")
 
-    //Format("HH")
     private val secInAnHour = 60 * 60
 
     override fun getAxisLabel(value: Float, axis: AxisBase?): String {
         val valueDate =
             Instant.ofEpochSecond(secInAnHour * value.toLong()).atZone(ZoneId.systemDefault())
-        Log.d("TMFORMATTER", valueDate.format(formatter))
         return valueDate.format(formatter) + ":00"
     }
 

@@ -2,7 +2,6 @@ package no.uio.ifi.team16.stim
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,15 +11,14 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.github.mikephil.charting.components.LimitLine
 import androidx.transition.TransitionInflater
+import com.github.mikephil.charting.components.LimitLine
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.databinding.FragmentGeneralInfoBinding
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
-import no.uio.ifi.team16.stim.util.Options
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.util.*
@@ -158,6 +156,7 @@ class GeneralInfoFragment : Fragment() {
                         val currentHour = Instant.now().epochSecond.toFloat() / 3600
                         addLimitLine(LimitLine(currentHour, "nåtid"))
                         setDrawLimitLinesBehindData(true)
+                        moveViewToX(currentHour) //start at current time, showing values after
                     }
                 }
                 //style linedataset
@@ -201,10 +200,9 @@ class GeneralInfoFragment : Fragment() {
                         valueFormatter = TimeValueFormatter()
                         //find hours from 1970 to now
                         val currentHour = Instant.now().epochSecond.toFloat() / 3600
-                        Log.d("GRAPH", currentHour.toString())
-                        //SimpleDateFormat("HH:MM:SS").format(instant.now())
                         addLimitLine(LimitLine(currentHour, "nåtid"))
                         setDrawLimitLinesBehindData(true)
+                        moveViewToX(currentHour) //start at current time, showing values after
                     }
                 }
                 //style linedataset
@@ -231,14 +229,16 @@ class GeneralInfoFragment : Fragment() {
                 val tempgraphdata = getTemperatureAtSurfaceAsGraph()
 
                 //TODO: does ot correspond with merged data, use tempgraphdata.size maybe?
-                for (i in Options.norKyst800AtSiteTimeRange.first..Options.norKyst800AtSiteTimeRange.last) {
+                tempgraphdata.mapIndexed { i, e ->
+                    val x = e.x
+                    val y = e.y
                     val newRow = TableRow(requireContext())
                     val view = inflater.inflate(R.layout.infection_table_row, container, false)
                     view.findViewById<TextView>(R.id.table_display_week).text =
-                        convertTime(tempgraphdata[i].x)
-                    if (!tempgraphdata[i].y.toString().contains("NaN")) {
+                        convertTime(x)
+                    if (!y.toString().contains("NaN")) {
                         view.findViewById<TextView>(R.id.table_display_float).text =
-                            String.format("%.4f°", tempgraphdata[i].y)
+                            String.format("%.4f°", y)
                     } else {
                         view.findViewById<TextView>(R.id.table_display_float).text =
                             "Ingen data tilgjengelig"
@@ -270,15 +270,16 @@ class GeneralInfoFragment : Fragment() {
                 val saltgraphdata = getSalinityAtSurfaceAsGraph()
                 binding.Salttablelayout.removeAllViews()
 
-                //TODO: does ot correspond with merged data, use tempgraphdata.size maybe?
-                for (i in Options.norKyst800AtSiteTimeRange.first..Options.norKyst800AtSiteTimeRange.last) {
+                saltgraphdata.mapIndexed { i, e ->
+                    val x = e.x
+                    val y = e.y
                     val newRow = TableRow(requireContext())
                     val view = inflater.inflate(R.layout.infection_table_row, container, false)
                     view.findViewById<TextView>(R.id.table_display_week).text =
-                        convertTime(saltgraphdata[i].x)
-                    if (!saltgraphdata[i].y.toString().contains("NaN")) {
+                        convertTime(x)
+                    if (!y.toString().contains("NaN")) {
                         view.findViewById<TextView>(R.id.table_display_float).text =
-                            saltgraphdata[i].y.toString()
+                            y.toString()
                     } else {
                         view.findViewById<TextView>(R.id.table_display_float).text =
                             "Ingen data tilgjengelig"

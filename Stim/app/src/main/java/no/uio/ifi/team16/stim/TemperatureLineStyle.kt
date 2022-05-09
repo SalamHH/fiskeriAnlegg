@@ -49,7 +49,6 @@ class TemperatureLineStyle @Inject constructor(private val context: Context) {
             typeface = ResourcesCompat.getFont(context, R.font.montserrat_bold)
             textSize = 12F
             setVisibleXRange(6f, 24f) //at least 6 but at most 24 points shown at any time
-            moveViewToX(0f) //start at current time, showing values after
         }
 
         // following section defines how the user may interact with the chart
