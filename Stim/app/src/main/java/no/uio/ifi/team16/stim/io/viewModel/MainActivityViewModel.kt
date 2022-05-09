@@ -27,6 +27,7 @@ class MainActivityViewModel : ViewModel() {
     private val norKyst800AtSiteRepository = NorKyst800AtSiteRepository()
     private val addressRepository = AddressRepository()
     private val weatherRepository = WeatherRepository()
+    private val barentsWatchRepository = BarentsWatchRepository()
 
     //MUTABLE LIVE DATA
     private val infectiousPressureData = MutableLiveData<InfectiousPressure?>()
@@ -40,6 +41,7 @@ class MainActivityViewModel : ViewModel() {
     private val currentSitesData = MutableLiveData<List<Site>?>()
     private var lineDataSet = MutableLiveData<LineDataSet?>(null)
     private val weatherData = MutableLiveData<WeatherForecast?>()
+    private val barentsWatchData = MutableLiveData<String>()
 
     ///////////// used to get the mutablelivedata, which again is probably used
     // GETTERS // to attach listeners etc in activities.
@@ -268,6 +270,15 @@ class MainActivityViewModel : ViewModel() {
             favSet.add(it.nr.toString())
         }
         return favSet
+    }
+
+    fun loadBarentsWatch() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val loaded =
+                barentsWatchRepository.getToken() //either loaded, retrieved from cache or faked
+            //invokes the observer
+           barentsWatchData.postValue(loaded!!)
+        }
     }
 
     /**

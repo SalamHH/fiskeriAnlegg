@@ -11,7 +11,6 @@
     <string name="map_button">Open map</string>
 
     //fragment_site_info
-    <string name="weather">weather</string>
     <string name="salt">salt</string>
     <string name="infection">SMITTE</string>
     <!-- TODO: Remove or change this placeholder text -->
@@ -39,6 +38,7 @@
     <string name="bottomsheet_formatted_header">Liste over anlegg i kommune: %s</string>
 
     // weather fragment
+    <string name="weather">WEATHER</string>
     <string name="weather_data">VÆRDATA</string>
     <string name="weather_icon">Weather icon</string>
     <string name="storm_forecast">STORM FORECAST</string>
