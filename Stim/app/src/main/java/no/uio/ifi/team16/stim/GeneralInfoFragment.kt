@@ -11,7 +11,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
@@ -19,7 +18,6 @@ import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.databinding.FragmentGeneralInfoBinding
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 import no.uio.ifi.team16.stim.util.Options
-import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -149,10 +147,10 @@ class GeneralInfoFragment : Fragment() {
                     LineDataSet(salinityChart, CHART_LABEL_SALT)
 
                 binding.salinityChart.apply {
-                    axisLeft.apply {
-                        axisMaximum =
-                            (salinityData.maxOf { v -> v } + 1) //clipping might still occurr
-                    }
+                    //axisLeft.apply {
+                    //axisMaximum =
+                    //    (salinityData.maxOf { v -> v } + 1) //clipping might still occurr
+                    //}
                     xAxis.apply {
                         valueFormatter = TimeValueFormatter()
                     }
@@ -196,8 +194,8 @@ class GeneralInfoFragment : Fragment() {
 
                 binding.watertempChart.apply {
                     axisLeft.apply {
-                        axisMaximum =
-                            (temperatureData.maxOf { v -> v } + 1).toFloat() //clipping might still occurr
+                        //axisMaximum =
+                        //    (temperatureData.maxOf { v -> v } + 1).toFloat() //clipping might still occurr
                         valueFormatter = TempValueFormatter()
                     }
                     xAxis.apply {
