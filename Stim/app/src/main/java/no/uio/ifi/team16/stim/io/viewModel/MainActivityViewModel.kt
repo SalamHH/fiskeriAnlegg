@@ -41,7 +41,7 @@ class MainActivityViewModel : ViewModel() {
     private val currentSitesData = MutableLiveData<List<Site>?>()
     private var lineDataSet = MutableLiveData<LineDataSet?>(null)
     private val weatherData = MutableLiveData<WeatherForecast?>()
-    private val barentsWatchData = MutableLiveData<String>()
+    private val barentsWatchData = mutableMapOf<Site, MutableLiveData<BarentsWatchAtSite?>>()
 
     ///////////// used to get the mutablelivedata, which again is probably used
     // GETTERS // to attach listeners etc in activities.
@@ -151,7 +151,19 @@ class MainActivityViewModel : ViewModel() {
         }
     }
 
-    //Load the 100 first sites from the given municipality
+    fun loadBarentsWatch(site: Site) {
+        viewModelScope.launch(Dispatchers.IO) {
+            barentsWatchData.getOrPut(site) {
+                MutableLiveData()
+            }.postValue(
+                barentsWatchRepository.getDataAtSite(site)
+            )
+        }
+    }
+
+    /**
+     * Load the 100 first sited from the given municipality
+     */
     fun loadSitesAtMunicipality(municipalityCode: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val loaded = sitesRepository.getMunicipality(municipalityCode)
