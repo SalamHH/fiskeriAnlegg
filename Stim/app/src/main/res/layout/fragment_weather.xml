@@ -69,16 +69,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:fontFamily="@font/plasticbeach"
+            android:fontFamily="@font/overwave"
             android:gravity="center"
             android:paddingBottom="5dp"
-            android:text="WEATHER DATA"
+            android:text="@string/vaer"
             android:textColor="@color/white"
             android:textSize="40sp"
             app:layout_constraintBottom_toTopOf="@id/weatherDay1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/weatherIcon" />
+
+        <TextView
+            android:id="@+id/sitename"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:fontFamily="@font/montserrat_bold"
+            android:textColor="@color/primaryTextColor"
+            android:gravity="center"
+            android:text="@string/site_name"
+            app:layout_constraintTop_toBottomOf="@id/weatherHeaderText" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/weatherDay1"

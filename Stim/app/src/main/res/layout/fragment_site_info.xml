@@ -61,12 +61,12 @@
                 android:id="@+id/siteName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:fontFamily="@font/montserrat_bold"
+                android:layout_marginTop="50dp"
+                android:fontFamily="@font/overwave"
                 android:gravity="center_horizontal"
                 android:text="@string/site_name"
                 android:textColor="@color/colorAccent"
-                android:textSize="30sp" />
+                android:textSize="45sp" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/generalInfoBox"
@@ -90,12 +90,12 @@
                     android:layout_marginEnd="5dp"
                     android:orientation="vertical">
 
-                    <LinearLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
                         android:layout_marginEnd="5dp"
-                        android:orientation="vertical">
+                        android:orientation="horizontal">
 
                         <!-- GENERAL INFO ABOUT THE SITE -->
 
@@ -103,26 +103,33 @@
                             android:id="@+id/generellInformasjon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:gravity="center_horizontal"
+                            android:layout_gravity="center"
                             android:layout_marginTop="5dp"
-                            android:layout_marginStart="5dp"
-                            android:layout_marginEnd="5dp"
-                            android:fontFamily="@font/montserrat_light_italic"
+                            android:layout_marginBottom="5dp"
+                            android:fontFamily="@font/montserrat_semibold"
+                            android:gravity="center_horizontal"
                             android:text="Generell informasjon om anlegget"
-                            android:textColor="@color/primaryTextColor" />
+                            android:textColor="@color/primaryTextColor"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
                         <ImageView
                             android:id="@+id/pil"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_marginStart="5dp"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginEnd="5dp"
-                            app:srcCompat="@drawable/down_icon" />
+                            android:layout_marginStart="10dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.0"
+                            app:layout_constraintStart_toEndOf="@+id/generellInformasjon"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/down_darkblue"
+                            app:tint="@color/primaryTextColor"/>
 
-                    </LinearLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <RelativeLayout
                         android:id="@+id/relativelayout"
@@ -153,7 +160,7 @@
                             android:layout_alignParentEnd="true"
                             android:layout_marginTop="5dp"
                             android:layout_marginEnd="5dp"
-                            android:fontFamily="@font/montserrat_semibold"
+                            android:fontFamily="@font/montserrat"
                             android:text="@string/blank"
                             android:textColor="@color/primaryTextColor" />
 
@@ -178,7 +185,7 @@
                             android:layout_alignParentEnd="true"
                             android:layout_marginTop="5dp"
                             android:layout_marginEnd="5dp"
-                            android:fontFamily="@font/montserrat_semibold"
+                            android:fontFamily="@font/montserrat"
                             android:text="@string/blank"
                             android:textColor="@color/primaryTextColor" />
 
@@ -203,7 +210,7 @@
                             android:layout_alignParentEnd="true"
                             android:layout_marginTop="5dp"
                             android:layout_marginEnd="5dp"
-                            android:fontFamily="@font/montserrat_semibold"
+                            android:fontFamily="@font/montserrat"
                             android:text="@string/blank"
                             android:textColor="@color/primaryTextColor" />
 
@@ -228,7 +235,7 @@
                             android:layout_alignParentEnd="true"
                             android:layout_marginTop="5dp"
                             android:layout_marginEnd="5dp"
-                            android:fontFamily="@font/montserrat_semibold"
+                            android:fontFamily="@font/montserrat"
                             android:text="@string/blank"
                             android:textColor="@color/primaryTextColor" />
 
@@ -253,7 +260,7 @@
                             android:layout_alignParentEnd="true"
                             android:layout_marginTop="5dp"
                             android:layout_marginEnd="5dp"
-                            android:fontFamily="@font/montserrat_semibold"
+                            android:fontFamily="@font/montserrat"
                             android:text="@string/blank"
                             android:textColor="@color/primaryTextColor" />
 
@@ -278,7 +285,7 @@
                             android:layout_alignParentEnd="true"
                             android:layout_marginTop="5dp"
                             android:layout_marginEnd="5dp"
-                            android:fontFamily="@font/montserrat_semibold"
+                            android:fontFamily="@font/montserrat"
                             android:text="@string/blank"
                             android:textColor="@color/primaryTextColor" />
 
@@ -326,7 +333,7 @@
                         android:layout_gravity="center"
                         android:layout_marginTop="12dp"
                         android:elevation="11dp"
-                        android:transitionName="image_small"
+                        android:transitionName="icon_water"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toStartOf="parent"
@@ -339,7 +346,6 @@
                         android:layout_height="66dp"
                         android:layout_gravity="center"
                         android:elevation="10dp"
-                        android:transitionName="image_small"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toStartOf="parent"

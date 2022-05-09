@@ -11,6 +11,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.transition.TransitionInflater
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
@@ -48,6 +49,11 @@ class GeneralInfoFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentGeneralInfoBinding.inflate(inflater, container, false)
+
+        val animation =
+            TransitionInflater.from(requireContext()).inflateTransition(android.R.transition.move)
+        sharedElementEnterTransition = animation
+        sharedElementReturnTransition = animation
 
         ////////
         //SITE//

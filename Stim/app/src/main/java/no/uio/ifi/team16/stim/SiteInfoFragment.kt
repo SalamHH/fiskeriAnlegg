@@ -72,14 +72,14 @@ class SiteInfoFragment : StimFragment() {
                     AutoTransition()
                 )
                 binding.relativelayout.setVisibility(View.GONE)
-                binding.pil.setImageResource(R.drawable.down_icon)
+                binding.pil.setImageResource(R.drawable.down_darkblue)
             } else {
                 TransitionManager.beginDelayedTransition(
                     binding.generalInfoBox,
                     AutoTransition()
                 )
                 binding.relativelayout.visibility = View.VISIBLE
-                binding.pil.setImageResource(R.drawable.up_icon)
+                binding.pil.setImageResource(R.drawable.up_darkblue)
             }
 
             //anleggsnummer
@@ -109,7 +109,7 @@ class SiteInfoFragment : StimFragment() {
         }
 
         binding.waterInfoCard.setOnClickListener {
-            val extras = FragmentNavigatorExtras(binding.infectionIcon to "image_big")
+            val extras = FragmentNavigatorExtras(binding.wavesIcon to "icon_water")
             if (waterInfofinished) {
                 view?.findNavController()
                     ?.navigate(R.id.action_siteInfoFragment_to_generalInfoFragment,
