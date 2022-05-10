@@ -20,7 +20,6 @@ import no.uio.ifi.team16.stim.databinding.FragmentMapBinding
 import no.uio.ifi.team16.stim.io.adapter.RecycleViewAdapter
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 import no.uio.ifi.team16.stim.util.LatLong
-import no.uio.ifi.team16.stim.util.capitalizeEachWord
 
 
 /**
@@ -209,7 +208,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         }
     }
 
-
     /**
      * Called when the ViewModel has found a municipality number
      */
@@ -249,9 +247,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
             binding.recyclerView.adapter = adapter
 
             //get municipality name in bottom header
-            binding.openHeaderBottomsheet.kommuneText.text =
-                firstSite.placement?.municipalityName?.capitalizeEachWord()
-
+            binding.openHeaderBottomsheet.kommuneText.text = firstSite.placement?.municipalityName
         }
     }
 
@@ -354,6 +350,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
                 if (location != null) {
                     val latLng = LatLng(location.latitude, location.longitude)
                     map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel))
+                    onRefresh()
                 }
             }
         }
