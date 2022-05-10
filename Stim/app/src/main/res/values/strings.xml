@@ -56,4 +56,7 @@
     <string name="no_storm">Ingen storm meldt</string>
     <string name="storm_at">Storm på %s</string>
     <string name="storm_today">Storm i dag</string>
+
+    <string name="ingen_mistanke">Ingen mistanke</string>
+    <string name="ikke_p_vist">Ikke påvist</string>
 </resources>

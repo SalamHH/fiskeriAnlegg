@@ -96,6 +96,12 @@ class MainActivityViewModel : ViewModel() {
         return currentSitesData
     }
 
+    fun getBarentsWatchData(site: Site): LiveData<BarentsWatchAtSite?> {///nyyy
+        return barentsWatchData.getOrPut(site) {
+            MutableLiveData()
+        }
+    }
+
     ///////////// used to load the data from its source, does ot return the data but puts it
     // LOADERS // into its corresponding MutableLiveData container.
     ///////////// The posting will wake the observer of that data.

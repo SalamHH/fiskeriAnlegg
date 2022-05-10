@@ -1,4 +1,5 @@
 package no.uio.ifi.team16.stim.data
 
-//TODO usikker på representasjon, sjekk scema til API
-data class BarentsWatchAtSite(val lakseAnemi: Float, val annenSykdom: Float)
+import java.time.ZonedDateTime
+
+data class BarentsWatchAtSite(val listPD: HashMap<String, String>, val listILA: HashMap<String, String>)

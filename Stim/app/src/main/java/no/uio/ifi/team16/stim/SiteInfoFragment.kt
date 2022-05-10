@@ -16,6 +16,7 @@ import no.uio.ifi.team16.stim.data.WeatherForecast
 import no.uio.ifi.team16.stim.databinding.FragmentSiteInfoBinding
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 import no.uio.ifi.team16.stim.util.Options
+import java.time.ZonedDateTime
 
 
 class SiteInfoFragment : StimFragment() {
@@ -49,6 +50,23 @@ class SiteInfoFragment : StimFragment() {
         binding.posisjonView.text = "${site.latLong.lat}, ${site.latLong.lng}"
         viewModel.loadNorKyst800AtSite(site)
         viewModel.loadInfectiousPressureTimeSeriesAtSite(site)
+        viewModel.loadBarentsWatch(site)
+        viewModel.getBarentsWatchData(site).observe(viewLifecycleOwner) {
+            if (it?.listPD?.isNotEmpty() == true) {
+                binding.pdIcon.setImageDrawable(ResourcesCompat.getDrawable(
+                    resources,
+                    no.uio.ifi.team16.stim.R.drawable.farevarsel,
+                    null
+                ))
+            }
+            if (it?.listILA?.isNotEmpty() == true) {
+                binding.ilaIcon.setImageDrawable(ResourcesCompat.getDrawable(
+                    resources,
+                    no.uio.ifi.team16.stim.R.drawable.ila_bad,
+                    null
+                ))
+            }
+        }
 
         val waterInfofinished = setWaterInfo()
         setInfectionInfo()

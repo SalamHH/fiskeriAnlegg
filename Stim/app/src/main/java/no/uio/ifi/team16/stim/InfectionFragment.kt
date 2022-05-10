@@ -17,6 +17,7 @@ import com.github.mikephil.charting.data.LineDataSet
 import no.uio.ifi.team16.stim.databinding.FragmentInfectionBinding
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 import no.uio.ifi.team16.stim.util.Options
+import java.time.ZonedDateTime
 import javax.inject.Inject
 
 
@@ -125,7 +126,64 @@ class InfectionFragment : StimFragment() {
             newFragment.show(parentFragmentManager, "statusicons")
         }
 
+        viewModel.getBarentsWatchData(site).observe(viewLifecycleOwner) {
+            if (it?.listPD?.isNotEmpty() == true) {
+                binding.pdIcon.setImageDrawable(ResourcesCompat.getDrawable(
+                    resources,
+                    no.uio.ifi.team16.stim.R.drawable.pd_bad,
+                    null
+                ))
+                if (it.listPD["pd_ukjent_mistankedato"] != "null") {
+                    val time = ZonedDateTime.parse(it.listPD["pd_sav3_mistankedato"])
+                    binding.mistankeUkjentDato.text = format(time)
+                }
+                if (it.listPD["pd_sav2_mistankedato"] != "null") {
+                    val time = ZonedDateTime.parse(it.listPD["pd_sav3_mistankedato"])
+                    binding.mistankeSav2Dato.text = format(time)
+                }
+                if (it.listPD["pd_sav3_mistankedato"] != "null") {
+                    val time = ZonedDateTime.parse(it.listPD["pd_sav3_mistankedato"])
+                    binding.mistankeSav3Dato.text = format(time)
+                }
+                if (it.listPD["pd_ukjent_paavistdato"] != "null") {
+                    val time = ZonedDateTime.parse(it.listPD["pd_ukjent_paavistdato"])
+                    binding.paavistUkjent.text = format(time)
+                }
+                if (it.listPD["pd_sav2_paavistdato"] != "null") {
+                    val time = ZonedDateTime.parse(it.listPD["pd_sav2_paavistdato"])
+                    binding.paavistSav2Dato.text = format(time)
+                }
+                if (it.listPD["pd_sav3_paavistdato"] != "null") {
+                    val time = ZonedDateTime.parse(it.listPD["pd_sav3_paavistdato"])
+                    binding.paavistSav3Dato.text = format(time)
+                }
+            }
+
+            if (it?.listILA?.isNotEmpty() == true) {
+                binding.ilaIcon.setImageDrawable(ResourcesCompat.getDrawable(
+                    resources,
+                    no.uio.ifi.team16.stim.R.drawable.ila_bad,
+                    null
+                ))
+                if (it.listILA["mistankedato"] != "null") {
+                    val time = ZonedDateTime.parse(it.listILA["mistankedato"])
+                    binding.mistankeDato.text = format(time)
+                }
+                if (it.listILA["paavistdato"] != "null") {
+                    val time = ZonedDateTime.parse(it.listILA["paavistdato"])
+                    binding.paavistDato.text = format(time)
+                }
+            }
+        }
+
         return binding.root
+    }
+
+    fun format(time: ZonedDateTime?): String? {
+        val day = time?.dayOfMonth.toString()
+        val month = time?.month.toString()
+        val year = time?.year.toString()
+        return "$day $month $year"
     }
 
     private fun calculateInfectionStatusText(infectiondata: Array<Float>): String {

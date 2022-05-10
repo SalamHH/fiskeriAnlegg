@@ -3,6 +3,8 @@ package no.uio.ifi.team16.stim.data.dataLoader
 import android.util.Log
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.Headers
+import com.github.kittinunf.fuel.core.extensions.authentication
+import com.github.kittinunf.fuel.coroutines.awaitString
 import no.uio.ifi.team16.stim.data.BarentsWatchAtSite
 import no.uio.ifi.team16.stim.data.BarentsWatchToken
 import no.uio.ifi.team16.stim.data.Site
@@ -52,10 +54,9 @@ class BarentsWatchDataLoader {
         val token = jsonObject.getString("access_token")
         Log.d(TAG, token)
 
-        val key = "nokkel" // TODO: parse
-        val validityTime = (0).toLong() //TODO: parse, mest sannsynlig 3600, les fra data
+        val validityTime = jsonObject.getString("expires_in").toLong()
 
-        return BarentsWatchToken(key, Instant.now().plusSeconds(validityTime))
+        return BarentsWatchToken(token, Instant.now().plusSeconds(validityTime))
     }
 
     @Throws(UnsupportedEncodingException::class)
@@ -72,9 +73,72 @@ class BarentsWatchDataLoader {
     }
 
     public suspend fun loadData(site: Site, token: BarentsWatchToken): BarentsWatchAtSite? {
-        //TODO do get requests and stuff here!
+
+        val listPD = getPdList(site, token)
+        val listILA = getIlaList(site, token)
+
         //forhåpentligvis kan attributter i site brukes for å gjøre requesten.
         //TODO null if failure
-        return BarentsWatchAtSite(0.0f, 0.0f)
+        return BarentsWatchAtSite(listPD, listILA)
     }
+
+    private suspend fun getIlaList(site: Site, token: BarentsWatchToken): java.util.HashMap<String, String> {
+        val listILA = HashMap<String, String>()
+        val baseUrlILA = "https://www.barentswatch.no/bwapi/v1/geodata/download/localitieswithila"
+        val lon = site.latLong.lng
+        val lat = site.latLong.lat
+        val distance = 1.0
+
+        val responseStr = Fuel.get(baseUrlILA, listOf("format" to "JSON", "lon" to lon, "lat" to lat, "distance" to distance))
+            .authentication()
+            .bearer(token.key)
+            .awaitString()
+
+        val response = JSONObject(responseStr)
+        val totalFeatures = response.getString("totalFeatures")
+        if (totalFeatures == "0") {
+            return HashMap<String, String>()
+        }
+
+        val features = response.getJSONArray("features")
+        val jsonObject = features.getJSONObject(0)
+        val properties = jsonObject.getJSONObject("properties")
+        listILA["mistankedato"] = properties.getString("mistankedato")
+        listILA["paavistdato"] = properties.getString("paavistdato")
+
+        return listILA
+    }
+
+    private suspend fun getPdList(site: Site, token: BarentsWatchToken): HashMap<String, String> {
+        val listPD = HashMap<String, String>()
+        val baseUrlPD = "https://www.barentswatch.no/bwapi/v1/geodata/download/localitieswithpd"
+        val lon = site.latLong.lng
+        val lat = site.latLong.lat
+        val distance = 1.0
+
+        val responseStr = Fuel.get(baseUrlPD, listOf("format" to "JSON", "lon" to lon, "lat" to lat, "distance" to distance))
+            .authentication()
+            .bearer(token.key)
+            .awaitString()
+
+        val response = JSONObject(responseStr)
+        val totalFeatures = response.getString("totalFeatures")
+        if (totalFeatures == "0") {
+            return HashMap<String, String>()
+        }
+
+        val features = response.getJSONArray("features")
+        val jsonObject = features.getJSONObject(0)
+        val properties = jsonObject.getJSONObject("properties")
+        listPD["pd_ukjent_mistankedato"] = properties.getString("pd_ukjent_mistankedato")
+        listPD["pd_sav2_mistankedato"] = properties.getString("pd_sav2_mistankedato")
+        listPD["pd_sav3_mistankedato"] = properties.getString("pd_sav3_mistankedato")
+        listPD["pd_ukjent_paavistdato"] = properties.getString("pd_ukjent_paavistdato")
+        listPD["pd_sav2_paavistdato"] = properties.getString("pd_sav2_paavistdato")
+        listPD["pd_sav3_paavistdato"] = properties.getString("pd_sav3_paavistdato")
+
+        return listPD
+    }
+
+
 }
