@@ -51,4 +51,9 @@
     <string name="saturday">Lørdag</string>
     <string name="sunday">Søndag</string>
     <string name="today">I dag</string>
+    <string name="storm_predicted">En storm med styrke %.1f m/s inntreffer %s.</string>
+    <string name="on">på</string>
+    <string name="no_storm">Ingen storm meldt</string>
+    <string name="storm_at">Storm på %s</string>
+    <string name="storm_today">Storm i dag</string>
 </resources>

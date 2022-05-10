@@ -51,6 +51,17 @@ class WeatherFragment : StimFragment() {
             binding.temperatureView2.text = getString(R.string.temperature, second.temperature)
             binding.temperatureView3.text = getString(R.string.temperature, third.temperature)
             binding.temperatureView4.text = getString(R.string.temperature, fourth.temperature)
+
+            forecast.storm?.let { storm ->
+                var dayText = storm.day.getTranslation(requireContext())
+                if (!storm.day.isToday()) {
+                    dayText = getString(R.string.on) + " " + dayText
+                }
+                binding.stormForecastText.text =
+                    getString(R.string.storm_predicted, storm.strength, dayText.lowercase())
+            } ?: run {
+                binding.stormForecastText.text = getString(R.string.no_storm)
+            }
         }
     }
 }

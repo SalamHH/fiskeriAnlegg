@@ -2,13 +2,10 @@ package no.uio.ifi.team16.stim
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Toast
-import androidx.core.view.get
-import androidx.core.view.iterator
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.widget.ImageViewCompat
+import androidx.core.view.get
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -172,6 +169,15 @@ class SiteInfoFragment : StimFragment() {
             binding.vaerImorgen.setImageDrawable(second.icon.asDrawable(requireContext()))
             binding.tempIdag.text = getString(R.string.temperature, first.temperature)
             binding.tempImorgen.text = getString(R.string.temperature, second.temperature)
+
+            forecast.storm?.let { storm ->
+                if (storm.day.isToday()) {
+                    binding.meldtStorm.text = getString(R.string.storm_today)
+                } else {
+                    binding.meldtStorm.text = getString(R.string.storm_at, storm.day.getTranslation(requireContext()))
+                }
+                binding.stormVaer.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.storm, null))
+            }
         }
     }
 

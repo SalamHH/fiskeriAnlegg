@@ -827,7 +827,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="12dp"
-                                android:text="Ingen storm meldt"
+                                android:text="@string/no_storm"
                                 android:textColor="@color/primaryTextColor"
                                 android:textSize="11sp"
                                 app:layout_constraintEnd_toEndOf="parent"

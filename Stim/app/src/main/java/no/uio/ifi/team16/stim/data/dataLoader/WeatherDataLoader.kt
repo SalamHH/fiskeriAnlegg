@@ -3,10 +3,7 @@ package no.uio.ifi.team16.stim.data.dataLoader
 import android.util.Log
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.coroutines.awaitString
-import no.uio.ifi.team16.stim.data.Weather
-import no.uio.ifi.team16.stim.data.WeatherForecast
-import no.uio.ifi.team16.stim.data.WeatherIcon
-import no.uio.ifi.team16.stim.data.Weekday
+import no.uio.ifi.team16.stim.data.*
 import no.uio.ifi.team16.stim.util.LatLong
 import org.json.JSONObject
 import java.time.ZonedDateTime
@@ -15,12 +12,20 @@ import java.time.ZonedDateTime
  * Loads weather using the LocationForecast API
  */
 class WeatherDataLoader {
-    private val TAG = "WeatherDataLoader"
 
-    /**
-     * URL to the API
-     */
-    private val url = "https://in2000-apiproxy.ifi.uio.no/weatherapi/locationforecast/2.0/compact"
+    companion object {
+        private const val TAG = "WeatherDataLoader"
+
+        /**
+         * URL to the API
+         */
+        private const val BASE_URL = "https://in2000-apiproxy.ifi.uio.no/weatherapi/locationforecast/2.0/compact"
+
+        /**
+         * Wind speed in m/s that defines a storm according to Beaufort's scale
+         */
+        private const val STORM_THRESHOLD = 20.0
+    }
 
     /**
      * Loads the weather forecast at a given position
@@ -32,7 +37,7 @@ class WeatherDataLoader {
         val lat = "lat" to position.lat
         val lon = "lon" to position.lng
 
-        val responseStr = Fuel.get(url, listOf(lat, lon)).awaitString()
+        val responseStr = Fuel.get(BASE_URL, listOf(lat, lon)).awaitString()
 
         if (responseStr.isEmpty()) {
             Log.e(TAG, "No response from weather API at $position")
@@ -48,7 +53,10 @@ class WeatherDataLoader {
             return null
         }
 
-        val first = parseWeatherFromTimeseries(timeseries.getJSONObject(0))
+        // List of wind speeds at each day
+        val windSpeeds = mutableListOf<Pair<Weekday, Double>>()
+
+        val first = parseWeatherFromTimeseries(timeseries.getJSONObject(0), windSpeeds)
 
         val now = ZonedDateTime.now()
         val nextThreeDays = mutableListOf<Weather>()
@@ -60,16 +68,28 @@ class WeatherDataLoader {
 
             if (time.hour != 12 || time.dayOfMonth == now.dayOfMonth) continue
 
-            nextThreeDays.add(parseWeatherFromTimeseries(series))
+            nextThreeDays.add(parseWeatherFromTimeseries(series, windSpeeds))
         }
 
-        return WeatherForecast(first, nextThreeDays[0], nextThreeDays[1], nextThreeDays[2])
+        val forecast = WeatherForecast(first, nextThreeDays[0], nextThreeDays[1], nextThreeDays[2])
+        for (windSpeed in windSpeeds) {
+            val (day, speed) = windSpeed
+            if (speed > STORM_THRESHOLD) {
+                forecast.storm = Storm(day, speed)
+                break
+            }
+        }
+
+        return forecast
     }
 
     /**
      * Create a Weather object from one part of the forecast
      */
-    private fun parseWeatherFromTimeseries(timeseries: JSONObject): Weather {
+    private fun parseWeatherFromTimeseries(
+        timeseries: JSONObject,
+        windSpeeds: MutableList<Pair<Weekday, Double>>
+    ): Weather {
         val data = timeseries.getJSONObject("data")
         val details = data.getJSONObject("instant").getJSONObject("details")
         val temperature = details.getDouble("air_temperature")
@@ -78,6 +98,10 @@ class WeatherDataLoader {
         val icon = WeatherIcon.fromMetName(next12Hours.getString("symbol_code"))
 
         val weekday = Weekday.fromISOString(timeseries.getString("time"))
+
+        val windSpeed = details.getDouble("wind_speed")
+        windSpeeds.add(Pair(weekday, windSpeed))
+
         return Weather(temperature, icon, weekday)
     }
 }

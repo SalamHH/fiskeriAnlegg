@@ -17,7 +17,9 @@ data class WeatherForecast(
     val second: Weather,
     val third: Weather,
     val fourth: Weather
-)
+) {
+    var storm: Storm? = null
+}
 
 /**
  * The weather at a location at a given day
@@ -26,6 +28,14 @@ data class Weather(
     val temperature: Double,
     val icon: WeatherIcon,
     val day: Weekday
+)
+
+/**
+ * Represents a storm (wind higher than 20 m/s)
+ */
+data class Storm(
+    val day: Weekday,
+    val strength: Double
 )
 
 enum class WeatherIcon(@DrawableRes private val drawable: Int) {
@@ -88,7 +98,7 @@ enum class Weekday(private val num: Int) {
     /**
      * Returns true if this day is today
      */
-    private fun isToday(): Boolean {
+    fun isToday(): Boolean {
         return LocalDateTime.now().dayOfWeek.value == num
     }
 

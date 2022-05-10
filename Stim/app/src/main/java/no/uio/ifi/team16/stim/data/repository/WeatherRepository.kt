@@ -14,7 +14,7 @@ class WeatherRepository {
      * Load the data from the datasource
      */
     suspend fun getWeatherForecast(site: Site): WeatherForecast? {
-        var forecast = cache[site]
+        var forecast = cache[site] ?: site.weatherForecast
 
         if (forecast == null) {
             forecast = dataSource.load(site.latLong)
