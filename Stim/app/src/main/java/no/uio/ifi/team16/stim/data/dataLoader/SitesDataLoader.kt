@@ -7,6 +7,7 @@ import com.github.kittinunf.fuel.coroutines.awaitString
 import no.uio.ifi.team16.stim.data.*
 import no.uio.ifi.team16.stim.util.LatLong
 import no.uio.ifi.team16.stim.util.Options
+import no.uio.ifi.team16.stim.util.capitalizeEachWord
 import org.json.JSONArray
 
 /**
@@ -70,7 +71,7 @@ class SitesDataLoader {
                         this.getJSONObject("placement")?.let { APJSON ->
                             AreaPlacement(
                                 APJSON.getInt("municipalityCode"),
-                                APJSON.getString("municipalityName"),
+                                APJSON.getString("municipalityName").capitalizeEachWord(),
                                 APJSON.getInt("countyCode"),
                                 runCatching { //many municipality have no production area, return null
                                     ProdArea(
