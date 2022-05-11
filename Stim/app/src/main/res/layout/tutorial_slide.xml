@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/openingLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_blue"
+    android:backgroundTint="@color/skyblue"
+    android:backgroundTintMode="multiply"
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+    <TextView
+        android:id="@+id/tutorial_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/tutorial_img"
+        android:layout_centerInParent="true"
+        android:fontFamily="@font/overwave"
+        android:gravity="center"
+        android:text="Velkommen til stim"
+        android:textColor="@color/white"
+        android:textSize="50sp"
+        android:layout_marginBottom="20dp" />
+
+    <ImageView
+        android:id="@+id/tutorial_img"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        app:srcCompat="@drawable/slide_1"
+        tools:layout_editor_absoluteX="56dp"
+        tools:layout_editor_absoluteY="129dp"
+        android:layout_centerInParent="true" />
+
+    <TextView
+        android:id="@+id/tutorial_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:fontFamily="@font/montserrat_semibold"
+        android:gravity="center"
+        android:text="Stim er en app som lar deg få oversikt over alle oppdrettsanlegg i Norge."
+        android:textColor="@color/secondaryTextColor"
+        android:textSize="20sp"
+        tools:layout_editor_absoluteY="439dp"
+        android:layout_below="@id/tutorial_img"
+        android:layout_margin="20dp" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tutorial_text"
+        android:layout_centerHorizontal="true">
+
+        <ImageView
+            android:id="@+id/circle1"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:src="@drawable/circle"
+            android:layout_marginEnd="10dp" />
+
+        <ImageView
+            android:id="@+id/circle2"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:src="@drawable/circle"
+            android:layout_toEndOf="@id/circle1"
+            android:layout_marginEnd="10dp"
+            app:tint="@color/white" />
+
+        <ImageView
+            android:id="@+id/circle3"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:src="@drawable/circle"
+            app:tint="@color/white"
+            android:layout_toEndOf="@id/circle2"
+            android:layout_marginEnd="10dp" />
+
+        <ImageView
+            android:id="@+id/circle4"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:src="@drawable/circle"
+            app:tint="@color/white"
+            android:layout_toEndOf="@id/circle3" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>
