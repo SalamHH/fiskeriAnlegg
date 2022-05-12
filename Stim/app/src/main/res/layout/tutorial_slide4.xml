@@ -91,15 +91,4 @@
 
     </RelativeLayout>
 
-    <Button
-        android:id="@+id/exitTutorial"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/circles"
-        android:layout_centerHorizontal="true"
-        android:text="Start Stim!"
-        android:layout_marginBottom="5dp"
-        android:textSize="15sp" />
-
-
 </RelativeLayout>

@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.Stim" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">#2B6B9E</item>
+        <item name="colorPrimary">@color/colorAccent</item>
         <item name="colorPrimaryVariant">#D4BBF6</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
@@ -21,7 +21,7 @@
 
     <style name="DrawerArrowStyle" parent="@style/Widget.AppCompat.DrawerArrowToggle">
         <item name="spinBars">true</item>
-        <item name="color">@color/skyblue</item>
+        <item name="color">@color/colorAccent</item>
     </style>
 
     <style name="toolbar_text_blue" parent="ThemeOverlay.AppCompat.Light">

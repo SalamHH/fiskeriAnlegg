@@ -20,7 +20,7 @@
                android:background="@color/transparent"
                android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                app:titleTextAppearance="@style/toolbar_text_blue"
-               app:titleTextColor="@color/skyblue"
+               app:titleTextColor="@color/colorAccent"
                app:titleCentered="true" />
 
     </com.google.android.material.appbar.AppBarLayout>

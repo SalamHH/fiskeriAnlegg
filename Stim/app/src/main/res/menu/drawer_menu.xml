@@ -13,14 +13,14 @@
     </group>
     <group android:id="@+id/ekstra" >
         <item
-            android:id="@+id/settings"
-            android:icon="@drawable/settings"
-            android:title="@string/instillinger" />
-
-        <item
             android:id="@+id/tutorialFragment"
             android:icon="@drawable/info"
-            android:title="@string/app_info" />
+            android:title="Hvordan bruke STIM" />
+
+        <item
+            android:id="@+id/infoFragment"
+            android:icon="@drawable/info"
+            android:title="App info" />
     </group>
 
 </menu>

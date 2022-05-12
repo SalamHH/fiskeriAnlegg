@@ -45,7 +45,7 @@ class TutorialFragment : FragmentActivity() {
 
     private inner class TutorialSlidePageAdapter(fa: TutorialFragment) : FragmentStateAdapter(fa) {
 
-        override fun getItemCount(): Int = 4
+        override fun getItemCount(): Int = 5
 
         override fun createFragment(position: Int): Fragment {
             return TutorialSlideFragment(position)
