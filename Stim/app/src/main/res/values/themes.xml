@@ -28,4 +28,9 @@
         <item name="fontFamily">@font/overwave</item>
         <item name="android:textSize">45sp</item>
     </style>
+
+    <style name="tutorial_title" parent="ThemeOverlay.AppCompat.Light">
+        <item name="fontFamily">@font/overwave</item>
+    </style>
+
 </resources>

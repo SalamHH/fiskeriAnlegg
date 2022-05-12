@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         val navController = this.findNavController(R.id.myNavHostFragment)
         appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.favoriteSitesFragment, R.id.mapFragment),
+            setOf(R.id.favoriteSitesFragment, R.id.mapFragment, R.id.tutorialFragment),
             binding.drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)

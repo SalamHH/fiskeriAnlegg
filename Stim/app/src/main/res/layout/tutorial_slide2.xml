@@ -6,21 +6,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_blue"
-    android:backgroundTint="@color/skyblue"
+    android:backgroundTint="#FFB05C"
     android:backgroundTintMode="multiply"
     android:clickable="true"
     android:focusable="true"
     android:focusableInTouchMode="true">
 
     <TextView
-        android:id="@+id/tutorial_title1"
+        android:id="@+id/tutorial_title2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@id/tutorial_img"
         android:layout_centerInParent="true"
         android:fontFamily="@font/overwave"
         android:gravity="center"
-        android:text="Velkommen til stim"
+        android:text="Søk etter\noppdrettsanlegg"
         android:textColor="@color/white"
         android:textSize="50sp"
         android:layout_marginBottom="20dp" />
@@ -30,22 +30,26 @@
         android:layout_width="300dp"
         android:layout_height="300dp"
         android:layout_centerInParent="true"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:src="@drawable/slide_1" />
+        android:src="@drawable/slide_2"
+        tools:layout_editor_absoluteX="56dp"
+        tools:layout_editor_absoluteY="129dp" />
 
     <TextView
         android:id="@+id/tutorial_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/tutorial_img"
         android:layout_gravity="center_horizontal"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
         android:fontFamily="@font/montserrat_semibold"
         android:gravity="center"
-        android:text="Stim er en app som lar deg få oversikt over alle oppdrettsanlegg i Norge."
+        android:text="Finn anlegg ved hjelp av navn eller kommunenummer i søkefeltet."
         android:textColor="@color/secondaryTextColor"
         android:textSize="20sp"
-        android:layout_below="@id/tutorial_img"
-        android:layout_margin="20dp" />
+        tools:layout_editor_absoluteY="439dp" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -58,16 +62,16 @@
             android:id="@+id/circle1"
             android:layout_width="15dp"
             android:layout_height="15dp"
-            android:src="@drawable/darkcircle"
+            android:src="@drawable/lightcircle"
             android:layout_marginEnd="10dp" />
 
         <ImageView
             android:id="@+id/circle2"
             android:layout_width="15dp"
             android:layout_height="15dp"
-            android:src="@drawable/lightcircle"
+            android:layout_marginEnd="10dp"
             android:layout_toEndOf="@id/circle1"
-            android:layout_marginEnd="10dp" />
+            android:src="@drawable/darkcircle" />
 
         <ImageView
             android:id="@+id/circle3"

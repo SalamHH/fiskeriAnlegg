@@ -52,8 +52,11 @@
         android:id="@+id/infectionFragment"
         android:name="no.uio.ifi.team16.stim.InfectionFragment"
         tools:layout="@layout/fragment_infection" />
-
-
+    <activity
+        android:id="@+id/tutorialFragment"
+        android:name="no.uio.ifi.team16.stim.TutorialFragment"
+        android:label="fragment_tutorial"
+        tools:layout="@layout/fragment_tutorial" />
 
 
 </navigation>
