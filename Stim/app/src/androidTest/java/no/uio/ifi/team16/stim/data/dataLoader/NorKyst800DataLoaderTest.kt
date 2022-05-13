@@ -258,8 +258,7 @@ class NorKyst800DataLoaderTest {
             dataLoader.load(
                 fromClosedRange(200, 210, 4),
                 fromClosedRange(200, 212, 7),
-                fromClosedRange(0, 10, 2),
-                fromClosedRange(1, 7, 3)
+                fromClosedRange(0, 10, 2)
             )
         }
         assertNotNull(data)

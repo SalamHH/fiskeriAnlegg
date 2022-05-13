@@ -60,9 +60,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
 
         mapFragment.getMapAsync(this)
 
-        // Observe municipality number
-        viewModel.getMunicipalityNr().observe(viewLifecycleOwner, this::onMunicipalityNrRecieved)
-
         // Observe municipality
         viewModel.getMunicipalityData().observe(viewLifecycleOwner, this::onMunicipalityUpdate)
 
@@ -223,7 +220,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
     private fun onMunicipalityUpdate(municipality: Municipality?) {
         if (mapReady && municipality != null && municipality.sites.isNotEmpty()) {
 
-
             onSiteUpdate(municipality.sites)
 
             // Move camera to arbitrary site in municipality
@@ -291,7 +287,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
      */
     private fun onRefresh() {
         val center = LatLong.fromGoogle(map.cameraPosition.target)
-        viewModel.loadMunicipalityNr(center)
+        viewModel.loadSitesAtLocation(center)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
     }
 

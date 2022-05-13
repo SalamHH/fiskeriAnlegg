@@ -37,7 +37,6 @@ class MainActivityViewModel : ViewModel() {
     private val favouriteSitesData = MutableLiveData<MutableList<Site>?>()
     private val norKyst800Data = MutableLiveData<NorKyst800?>()
     private val norKyst800AtSiteData = mutableMapOf<Site, MutableLiveData<NorKyst800AtSite?>>()
-    private val municipalityNrData = MutableLiveData<String?>()
     private val currentSitesData = MutableLiveData<List<Site>?>()
     private var lineDataSet = MutableLiveData<LineDataSet?>(null)
     private val weatherData = MutableLiveData<WeatherForecast?>()
@@ -78,10 +77,6 @@ class MainActivityViewModel : ViewModel() {
 
     fun getLineDataSet(): LiveData<LineDataSet?> {
         return lineDataSet
-    }
-
-    fun getMunicipalityNr(): LiveData<String?> {
-        return municipalityNrData
     }
 
     fun getFavouriteSitesData(): LiveData<MutableList<Site>?> {
@@ -193,10 +188,12 @@ class MainActivityViewModel : ViewModel() {
         }
     }
 
-    fun loadMunicipalityNr(latLong: LatLong) {
+    fun loadSitesAtLocation(location: LatLong) {
         viewModelScope.launch(Dispatchers.IO) {
-            val nr = addressRepository.getMunicipalityNr(latLong)
-            municipalityNrData.postValue(nr)
+            val municipalityNr = addressRepository.getMunicipalityNr(location)
+            if (municipalityNr != null) {
+                loadSitesAtMunicipality(municipalityNr)
+            }
         }
     }
 
@@ -214,7 +211,7 @@ class MainActivityViewModel : ViewModel() {
                 // string search, check first if this is the name of a municipality
                 val municipalityNr = addressRepository.searchMunicipalityNr(query)
                 if (municipalityNr != null) {
-                    municipalityNrData.postValue(municipalityNr)
+                    loadSitesAtMunicipality(municipalityNr)
                 } else {
                     // not a municipality, search for sites by name
                     val sites = sitesRepository.getSitesByName(query)
