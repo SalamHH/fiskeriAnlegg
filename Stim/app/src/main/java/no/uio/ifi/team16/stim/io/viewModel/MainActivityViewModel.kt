@@ -295,5 +295,6 @@ class MainActivityViewModel : ViewModel() {
         norKyst800AtSiteRepository.clearCache()
         addressRepository.clearCache()
         weatherRepository.clearCache()
+        barentsWatchRepository.clearCache()
     }
 }

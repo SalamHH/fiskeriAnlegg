@@ -9,7 +9,7 @@ import com.github.kittinunf.result.onError
 import no.uio.ifi.team16.stim.data.NorKyst800
 import no.uio.ifi.team16.stim.data.NorKyst800AtSite
 import no.uio.ifi.team16.stim.data.Site
-import no.uio.ifi.team16.stim.data.dataLoader.parser.NorKyst800RegexParser
+import no.uio.ifi.team16.stim.data.dataLoader.parser.NorKyst800Parser
 import no.uio.ifi.team16.stim.util.Options
 import no.uio.ifi.team16.stim.util.project
 import no.uio.ifi.team16.stim.util.reformatFSL
@@ -204,16 +204,16 @@ class NorKyst800AtSiteDataLoader {
         val timeAndDepthString = requestData(timeAndDepthUrl, "time and depth") ?: return null
 
         val depth =
-            NorKyst800RegexParser.make1DFloatArrayOf("depth", timeAndDepthString)
+            NorKyst800Parser.make1DFloatArrayOf("depth", timeAndDepthString)
                 ?: run {
                     Log.e(TAG, "Failed to read <depth> from NorKyst800")
                     return null
                 }
 
         val time =
-            NorKyst800RegexParser.make1DFloatArrayOf("time", timeAndDepthString)
+            NorKyst800Parser.make1DFloatArrayOf("time", timeAndDepthString)
                 ?: run {
-                    Log.e(NorKyst800RegexParser.TAG, "Failed to read <time> from NorKyst800")
+                    Log.e(NorKyst800Parser.TAG, "Failed to read <time> from NorKyst800")
                     return null
                 }
         val timeRange = fromClosedRange(0, time.size - 1, 1)
@@ -247,7 +247,7 @@ class NorKyst800AtSiteDataLoader {
                 velocityString,
                 uFSO
             ) ?: run {
-                Log.e(NorKyst800RegexParser.TAG, "Failed to read <u> from NorKyst800")
+                Log.e(NorKyst800Parser.TAG, "Failed to read <u> from NorKyst800")
                 return null
             },
             NorKyst800RegexParser.makeNullable4DFloatArrayOfW(
@@ -255,15 +255,15 @@ class NorKyst800AtSiteDataLoader {
                 velocityString,
                 vFSO
             ) ?: run {
-                Log.e(NorKyst800RegexParser.TAG, "Failed to read <v> from NorKyst800")
+                Log.e(NorKyst800Parser.TAG, "Failed to read <v> from NorKyst800")
                 return null
             },
-            NorKyst800RegexParser.makeNullable4DFloatArrayOfW(
+            NorKyst800Parser.makeNullable4DFloatArrayOfW(
                 "w",
                 velocityString,
                 wFSO
             ) ?: run {
-                Log.e(NorKyst800RegexParser.TAG, "Failed to read <w> from NorKyst800")
+                Log.e(NorKyst800Parser.TAG, "Failed to read <w> from NorKyst800")
                 return null
             }
         )
@@ -276,22 +276,22 @@ class NorKyst800AtSiteDataLoader {
 
         //PARSE
         val salinity =
-            NorKyst800RegexParser.makeNullable4DFloatArrayOf(
+            NorKyst800Parser.makeNullable4DFloatArrayOf(
                 "salinity",
                 salinityTemperatureString,
                 salinityFSO
             ) ?: run {
-                Log.e(NorKyst800RegexParser.TAG, "Failed to read <salinity> from NorKyst800")
+                Log.e(NorKyst800Parser.TAG, "Failed to read <salinity> from NorKyst800")
                 return null
             }
 
         val temperature =
-            NorKyst800RegexParser.makeNullable4DFloatArrayOf(
+            NorKyst800Parser.makeNullable4DFloatArrayOf(
                 "temperature",
                 salinityTemperatureString,
                 temperatureFSO
             ) ?: run {
-                Log.e(NorKyst800RegexParser.TAG, "Failed to read <temperature> from NorKyst800")
+                Log.e(NorKyst800Parser.TAG, "Failed to read <temperature> from NorKyst800")
                 return null
             }
 
@@ -349,7 +349,7 @@ class NorKyst800AtSiteDataLoader {
 
         //open attributes of the given variable, the nparse out FSO from it
         variablesToAttributes[variable]?.let { attributes ->
-            val attributeMap = NorKyst800RegexParser.parseVariableAttributes(attributes)
+            val attributeMap = NorKyst800Parser.parseVariableAttributes(attributes)
 
             fillValue = attributeMap["_FillValue"]?.let { (typeString, valueString) ->
                 parseFSOAttributeAs(typeString, valueString) //parse valuestring to typestring

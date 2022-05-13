@@ -105,37 +105,12 @@ class WaterFragment : Fragment() {
         ////////////////////
 
         //observer for å få temperatur og saltholdighet i nåtid
-        viewModel.getNorKyst800Data().observe(viewLifecycleOwner) {
-            it?.apply {
-                binding.temperatureTextview.text =
-                    getSorroundingTemperature(site.latLong, 0, 0)?.let { temp ->
-                        "%4.1f".format(temp) + "°"
-                    } ?: "N/A"
-
-                binding.saltTextview.text =
-                    getSorroundingSalinity(site.latLong, 0, 0)?.let { salt ->
-                        "%4.1f".format(salt)
-                    } ?: "N/A"
-                binding.Velocitytext.text =
-                    getVelocity(site.latLong, 0, 0)?.let { velocity ->
-                        "%4.1f m/s".format(velocity)
-                    } ?: "N/A"
-
-                val velocity = getVelocityDirectionInXYPlane(site.latLong, 0, 0)
-                if (velocity != null) {
-                    setVelocityDirection(velocity)
-                }
-            } ?: run {
-                binding.temperatureTextview.text = "N/A"
-                binding.saltTextview.text = "N/A"
-                binding.Velocitytext.text = "N/A"
-            }
-        }
 
         //TOAST IF NO TEMP/SALT
         setOnTemperatureOrSalinityClickListener(binding.temperatureTextview, requireContext())
         setOnTemperatureOrSalinityClickListener(binding.saltTextview, requireContext())
-        
+        setTemperatureAndSalt()
+
         ///////////////////
         //CHART + BUTTONS//
         ///////////////////
@@ -356,13 +331,6 @@ class WaterFragment : Fragment() {
                 ).show()
             }
         }
-    }
-
-    private fun convertTime(value: Float): String {
-        val dateformat = SimpleDateFormat("HH")
-        val currentTime = Calendar.getInstance(Locale.getDefault()).time.time
-        val valueDate = Date(currentTime + (3600000 * value).toLong())
-        return dateformat.format(valueDate) + ":00"
     }
 
     //TODO - does this work??

@@ -272,7 +272,7 @@ class NorKyst800DataLoaderTest {
     @Test
     fun testCorrectParse() {
         val actualNorKyst = runBlocking {
-            NorKyst800RegexParser().parse(fakeResponse)
+            NorKyst800Parser().parse(fakeResponse)
         }
 
         val expectedNorKyst =

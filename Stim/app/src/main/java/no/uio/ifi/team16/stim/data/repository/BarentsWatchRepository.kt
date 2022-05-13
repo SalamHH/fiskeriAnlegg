@@ -37,6 +37,9 @@ class BarentsWatchRepository {
         }
     }
 
+    fun clearCache() {
+        dataCache.clear()
+    }
 
     ///////////////
     // UTILITIES //

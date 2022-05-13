@@ -28,48 +28,52 @@ class SiteInfoFragment : StimFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentSiteInfoBinding.inflate(inflater, container, false)
-
         site = viewModel.getCurrentSite() ?: return binding.root
+        if (viewModel.getFavouriteSitesData().value?.contains(site) == true) checked = true
 
-        if  (viewModel.getFavouriteSitesData().value?.contains(site) == true) checked = true
-
-        binding.LoadingScreen.loadingLayout.visibility = View.VISIBLE
-
-        binding.siteName.text = site.name
-
-        viewModel.getWeatherData().observe(viewLifecycleOwner, this::onWeatherLoaded)
+        //load data pertaining to this site
+        viewModel.loadNorKyst800AtSite(site)
+        viewModel.loadInfectiousPressureTimeSeriesAtSite(site)
+        viewModel.loadBarentsWatch(site)
         viewModel.loadWeatherAtSite(site)
 
+        //fill inn data not requiring loads
+        binding.LoadingScreen.loadingLayout.visibility = View.VISIBLE //show loading screen
+        binding.siteName.text = site.name
         binding.tempIdag.text =
             getString(R.string.temperature, site.weatherForecast?.first?.temperature)
         binding.tempImorgen.text =
             getString(R.string.temperature, site.weatherForecast?.second?.temperature)
-
-        //posisjon
         binding.posisjonView.text = "${site.latLong.lat}, ${site.latLong.lng}"
-        viewModel.loadNorKyst800AtSite(site)
-        viewModel.loadInfectiousPressureTimeSeriesAtSite(site)
-        viewModel.loadBarentsWatch(site)
+
+        //weatherdata
+        viewModel.getWeatherData().observe(viewLifecycleOwner, this::onWeatherLoaded)
+
+        //barentswatchdata
         viewModel.getBarentsWatchData(site).observe(viewLifecycleOwner) {
             if (it?.listPD?.isNotEmpty() == true) {
-                binding.pdIcon.setImageDrawable(ResourcesCompat.getDrawable(
-                    resources,
-                    R.drawable.farevarsel,
-                    null
-                ))
+                binding.pdIcon.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        no.uio.ifi.team16.stim.R.drawable.farevarsel,
+                        null
+                    )
+                )
             }
             if (it?.listILA?.isNotEmpty() == true) {
-                binding.ilaIcon.setImageDrawable(ResourcesCompat.getDrawable(
+                binding.ilaIcon.setImageDrawable(
+                    ResourcesCompat.getDrawable(
                     resources,
-                    R.drawable.ila_bad,
+                    no.uio.ifi.team16.stim.R.drawable.ila_bad,
                     null
                 ))
             }
         }
 
-        val waterInfofinished = setWaterInfo()
+        val waterInfoSuccessfull = setWaterInfo()
         setInfectionInfo()
 
+        //infocards
         binding.generalInfoBox.setOnClickListener {
             // If the CardView is already expanded, set its visibility
             //  to gone and change the expand less icon to expand more.
@@ -112,37 +116,24 @@ class SiteInfoFragment : StimFragment() {
             binding.prodOmraadeView.text = site.placement?.municipalityName ?: "-----"
         }
 
-        //Velocity
-        viewModel.getNorKyst800Data().observe(viewLifecycleOwner) {
-            it?.apply {
-                binding.strom.text =
-                    getVelocity(site.latLong, 0, 0)?.let { velocity ->
-                        "%4.1f m/s".format(velocity)
-                    } ?: "N/A"
-            } ?: run {
-                binding.stromninger.text = "N/A"
-            }
-        }
-
-
         binding.weatherInfoCard.setOnClickListener {
             val extras = FragmentNavigatorExtras(binding.weatherIcon to "image_weather")
             view?.findNavController()?.navigate(
                 R.id.action_siteInfoFragment_to_weatherFragment,
                 null,
                 null,
-                extras
-            )
+                extras)
         }
 
         binding.waterInfoCard.setOnClickListener {
             val extras = FragmentNavigatorExtras(binding.wavesIcon to "icon_water")
-            if (waterInfofinished) {
+            if (waterInfoSuccessfull) {
                 view?.findNavController()
                     ?.navigate(R.id.action_siteInfoFragment_to_waterFragment,
                         null,
                         null,
-                        extras)
+                        extras
+                    )
             } else {
                 val text = "Ikke tilgjenglig"
                 val duration = Toast.LENGTH_SHORT
@@ -163,8 +154,15 @@ class SiteInfoFragment : StimFragment() {
 
         setHasOptionsMenu(true)
 
-        return binding.root
+        //remove loading screen if BOTH norkyst800 and infectiousPressure are loaded
+        //TODO use flags, but only if race conditions guaranteed to not happen. Read up on observer flow
+        viewModel.getNorKyst800Data().observe(viewLifecycleOwner) {
+            viewModel.getInfectiousPressureData().observe(viewLifecycleOwner) {
+                binding.LoadingScreen.loadingLayout.visibility = View.GONE
+            }
+        }
 
+        return binding.root
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -213,17 +211,16 @@ class SiteInfoFragment : StimFragment() {
 
     private fun setWaterInfo(): Boolean {
         viewModel.getNorKyst800AtSiteData(site).observe(viewLifecycleOwner) {
-            binding.LoadingScreen.loadingLayout.visibility = View.GONE
             it?.apply {
                 //forecast data is also available in the norkyst object! (about 66 hours, time indexes hours)
-                binding.tempratureValue.text = "%4.1f".format(getTemperature()) + "°"
-                binding.salinityValue.text = "%4.1f".format(getSalinity())
+                binding.temp.text = "%4.1f".format(getTemperature()) + "°"
+                binding.varsel.text = "%4.1f".format(getSalinity())
             } ?: run {
-                binding.tempratureValue.text = "N/A"
-                binding.salinityValue.text = "N/A"
+                binding.temp.text = "N/A"
+                binding.varsel.text = "N/A"
             }
         }
-        if (binding.tempratureValue.text == "N/A" || binding.salinityValue.text == "N/A") {
+        if (binding.temp.text == "N/A" || binding.varsel.text == "N/A") {
             return false
         }
         return true
