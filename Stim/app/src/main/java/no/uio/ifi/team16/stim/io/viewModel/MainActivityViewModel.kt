@@ -290,15 +290,6 @@ class MainActivityViewModel : ViewModel() {
         return favSet
     }
 
-    fun loadBarentsWatch() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val loaded =
-                barentsWatchRepository.getToken() //either loaded, retrieved from cache or faked
-            //invokes the observer
-           barentsWatchData.postValue(loaded!!)
-        }
-    }
-
     /**
      * Empties the cache so the app uses less memory
      */
