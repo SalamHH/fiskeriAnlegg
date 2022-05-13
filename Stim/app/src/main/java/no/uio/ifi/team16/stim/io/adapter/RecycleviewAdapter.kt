@@ -75,7 +75,7 @@ class RecycleViewAdapter(
 
         viewHolder.bind(site)
         viewHolder.nameView.text = site.name
-        viewHolder.locationView.text = site.latLong.toString()
+        viewHolder.locationView.text = "Kommune: " + site.placement?.municipalityName ?: ""
 
         imageLoader.loadSiteImage(site, viewHolder.pictureView)
 

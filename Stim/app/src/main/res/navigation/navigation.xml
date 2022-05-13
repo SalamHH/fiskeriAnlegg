@@ -57,6 +57,11 @@
         android:name="no.uio.ifi.team16.stim.TutorialFragment"
         android:label="fragment_tutorial"
         tools:layout="@layout/fragment_tutorial" />
+    <fragment
+        android:id="@+id/appInfoFragment"
+        android:name="no.uio.ifi.team16.stim.AppInfoFragment"
+        android:label="fragment_app_info"
+        tools:layout="@layout/fragment_app_info" />
 
 
 </navigation>
