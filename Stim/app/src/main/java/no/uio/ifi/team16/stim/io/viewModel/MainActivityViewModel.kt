@@ -5,8 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineDataSet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import no.uio.ifi.team16.stim.data.*
@@ -38,7 +36,6 @@ class MainActivityViewModel : ViewModel() {
     private val norKyst800Data = MutableLiveData<NorKyst800?>()
     private val norKyst800AtSiteData = mutableMapOf<Site, MutableLiveData<NorKyst800AtSite?>>()
     private val currentSitesData = MutableLiveData<List<Site>?>()
-    private var lineDataSet = MutableLiveData<LineDataSet?>(null)
     private val weatherData = MutableLiveData<WeatherForecast?>()
     private val barentsWatchData = mutableMapOf<Site, MutableLiveData<BarentsWatchAtSite?>>()
 
