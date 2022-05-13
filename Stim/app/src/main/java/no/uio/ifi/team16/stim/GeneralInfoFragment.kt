@@ -115,9 +115,18 @@ class GeneralInfoFragment : Fragment() {
                     getSorroundingSalinity(site.latLong, 0, 0)?.let { salt ->
                         "%4.1f".format(salt)
                     } ?: "N/A"
+                binding.Velocitytext.text =
+                    getVelocity(site.latLong, 0, 0)?.let { velocity ->
+                        "%4.1f".format(velocity)
+                    } ?: "N/A"
+                val velocity = getVelocityDirectionInXYPlane(site.latLong, 0, 0)
+                if (velocity != null) {
+                    setVelocityDirection(velocity)
+                }
             } ?: run {
                 binding.temperatureTextview.text = "N/A"
                 binding.saltTextview.text = "N/A"
+                binding.Velocitytext.text = "N/A"
             }
         }
 
@@ -389,5 +398,11 @@ class GeneralInfoFragment : Fragment() {
         val currentTime = Calendar.getInstance(Locale.getDefault()).time.time
         val valueDate = Date(currentTime + (3600000 * value).toLong())
         return dateformat.format(valueDate) + ":00"
+    }
+
+    //TODO - does this work??
+    private fun setVelocityDirection(direction: Float) {
+        var degrees = (1 + direction / Math.PI) * 180
+        binding.VelocityDirectionArrow.rotation = degrees.toFloat()
     }
 }

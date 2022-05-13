@@ -28,7 +28,7 @@ class Options {
             1 //the largest radius of circle around a site to search for non-null values
 
 
-        const val norKyst800AtSiteRadius = 2
+        const val norKyst800AtSiteRadius = 1
         val norKyst800AtSiteDepthRange = fromClosedRange(0, 1, 1)
         val norKyst800AtSiteTimeRange = fromClosedRange(0, 23, 1)
 

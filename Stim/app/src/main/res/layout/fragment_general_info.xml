@@ -371,6 +371,147 @@
 
                 </androidx.cardview.widget.CardView>
 
+                <GridLayout
+                    android:id="@+id/VelocityBoxes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:columnCount="2"
+                    android:orientation="horizontal"
+                    android:rowCount="1">
+
+
+                    <!-- Water temperature card-->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/VelocityCard"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:cardBackgroundColor="@color/colorAccent"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="5dp"
+                        app:cardMaxElevation="10dp"
+                        app:cardPreventCornerOverlap="true"
+                        app:cardUseCompatPadding="true">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_margin="5dp"
+                            android:layout_marginTop="10dp"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/Velocityheader"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="10dp"
+                                android:gravity="center_horizontal"
+                                android:text="Strømmninger:"
+                                android:textColor="@color/primaryTextColor"
+                                android:fontFamily="@font/montserrat_light"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <ImageView
+                                android:id="@+id/VelocityIcon"
+                                android:layout_width="70dp"
+                                android:layout_height="70dp"
+                                android:maxHeight="70dp"
+                                android:padding="10dp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toStartOf="@+id/Velocitytext"
+                                app:layout_constraintHorizontal_bias="0.5"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/Velocityheader"
+                                app:srcCompat="@drawable/stromning_icon"
+                                app:tint="@color/orange" />
+
+                            <TextView
+                                android:id="@+id/Velocitytext"
+                                android:layout_width="wrap_content"
+                                android:layout_height="0dp"
+                                android:gravity="center_vertical"
+                                android:text="----"
+                                android:textColor="@color/primaryTextColor"
+                                android:textSize="30sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="0.5"
+                                app:layout_constraintStart_toEndOf="@+id/VelocityIcon"
+                                app:layout_constraintTop_toBottomOf="@id/Velocityheader" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Water temperature card-->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/VelocityDirectionCard"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:cardBackgroundColor="@color/colorAccent"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="5dp"
+                        app:cardMaxElevation="10dp"
+                        app:cardPreventCornerOverlap="true"
+                        app:cardUseCompatPadding="true">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_margin="5dp"
+                            android:layout_marginTop="10dp"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/VelocityDirectionheader"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="10dp"
+                                android:gravity="center_horizontal"
+                                android:text="Strømretning:"
+                                android:textColor="@color/primaryTextColor"
+                                android:fontFamily="@font/montserrat_light"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <ImageView
+                                android:id="@+id/VelocityDirectionIcon"
+                                android:layout_width="70dp"
+                                android:layout_height="70dp"
+                                android:maxHeight="70dp"
+                                android:padding="10dp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toStartOf="@+id/VelocityDirectionArrow"
+                                app:layout_constraintHorizontal_bias="0.5"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/VelocityDirectionheader"
+                                app:srcCompat="@drawable/compass"
+                                app:tint="@color/orange" />
+
+                            <ImageView
+                                android:id="@+id/VelocityDirectionArrow"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:gravity="center_vertical"
+                                android:textColor="@color/primaryTextColor"
+                                android:src="@drawable/down_darkblue"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="0.5"
+                                app:layout_constraintStart_toEndOf="@+id/VelocityDirectionIcon"
+                                app:layout_constraintTop_toBottomOf="@id/VelocityDirectionheader" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                </GridLayout>
+
                 <androidx.cardview.widget.CardView
                     android:id="@+id/InformationCard"
                     android:layout_width="match_parent"

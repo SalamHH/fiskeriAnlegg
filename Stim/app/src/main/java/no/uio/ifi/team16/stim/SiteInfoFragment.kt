@@ -55,14 +55,14 @@ class SiteInfoFragment : StimFragment() {
             if (it?.listPD?.isNotEmpty() == true) {
                 binding.pdIcon.setImageDrawable(ResourcesCompat.getDrawable(
                     resources,
-                    no.uio.ifi.team16.stim.R.drawable.farevarsel,
+                    R.drawable.farevarsel,
                     null
                 ))
             }
             if (it?.listILA?.isNotEmpty() == true) {
                 binding.ilaIcon.setImageDrawable(ResourcesCompat.getDrawable(
                     resources,
-                    no.uio.ifi.team16.stim.R.drawable.ila_bad,
+                    R.drawable.ila_bad,
                     null
                 ))
             }
@@ -113,6 +113,18 @@ class SiteInfoFragment : StimFragment() {
             binding.prodOmraadeView.text = site.placement?.municipalityName ?: "-----"
         }
 
+        //Velocity
+        viewModel.getNorKyst800Data().observe(viewLifecycleOwner) {
+            it?.apply {
+                binding.strom.text =
+                    getVelocity(site.latLong, 0, 0)?.let { velocity ->
+                        "%4.1f".format(velocity)
+                    } ?: "N/A"
+            } ?: run {
+                binding.stromninger.text = "N/A"
+            }
+        }
+
 
         binding.weatherInfoCard.setOnClickListener {
             val extras = FragmentNavigatorExtras(binding.weatherIcon to "image_weather")
@@ -120,7 +132,8 @@ class SiteInfoFragment : StimFragment() {
                 R.id.action_siteInfoFragment_to_weatherFragment,
                 null,
                 null,
-                extras)
+                extras
+            )
         }
 
         binding.waterInfoCard.setOnClickListener {
