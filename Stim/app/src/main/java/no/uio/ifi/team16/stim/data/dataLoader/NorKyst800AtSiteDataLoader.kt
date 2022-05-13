@@ -16,7 +16,6 @@ import no.uio.ifi.team16.stim.util.reformatFSL
 import org.locationtech.proj4j.CRSFactory
 import org.locationtech.proj4j.CoordinateTransform
 import org.locationtech.proj4j.CoordinateTransformFactory
-import java.time.Instant
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -69,15 +68,6 @@ class NorKyst800AtSiteDataLoader {
                     currentAtSite
                 )
             } else { //both succesfull
-                Log.d(
-                    TAG,
-                    "adding ${forecastAtSite.time.contentToString()} and ${currentAtSite.time.contentToString()}"
-                )
-                Log.d(TAG, "made ${currentAtSite.append(forecastAtSite).time.contentToString()}")
-                Log.d(TAG, currentAtSite.append(forecastAtSite).time.map { f ->
-                    (f - Instant.now().epochSecond) / 3600
-                }.toString())
-
                 NorKyst800AtSite(
                     site.nr,
                     currentAtSite.append(forecastAtSite)
@@ -121,7 +111,6 @@ class NorKyst800AtSiteDataLoader {
         ///////////////
         //make a map from variable names to strings of their attributes
         val variablesToAttributes = NorKyst800RegexParser.parseDas(dasString)
-        Log.d(TAG, variablesToAttributes.toString())
         //SALINITY, make standard, then parse and put any non-null into it
         val salinityFSO = Triple(-32767, 0.001f, 30.0f).let { defaultFSO ->
             val (f, s, o) = getFSO(variablesToAttributes, "salinity")
@@ -141,8 +130,8 @@ class NorKyst800AtSiteDataLoader {
             )
         }
         //U, make standard, then parse and put any non-null into it
-        val uFSO = Triple(-32767, 0.001f, 0.0f).let { defaultFSO ->
-            val (f, s, o) = getFSO(variablesToAttributes, "u")
+        val uFSO = Triple(1.0E37f, 1.0f, 0.0f).let { defaultFSO ->
+            val (f, s, o) = getFSO(variablesToAttributes, "u_eastward")
             Triple(
                 f ?: defaultFSO.first,
                 s ?: defaultFSO.second,
@@ -150,8 +139,8 @@ class NorKyst800AtSiteDataLoader {
             )
         }
         //V, make standard, then parse and put any non-null into it
-        val vFSO = Triple(-32767, 0.001f, 0.0f).let { defaultFSO ->
-            val (f, s, o) = getFSO(variablesToAttributes, "v")
+        val vFSO = Triple(1.0E37f, 1.0f, 0.0f).let { defaultFSO ->
+            val (f, s, o) = getFSO(variablesToAttributes, "v_northward")
             Triple(
                 f ?: defaultFSO.first,
                 s ?: defaultFSO.second,
@@ -180,8 +169,6 @@ class NorKyst800AtSiteDataLoader {
                 Log.w(TAG, "Failed to parse projection from DAS response, using default")
                 Options.defaultProj4String
             }
-        Log.d(TAG, proj4String)
-        Log.d(TAG, Options.defaultProj4String)
 
         //make the projection from string
         val projection: CoordinateTransform =
@@ -251,21 +238,20 @@ class NorKyst800AtSiteDataLoader {
         //////////////
         // VELOCITY //
         //////////////
-        Log.d(TAG, velocityUrl)
         val velocityString = requestData(velocityUrl, "velocity") ?: return null
 
         //PARSE VELOCITY
         val velocity = Triple(
-            NorKyst800RegexParser.makeNullable4DFloatArrayOf(
-                "u",
+            NorKyst800RegexParser.makeNullable4DFloatArrayOfW(
+                "u_eastward",
                 velocityString,
                 uFSO
             ) ?: run {
                 Log.e(NorKyst800RegexParser.TAG, "Failed to read <u> from NorKyst800")
                 return null
             },
-            NorKyst800RegexParser.makeNullable4DFloatArrayOf(
-                "v",
+            NorKyst800RegexParser.makeNullable4DFloatArrayOfW(
+                "v_northward",
                 velocityString,
                 vFSO
             ) ?: run {
@@ -472,8 +458,8 @@ class NorKyst800AtSiteDataLoader {
         val tdxyString = tString + dString + xyString
         return baseUrl +
                 ".ascii?" +
-                "u$tdxyString," +
-                "v$tdxyString," +
+                "u_eastward$tdxyString," +
+                "v_northward$tdxyString," +
                 "w$tdxyString"
     }
 

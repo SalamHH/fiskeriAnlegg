@@ -55,7 +55,6 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
         * The downside is that we cannot stream the data, but the data can be retrieved pre-sliced
         */
 
-        //TODO find better delineatrion? this seems to be a deficiency in the dataset(maintenance)
         val now = Instant.now() //seconds since 1970-01-01,
         val baseUrl =
             (if (ZonedDateTime.now().hour < 18) //use forecast until 18, then its a forecast from next day
@@ -134,7 +133,6 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
         ///////////////
         //make a map from variable names to strings of their attributes
         val variablesToAttributes = NorKyst800RegexParser.parseDas(dasString)
-        Log.d(TAG, variablesToAttributes.toString())
         //SALINITY, make standard, then parse and put any non-null into it
         val salinityFSO = Triple(-32767, 0.001f, 30.0f).let { defaultFSO ->
             val (f, s, o) = getFSO(variablesToAttributes, "salinity")
@@ -154,8 +152,8 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
             )
         }
         //U, make standard, then parse and put any non-null into it
-        val uFSO = Triple(-32767, 0.001f, 0.0f).let { defaultFSO ->
-            val (f, s, o) = getFSO(variablesToAttributes, "u")
+        val uFSO = Triple(1.0E37f, 1.0f, 0.0f).let { defaultFSO ->
+            val (f, s, o) = getFSO(variablesToAttributes, "u_eastward")
             Triple(
                 f ?: defaultFSO.first,
                 s ?: defaultFSO.second,
@@ -163,8 +161,8 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
             )
         }
         //V, make standard, then parse and put any non-null into it
-        val vFSO = Triple(-32767, 0.001f, 0.0f).let { defaultFSO ->
-            val (f, s, o) = getFSO(variablesToAttributes, "v")
+        val vFSO = Triple(1.0E37f, 1.0f, 0.0f).let { defaultFSO ->
+            val (f, s, o) = getFSO(variablesToAttributes, "v_northward")
             Triple(
                 f ?: defaultFSO.first,
                 s ?: defaultFSO.second,
@@ -205,21 +203,19 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
         //////////////
         // VELOCITY //
         //////////////
-        Log.d(TAG, velocityUrl)
         val velocityString = requestData(velocityUrl, "velocity") ?: return null
-
         //PARSE VELOCITY
         val velocity = Triple(
-            NorKyst800RegexParser.makeNullable4DFloatArrayOf(
-                "u",
+            NorKyst800RegexParser.makeNullable4DFloatArrayOfW(
+                "u_eastward",
                 velocityString,
                 uFSO
             ) ?: run {
                 Log.e(NorKyst800RegexParser.TAG, "Failed to read <u> from NorKyst800")
                 return null
             },
-            NorKyst800RegexParser.makeNullable4DFloatArrayOf(
-                "v",
+            NorKyst800RegexParser.makeNullable4DFloatArrayOfW(
+                "v_northward",
                 velocityString,
                 vFSO
             ) ?: run {
@@ -260,7 +256,7 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
                 temperatureFSO
             ) ?: run {
                 Log.e(NorKyst800RegexParser.TAG, "Failed to read <temperature> from NorKyst800")
-                return@load null
+                return null
             }
 
         return NorKyst800(
@@ -347,22 +343,25 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
         variablesToAttributes[variable]?.let { attributes ->
             val attributeMap = NorKyst800RegexParser.parseVariableAttributes(attributes)
 
-            fillValue = attributeMap["_FillValue"]?.let { (typeString, valueString) ->
-                parseFSOAttributeAs(typeString, valueString) //parse valuestring to typestring
+            attributeMap["_FillValue"]?.let { (typeString, valueString) ->
+                fillValue =
+                    parseFSOAttributeAs(typeString, valueString) //parse valuestring to typestring
             } ?: Log.w(
                 TAG,
                 "Failed to load norkyst800data - ${variable}FillValue from das, using default"
             )
 
-            scale = attributeMap["scale_factor"]?.let { (typeString, valueString) ->
-                parseFSOAttributeAs(typeString, valueString) //parse valuestring to typestring
+            attributeMap["scale_factor"]?.let { (typeString, valueString) ->
+                scale =
+                    parseFSOAttributeAs(typeString, valueString) //parse valuestring to typestring
             } ?: Log.w(
                 TAG,
                 "Failed to load norkyst800data - ${variable}Scaling from das, using default"
             )
 
-            offset = attributeMap["add_offset"]?.let { (typeString, valueString) ->
-                parseFSOAttributeAs(typeString, valueString) //parse valuestring to typestring
+            attributeMap["add_offset"]?.let { (typeString, valueString) ->
+                offset =
+                    parseFSOAttributeAs(typeString, valueString) //parse valuestring to typestring
             } ?: Log.w(
                 TAG,
                 "Failed to load norkyst800data - ${variable}Offset from das, using default"
@@ -454,8 +453,8 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
         val tdxyString = tString + dString + xyString
         return baseUrl +
                 ".ascii?" +
-                "u$tdxyString," +
-                "v$tdxyString," +
+                "u_eastward$tdxyString," +
+                "v_northward$tdxyString," +
                 "w$tdxyString"
     }
 

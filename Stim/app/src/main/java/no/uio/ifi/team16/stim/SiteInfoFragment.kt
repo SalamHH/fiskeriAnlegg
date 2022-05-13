@@ -16,7 +16,6 @@ import no.uio.ifi.team16.stim.data.WeatherForecast
 import no.uio.ifi.team16.stim.databinding.FragmentSiteInfoBinding
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 import no.uio.ifi.team16.stim.util.Options
-import java.time.ZonedDateTime
 
 
 class SiteInfoFragment : StimFragment() {
@@ -118,7 +117,7 @@ class SiteInfoFragment : StimFragment() {
             it?.apply {
                 binding.strom.text =
                     getVelocity(site.latLong, 0, 0)?.let { velocity ->
-                        "%4.1f".format(velocity)
+                        "%4.1f m/s".format(velocity)
                     } ?: "N/A"
             } ?: run {
                 binding.stromninger.text = "N/A"

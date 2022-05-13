@@ -1,6 +1,5 @@
 package no.uio.ifi.team16.stim.data
 
-import android.util.Log
 import no.uio.ifi.team16.stim.util.*
 import org.locationtech.proj4j.CoordinateTransform
 import kotlin.math.atan2
@@ -68,11 +67,22 @@ data class NorKyst800(
         return (0..Options.norKyst800MaxRadius) //for each possible radius
             .asSequence() //do as sequence, ie evaluae lazily
             .firstNotNullOfOrNull { radius -> //take out first value in lazy-sequnce returning not-null
+                averageOf(temperature[time][depth].getSorrounding(y, x, radius))
+            }
+    }
 
-                val v = averageOf(temperature[time][depth].getSorrounding(y, x, radius))
-                Log.d(TAG, temperature[time][depth].getSorrounding(y, x, radius).prettyPrint())
-                Log.d(TAG, "[$y, $x] radius ${radius}, got $v")
-                v
+    fun getSorroundingVelocity(latLng: LatLong, time: Int, depth: Int): Float? {
+        val (x, y) = getClosestIndex(latLng) //TODO: I might have flipped x-y
+        return (0..Options.norKyst800MaxRadius) //for each possible radius
+            .asSequence() //do as sequence, ie evaluae lazily
+            .firstNotNullOfOrNull { radius -> //take out first value in lazy-sequnce returning not-null
+                val u = averageOf(velocity.first[time][depth].getSorrounding(y, x, radius))
+                val v = averageOf(velocity.second[time][depth].getSorrounding(y, x, radius))
+                if (u == null || v == null) {
+                    null
+                } else {
+                    Math.sqrt((u * u + v * v).toDouble()).toFloat()
+                }
             }
     }
 
@@ -89,13 +99,40 @@ data class NorKyst800(
         )
     }
 
+    fun getSorroundingVelocityVector(
+        latLng: LatLong,
+        time: Int,
+        depth: Int
+    ): Triple<Float, Float, Float>? {
+        val (x, y) = getClosestIndex(latLng) //TODO: I might have flipped x-y
+        return (0..Options.norKyst800MaxRadius) //for each possible radius
+            .asSequence() //do as sequence, ie evaluae lazily
+            .firstNotNullOfOrNull { radius -> //take out first value in lazy-sequnce returning not-null
+                val u = averageOf(velocity.first[time][depth].getSorrounding(y, x, radius))
+                val v = averageOf(velocity.second[time][depth].getSorrounding(y, x, radius))
+                val w = averageOf(velocity.third[time][depth].getSorrounding(y, x, radius))
+                if (u == null || v == null || w == null) {
+                    null
+                } else {
+                    Triple(
+                        u,
+                        v,
+                        w
+                    )
+                }
+            }
+    }
+
+    //return velocity in m/s
     fun getVelocity(latLng: LatLong, time: Int, depth: Int): Float? =
-        getVelocityVector(latLng, time, depth)?.let { (x, y, z) ->
+        getSorroundingVelocityVector(latLng, time, depth)?.let { (x, y, z) ->
             sqrt(x * x + y * y + z * z)
         }
 
+    //return direction along the XYplane(water surface) in radians
+
     fun getVelocityDirectionInXYPlane(latLng: LatLong, time: Int, depth: Int): Float? =
-        getVelocityVector(latLng, time, depth)?.let { (x, y, z) ->
+        getSorroundingVelocityVector(latLng, time, depth)?.let { (x, y, z) ->
             atan2(y, x)
         }
 
@@ -147,7 +184,9 @@ data class NorKyst800(
             }
 
     private fun averageOf(arr: NullableFloatArray2D): Float? =
-        arr.flatMap { row -> row.toList() } //flatten
+        arr.flatMap { row ->
+            row.toList()
+        } //flatten
             .filterNotNull() //take out null, might return empty
             .let { elements -> //with the flattened array of non-null values
                 elements.reduceOrNull { acc, element -> //sum all

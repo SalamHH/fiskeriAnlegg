@@ -2,6 +2,7 @@ package no.uio.ifi.team16.stim
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -117,8 +118,9 @@ class GeneralInfoFragment : Fragment() {
                     } ?: "N/A"
                 binding.Velocitytext.text =
                     getVelocity(site.latLong, 0, 0)?.let { velocity ->
-                        "%4.1f".format(velocity)
+                        "%4.1f m/s".format(velocity)
                     } ?: "N/A"
+
                 val velocity = getVelocityDirectionInXYPlane(site.latLong, 0, 0)
                 if (velocity != null) {
                     setVelocityDirection(velocity)
@@ -402,7 +404,8 @@ class GeneralInfoFragment : Fragment() {
 
     //TODO - does this work??
     private fun setVelocityDirection(direction: Float) {
-        var degrees = (1 + direction / Math.PI) * 180
+        var degrees = 270 - (direction / Math.PI) * 180
+        Log.d("GIF", "radians $direction + interpreted to degrees $degrees")
         binding.VelocityDirectionArrow.rotation = degrees.toFloat()
     }
 }

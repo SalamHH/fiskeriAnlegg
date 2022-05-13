@@ -183,8 +183,6 @@ class NorKyst800RegexParser {
                     return null
                 }
 
-                //val dataSequence = readRowsOf4DFloatArray(dataString, scale, offset, fillValue)
-
                 readRowsOf4DFloatArray(dT, dD, dY, dX, dataString, scale, offset, fillValue)
         }
 
