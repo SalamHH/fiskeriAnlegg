@@ -11,7 +11,9 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.transition.AutoTransition
 import androidx.transition.TransitionInflater
+import androidx.transition.TransitionManager
 import com.github.mikephil.charting.components.LimitLine
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
@@ -51,6 +53,10 @@ class GeneralInfoFragment : Fragment() {
     ): View {
         binding = FragmentGeneralInfoBinding.inflate(inflater, container, false)
 
+        /////////////
+        //Animation//
+        /////////////
+
         val animation =
             TransitionInflater.from(requireContext()).inflateTransition(android.R.transition.move)
         sharedElementEnterTransition = animation
@@ -63,12 +69,39 @@ class GeneralInfoFragment : Fragment() {
         site = viewModel.getCurrentSite() ?: return binding.root
         binding.sitename.text = site.name
 
+        /////////////////////
+        //INFORMATION BOXES//
+        /////////////////////
+
+        binding.InformationCard.setOnClickListener {
+            // If the CardView is already expanded, set its visibility
+            //  to gone and change the expand less icon to expand more.
+            // If the CardView is already expanded, set its visibility
+            //  to gone and change the expand less icon to expand more.
+            if (binding.infoTextExtra.visibility == View.VISIBLE) {
+                // The transition of the hiddenView is carried out
+                //  by the TransitionManager class.
+                // Here we use an object of the AutoTransition
+                // Class to create a default transition.
+                TransitionManager.beginDelayedTransition(
+                    binding.InformationCard,
+                    AutoTransition()
+                )
+                binding.infoTextExtra.setVisibility(View.GONE)
+                binding.pil.setImageResource(R.drawable.down_darkblue)
+            } else {
+                TransitionManager.beginDelayedTransition(
+                    binding.InformationCard,
+                    AutoTransition()
+                )
+                binding.infoTextExtra.visibility = View.VISIBLE
+                binding.pil.setImageResource(R.drawable.up_darkblue)
+            }
+        }
+
         ////////////////////
         //QUICK INFO GRIDS//
         ////////////////////
-
-
-        viewModel.loadNorKyst800AtSite(site) //TODO: flytt til forrige fragment?
 
         //observer for å få temperatur og saltholdighet i nåtid
         viewModel.getNorKyst800Data().observe(viewLifecycleOwner) {
@@ -88,7 +121,7 @@ class GeneralInfoFragment : Fragment() {
             }
         }
 
-        //lag toasts til salt og temp
+        //TOAST IF NO TEMP/SALT
         setOnTemperatureOrSalinityClickListener(binding.temperatureTextview, requireContext())
         setOnTemperatureOrSalinityClickListener(binding.saltTextview, requireContext())
         
@@ -227,11 +260,9 @@ class GeneralInfoFragment : Fragment() {
             it?.apply {
                 binding.tablelayout.removeAllViews()
                 val tempgraphdata = getTemperatureAtSurfaceAsGraph()
-
-                //TODO: does ot correspond with merged data, use tempgraphdata.size maybe?
-                tempgraphdata.mapIndexed { i, e ->
-                    val x = e.x
-                    val y = e.y
+                for (i in 0..23) {
+                    val x = tempgraphdata[i].x
+                    val y = tempgraphdata[i].y
                     val newRow = TableRow(requireContext())
                     val view = inflater.inflate(R.layout.infection_table_row, container, false)
                     view.findViewById<TextView>(R.id.table_display_week).text =
@@ -270,9 +301,9 @@ class GeneralInfoFragment : Fragment() {
                 val saltgraphdata = getSalinityAtSurfaceAsGraph()
                 binding.Salttablelayout.removeAllViews()
 
-                saltgraphdata.mapIndexed { i, e ->
-                    val x = e.x
-                    val y = e.y
+                for (i in 0..23) {
+                    val x = saltgraphdata[i].x
+                    val y = saltgraphdata[i].y
                     val newRow = TableRow(requireContext())
                     val view = inflater.inflate(R.layout.infection_table_row, container, false)
                     view.findViewById<TextView>(R.id.table_display_week).text =
@@ -333,7 +364,7 @@ class GeneralInfoFragment : Fragment() {
     /**
      * make toasts explaining certain textvalues of the salinity or temperature textview.
      */
-    fun setOnTemperatureOrSalinityClickListener(textView: TextView, context: Context) {
+    private fun setOnTemperatureOrSalinityClickListener(textView: TextView, context: Context) {
         textView.setOnClickListener {
             val txt = it as TextView
             if (txt.text == "N/A") {

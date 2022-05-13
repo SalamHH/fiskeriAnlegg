@@ -408,9 +408,32 @@
                             android:layout_margin="10dp"
                             android:fontFamily="@font/montserrat_light"
                             android:gravity="center"
-                            android:text="Denne grafen viser til saltholdighet og vanntemperatur funnet i anlegget. (MER INFO TRENGS). For å se grafer klikker du på knappene lenger oppe. Du kan også zoome inn og navigere grafen med touch."
+                            android:text="Denne grafen viser til saltholdighet og vanntemperatur funnet i anlegget. For å endre grafen vist klikker du på knappen lenger oppe. Du kan også zoome inn og navigere grafen med touch. Nedenfor finner du tabeller med all data."
                             android:textColor="@color/primaryTextColor"
                             android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/infoTextExtra"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_margin="10dp"
+                            android:fontFamily="@font/montserrat_light"
+                            android:gravity="left"
+                            android:text="Vanndata er nyttig for å regulere fiskens helse. For kaldt vann og for mye strømninger kan for eksempel lede til vanskeligheter for å vokse. Resultat fra ny forskning ved Havforskningsinstituttet viser at vedvarende strømstyrke som smålaks opplever ikke bør overstige ca. 50 cm/s. Dette varierer derimot ut fra størrelsen på fisken, der stor laks tåler mindre enn liten. Vanntemperaturen påvirker laksen sin kapasitet til å svømme mot strømmen betydelig hvis temperaturen er 3°C i motsetning 8-23°C. Selv om laks vokser best ved 9-18°C kan da fint tåle langt lavere temperaturer, men da synker altså evnen til å håndtere sterk strøm. I tillegg påvirker vanntemperaturen utviklingen og dødeligheten av lakselus, der den øker i varmere temperaturer."
+                            android:textColor="@color/primaryTextColor"
+                            android:textSize="13sp"
+                            android:visibility="gone" />
+
+                        <ImageView
+                            android:id="@+id/pil"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginBottom="10dp"
+                            app:srcCompat="@drawable/down_darkblue"
+                            app:tint="@color/primaryTextColor" />
 
                     </LinearLayout>
 

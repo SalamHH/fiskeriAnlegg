@@ -241,17 +241,42 @@
                             android:textSize="15sp"
                             android:layout_gravity="center" />
 
+
                         <TextView
                             android:id="@+id/infoText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_centerHorizontal="true"
                             android:layout_margin="10dp"
                             android:fontFamily="@font/montserrat_light"
-                            android:text="Denne grafen viser til antall lakselus funnet i anlegget. Arbeidere på anlegget henter ut laks, og teller antall lus funnet på fisken. (MER INFO TRENGS). For å se mer info om ulike statussymbol, klikk på symbolet lengre oppe. Du kan også redigere ønskede preferanser for status i innstillinger."
+                            android:text="Denne grafen viser til antall lakselus funnet i anlegget. For å se mer info om ulike statussymbol, klikk på symbolet lengre oppe. Finn all data i tabellen nedenfor."
                             android:textColor="@color/primaryTextColor"
                             android:textSize="13sp"
+                            android:lineSpacingMultiplier="1.2"
                             android:gravity="center" />
+
+
+                        <TextView
+                            android:id="@+id/infoTextExtra"
+                            android:visibility="gone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:fontFamily="@font/montserrat_light"
+                            android:text="Lakselus er en parasitt som suger ut blod fra laksen. På de fleste anlegg måles lakselus manuelt. En gang i måneden drar fiskehelsepersonell ut, plukker opp noen fisker og teller antall lus. Grensen for å måtte behandle går på 0.5 lus per fisk. For å fjerne lakselus benyttes det enten kjemikalier eller mekanisk fjerning. Denne prosessen er assosiert med en høy dødelighet. Parasitten er også veldig farlig for bevarelsen av villaksen i Norge, og det er det som gjør lakselusen spesielt skadelig.  Laks i oppdrettsanlegg rømmer med parasitten og smitter dette over til villaksen, som skader populasjonen. Den bidrar også til at næringen taper millioner av dollar hvert år. Derfor ønsker man kontinuerlig monitorering for å identifisere de områdene med forhøyet lakselus smittetrykk som utgjør en uakseptabel risiko for dødeligheten til villaks."
+                            android:textColor="@color/primaryTextColor"
+                            android:textSize="13sp"
+                            android:lineSpacingMultiplier="1.2"
+                            android:gravity="fill_horizontal" />
+
+                        <ImageView
+                            android:id="@+id/pil"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginBottom="10dp"
+                            app:srcCompat="@drawable/down_darkblue"
+                            app:tint="@color/primaryTextColor" />
 
                     </LinearLayout>
 
@@ -286,15 +311,18 @@
                                 android:gravity="center"
                                 android:text="Uke Nr."
                                 android:fontFamily="@font/montserrat_bold"
+                                android:textColor="@color/secondaryTextColor"
                                 android:textStyle="bold"
-                                android:background="@color/colorSecondary" />
+                                android:background="@color/darker_skyblue" />
 
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:id="@+id/table_display_float"
                                 android:text="Smittedata"
-                                android:textColor="@color/primaryTextColor"
+                                android:background="@color/darker_skyblue"
+                                android:textColor="@color/secondaryTextColor"
+                                android:textStyle="bold"
                                 android:layout_weight="0.75"
                                 android:gravity="center"
                                 android:fontFamily="@font/montserrat_light" />
@@ -306,7 +334,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
-                            android:stretchColumns="*"></TableLayout>
+                            android:stretchColumns="*" />
 
                     </LinearLayout>
 

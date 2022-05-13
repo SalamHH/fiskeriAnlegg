@@ -11,9 +11,12 @@ import android.widget.TableRow
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.activityViewModels
+import androidx.transition.AutoTransition
 import androidx.transition.TransitionInflater
+import androidx.transition.TransitionManager
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.databinding.FragmentInfectionBinding
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 import no.uio.ifi.team16.stim.util.Options
@@ -27,6 +30,7 @@ class InfectionFragment : StimFragment() {
 
     private lateinit var binding: FragmentInfectionBinding
     private val viewModel: MainActivityViewModel by activityViewModels()
+    private lateinit var site: Site
 
     @Inject
     lateinit var chartStyle: SparkLineStyle
@@ -45,25 +49,76 @@ class InfectionFragment : StimFragment() {
         sharedElementEnterTransition = animation
         sharedElementReturnTransition = animation
 
-        val site = viewModel.getCurrentSite() ?: return binding.root
+        ////////
+        //SITE//
+        ////////
+
+        site = viewModel.getCurrentSite() ?: return binding.root
         binding.sitename.text = site.name
 
         chartStyle = SparkLineStyle(requireContext())
 
         viewModel.loadInfectiousPressureTimeSeriesAtSite(site)
-        //val contamData = mutableListOf<Entry>()
-        //val _lineDataSet = MutableLiveData(LineDataSet(contamData, CHART_LABEL))
+
+        binding.InformationCard.setOnClickListener {
+            // If the CardView is already expanded, set its visibility
+            //  to gone and change the expand less icon to expand more.
+            // If the CardView is already expanded, set its visibility
+            //  to gone and change the expand less icon to expand more.
+            if (binding.infoTextExtra.visibility == View.VISIBLE) {
+
+                // The transition of the hiddenView is carried out
+                //  by the TransitionManager class.
+                // Here we use an object of the AutoTransition
+                // Class to create a default transition.
+                TransitionManager.beginDelayedTransition(
+                    binding.InformationCard,
+                    AutoTransition()
+                )
+                binding.infoTextExtra.visibility = View.GONE
+                binding.pil.setImageResource(R.drawable.down_darkblue)
+            } else {
+                TransitionManager.beginDelayedTransition(
+                    binding.InformationCard,
+                    AutoTransition()
+                )
+                binding.infoTextExtra.visibility = View.VISIBLE
+                binding.pil.setImageResource(R.drawable.up_darkblue)
+            }
+        }
 
         viewModel.getInfectiousPressureTimeSeriesData(site).observe(viewLifecycleOwner) {
             it?.getConcentrationsAsGraph()?.also { graph ->
                 val infectionData =
                     graph.map { xy -> xy.y }.toTypedArray() //get contamination as separate list
                 val weekList = graph.map { xy -> xy.x } //get weeks as separate list
+
+                //CREATE TABLE
+                createTable(infectionData, weekList, inflater, container)
+
                 //CHART
                 val linedataset = LineDataSet(
                     graph,
                     CHART_LABEL
                 )
+
+                //set max of yaxis to max of loaded dataset
+                //THE BEZIER CURVE DOES NOT CONSERVE MIN / MAX OF INTERPOLATED POINTS, SO IT WILL CLIP!!
+                //TODO get interpolation(CUBIC BEZIER), and find min max of that, or change to linear(not bezier), or use max+1 min-1
+                binding.infectionChart.apply {
+                    axisLeft.apply {
+                        if (infectionData.isNotEmpty()) {
+                            axisMaximum =
+                                infectionData.maxOf { v -> v } + 1f //clipping might still occurr
+                        }
+                    }
+                }
+
+                chartStyle.styleLineDataSet(linedataset, requireContext())
+                binding.infectionChart.data = LineData(linedataset)
+                binding.infectionChart.invalidate()
+                chartStyle.styleChart(binding.infectionChart)
+
                 //STATUS
                 if (infectionData.isNotEmpty()) {
                     binding.infectionStatusText.text = calculateInfectionStatusText(infectionData)
@@ -77,48 +132,8 @@ class InfectionFragment : StimFragment() {
                 } else {
                     binding.infectionStatusText.text = "Fant ikke smittedata"
                 }
-                //set max of yaxis to max of loaded dataset
-                //THE BEZIER CURVE DOES NOT CONSERVE MIN / MAX OF INTERPOLATED POINTS, SO IT WILL CLIP!!
-                //TODO get interpolation(CUBIC BEZIER), and find min max of that, or change to linear(not bezier), or use max+1 min-1
-                binding.infectionChart.apply {
-                    axisLeft.apply {
-                        if (infectionData.isNotEmpty()) {
-                            axisMaximum =
-                                infectionData.maxOf { v -> v } + 1f //clipping might still occurr
-                        }
-                    }
-                }
-                //style linedataset
-                chartStyle.styleLineDataSet(linedataset, requireContext())
-                binding.infectionChart.data = LineData(linedataset)
-                binding.infectionChart.invalidate()
-
-                //TABLE
-                binding.tablelayout.removeAllViews()
-
-                for (i in 0..infectionData.lastIndex) {
-                    val newRow = TableRow(requireContext())
-                    val view = inflater.inflate(R.layout.infection_table_row, container, false)
-                    view.findViewById<TextView>(R.id.table_display_week).text =
-                        weekList[i].toString()
-                    view.findViewById<TextView>(R.id.table_display_float).text =
-                        infectionData[i].toString()
-                    view.layoutParams = TableRow.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                    )
-                    newRow.addView(view)
-                    binding.tablelayout.addView(newRow, 0)
-                    newRow.layoutParams = TableLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                    )
-                    Log.d(TAG, "Row added: $i")
-                }
-                binding.tablelayout.requestLayout()
             }
         }
-
         chartStyle.styleChart(binding.infectionChart)
 
         binding.StatusIcon.setOnClickListener {
@@ -178,6 +193,30 @@ class InfectionFragment : StimFragment() {
 
         return binding.root
     }
+
+    private fun createTable(infectionData: Array<Float>, weekList: List<Float>, inflater: LayoutInflater, container: ViewGroup?) {
+        for (i in infectionData.indices) {
+            val newRow = TableRow(requireContext())
+            val view = inflater.inflate(R.layout.infection_table_row, container, false)
+            view.findViewById<TextView>(R.id.table_display_week).text =
+                String.format("%.0f", weekList[i])
+            view.findViewById<TextView>(R.id.table_display_float).text =
+                infectionData[i].toString()
+            view.layoutParams = TableRow.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            newRow.addView(view)
+            binding.tablelayout.addView(newRow, 0)
+            newRow.layoutParams = TableLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            Log.d(TAG, "Row added: $i")
+            }
+        }
+
+
 
     fun format(time: ZonedDateTime?): String? {
         val day = time?.dayOfMonth.toString()
