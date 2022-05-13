@@ -10,7 +10,7 @@ data class LatLong(val lat: Double, val lng: Double) {
 
     companion object {
         const val earthRadiusKm: Double = 6372.8
-        const val equalsDelta = 0.001
+        const val equalsDelta = 0.005
 
         fun fromGoogle(latLng: LatLng): LatLong {
             return LatLong(latLng.latitude, latLng.longitude)

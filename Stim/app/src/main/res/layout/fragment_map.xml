@@ -70,19 +70,4 @@
 
     </LinearLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/syncBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/light_skyblue"
-        android:clickable="true"
-        android:contentDescription="Sync button"
-        android:focusable="true"
-        app:layout_anchor="@id/bottom_sheet"
-        app:layout_anchorGravity="top|right|end"
-        android:layout_margin="10dp"
-        app:layout_dodgeInsetEdges="bottom"
-        app:srcCompat="@android:drawable/stat_notify_sync" />
-
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

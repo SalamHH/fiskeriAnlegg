@@ -34,15 +34,20 @@ class SitesRepository {
     suspend fun getMunicipality(municipalityCode: String): Municipality? {
         var municipality = municipalityCache[municipalityCode]
         if (municipality != null) {
+            if (municipality.sites.isEmpty()) {
+                return null
+            }
             return municipality
         }
         municipality = dataSource.loadDataByMunicipalityCode(municipalityCode)
 
-        if(municipality != null) {
+        if (municipality != null) {
             municipalityCache[municipalityCode] = municipality
-            for(site in municipality.sites) {
+            for (site in municipality.sites) {
                 siteNrCache[site.nr] = site
             }
+        } else {
+            municipalityCache[municipalityCode] = Municipality(municipalityCode, emptyList())
         }
         return municipality
     }

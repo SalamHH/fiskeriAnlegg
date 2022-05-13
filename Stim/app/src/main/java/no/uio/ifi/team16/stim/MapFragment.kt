@@ -21,7 +21,6 @@ import no.uio.ifi.team16.stim.io.adapter.RecycleViewAdapter
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 import no.uio.ifi.team16.stim.util.LatLong
 
-
 /**
  * Map fragment
  */
@@ -37,6 +36,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
     private var mapBounds: CameraPosition? = null
     private var zoomLevel = 12F
     private val markerMap: MutableMap<Marker, Site> = mutableMapOf()
+    private var moveToMunicipality = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -83,11 +83,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
             )
         binding.recyclerView.adapter = adapter
 
-        binding.syncBtn.setOnClickListener {
-            onRefresh()
-        }
-
-        //binding.searchView.setOnQueryTextListener(this)
         setHasOptionsMenu(true)
         return binding.root
     }
@@ -99,16 +94,14 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         mSearchView.setIconifiedByDefault(false)
         mSearchView.setBackgroundResource(R.drawable.long_circle)
 
-
         mSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (query != null && query.isNotBlank()) {
+                    moveToMunicipality = true
                     closeKeyboard()
                     map.clear()
                     markerMap.clear()
                     viewModel.doMapSearch(query)
-                    //mSearchView.clearFocus()
-                    //mSearchView.setQuery("", false)
                     return true
                 }
                 return false
@@ -121,23 +114,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
 
         super.onCreateOptionsMenu(menu, inflater)
     }
-
-    /**
-     * Called when the user searches for something
-     */
-    /*
-    override fun onQueryTextSubmit(query: String?): Boolean {
-        if (query != null && query.isNotBlank()) {
-            closeKeyboard()
-            map.clear()
-            markerMap.clear()
-            viewModel.doMapSearch(query)
-            return true
-        }
-        return false
-    }
-
-     */
 
     /**
      * Called when the fragment goes out of focus
@@ -155,6 +131,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         mapReady = true
 
         map.setOnCameraMoveListener(this::onCameraMove)
+        map.setOnCameraIdleListener(this::onRefresh)
         map.setMapStyle(MapStyleOptions.loadRawResourceStyle(requireContext(), R.raw.map_style))
         map.uiSettings.isMyLocationButtonEnabled = false
         map.setOnCameraMoveStartedListener {
@@ -199,18 +176,9 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
 
             binding.openHeaderBottomsheet.kommuneText.text = getString(R.string.blank)
 
-
-            val cameraUpdate = CameraUpdateFactory.newLatLngZoom(sites[0].latLong.toGoogle(), 5F)
+            val cameraUpdate = CameraUpdateFactory.newLatLngZoom(sites[0].latLong.toGoogle(), zoomLevel)
             map.animateCamera(cameraUpdate)
-        }
-    }
-
-    /**
-     * Called when the ViewModel has found a municipality number
-     */
-    private fun onMunicipalityNrRecieved(nr: String?) {
-        if (nr != null) {
-            viewModel.loadSitesAtMunicipality(nr)
+            moveToMunicipality = false
         }
     }
 
@@ -219,13 +187,28 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
      */
     private fun onMunicipalityUpdate(municipality: Municipality?) {
         if (mapReady && municipality != null && municipality.sites.isNotEmpty()) {
-
             onSiteUpdate(municipality.sites)
 
-            // Move camera to arbitrary site in municipality
-            val firstSite = municipality.sites[0]
-            val cameraUpdate = CameraUpdateFactory.newLatLngZoom(firstSite.latLong.toGoogle(), zoomLevel)
-            map.animateCamera(cameraUpdate)
+            if (moveToMunicipality) {
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+                if (municipality.sites.size > 1) {
+                    // Move camera to fit all sites
+                    try {
+                        val bounds = LatLngBounds.builder()
+                        for (site in municipality.sites) {
+                            bounds.include(site.latLong.toGoogle())
+                        }
+                        map.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 200))
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error occured while animating map: ", e)
+                    }
+                } else {
+                    // One site, move to it
+                    val site = municipality.sites[0]
+                    val cameraUpdate = CameraUpdateFactory.newLatLngZoom(site.latLong.toGoogle(), zoomLevel)
+                    map.animateCamera(cameraUpdate)
+                }
+            }
 
             var favSites = emptyList<Site>()
             viewModel.getFavouriteSitesData().observe(viewLifecycleOwner) {
@@ -243,8 +226,10 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
             binding.recyclerView.adapter = adapter
 
             //get municipality name in bottom header
+            val firstSite = municipality.sites[0]
             binding.openHeaderBottomsheet.kommuneText.text = firstSite.placement?.municipalityName
         }
+        moveToMunicipality = false
     }
 
     /**
@@ -261,7 +246,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
                 if (marker != null) {
                     markerMap[marker] = site
                 }
-                site.placement?.let { Log.d("munname", it.municipalityName) }
             }
         }
 
@@ -288,7 +272,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
     private fun onRefresh() {
         val center = LatLong.fromGoogle(map.cameraPosition.target)
         viewModel.loadSitesAtLocation(center)
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
     }
 
     /**
@@ -299,6 +282,9 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         view?.findNavController()?.navigate(R.id.action_mapFragment_to_siteInfoFragment)
     }
 
+    /**
+     * Adds or removes a site from favourites
+     */
     private fun favoriteOnClick(site: Site, checked: Boolean) {
         if (checked) viewModel.registerFavouriteSite(site)
         else viewModel.removeFavouriteSite(site)
@@ -318,16 +304,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
     override fun onCameraMove() {
         zoomLevel = map.cameraPosition.zoom
     }
-
-    /**
-     * Called on text input in search field, does nothing
-     */
-    /*
-    override fun onQueryTextChange(newText: String?): Boolean {
-        return false
-    }
-
-     */
 
     /**
      * Called when access to user location is granted
