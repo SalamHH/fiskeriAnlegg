@@ -86,12 +86,6 @@ open class InfectiousPressureDataLoader : THREDDSDataLoader() {
                 (concentrations.read(range3).reduce(0) as ArrayFloat).to2DFloatArray(),
                 time.readScalarFloat(),
                 latLngToStereo,
-                ncfile.findGlobalAttribute("fromdate")?.run {
-                    parseDate(this.stringValue)
-                }, //can be null
-                ncfile.findGlobalAttribute("todate")?.run {
-                    parseDate(this.stringValue)
-                }, //can be null
                 dx * max(Options.infectiousPressureStepX, 1).toFloat(),
                 dx * max(Options.infectiousPressureStepY, 1).toFloat()
             )
@@ -151,12 +145,6 @@ open class InfectiousPressureDataLoader : THREDDSDataLoader() {
                 (concentrations.read(range3).reduce(0) as ArrayFloat).to2DFloatArray(),
                 time.readScalarFloat(),
                 latLngToStereo,
-                ncfile.findGlobalAttribute("fromdate")?.run {
-                    parseDate(this.stringValue)
-                },
-                ncfile.findGlobalAttribute("todate")?.run {
-                    parseDate(this.stringValue)
-                },
                 dx * max(Options.infectiousPressureStepX, 1).toFloat(),
                 dx * max(Options.infectiousPressureStepY, 1).toFloat()
             )
@@ -211,12 +199,6 @@ open class InfectiousPressureDataLoader : THREDDSDataLoader() {
                 (concentrations.read(range3).reduce(0) as ArrayFloat).to2DFloatArray(),
                 time.readScalarFloat(),
                 latLngToStereo,
-                ncfile.findGlobalAttribute("fromdate")?.run {
-                    parseDate(this.stringValue)
-                }, //can be null
-                ncfile.findGlobalAttribute("todate")?.run {
-                    parseDate(this.stringValue)
-                }, //can be null
                 dx * max(Options.infectiousPressureStepX, 1).toFloat(),
                 dx * max(Options.infectiousPressureStepY, 1).toFloat()
             )
@@ -227,16 +209,6 @@ open class InfectiousPressureDataLoader : THREDDSDataLoader() {
     ///////////////
     // UTILITIES //
     ///////////////
-    /**
-     * Given an infectiousPressureObject, return wether it is to most recent one.
-     * returns null if the request failed
-     * TODO: find reasonable method. Need to check with catalog, but then the cache is useless
-     * if we must get the entire catalog each time
-     * @param infectiousPressure object to check if is up-to-date.
-     * @return Boolean? true if up-to-date, false if not. Null if request failed
-     */
-    //fun isUpToDate(infectiousPressure: InfectiousPressure): Boolean? = true //NOT IMPLEMENTED
-
     /**
      * Make a list of all url-entries in the catalog, sorted by date(newer first)
      *

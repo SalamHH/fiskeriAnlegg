@@ -11,7 +11,6 @@ import ucar.ma2.InvalidRangeException
 import ucar.nc2.Variable
 import ucar.nc2.dataset.NetcdfDataset
 import java.io.IOException
-import java.util.*
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.round
@@ -150,32 +149,5 @@ abstract class THREDDSDataLoader {
             fromClosedRange(startX, stopX, xStride),
             fromClosedRange(startY, stopY, yStride)
         )
-    }
-
-    ///////////////////////
-    // UTILITIES - OTHER //
-    ///////////////////////
-    /**
-     * parses a string with format YYYY-MM-DD to a date object
-     */
-    fun parseDate(dateString: String): Date {
-        val yyyy = dateString.substring(0..3)
-        val mm = dateString.substring(5..6)
-        val dd = dateString.substring(8..9)
-        return Date(yyyy.toInt(), mm.toInt(), dd.toInt())
-    }
-
-    /**
-     * check if the dataset is up to date with given date.
-     * If true, daaset is up to date, if false it is not. If null the checking failed.
-     *
-     * Should work, not tested
-     * @param currentDate date to check if dataset agrees with(date has minimum esolution on a day)
-     * @return whether the data is up to date or not. Or null if request failed.
-     */
-    fun isUpToDate(currentDate: Date, url: String): Boolean? = THREDDSLoad(url) { ncfile ->
-        ncfile.findGlobalAttribute("fromdate")?.run {
-            parseDate(this.stringValue)
-        } == currentDate
     }
 }

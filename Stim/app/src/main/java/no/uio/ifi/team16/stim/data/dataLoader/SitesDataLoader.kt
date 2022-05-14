@@ -122,7 +122,7 @@ class SitesDataLoader {
         )
 
     /**
-     * @param name ???
+     * @param name name of site
      * @return List of sites associated with the given name
      * @see loadWithParameters
      */
@@ -145,27 +145,5 @@ class SitesDataLoader {
         )
         return sites?.getOrNull(0)
     }
-
-    /**
-     * @see loadWithParameters
-     */
-    /*suspend fun loadDataByCountyCode(countyCode: Int): County? =
-        loadWithParameters(
-            listOf(
-                "range" to Options.sitesRange,
-                "county-code" to countyCode.toString()
-            )
-        )*/
-
-    /**
-     * @see loadWithParameters
-     */
-    /*suspend fun loadDataByProductionAreaCode(paCode: Int): ProductionArea? =
-        loadWithParameters(
-            listOf(
-                "range" to Options.sitesRange,
-                "production-area-code" to paCode.toString()
-            )
-        )*/
 }
 
