@@ -4,6 +4,9 @@ package no.uio.ifi.team16.stim.data.dataLoader
 import android.util.Log
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.coroutines.awaitString
+import com.github.kittinunf.fuel.coroutines.awaitStringResult
+import com.github.kittinunf.result.getOrElse
+import com.github.kittinunf.result.onError
 import no.uio.ifi.team16.stim.data.NorKyst800
 import no.uio.ifi.team16.stim.data.dataLoader.parser.NorKyst800Parser
 import no.uio.ifi.team16.stim.util.Options
@@ -62,8 +65,13 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
         ////////////////////
         // TIME AND DEPTH //
         ////////////////////
-        val (time, depth) = NorKyst800Parser.getTimeAndDepth(baseUrl)
-            ?: return null //logged in inner
+
+        val (time, depth) = NorKyst800Parser.parseTimeAndDepth(
+            requestData(
+                NorKyst800Parser.makeTimeAndDepthUrl(baseUrl),
+                "time and depth"
+            ) ?: return null
+        ) ?: return null
         //we now have time, and we want to find the index corresponding to our time
         //find index in array corresponding to current time
         val timeIndex: Int = time
@@ -76,7 +84,12 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
         //////////////////////
         // DAS / ATTRIBUTES //
         //////////////////////
-        val (FSOs, projection) = NorKyst800Parser.getDAS(baseUrl) ?: return null
+        val (FSOs, projection) = NorKyst800Parser.parseDAS(
+            requestData(
+                NorKyst800Parser.makeDasUrl(baseUrl),
+                "das"
+            ) ?: return null
+        ) ?: return null
         val salinityFSO = FSOs[0]
         val temperatureFSO = FSOs[1]
         val uFSO = FSOs[2]
@@ -86,46 +99,59 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
         //////////////
         // SALINITY //
         //////////////
-        val salinityUrl = NorKyst800Parser.makeSingle4DVariableUrl(
-            baseUrl,
-            "salinity",
-            xRange,
-            yRange,
-            depthRange,
-            t
-        )
-
-        val salinity = NorKyst800Parser.getNullable4DArrayFrom(salinityUrl, salinityFSO, "salinity")
-            ?: return null
+        val salinity = NorKyst800Parser.parseNullable4DArrayFrom(
+            requestData(
+                NorKyst800Parser.makeSingle4DVariableUrl(
+                    baseUrl,
+                    "salinity",
+                    xRange,
+                    yRange,
+                    depthRange,
+                    t
+                ),
+                "salinity"
+            ) ?: return null,
+            salinityFSO,
+            "salinity"
+        ) ?: return null
 
         /////////////////
         // TEMPERATURE //
         /////////////////
-        val temperatureUrl = NorKyst800Parser.makeSingle4DVariableUrl(
-            baseUrl,
-            "temperature",
-            xRange,
-            yRange,
-            depthRange,
-            t
-        )
-
-        val temperature =
-            NorKyst800Parser.getNullable4DArrayFrom(temperatureUrl, temperatureFSO, "temperature")
-                ?: return null
+        val temperature = NorKyst800Parser.parseNullable4DArrayFrom(
+            requestData(
+                NorKyst800Parser.makeSingle4DVariableUrl(
+                    baseUrl,
+                    "temperature",
+                    xRange,
+                    yRange,
+                    depthRange,
+                    t
+                ),
+                "temperature"
+            ) ?: return null,
+            temperatureFSO,
+            "temperature"
+        ) ?: return null
 
         //////////////
         // VELOCITY //
         //////////////
-        val velocityUrl = NorKyst800Parser.makeVelocityUrl(
-            baseUrl,
-            xRange,
-            yRange,
-            depthRange,
-            t
-        )
-
-        val velocity = NorKyst800Parser.getVelocity(velocityUrl, uFSO, vFSO, wFSO) ?: return null
+        val velocity = NorKyst800Parser.parseVelocity(
+            requestData(
+                NorKyst800Parser.makeVelocityUrl(
+                    baseUrl,
+                    xRange,
+                    yRange,
+                    depthRange,
+                    t
+                ),
+                "velocity"
+            ) ?: return null,
+            uFSO,
+            vFSO,
+            wFSO
+        ) ?: return null
 
         ///////////
         // DONE! //
@@ -199,4 +225,27 @@ open class NorKyst800DataLoader : THREDDSDataLoader() {
         }
     }
 
+    private suspend fun requestData(url: String, name: String): String? {
+        val string =
+            Fuel.get(url).awaitStringResult().onError { error ->
+                Log.e(
+                    NorKyst800Parser.TAG,
+                    "Failed to load norkyst800data - $name response due to:\n $error"
+                )
+                return null
+            }.getOrElse { err ->
+                Log.e(
+                    NorKyst800Parser.TAG,
+                    "Unable to get NorKyst800-$name data from get request. Is the URL correct? $err"
+                )
+                return null
+            }
+
+        if (string.isEmpty()) {
+            Log.e(NorKyst800Parser.TAG, "Empty $name response")
+            return null
+        }
+
+        return string
+    }
 }
