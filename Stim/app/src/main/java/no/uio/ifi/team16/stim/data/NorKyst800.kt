@@ -25,7 +25,7 @@ data class NorKyst800(
      * Get salinity closest to given coordinates at given time and depth.
      * See time and depth explanation in class definition
      */
-    fun getSalinity(latLng: LatLong, time: Int, depth: Int): Float? {
+    private fun getSalinity(latLng: LatLong, time: Int, depth: Int): Float? {
         val (y, x) = getClosestIndex(latLng)
         return salinity.get(time, depth, y, x)
     }
@@ -50,7 +50,7 @@ data class NorKyst800(
      * Get temperature closest to given coordinates at given time and depth.
      * See time and depth explanation in class definition
      */
-    fun getTemperature(latLng: LatLong, time: Int, depth: Int): Float? {
+    private fun getTemperature(latLng: LatLong, time: Int, depth: Int): Float? {
         val (y, x) = getClosestIndex(latLng)
         return temperature.get(time, depth, y, x)
     }

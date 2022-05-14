@@ -44,6 +44,7 @@ class MainActivity : AppCompatActivity() {
         //initial load of data
         viewModel.loadPrefrences(prefrences)
         viewModel.loadNorKyst800()
+        viewModel.loadInfectiousPressure()
         viewModel.loadFavouriteSites()
 
         //setup periodical loading of data

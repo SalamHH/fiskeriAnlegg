@@ -6,7 +6,6 @@ import no.uio.ifi.team16.stim.util.get
 import no.uio.ifi.team16.stim.util.prettyPrint
 import org.locationtech.proj4j.CoordinateTransform
 import org.locationtech.proj4j.ProjCoordinate
-import java.util.*
 import kotlin.math.round
 
 //typealias FloatArray2D = Array<FloatArray>
@@ -19,8 +18,6 @@ class InfectiousPressure(
     val concentration: FloatArray2D, //Particle concentration, aggregated number of particles in grid cell
     val time: Float,               //seconds since 2000-01-01 00:00:00
     val projection: CoordinateTransform, //transforms between latlong and projection coordinates
-    val fromDate: Date?,
-    val toDate: Date?,
     val dx: Float, //x separation, in projection meters, between points
     val dy: Float  //y separation, in projection meters, between points
 ) {
@@ -72,7 +69,6 @@ class InfectiousPressure(
         }
 
     override fun toString() = "InfectiousPressure:" +
-            "\nFrom: ${fromDate}, to: $toDate" +
             "\nTime since 2000-01-01: ${time}, GridMapping: -----" +
             "\nConcentration:\n" +
             concentration.prettyPrint()

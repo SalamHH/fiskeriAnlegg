@@ -90,6 +90,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         setHasOptionsMenu(true)
         return binding.root
     }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.map_toolbar, menu)
         val mSearch = menu.findItem(R.id.search)
