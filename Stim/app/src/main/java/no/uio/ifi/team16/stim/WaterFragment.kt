@@ -310,6 +310,94 @@ class WaterFragment : Fragment() {
         }
     }
 
+    private fun convertTime(value: Float): String {
+        val dateformat = SimpleDateFormat("HH")
+        val currentTime = Calendar.getInstance(Locale.getDefault()).time.time
+        val valueDate = Date(currentTime + (3600000 * value).toLong())
+        return dateformat.format(valueDate) + ":00"
+    }
+
+
+    /**
+     * Set data to salinity and temperature cards
+     * Set clicklisteners to cards
+     */
+    private fun setTemperatureAndSalt() {
+        //TOAST IF NO TEMP/SALT
+        setOnTemperatureOrSalinityClickListener(binding.temperatureTextview, requireContext())
+        setOnTemperatureOrSalinityClickListener(binding.saltTextview, requireContext())
+
+        var hasLoadedData = false
+
+        //try to get from at-site data
+        viewModel.getNorKyst800AtSiteData(site).observe(viewLifecycleOwner) {
+            if (!hasLoadedData) {
+                it?.apply {
+                    binding.temperatureTextview.text =
+                        getTemperature()?.let { temp ->
+                            "%4.1f".format(temp) + "°"
+                        } ?: "N/A"
+                    binding.saltTextview.text =
+                        getSalinity()?.let { salt ->
+                            "%4.1f".format(salt)
+                        } ?: "N/A"
+                    binding.Velocitytext.text =
+                        getVelocity(site.latLong, 0, 0)?.let { velocity ->
+                            "%4.1f m/s".format(velocity)
+                        } ?: "N/A"
+                    val velocity = getVelocityDirectionInXYPlane(site.latLong, 0, 0)
+                    if (velocity != null) {
+                        setVelocityDirection(velocity)
+                    hasLoadedData = true
+                } ?: run {
+                    Toast.makeText(
+                        context,
+                        "Klarte ikke laste inn lokale norkyst-data, vanninfo utilgjengelig",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    binding.temperatureTextview.text = "N/A"
+                    binding.saltTextview.text = "N/A"
+                        binding.Velocitytext.text = "N/A"
+                }
+            }
+        }
+
+        //try to get from global data(must be loaded at some point!)
+        viewModel.getNorKyst800Data().observe(viewLifecycleOwner) {
+            if (!hasLoadedData) {
+                it?.apply {
+                    binding.temperatureTextview.text =
+                        getSorroundingTemperature(site.latLong, 0, 0)?.let { temp ->
+                            "%4.1f".format(temp) + "°"
+                        } ?: "N/A"
+                    binding.saltTextview.text =
+                        getSorroundingSalinity(site.latLong, 0, 0)?.let { salt ->
+
+                            "%4.1f".format(salt)
+                        } ?: "N/A"
+                    binding.SorroundingVelocitytext.text =
+                        getSorroundingVelocity(site.latLong, 0, 0)?.let { velocity ->
+                            "%4.1f m/s".format(velocity)
+                        } ?: "N/A"
+                    val velocity = getVelocityDirectionInXYPlane(site.latLong, 0, 0)
+                    if (velocity != null) {
+                        setVelocityDirection(velocity)
+                    hasLoadedData = true
+                } ?: run {
+                    Toast.makeText(
+                        context,
+                        "Klarte ikke laste inn globale norkyst-data, vanninfo utilgjengelig",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    binding.temperatureTextview.text = "N/A"
+                    binding.saltTextview.text = "N/A"
+                        binding.Velocitytext.text = "N/A"
+                }
+            }
+        }
+    }
+
+
     /**
      * make toasts explaining certain textvalues of the salinity or temperature textview.
      */

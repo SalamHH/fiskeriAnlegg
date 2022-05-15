@@ -33,6 +33,7 @@ class SparkLineStyle @Inject constructor(private val context: Context) {
         xAxis.apply {
             //axisMinimum = 0f
             //axisMaximum = 24f
+
             isGranularityEnabled = true
             granularity = 1f
             setDrawGridLines(false)
@@ -53,7 +54,7 @@ class SparkLineStyle @Inject constructor(private val context: Context) {
 
         legend.isEnabled = false // legend is not necessary
 
-        animateY(1500, Easing.Linear) // animates the chart line
+        animateY(500, Easing.Linear) // animates the chart line
     }
 
     /***
@@ -67,6 +68,7 @@ class SparkLineStyle @Inject constructor(private val context: Context) {
         isHighlightEnabled = true
         setDrawHighlightIndicators(false)
         setDrawCircles(true)
+
         setCircleColor(ContextCompat.getColor(context, R.color.chartlinecolor))
         mode = LineDataSet.Mode.CUBIC_BEZIER
 

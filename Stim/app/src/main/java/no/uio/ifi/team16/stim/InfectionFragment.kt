@@ -58,8 +58,6 @@ class InfectionFragment : StimFragment() {
 
         chartStyle = SparkLineStyle(requireContext())
 
-        viewModel.loadInfectiousPressureTimeSeriesAtSite(site)
-
         binding.InformationCard.setOnClickListener {
             // If the CardView is already expanded, set its visibility
             //  to gone and change the expand less icon to expand more.
@@ -88,7 +86,7 @@ class InfectionFragment : StimFragment() {
         }
 
         viewModel.getInfectiousPressureTimeSeriesData(site).observe(viewLifecycleOwner) {
-            it?.getConcentrationsAsGraph()?.also { graph ->
+            it?.observeConcentrationsGraph(viewLifecycleOwner) { graph ->
                 val infectionData =
                     graph.map { xy -> xy.y }.toTypedArray() //get contamination as separate list
                 val weekList = graph.map { xy -> xy.x } //get weeks as separate list

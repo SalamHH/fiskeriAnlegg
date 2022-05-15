@@ -22,7 +22,7 @@ data class NorKyst800AtSite(
     val radius = Options.norKyst800AtSiteRadius
 
     //how concentrations at a given time are aggregated to a single float
-    val aggregation: (NullableFloatArray2D) -> Float = { arr ->
+    val aggregation: (NullableFloatArray2D) -> Float? = { arr ->
         meanAggregation(arr.flatten().filterNotNull().toFloatArray())
     }
 
@@ -32,17 +32,29 @@ data class NorKyst800AtSite(
     /**
      * return max value of a 2D array
      */
-    private fun maxAggregation(array: FloatArray): Float = array.maxOf { i -> i }
+    private fun maxAggregation(array: FloatArray): Float? =
+        if (array.isEmpty())
+            null
+        else
+            array.maxOf { i -> i }
 
     /**
      * return mean value of a 2D array
      */
-    private fun meanAggregation(array: FloatArray): Float = array.sum() / array.size
+    private fun meanAggregation(array: FloatArray): Float? =
+        if (array.isEmpty())
+            null
+        else
+            array.sum() / array.size
 
     /**
      * return sum of a 2D array
      */
-    private fun sumAggregation(array: FloatArray): Float = array.sum()
+    private fun sumAggregation(array: FloatArray): Float? =
+        if (array.isEmpty())
+            null
+        else
+            array.sum()
 
     ///////////////
     // UTILITIES //
@@ -70,7 +82,7 @@ data class NorKyst800AtSite(
     fun getSalinityAtSurfaceAsGraph(): List<Entry> =
         norKyst800.time.zip(
             norKyst800.salinity
-                .map { arr -> //for each latlong grid at a given time
+                .mapNotNull { arr -> //for each latlong grid at a given time
                     aggregation(arr.first()) //apply aggregation at surface
                 }
         ).map { (seconds, salt) -> //we have List<Pair<...>> make it into List<Entry>
@@ -84,7 +96,7 @@ data class NorKyst800AtSite(
     fun getTemperatureAtSurfaceAsGraph(): List<Entry> =
         norKyst800.time.zip(
             norKyst800.temperature
-                .map { arr -> //for each latlong grid at a given time
+                .mapNotNull { arr -> //for each latlong grid at a given time
                     aggregation(arr.first()) //apply aggregation at surface
                 }
         ).map { (seconds, temp) -> //we have List<Pair<...>> make it into List<Entry>

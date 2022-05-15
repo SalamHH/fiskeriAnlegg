@@ -12,7 +12,6 @@ import androidx.navigation.ui.*
 import no.uio.ifi.team16.stim.databinding.ActivityMainBinding
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 import no.uio.ifi.team16.stim.util.Options
-import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -43,12 +42,12 @@ class MainActivity : AppCompatActivity() {
 
         //initial load of data
         viewModel.loadPrefrences(prefrences)
-        viewModel.loadNorKyst800()
-        viewModel.loadInfectiousPressure()
+        //viewModel.loadNorKyst800()
+        //viewModel.loadInfectiousPressure()
         viewModel.loadFavouriteSites()
 
         //setup periodical loading of data
-        Timer().schedule(
+        /*Timer().schedule(
             object : TimerTask() {
                 override fun run() {
                     Log.d(TAG, "Reloading stale datasets")
@@ -61,7 +60,7 @@ class MainActivity : AppCompatActivity() {
                 60 * 60 - (60 * get(Calendar.MINUTE) + get(Calendar.SECOND)) //seconds until next hour
             } * 1000).toLong(), //milliseconds until next hour
             60 * 60 * 1000
-        )
+        )*/
     }
 
     override fun onTrimMemory(level: Int) {

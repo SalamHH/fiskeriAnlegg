@@ -63,14 +63,18 @@ class SiteInfoFragment : StimFragment() {
             if (it?.listILA?.isNotEmpty() == true) {
                 binding.ilaIcon.setImageDrawable(
                     ResourcesCompat.getDrawable(
-                    resources,
-                    no.uio.ifi.team16.stim.R.drawable.ila_bad,
-                    null
-                ))
+                        resources,
+                        no.uio.ifi.team16.stim.R.drawable.ila_bad,
+                        null
+                    )
+                )
             }
         }
 
-        val waterInfoSuccessfull = setWaterInfo()
+        //set info to cards
+        var hasWaterInfo = false
+        var hasInfectionInfo = false
+        setWaterInfo()
         setInfectionInfo()
 
         //infocards
@@ -127,7 +131,8 @@ class SiteInfoFragment : StimFragment() {
 
         binding.waterInfoCard.setOnClickListener {
             val extras = FragmentNavigatorExtras(binding.wavesIcon to "icon_water")
-            if (waterInfoSuccessfull) {
+
+            if (hasWaterInfo) {
                 view?.findNavController()
                     ?.navigate(R.id.action_siteInfoFragment_to_waterFragment,
                         null,
@@ -143,23 +148,36 @@ class SiteInfoFragment : StimFragment() {
         }
         
         binding.infectionInfoCard.setOnClickListener {
-            val extras = FragmentNavigatorExtras(binding.infectionIcon to "image_big")
-            view?.findNavController()?.navigate(
-                R.id.action_siteInfoFragment_to_infectionFragment,
-                null,
-                null,
-                extras
-            )
+            if (hasInfectionInfo) {
+                val extras = FragmentNavigatorExtras(binding.infectionIcon to "image_big")
+                view?.findNavController()?.navigate(
+                    R.id.action_siteInfoFragment_to_infectionFragment,
+                    null,
+                    null,
+                    extras
+                )
+            } else {
+                val text = "Ikke tilgjenglig"
+                val duration = Toast.LENGTH_SHORT
+                val toast = Toast.makeText(context, text, duration)
+                toast.show()
+            }
         }
 
         setHasOptionsMenu(true)
 
-        //remove loading screen if BOTH norkyst800 and infectiousPressure are loaded
-        //TODO use flags, but only if race conditions guaranteed to not happen. Read up on observer flow
-        viewModel.getNorKyst800Data().observe(viewLifecycleOwner) {
-            viewModel.getInfectiousPressureData().observe(viewLifecycleOwner) {
-                binding.LoadingScreen.loadingLayout.visibility = View.GONE
-            }
+        //remove loading screen if ANY of norkyst800, barentsWatch or infectiousPressure are loaded for this site
+        viewModel.getNorKyst800AtSiteData(site).observe(viewLifecycleOwner) {
+            binding.LoadingScreen.loadingLayout.visibility = View.GONE
+            hasWaterInfo = true
+        }
+        viewModel.getInfectiousPressureTimeSeriesData(site).observe(viewLifecycleOwner) {
+            binding.LoadingScreen.loadingLayout.visibility = View.GONE
+            hasInfectionInfo = true
+        }
+        viewModel.getBarentsWatchData(site).observe(viewLifecycleOwner) {
+            binding.LoadingScreen.loadingLayout.visibility = View.GONE
+            hasInfectionInfo = true
         }
 
         return binding.root
@@ -209,10 +227,9 @@ class SiteInfoFragment : StimFragment() {
         }
     }
 
-    private fun setWaterInfo(): Boolean {
+    private fun setWaterInfo() {
         viewModel.getNorKyst800AtSiteData(site).observe(viewLifecycleOwner) {
-            it?.apply {
-                //forecast data is also available in the norkyst object! (about 66 hours, time indexes hours)
+            it?.apply { //succesfully loaded data
                 binding.temp.text = "%4.1f".format(getTemperature()) + "°"
                 binding.varsel.text = "%4.1f".format(getSalinity())
             } ?: run {
@@ -220,18 +237,13 @@ class SiteInfoFragment : StimFragment() {
                 binding.varsel.text = "N/A"
             }
         }
-        if (binding.temp.text == "N/A" || binding.varsel.text == "N/A") {
-            return false
-        }
-        return true
     }
 
     private fun setInfectionInfo() {
         viewModel.getInfectiousPressureTimeSeriesData(site).observe(viewLifecycleOwner) {
-            it?.getConcentrationsAsGraph()?.apply {
-                val infectiondata = map { xy -> xy.y }.toTypedArray()
-                binding.fare.setImageDrawable(calculateInfectionStatusIcon(infectiondata))
-            } ?: run {
+            it?.observeConcentrations(viewLifecycleOwner) { _, infectiondata ->
+                binding.fare.setImageDrawable(calculateInfectionStatusIcon(infectiondata.toTypedArray()))
+            } ?: run { //failed to load InfPRTS:
                 binding.fare.setImageDrawable(
                     ResourcesCompat.getDrawable(
                         resources,
@@ -247,6 +259,10 @@ class SiteInfoFragment : StimFragment() {
 
         if (infectiondata.lastIndex > 1 && infectiondata.average() > Options.infectionExists) {
             //sjekker om det er signifikant økning/miskning på de siste 3 datapunktene
+            val ascent =
+                infectiondata[infectiondata.lastIndex - 1] - infectiondata[infectiondata.lastIndex]
+            val curvature =
+                infectiondata[infectiondata.lastIndex - 1] - infectiondata[infectiondata.lastIndex]
             val lastThree = arrayOf(
                 infectiondata[infectiondata.lastIndex - 2],
                 infectiondata[infectiondata.lastIndex - 1],

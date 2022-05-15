@@ -52,7 +52,7 @@ class SalinityLineStyle @Inject constructor(private val context: Context) {
 
         legend.isEnabled = false // legend is not necessary
 
-        animateY(1500, Easing.EaseInOutCubic) // animates the chart line
+        animateY(500, Easing.Linear) // animates the chart line
     }
 
     /***

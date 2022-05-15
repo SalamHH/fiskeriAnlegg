@@ -1,6 +1,7 @@
 package no.uio.ifi.team16.stim.io.viewModel
 
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -140,6 +141,7 @@ class MainActivityViewModel : ViewModel() {
     }
 
     fun loadNorKyst800AtSite(site: Site) {
+        Log.d(TAG, "LOADING NORKYST800ATSITE!")
         viewModelScope.launch(Dispatchers.IO) {
             norKyst800AtSiteData.getOrPut(site) {
                 MutableLiveData()

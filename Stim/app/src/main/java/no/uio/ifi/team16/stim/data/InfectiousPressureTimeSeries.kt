@@ -1,5 +1,7 @@
 package no.uio.ifi.team16.stim.data
 
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MutableLiveData
 import com.github.mikephil.charting.data.Entry
 import no.uio.ifi.team16.stim.util.FloatArray2D
 import no.uio.ifi.team16.stim.util.FloatArray3D
@@ -16,8 +18,12 @@ import no.uio.ifi.team16.stim.util.FloatArray3D
  */
 data class InfectiousPressureTimeSeries(
     val siteId: Int,
-    val concentrations: FloatArray3D,        //array of 2D arrays of concentration around site
-    val weeks: Array<Int>,                  //array of week numbers
+    val currentWeek: Int,
+    val currentConcentrations: FloatArray2D,
+    val historicalData:
+    MutableLiveData<
+            Pair<Array<Int>, FloatArray3D>
+            >, //historical data, concentrations and corresponding week-numbers
     val concentrationShape: Pair<Int, Int>,  //shape of each 2D array. Can be inferred from concentrations, but unsafe
     val dx: Float,                           //separation between points in x-direction
     val dy: Float                            //separation between points in y-direction, usually dx
@@ -26,15 +32,6 @@ data class InfectiousPressureTimeSeries(
 
     //how concentrations at a given time are aggregated to a single float
     val aggregation: (FloatArray2D) -> Float = { arr -> meanAggregation(arr) }
-
-    init {
-        //infer y-x shape
-        val shape: Pair<Int, Int> = Pair(
-            concentrations.firstOrNull()?.size
-                ?: -1, //if null, there are no data entries, and shape cannot be inferred!
-            concentrations.firstOrNull()?.firstOrNull()?.size ?: 0
-        )
-    }
 
     /////////////////
     // AGGREGATORS //
@@ -77,38 +74,62 @@ data class InfectiousPressureTimeSeries(
      *
      * nullable to return null when out of bounds.
      */
-    fun getConcentration(index: Int): Float? =
-        concentrations.getOrNull(index)?.let { arr ->
-            aggregation(arr)
-        }
+    fun getCurrentConcentration(): Float =
+        aggregation(currentConcentrations)
 
     /**
      * get concentration(aggregated) at all times
      *
      * includes time in a separate array
      */
-    fun getAggregatedConcentrationsAndTime(): Pair<Array<Int>, Array<Float>> = Pair(
+    /*fun getAggregatedConcentrationsAndTime(): Pair<Array<Int>, Array<Float>> = Pair(
         weeks,
         mapOverTime(aggregation)
-    )
+    )*/
 
     /**
-     * return a graph(List of Entry) of concentration over time(weeks)
+     * apply an action to the graphdata when it is available
+     *
+     * @param owner: owner of the lifecycle
+     * @param action: action to perform on graphdata(List<Entry>) WHEN the data is available
      */
-    fun getConcentrationsAsGraph(): List<Entry> =
-        weeks.zip(
-            concentrations
-                .map { arr -> //for each latlong grid at a given time
-                    aggregation(arr) //apply aggregation
-                }
-        ).map { (week, conc) -> //we have List<Pair<...>> make it into List<Entry>
-            Entry(week.toFloat(), conc)
-        }.reversed()
+    fun observeConcentrationsGraph(owner: LifecycleOwner, action: (List<Entry>) -> Unit) =
+        historicalData.observe(owner) { (weeks, concentrations) ->
+            action(
+                mutableListOf(Entry(0f, aggregation(currentConcentrations))).apply {
+                    addAll(
+                        weeks.zip(
+                            concentrations
+                                .map { arr -> //for each latlong grid at a given time
+                                    aggregation(arr) //apply aggregation
+                                }
+                        ).map { (week, conc) -> //we have List<Pair<...>> make it into List<Entry>
+                            Entry(week.toFloat(), conc)
+                        }
+                    )
+                }.toList()
+            )
+        }
+
+    /**
+     * apply an action to the concentrationdata WHEN it is available
+     *
+     * @param owner: owner of the lifecycle
+     * @param action: action to perform on data(List<Float>) WHEN the data is available
+     */
+    fun observeConcentrations(owner: LifecycleOwner, action: (List<Int>, List<Float>) -> Unit) =
+        historicalData.observe(owner) { (weeks, concentrations) ->
+            val data = mutableListOf(aggregation(currentConcentrations))
+            data.addAll(concentrations.map { aggregation(it) })
+            val allWeeks = mutableListOf(0)
+            allWeeks.addAll(weeks)
+            action(allWeeks, data)
+        }
 
     ///////////////
     // UTILITIES //
     ///////////////
-    override fun toString() =
+    /*override fun toString() =
         "InfectiousPressureTimeSeries:" +
                 weeks.zip(concentrations).fold("\n") { accTotal, (date, concentration2D) ->
                     accTotal + "week %2d: [".format(date) +
@@ -120,16 +141,16 @@ data class InfectiousPressureTimeSeries(
                             "] -> " +
                             "%9.7f".format(aggregation(concentration2D)) +
                             "\n"
-                }
+                }*/
 
     /**
      * map each arrayFloat2D over time
      * reified and inlined so that T can be inferred(in toTypedArray)
      */
-    private inline fun <reified T> mapOverTime(reduction: (FloatArray2D) -> T): Array<T> =
+    /*private inline fun <reified T> mapOverTime(reduction: (FloatArray2D) -> T): Array<T> =
         concentrations.map { arr ->
             reduction(arr)
-        }.toTypedArray()
+        }.toTypedArray()*/
 
     ////////////////////
     // AUTO-GENERATED //
