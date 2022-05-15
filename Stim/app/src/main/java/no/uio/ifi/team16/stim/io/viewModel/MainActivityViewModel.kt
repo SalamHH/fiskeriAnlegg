@@ -72,10 +72,6 @@ class MainActivityViewModel : ViewModel() {
         }
     }
 
-    fun getLineDataSet(): LiveData<LineDataSet?> {
-        return lineDataSet
-    }
-
     fun getFavouriteSitesData(): LiveData<MutableList<Site>?> {
         return favouriteSitesData
     }
@@ -97,7 +93,7 @@ class MainActivityViewModel : ViewModel() {
     ///////////// used to load the data from its source, does ot return the data but puts it
     // LOADERS // into its corresponding MutableLiveData container.
     ///////////// The posting will wake the observer of that data.
-    fun loadDefaultInfectiousPressure() {
+    fun loadInfectiousPressure() {
         viewModelScope.launch(Dispatchers.IO) {
             val loaded =
                 infectiousPressureRepository.getDefault() //either loaded, retrieved from cache or faked
@@ -230,12 +226,6 @@ class MainActivityViewModel : ViewModel() {
         return site
     }
 
-    companion object {
-        const val CHART_LABEL = "INFECTION_CHART"
-    }
-
-    private val infectionData = mutableListOf<Entry>()
-
     fun registerFavouriteSite(site: Site) {
         favouriteSitesData.value.let { favouriteSites ->
             favouriteSites?.add(site)
@@ -264,24 +254,6 @@ class MainActivityViewModel : ViewModel() {
             }
             apply()
         }
-    }
-
-    //TODO: only for debug
-    fun registerFavouriteSite(sites: List<Site>) {
-        favouriteSitesData.value.let { favouriteSites ->
-            sites.forEach() { site ->
-                favouriteSites?.add(site)
-            }
-            favouriteSitesData.postValue(favouriteSites)
-        }
-    }
-
-    fun getFavouriteSitesStringSet(): Set<String> {
-        val favSet = mutableSetOf<String>()
-        favouriteSitesData.value?.forEach {
-            favSet.add(it.nr.toString())
-        }
-        return favSet
     }
 
     /**
