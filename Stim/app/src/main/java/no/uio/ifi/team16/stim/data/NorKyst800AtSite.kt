@@ -5,6 +5,8 @@ import no.uio.ifi.team16.stim.util.NullableFloatArray2D
 import no.uio.ifi.team16.stim.util.NullableFloatArray4D
 import no.uio.ifi.team16.stim.util.Options
 import no.uio.ifi.team16.stim.util.get
+import java.time.Instant
+import kotlin.math.roundToInt
 
 /**
  * Class representing NorKyst800 data at a specific site.
@@ -59,22 +61,26 @@ data class NorKyst800AtSite(
     ///////////////
     // UTILITIES //
     ///////////////
+    private fun getCurrentTimeIndex() =
+        ((Instant.now().epochSecond.toFloat() - norKyst800.time[0]) / 3600).roundToInt()
+
+
     override fun toString() =
         "NorKyst800AtSite: \n" +
                 "\tsite: $siteId\n" +
                 "\tnorkyst: $norKyst800\n"
 
-    fun getTemperature(): Float? = getTemperature(0, 0, 0, 0)
-    fun getTemperature(y: Int, x: Int): Float? = getTemperature(0, 0, y, x)
-    fun getTemperature(depth: Int, time: Int, y: Int, x: Int): Float? =
-        norKyst800.temperature.get(depth, time, radius + y, radius + x)
-            ?: averageOf(depth, time, norKyst800.temperature)
+    fun getTemperature(): Float? = getTemperature(getCurrentTimeIndex(), 0, 0, 0)
+    fun getTemperature(y: Int, x: Int): Float? = getTemperature(getCurrentTimeIndex(), 0, y, x)
+    fun getTemperature(time: Int, depth: Int, y: Int, x: Int): Float? =
+        norKyst800.temperature.get(time, depth, radius + y, radius + x)
+            ?: averageOf(time, depth, norKyst800.temperature)
 
-    fun getSalinity(): Float? = getSalinity(0, 0, 0, 0)
-    fun getSalinity(y: Int, x: Int): Float? = getSalinity(0, 0, y, x)
-    fun getSalinity(depth: Int, time: Int, y: Int, x: Int): Float? =
-        norKyst800.salinity.get(depth, time, radius + y, radius + x)
-            ?: averageOf(depth, time, norKyst800.salinity)
+    fun getSalinity(): Float? = getSalinity(getCurrentTimeIndex(), 0, 0, 0)
+    fun getSalinity(y: Int, x: Int): Float? = getSalinity(getCurrentTimeIndex(), 0, y, x)
+    fun getSalinity(time: Int, depth: Int, y: Int, x: Int): Float? =
+        norKyst800.salinity.get(time, depth, radius + y, radius + x)
+            ?: averageOf(time, depth, norKyst800.salinity)
 
     /**
      * return a graph(List of Entry) of salinity over time(hours)
@@ -112,13 +118,17 @@ data class NorKyst800AtSite(
      *
      * Used when getters find null, so we get all sorrounnding entries and average them to get a meaningful result
      */
-    private fun averageOf(depth: Int, time: Int, arr: NullableFloatArray4D): Float =
-        arr[depth][time]
+    private fun averageOf(time: Int, depth: Int, arr: NullableFloatArray4D): Float? =
+        arr[time][depth]
             .flatMap { row -> row.toList() } //flatten
             .filterNotNull() //take out null
             .let { elements -> //with the flattened array of non-null values
-                elements.fold(0f) { acc, element -> //sum all
-                    acc + element
-                } / elements.size //divide by amount of elements
+                if (elements.isEmpty()) {
+                    return null
+                } else {
+                    elements.fold(0f) { acc, element -> //sum all
+                        acc + element
+                    } / elements.size //divide by amount of elements
+                }
             }
 }
