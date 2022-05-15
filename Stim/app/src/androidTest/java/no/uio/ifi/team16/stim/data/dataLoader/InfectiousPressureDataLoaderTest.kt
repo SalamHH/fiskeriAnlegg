@@ -90,7 +90,7 @@ class InfectiousPressureDataLoaderTest {
         )
     }
 
-    fun testProjectionOf(
+    private fun testProjectionOf(
         xRange: IntProgression,
         yRange: IntProgression
     ) {

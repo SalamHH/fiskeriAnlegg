@@ -9,8 +9,6 @@ import kotlin.ranges.IntProgression.Companion.fromClosedRange
 class InfectiousPressureTimeSeriesDataLoaderTest {
     val TAG = "InfectiousPressureTimeSeriesDataLoaderTest"
     val dataLoader = InfectiousPressureTimeSeriesDataLoader()
-    val testUrl =
-        "http://thredds.nodc.no:8080/thredds/fileServer/smittepress_new2018/agg_OPR_2022_9.nc"
 
     /**
      * Test wether the dataloader is able to load a non-null object
