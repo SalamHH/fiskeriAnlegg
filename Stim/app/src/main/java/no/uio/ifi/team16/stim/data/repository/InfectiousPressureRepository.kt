@@ -23,7 +23,7 @@ class InfectiousPressureRepository() {
     private val TAG = "InfectiousPressureRepository"
     private val dataSource = InfectiousPressureDataLoader()
     private var cache: InfectiousPressure? = null
-    var dirty: Boolean = true
+    private var dirty: Boolean = true
 
     /**
      * get the entire dataset at current time
@@ -66,32 +66,6 @@ class InfectiousPressureRepository() {
                 latLongLowerRight,
                 xStride,
                 yStride
-            )
-            dirty = false
-        }
-        return cache
-    }
-
-    /**
-     * return data in the given range.
-     * Usually the data is in a 2602x902 yx-grid
-     *
-     * @param xRange range of x-coordinates to get
-     * @param yRange range of y-coordinates to get
-     * @return data of infectious pressure in the prescribed data range.
-     *
-     * TODO: CUT?
-     *
-     * @see THREDDSDataLoader.THREDDSLoad()
-     */
-    suspend fun get(
-        xRange: IntProgression,
-        yRange: IntProgression
-    ): InfectiousPressure? {
-        if (dirty) {
-            cache = dataSource.load(
-                xRange,
-                yRange
             )
             dirty = false
         }
