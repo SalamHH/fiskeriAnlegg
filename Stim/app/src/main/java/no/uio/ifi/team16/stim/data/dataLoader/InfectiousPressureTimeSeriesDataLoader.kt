@@ -2,8 +2,8 @@ package no.uio.ifi.team16.stim.data.dataLoader
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import no.uio.ifi.team16.stim.data.InfectiousPressureTimeSeries
 import no.uio.ifi.team16.stim.data.Site
@@ -148,7 +148,10 @@ class InfectiousPressureTimeSeriesDataLoader : InfectiousPressureDataLoader() {
             */
         var historicalData = MutableLiveData<Pair<Array<Int>, FloatArray3D>>()
 
-        GlobalScope.launch(Dispatchers.IO) {
+        Log.d(TAG, "loading historical data")
+
+        CoroutineScope(Dispatchers.IO).launch(Dispatchers.IO) {
+            Log.d(TAG, "LAUNCHED historical data!!")
             historicalData.postValue(
                 catalogEntries
                     .takeRange(weeksRange)
@@ -170,6 +173,8 @@ class InfectiousPressureTimeSeriesDataLoader : InfectiousPressureDataLoader() {
                     }
             )
         }
+
+        Log.d(TAG, "beyond historical data")
 
         return InfectiousPressureTimeSeries(
             site.nr,

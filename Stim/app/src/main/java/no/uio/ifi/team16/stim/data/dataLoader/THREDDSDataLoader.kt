@@ -15,6 +15,7 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.round
 import kotlin.ranges.IntProgression.Companion.fromClosedRange
+import kotlin.time.ExperimentalTime
 
 /**
  * ABSTRACT CLASS FOR THREDDS DATALOADERS
@@ -47,16 +48,20 @@ abstract class THREDDSDataLoader {
      * @param action: action to perform on the opened file, must return a representation of the data
      * @return the result of the action on the netcdf file, f.ex. an infectiousPressure-object
      */
+    @OptIn(ExperimentalTime::class)
     inline fun <D> THREDDSLoad(url: String, action: (NetcdfDataset) -> D?): D? {
         val TAG = "THREDDSLOADER"
         var ncfile: NetcdfDataset? = null
         var data: D? = null
         try {
             Log.d(TAG, "OPENING $url")
-            ncfile = NetcdfDataset.openDataset(url)
-            //Log.d(TAG, "OPENDAP URL OPENED")
-            data = action(ncfile)
-            Log.d(TAG, "DONE!")
+            val (value, elapsed) = kotlin.time.measureTimedValue {
+                ncfile = NetcdfDataset.openDataset(url) ?: return null
+                Log.d(TAG, "OPENDAP URL OPENED")
+                action(ncfile!!) //is not changed outside scope => guaranteed non-null. can remove if not timed
+            }
+            data = value
+            Log.d(TAG, "loaded $url and parsed it in $elapsed")
         } catch (e: IOException) {
             Log.e("ERROR", e.toString())
         } catch (e: InvalidRangeException) {

@@ -16,6 +16,8 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.ranges.IntProgression.Companion.fromClosedRange
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTimedValue
 
 /**
  * Dataloader for loading NorKyst800 data around a specified site
@@ -187,8 +189,9 @@ class NorKyst800AtSiteDataLoader {
     ///////////////
     // UTILITIES //
     ///////////////
+    @OptIn(ExperimentalTime::class)
     private suspend fun requestData(url: String, name: String): String? {
-        val string =
+        val (string, elapsed) = measureTimedValue {
             Fuel.get(url).awaitStringResult().onError { error ->
                 Log.e(TAG, "Failed to load norkyst800data - $name from $url due to:\n $error")
                 return null
@@ -199,6 +202,8 @@ class NorKyst800AtSiteDataLoader {
                 )
                 return null
             }
+        }
+        Log.e(TAG, "Loaded $name response from $url in $elapsed")
 
         if (string.isEmpty()) {
             Log.e(TAG, "Empty $name response")
