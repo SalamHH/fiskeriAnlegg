@@ -150,6 +150,21 @@
                             android:textColor="@color/primaryTextColor"
                             android:textSize="15sp" />
 
+                        <TextView
+                            android:id="@+id/infectionValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:fontFamily="@font/montserrat"
+                            android:text="Nåværende smittepress"
+                            android:layout_below="@id/infectionStatusText"
+                            android:textColor="@color/primaryTextColor"
+                            android:textSize="15sp" />
+
                     </RelativeLayout>
 
                 </androidx.cardview.widget.CardView>
