@@ -238,17 +238,17 @@ class SiteInfoFragment : StimFragment() {
                 val salt = getSalinity()
                 val strom = getVelocity()
                 if (temp != null) {
-                    binding.temp.text = "%4.1f".format(getTemperature()) + "°"
+                    binding.temp.text = "%4.1f".format(temp) + "°"
                 } else { //lastet inn data korrekt, men ingen tilgjengelig i nærheten
                     binding.temp.text = "N/A"
                 }
-                if (temp != null) {
-                    binding.varsel.text = "%4.1f".format(getSalinity())
+                if (salt != null) {
+                    binding.varsel.text = "%4.1f".format(salt)
                 } else { //lastet inn data korrekt, men ingen tilgjengelig i nærheten
                     binding.varsel.text = "N/A"
                 }
-                if (temp != null) {
-                    binding.strom.text = "%4.1f m/s".format(getVelocity())
+                if (strom != null) {
+                    binding.strom.text = "%4.1f m/s".format(strom)
                 } else { //lastet inn data korrekt, men ingen tilgjengelig i nærheten
                     binding.strom.text = "N/A"
                 }
@@ -280,10 +280,6 @@ class SiteInfoFragment : StimFragment() {
 
         if (infectiondata.lastIndex > 1 && infectiondata.average() > Options.infectionExists) {
             //sjekker om det er signifikant økning/miskning på de siste 3 datapunktene
-            val ascent =
-                infectiondata[infectiondata.lastIndex - 1] - infectiondata[infectiondata.lastIndex]
-            val curvature =
-                infectiondata[infectiondata.lastIndex - 1] - infectiondata[infectiondata.lastIndex]
             val lastThree = arrayOf(
                 infectiondata[infectiondata.lastIndex - 2],
                 infectiondata[infectiondata.lastIndex - 1],
