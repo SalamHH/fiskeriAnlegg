@@ -17,10 +17,12 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_margin="7dp"
-            android:elevation="5dp"/>
+            android:elevation="5dp"
+            tools:ignore="ContentDescription" />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/mapView"
+            android:contentDescription="@string/Map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

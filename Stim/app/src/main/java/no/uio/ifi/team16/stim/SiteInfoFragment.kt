@@ -196,9 +196,13 @@ class SiteInfoFragment : StimFragment() {
                         infectiondata.toTypedArray()
                     )
                 )
-                binding.fare.contentDescription =
+                binding.dangerSalmonLouse.contentDescription =
                     statuscalculator.calculateInfectionStatusText(infectiondata.toTypedArray())
-                binding.dangerSalmonLouse.setImageDrawable(calculateInfectionStatusIcon(infectiondata.toTypedArray()))
+                binding.dangerSalmonLouse.setImageDrawable(
+                    statuscalculator.calculateInfectionStatusIcon(
+                        infectiondata.toTypedArray()
+                    )
+                )
             } ?: run { //failed to load InfPRTS:
                 binding.dangerSalmonLouse.setImageDrawable(
                     ResourcesCompat.getDrawable(
@@ -207,7 +211,8 @@ class SiteInfoFragment : StimFragment() {
                         null
                     )
                 )
-                binding.fare.contentDescription = resources.getText(R.string.No_infection_found)
+                binding.dangerSalmonLouse.contentDescription =
+                    resources.getText(R.string.No_infection_found)
             }
         }
     }
@@ -244,22 +249,22 @@ class SiteInfoFragment : StimFragment() {
                     AutoTransition()
                 )
                 binding.relativelayout.visibility = View.GONE
-                binding.pil.setImageResource(R.drawable.down_darkblue)
+                binding.arrow.setImageResource(R.drawable.down_darkblue)
             } else {
                 TransitionManager.beginDelayedTransition(
                     binding.generalInfoBox,
                     AutoTransition()
                 )
                 binding.relativelayout.visibility = View.VISIBLE
-                binding.pil.setImageResource(R.drawable.up_darkblue)
+                binding.arrow.setImageResource(R.drawable.up_darkblue)
             }
 
             //Put all general info of site
-            binding.anleggsnrView.text = site.nr.toString()
-            binding.plasseringView.text = site.placementType ?: "-----"
-            binding.kapasitetView.text = site.capacity.toString()
-            binding.vannTypeView.text = site.waterType ?: "-----"
-            binding.prodOmraadeView.text = site.placement?.municipalityName ?: "-----"
+            binding.siteNrView.text = site.nr.toString()
+            binding.placementView.text = site.placementType ?: "-----"
+            binding.capacityView.text = site.capacity.toString()
+            binding.waterTypeView.text = site.waterType ?: "-----"
+            binding.municipalityView.text = site.placement?.municipalityName ?: "-----"
         }
     }
 

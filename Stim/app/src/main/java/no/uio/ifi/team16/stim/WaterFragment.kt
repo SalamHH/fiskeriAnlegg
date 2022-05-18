@@ -236,12 +236,12 @@ class WaterFragment : Fragment() {
      * Uses same layout as the infection table.
      */
     private fun setTemperatureTable(inflater: LayoutInflater, container: ViewGroup?) {
-        //TODO: i mapper ikke nødvendigvis til timer! bruk heller x
+        //TODO: Sjekk at det tar 24 fra nåværende tid
         viewModel.getNorKyst800AtSiteData(site).observe(viewLifecycleOwner) {
             it?.apply {
                 binding.tablelayout.removeAllViews()
                 val tempgraphdata = getTemperatureAtSurfaceAsGraph()
-                tempgraphdata.forEachIndexed { i, e ->
+                tempgraphdata.take(23).forEachIndexed { i, e ->
                     val x = e.x
                     val y = e.y
                     val newRow = TableRow(requireContext())
@@ -277,13 +277,13 @@ class WaterFragment : Fragment() {
      */
 
     private fun setSalinityTable(inflater: LayoutInflater, container: ViewGroup?) {
-        //TODO: i mapper ikke nødvendigvis til timer! bruk heller x
+        //TODO: Sjekk at det tar 24 fra nåværende tid
         viewModel.getNorKyst800AtSiteData(site).observe(viewLifecycleOwner) {
             it?.apply {
                 val saltgraphdata = getSalinityAtSurfaceAsGraph()
                 binding.Salttablelayout.removeAllViews()
 
-                saltgraphdata.forEachIndexed { i, e ->
+                saltgraphdata.take(23).forEachIndexed { i, e ->
                     val x = e.x
                     val y = e.y
                     val newRow = TableRow(requireContext())
