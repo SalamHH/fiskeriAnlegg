@@ -237,7 +237,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
             for (site in sites) {
                 val markerOptions = MarkerOptions()
                 markerOptions.title(site.name)
-
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.fish_marker))
                 markerOptions.position(site.latLong.toGoogle())
                 val marker = map.addMarker(markerOptions)
                 if (marker != null) {
