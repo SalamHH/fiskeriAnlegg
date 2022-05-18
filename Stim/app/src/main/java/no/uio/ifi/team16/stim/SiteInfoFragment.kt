@@ -115,12 +115,12 @@ class SiteInfoFragment : StimFragment() {
         //Velocity
         viewModel.getNorKyst800Data().observe(viewLifecycleOwner) {
             it?.apply {
-                binding.strom.text =
+                binding.currentsValue.text =
                     getVelocity(site.latLong, 0, 0)?.let { velocity ->
                         "%4.1f m/s".format(velocity)
                     } ?: "N/A"
             } ?: run {
-                binding.stromninger.text = "N/A"
+                binding.currentsValue.text = "N/A"
             }
         }
 
