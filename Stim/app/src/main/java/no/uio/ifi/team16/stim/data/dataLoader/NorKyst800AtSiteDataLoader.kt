@@ -58,27 +58,13 @@ class NorKyst800AtSiteDataLoader {
         val currentAtSite = loadWithUrl(site, currentUrl)
 
         //now merge the two datasets
-        return if (currentAtSite == null) {
-            if (forecastAtSite == null) { //both unsuccesfull
-                null
-            } else {
-                NorKyst800AtSite(
-                    site.nr,
-                    forecastAtSite
-                )
-            }
+        return if (currentAtSite != null && forecastAtSite != null) {
+            NorKyst800AtSite(
+                site.nr,
+                currentAtSite.append(forecastAtSite)
+            )
         } else {
-            if (forecastAtSite == null) {
-                NorKyst800AtSite(
-                    site.nr,
-                    currentAtSite
-                )
-            } else { //both succesfull
-                NorKyst800AtSite(
-                    site.nr,
-                    currentAtSite.append(forecastAtSite)
-                )
-            }
+            null
         }
     }
 
