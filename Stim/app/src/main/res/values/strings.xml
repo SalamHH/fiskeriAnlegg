@@ -111,6 +111,7 @@
     <string name="suspicion_ILA">Mistanke ILA:</string>
     <string name="proven_ILA">Påvist ILA:</string>
 
+    <!-- site info fragment -->
     <string name="general_info_about_site">Generell informasjon om anlegget</string>
     <string name="ContentDescription_arrow_pointing_down">Pil for å utvide informasjonsvindu</string>
     <string name="position">Posisjon:</string>
@@ -128,6 +129,8 @@
     <string name="pancreas_disease_data_not_found">Pankreassykdomsdata ikke funnet</string>
     <string name="ila_data_not_found">Infeksiøs lakseanemi data ikke funnet</string>
     <string name="weather_symbol_not_found">Værsymbol ikke funnet</string>
+
+    <!-- waterInfo fragment -->
     <string name="waterTemperature">Vanntemperatur:</string>
     <string name="waterSalinityLevel">Saltholdighet i vannet:</string>
     <string name="salinityChart">Graf over saltholdighet</string>
@@ -139,13 +142,19 @@
     <string name="current_velocity_direction">Current velocity direction</string>
     <string name="info_about_watertemp_and_salinity">Informasjon om vanntemperatur og saltholdighetdata</string>
     <string name="infoAboutChart">Denne grafen viser til saltholdighet og vanntemperatur funnet i anlegget. For å endre grafen vist klikker du på knappen lenger oppe. Du kan også zoome inn og navigere grafen med touch. Nedenfor finner du tabeller med all data.</string>
-    <string name="waterDataInformation">Vanndata er nyttig for å regulere fiskens helse. For kaldt vann og for mye strømninger kan for eksempel lede til vanskeligheter for å vokse. Resultat fra ny forskning ved Havforskningsinstituttet viser at vedvarende strømstyrke som smålaks opplever ikke bør overstige ca. 50 cm/s. Dette varierer derimot ut fra størrelsen på fisken, der stor laks tåler mindre enn liten. Vanntemperaturen påvirker laksen sin kapasitet til å svømme mot strømmen betydelig hvis temperaturen er 3°C i motsetning 8-23°C. Selv om laks vokser best ved 9-18°C kan da fint tåle langt lavere temperaturer, men da synker altså evnen til å håndtere sterk strøm. I tillegg påvirker vanntemperaturen utviklingen og dødeligheten av lakselus, der den øker i varmere temperaturer.</string>
+    <string name="waterDataInformation">Vanndata er nyttig for å regulere fiskens helse. For kaldt vann og for mye strømninger kan for eksempel lede til vanskeligheter for å vokse. Resultat fra ny forskning ved Havforskningsinstituttet viser at vedvarende strømstyrke som smålaks opplever ikke bør overstige ca. 50 cm/s. Dette varierer derimot ut fra størrelsen på fisken, der stor laks tåler mindre enn liten. Vanntemperaturen påvirker laksen sin kapasitet til å svømme mot strømmen betydelig hvis temperaturen er 3°C i motsetning 8–23°C. Selv om laks vokser best ved 9–18°C kan da fint tåle langt lavere temperaturer, men da synker altså evnen til å håndtere sterk strøm. I tillegg påvirker vanntemperaturen utviklingen og dødeligheten av lakselus, der den øker i varmere temperaturer.</string>
     <string name="time">Tid</string>
     <string name="waterTemp">Vanntemperatur</string>
     <string name="salinity">Saltholdighet</string>
+
+    <!-- mapfragment -->
     <string name="municipality_">Kommune:</string>
     <string name="number_of_sites_found">Antall sites funnet:</string>
-    <string name="loading">LOADING...</string>
+    <string name="loading">LOADING…</string>
+    <string name="see_infection_pressure_on_map">Se smittepress på kartet</string>
+    <string name="hide_infection_pressure_on_map">Skjul smittepress på kartet</string>
+
+    <!-- tutorial carusell -->
     <string name="welcome_to_stim">Velkommen til stim</string>
     <string name="tutorial_slide_1_text">Stim er en app som lar deg få oversikt over alle oppdrettsanlegg i Norge.</string>
     <string name="sok_etter_noppdrettsanlegg">Søk etter\noppdrettsanlegg</string>
@@ -154,6 +163,5 @@
     <string name="tutorial_slide_3_text">Finn din kommune på kartet for å se alle anlegg i kommunen.</string>
     <string name="lagre_dine_favoritter">Lagre dine favoritter</string>
     <string name="tutorial_slide_text_4">Legg til dine anlegg til favorittsiden ved å trykke på hjertet.</string>
-    <string name="see_infection_pressure_on_map">Se smittepress på kartet</string>
-    <string name="hide_infection_pressure_on_map">Skjul smittepress på kartet</string>
+
 </resources>
