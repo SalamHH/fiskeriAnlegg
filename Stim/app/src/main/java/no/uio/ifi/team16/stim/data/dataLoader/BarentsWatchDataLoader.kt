@@ -15,7 +15,13 @@ import java.net.URLEncoder
 import java.time.Instant
 
 class BarentsWatchDataLoader {
-    private val TAG = "BarentsWatchDataLoader"
+
+    companion object {
+        private const val TAG = "BarentsWatchDataLoader"
+        private const val BASE_URL = "https://id.barentswatch.no/connect/token"
+        private const val CLIENT_SECRET = "YXA8wDV&SmUqdo"
+        private const val CLIENT_ID = "andreaav@uio.no:andreaav@uio.no"
+    }
 
     /**
      * Retrieves an authentication token to be used in API requests to the BW API
@@ -24,16 +30,15 @@ class BarentsWatchDataLoader {
 
         val bodyParams = hashMapOf(
             "grant_type" to "client_credentials",
-            "client_secret" to "YXA8wDV&SmUqdo",
+            "client_secret" to CLIENT_SECRET,
             "scope" to "api",
-            "client_id" to "andreaav@uio.no:andreaav@uio.no"
+            "client_id" to CLIENT_ID
         )
 
         val body = getDataString(bodyParams)
 
-        val (request, response, result) = Fuel.post("https://id.barentswatch.no/connect/token")
+        val (request) = Fuel.post(BASE_URL)
             .header(Headers.CONTENT_TYPE, "application/x-www-form-urlencoded")
-            .header(Headers.USER_AGENT, "PostmanRuntime/7.29.0")
             .header(Headers.ACCEPT, "*/*")
             .header(Headers.ACCEPT_ENCODING, "gzip, deflate, br")
             .header("Connection", "keep-alive")
@@ -42,21 +47,13 @@ class BarentsWatchDataLoader {
 
         //await result and handle error if any
         val tokenStr: String = request.awaitStringResult().onError { error ->
-            Log.e(TAG, "Failed to post to BarentsWatch API due to:\n $error")
+            Log.e(TAG, "Failed to post to BarentsWatch API due to: ", error)
             return null
         }.getOrElse { err ->
-            Log.e(
-                TAG,
-                "Failed to get response from BarentsWatch API due to$err"
-            )
+            Log.e(TAG, "Failed to get response from BarentsWatch API due to: ", err)
             return null
         }
 
-        Log.d(TAG, request.toString())
-        Log.d(TAG, response.toString())
-        Log.d(TAG, result.toString())
-
-        Log.d(TAG, tokenStr)
         val jsonObject = JSONObject(tokenStr)
         val validityTime: Long
         val token: String
@@ -71,8 +68,7 @@ class BarentsWatchDataLoader {
         return BarentsWatchToken(token, Instant.now().plusSeconds(validityTime))
     }
 
-    //@Throws(UnsupportedEncodingException::class)
-    private suspend fun getDataString(params: HashMap<String, String>): String {
+    private fun getDataString(params: HashMap<String, String>): String {
         val result = StringBuilder()
         var first = true
         for ((key, value) in params) {
@@ -107,13 +103,10 @@ class BarentsWatchDataLoader {
             .bearer(token.key)
             .awaitStringResult()
             .onError { error ->
-                Log.e(TAG, "Failed to read ILA list from BarentsWatch API due to:\n $error")
+                Log.e(TAG, "Failed to read ILA list from BarentsWatch API due to: ", error)
                 return null
             }.getOrElse { err ->
-                Log.e(
-                    TAG,
-                    "Failed to get ILA list from from BarentsWatch API due to $err"
-                )
+                Log.e(TAG, "Failed to get ILA list from from BarentsWatch API due to: ", err)
                 return null
             }
 
@@ -130,7 +123,7 @@ class BarentsWatchDataLoader {
             listILA["mistankedato"] = properties.getString("mistankedato")
             listILA["paavistdato"] = properties.getString("paavistdato")
         } catch (e: Error) {
-            Log.e(TAG, "Failed to parse ILA from response due to $e")
+            Log.e(TAG, "Failed to parse ILA from response due to: ", e)
             return null
         }
 
@@ -152,12 +145,12 @@ class BarentsWatchDataLoader {
             .bearer(token.key)
             .awaitStringResult()
             .onError { error ->
-                Log.e(TAG, "Failed to read PD list from BarentsWatch API due to:\n $error")
+                Log.e(TAG, "Failed to read PD list from BarentsWatch API due to: ", error)
                 return null
             }.getOrElse { err ->
                 Log.e(
                     TAG,
-                    "Failed to get PD list from from BarentsWatch API due to $err"
+                    "Failed to get PD list from from BarentsWatch API due to: ", err
                 )
                 return null
             }
@@ -185,6 +178,4 @@ class BarentsWatchDataLoader {
 
         return listPD
     }
-
-
 }

@@ -19,7 +19,9 @@ import org.json.JSONArray
  * several responses into a single response
  */
 class SitesDataLoader {
-    private val TAG = "SitesDataLoader"
+    companion object {
+        private const val TAG = "SitesDataLoader"
+    }
 
     /**
      * URL to the API
@@ -113,27 +115,13 @@ class SitesDataLoader {
         }
 
 
-    suspend fun loadSitesByName(name: String): List<Site>? =
-        loadWithParameters(
+    suspend fun loadSitesByName(name: String): List<Site>? {
+        return loadWithParameters(
             listOf(
                 "range" to Options.sitesRange,
                 "name" to name
             )
         )
-
-    /**
-     * @param name name of site
-     * @return List of sites associated with the given name
-     * @see loadWithParameters
-     */
-    suspend fun loadDataByName(name: String): Site? {
-        val sites = loadWithParameters(
-            listOf(
-                "range" to Options.sitesRange,
-                "name" to name
-            )
-        )
-        return sites?.getOrNull(0)
     }
 
     suspend fun loadDataByNr(nr: String): Site? {
