@@ -155,10 +155,15 @@ open class InfectiousPressureDataLoader : THREDDSDataLoader() {
      * load the default dataset, as specified by Options
      */
     suspend fun loadDefault(): InfectiousPressure? =
-        load(
-            fromClosedRange(0, 901, Options.infectiousPressureStepX),
-            fromClosedRange(0, 2601, Options.infectiousPressureStepY)
-        )
+        try {
+            load(
+                fromClosedRange(0, 901, Options.infectiousPressureStepX),
+                fromClosedRange(0, 2601, Options.infectiousPressureStepY)
+            )
+        } catch (e: OutOfMemoryError) {
+            Log.e(TAG, "Failed to load InfectiousPressure global data due to outOfMemoryError + $e")
+            null
+        }
 
     /**
      * load from a specified url. Used in testing.
