@@ -26,7 +26,6 @@ import no.uio.ifi.team16.stim.databinding.FragmentMapBinding
 import no.uio.ifi.team16.stim.io.adapter.RecycleViewAdapter
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 import no.uio.ifi.team16.stim.util.LatLong
-import no.uio.ifi.team16.stim.util.capitalizeEachWord
 import kotlin.math.roundToInt
 
 
@@ -176,16 +175,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
             setMapToUserLocation()
         }
 
-        // INFECTIOUSPRESSURE HEATMAP
-        viewModel.getInfectiousPressureData().observe(viewLifecycleOwner) { infectiousPressure ->
-            infectiousPressure?.let {
-                val heatMapProvider = HeatmapTileProvider.Builder()
-                    .weightedData(it.getHeatMapData()) // load our weighted data
-                    .radius(50) // finn måte å gjøre om til 800x800 m
-                    .build()
-                googleMap?.addTileOverlay(TileOverlayOptions().tileProvider(heatMapProvider))
-            }
-        }
         closeKeyboard()
         initSpeedDial(requireContext(), googleMap)
     }

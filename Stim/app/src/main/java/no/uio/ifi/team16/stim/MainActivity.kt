@@ -34,7 +34,12 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         val navController = this.findNavController(R.id.myNavHostFragment)
         appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.favoriteSitesFragment, R.id.mapFragment, R.id.appInfoFragment, R.id.tutorialFragment),
+            setOf(
+                R.id.favoriteSitesFragment,
+                R.id.mapFragment,
+                R.id.appInfoFragment,
+                R.id.tutorialFragment
+            ),
             binding.drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -43,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         //initial load of data
         viewModel.loadPrefrences(prefrences)
         viewModel.loadNorKyst800() // todo hva brukes dette til?
-        viewModel.loadDefaultInfectiousPressure() // todo hva brukes dette til?
+        viewModel.loadInfectiousPressure() // todo hva brukes dette til?
         viewModel.loadFavouriteSites()
 
         //setup periodical loading of data
