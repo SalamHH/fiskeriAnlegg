@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.activityViewModels
 import androidx.transition.TransitionInflater
+import com.bumptech.glide.Glide
 import no.uio.ifi.team16.stim.data.WeatherForecast
 import no.uio.ifi.team16.stim.databinding.FragmentWeatherBinding
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
@@ -60,12 +60,7 @@ class WeatherFragment : StimFragment() {
                 }
                 binding.stormForecastText.text =
                     getString(R.string.storm_predicted, storm.strength, dayText.lowercase())
-                binding.stormanimation.setImageDrawable(
-                    ResourcesCompat.getDrawable(
-                    resources,
-                    no.uio.ifi.team16.stim.R.drawable.erstorm_animasjon,
-                    null
-                ))
+                Glide.with(requireActivity()).asGif().load(R.drawable.erstorm_animasjon).into(binding.stormanimation)
             } ?: run {
                 binding.stormForecastText.text = getString(R.string.no_storm)
             }
