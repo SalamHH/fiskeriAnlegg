@@ -228,9 +228,10 @@ class SiteInfoFragment : StimFragment() {
     }
 
     private fun setWaterInfo() {
-        binding.temp.text = "..."
-        binding.varsel.text = "..."
-        binding.strom.text = "..."
+        binding.tempratureValue
+        binding.tempratureValue.text = "..."
+        binding.salinityValue.text = "..."
+        binding.currentsValue.text = "..."
         viewModel.getNorKyst800AtSiteData(site).observe(viewLifecycleOwner) {
             it?.apply { //succesfully loaded data
                 //but there might be no data around!
@@ -238,24 +239,24 @@ class SiteInfoFragment : StimFragment() {
                 val salt = getSalinity()
                 val strom = getVelocity()
                 if (temp != null) {
-                    binding.temp.text = "%4.1f".format(temp) + "°"
+                    binding.tempratureValue.text = "%4.1f".format(temp) + "°"
                 } else { //lastet inn data korrekt, men ingen tilgjengelig i nærheten
-                    binding.temp.text = "N/A"
+                    binding.tempratureValue.text = "N/A"
                 }
                 if (salt != null) {
-                    binding.varsel.text = "%4.1f".format(salt)
+                    binding.salinityValue.text = "%4.1f".format(salt)
                 } else { //lastet inn data korrekt, men ingen tilgjengelig i nærheten
-                    binding.varsel.text = "N/A"
+                    binding.salinityValue.text = "N/A"
                 }
                 if (strom != null) {
-                    binding.strom.text = "%4.1f m/s".format(strom)
+                    binding.currentsValue.text = "%4.1f m/s".format(strom)
                 } else { //lastet inn data korrekt, men ingen tilgjengelig i nærheten
-                    binding.strom.text = "N/A"
+                    binding.currentsValue.text = "N/A"
                 }
             } ?: run {
-                binding.temp.text = "N/A"
-                binding.varsel.text = "N/A"
-                binding.strom.text = "N/A"
+                binding.tempratureValue.text = "N/A"
+                binding.salinityValue.text = "N/A"
+                binding.currentsValue.text = "N/A"
             }
         }
     }
