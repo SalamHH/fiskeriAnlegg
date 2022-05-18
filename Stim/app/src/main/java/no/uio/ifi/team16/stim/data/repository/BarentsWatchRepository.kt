@@ -17,7 +17,7 @@ class BarentsWatchRepository {
      * Load the token from the datasource
      */
     private suspend fun getToken(): BarentsWatchToken? {
-        if (tokenCache == null) {
+        if (tokenCache == null || tokenCache?.isValid() == false) {
             tokenCache = dataSource.getToken()
         }
         return tokenCache
@@ -26,7 +26,7 @@ class BarentsWatchRepository {
     /**
      * Load the data from the datasource
      */
-    public suspend fun getDataAtSite(site: Site): BarentsWatchAtSite? {
+    suspend fun getDataAtSite(site: Site): BarentsWatchAtSite? {
         val token = getToken() ?: run { //only null if cache empty and load fails
             Log.w(TAG, "Failed to load token")
             return null
