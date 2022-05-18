@@ -421,9 +421,10 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
+                                    android:text="TextView"
                                     android:textColor="@color/api_title_color"
                                     android:textSize="14sp"
-                                    android:text="N/A" />
+                                    tools:text="0.04m/s" />
 
                             </LinearLayout>
 
