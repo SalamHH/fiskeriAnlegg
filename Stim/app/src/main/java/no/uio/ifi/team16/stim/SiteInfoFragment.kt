@@ -139,7 +139,7 @@ class SiteInfoFragment : StimFragment() {
             val extras = FragmentNavigatorExtras(binding.wavesIcon to "icon_water")
             if (waterInfofinished) {
                 view?.findNavController()
-                    ?.navigate(R.id.action_siteInfoFragment_to_generalInfoFragment,
+                    ?.navigate(R.id.action_siteInfoFragment_to_waterFragment,
                         null,
                         null,
                         extras)
@@ -216,14 +216,14 @@ class SiteInfoFragment : StimFragment() {
             binding.LoadingScreen.loadingLayout.visibility = View.GONE
             it?.apply {
                 //forecast data is also available in the norkyst object! (about 66 hours, time indexes hours)
-                binding.temp.text = "%4.1f".format(getTemperature()) + "°"
-                binding.varsel.text = "%4.1f".format(getSalinity())
+                binding.tempratureValue.text = "%4.1f".format(getTemperature()) + "°"
+                binding.salinityValue.text = "%4.1f".format(getSalinity())
             } ?: run {
-                binding.temp.text = "N/A"
-                binding.varsel.text = "N/A"
+                binding.tempratureValue.text = "N/A"
+                binding.salinityValue.text = "N/A"
             }
         }
-        if (binding.temp.text == "N/A" || binding.varsel.text == "N/A") {
+        if (binding.tempratureValue.text == "N/A" || binding.salinityValue.text == "N/A") {
             return false
         }
         return true

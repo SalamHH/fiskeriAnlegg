@@ -13,15 +13,18 @@
     <include
         android:id="@+id/LoadingScreen"
         layout="@layout/loading_screen"
-        android:layout_centerInParent="true"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_width="match_parent" />
+        android:layout_centerInParent="true"
+        tools:visibility="gone" />
 
+    <!--Background for icons on toolbar -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        android:elevation="2dp">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -43,7 +46,6 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    <!-- Name of site-->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -57,6 +59,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <!-- Name of site-->
             <TextView
                 android:id="@+id/siteName"
                 android:layout_width="match_parent"
@@ -295,6 +298,8 @@
 
             </androidx.cardview.widget.CardView>
 
+
+            <!-- Information cards-->
             <LinearLayout
                 android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
@@ -338,7 +343,8 @@
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/waterInfoCard"
-                        app:srcCompat="@drawable/mdi___waves" />
+                        app:srcCompat="@drawable/mdi___waves"
+                        />
 
                     <ImageView
                         android:id="@+id/circleFilledWhiteIcon"
@@ -373,8 +379,9 @@
                             android:layout_height="wrap_content"
                             android:layout_margin="10dp">
 
+                            <!-- Water card title -->
                             <TextView
-                                android:id="@+id/waterInfoValue"
+                                android:id="@+id/waterCardTitle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="32dp"
@@ -388,88 +395,104 @@
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
-                            <TextView
-                                android:id="@+id/stromninger"
+                            <!-- Textboxes for currents -->
+                            <LinearLayout
+                                android:id="@+id/currents"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:fontFamily="@font/montserrat_semibold"
-                                android:text="STRØMN."
-                                android:textColor="@color/primaryTextColor"
-                                app:layout_constraintBottom_toBottomOf="@+id/temperatur"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintHorizontal_bias="0.08"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/waterInfoValue"
-                                app:layout_constraintVertical_bias="0.0" />
+                                app:layout_constraintTop_toBottomOf="@+id/waterCardTitle"
+                                app:layout_constraintVertical_bias="0.0"
+                                android:orientation="vertical">
 
-                            <TextView
-                                android:id="@+id/temperatur"
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
+                                    android:layout_gravity="center"
+                                    android:fontFamily="@font/montserrat_semibold"
+                                    android:text="STRØMN."
+                                    android:textColor="@color/primaryTextColor" />
+
+                                <TextView
+                                    android:id="@+id/currentsValue"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="TextView"
+                                    android:textColor="@color/api_title_color"
+                                    android:textSize="14sp"
+                                    tools:text="0.04m/s" />
+
+                            </LinearLayout>
+
+                            <!-- Textboxes for temprature -->
+                            <LinearLayout
+                                android:id="@+id/temperature"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:fontFamily="@font/montserrat_semibold"
-                                android:text="TEMP."
-                                android:textColor="@color/primaryTextColor"
-                                app:layout_constraintBottom_toTopOf="@+id/temp"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintHorizontal_bias="0.501"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/waterInfoValue"
-                                app:layout_constraintVertical_bias="0.0" />
+                                app:layout_constraintTop_toBottomOf="@+id/waterCardTitle"
+                                android:orientation="vertical" >
 
-                            <TextView
-                                android:id="@+id/saltholdighet"
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
+                                    android:fontFamily="@font/montserrat_semibold"
+                                    android:text="TEMP."
+                                    android:textColor="@color/primaryTextColor" />
+
+                                <TextView
+                                    android:id="@+id/tempratureValue"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="1dp"
+                                    android:textColor="@color/primaryTextColor"
+                                    android:textSize="14sp"
+                                    tools:text="-3*"
+                                    android:textAlignment="center"
+                                    android:layout_gravity="center"/>
+
+
+                            </LinearLayout>
+
+                            <!-- Textboxes for salinity -->
+                            <LinearLayout
+                                android:id="@+id/salinity"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:fontFamily="@font/montserrat_semibold"
-                                android:text="SALT."
-                                android:textColor="@color/primaryTextColor"
-                                app:layout_constraintBottom_toTopOf="@id/varsel"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintHorizontal_bias="0.88"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/waterInfoValue" />
+                                app:layout_constraintTop_toBottomOf="@+id/waterCardTitle"
+                                android:orientation="vertical">
 
-                            <TextView
-                                android:id="@+id/strom"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="TextView"
-                                android:textColor="@color/primaryTextColor"
-                                android:textSize="11sp"
-                                app:layout_constraintBaseline_toBaselineOf="@+id/temp"
-                                app:layout_constraintEnd_toStartOf="@+id/temp"
-                                app:layout_constraintHorizontal_bias="0.274"
-                                app:layout_constraintStart_toStartOf="parent"
-                                tools:text="0.04m/s" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
+                                    android:fontFamily="@font/montserrat_semibold"
+                                    android:text="SALT."
+                                    android:textColor="@color/primaryTextColor" />
 
-                            <TextView
-                                android:id="@+id/temp"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="TextView"
-                                android:textColor="@color/primaryTextColor"
-                                android:textSize="11sp"
-                                app:layout_constraintBaseline_toBaselineOf="@+id/varsel"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                tools:text="-3*" />
+                                <TextView
+                                    android:id="@+id/salinityValue"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="1dp"
+                                    android:textColor="@color/primaryTextColor"
+                                    android:textSize="14sp"
+                                    android:textAlignment="center"
+                                    android:layout_gravity="center"
+                                    tools:text="2.3" />
 
-                            <TextView
-                                android:id="@+id/varsel"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="1dp"
-                                android:text="TextView"
-                                android:textColor="@color/primaryTextColor"
-                                android:textSize="11sp"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintHorizontal_bias="0.673"
-                                app:layout_constraintStart_toEndOf="@+id/temp"
-                                app:layout_constraintTop_toBottomOf="@+id/saltholdighet"
-                                tools:text="2.3" />
+
+                            </LinearLayout>
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -547,7 +570,7 @@
                             android:layout_margin="10dp">
 
                             <TextView
-                                android:id="@+id/infectionValue"
+                                android:id="@+id/infectionCardTitle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="32dp"
@@ -561,81 +584,94 @@
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
-                            <TextView
+                            <!-- Textboxes for lakselus -->
+                            <LinearLayout
                                 android:id="@+id/lakselus"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:fontFamily="@font/montserrat_semibold"
-                                android:text="LUS"
-                                android:textColor="@color/primaryTextColor"
-                                app:layout_constraintBottom_toBottomOf="@+id/pd"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintHorizontal_bias="0.13"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/infectionValue"
-                                app:layout_constraintVertical_bias="1.0" />
+                                app:layout_constraintTop_toBottomOf="@+id/infectionCardTitle"
+                                android:orientation="vertical">
 
-                            <TextView
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
+                                    android:fontFamily="@font/montserrat_semibold"
+                                    android:text="LUS"
+                                    android:textColor="@color/primaryTextColor" />
+
+                                <ImageView
+                                    android:id="@+id/fare"
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
+                                    android:layout_marginTop="1dp"
+                                    android:layout_gravity="center"
+                                    app:srcCompat="@drawable/checkmark" />
+
+
+                            </LinearLayout>
+
+                            <!-- Textboxes for PD-->
+                            <LinearLayout
                                 android:id="@+id/pd"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:fontFamily="@font/montserrat_semibold"
-                                android:text="PD"
-                                android:textColor="@color/primaryTextColor"
-                                app:layout_constraintBottom_toBottomOf="@+id/ila"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/infectionValue"
-                                app:layout_constraintVertical_bias="0.0" />
+                                app:layout_constraintTop_toBottomOf="@+id/infectionCardTitle"
+                                app:layout_constraintVertical_bias="0.0"
+                                android:orientation="vertical">
 
-                            <TextView
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
+                                    android:fontFamily="@font/montserrat_semibold"
+                                    android:text="PD"
+                                    android:textColor="@color/primaryTextColor" />
+
+                                <ImageView
+                                    android:id="@+id/pdIcon"
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
+                                    android:layout_marginTop="1dp"
+                                    app:srcCompat="@drawable/checkmark"
+                                    android:layout_gravity="center"/>
+
+                            </LinearLayout>
+
+                            <!-- Textboxes for ILA -->
+                            <LinearLayout
                                 android:id="@+id/ila"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:layout_marginEnd="44dp"
-                                android:fontFamily="@font/montserrat_semibold"
-                                android:text="ILA"
-                                android:textColor="@color/primaryTextColor"
-                                app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/infectionValue"
-                                app:layout_constraintVertical_bias="0.0" />
-
-                            <ImageView
-                                android:id="@+id/fare"
-                                android:layout_width="16dp"
-                                android:layout_height="16dp"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintHorizontal_bias="0.15"
+                                app:layout_constraintHorizontal_bias="0.865"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/lakselus"
-                                app:layout_constraintVertical_bias="0.0"
-                                app:srcCompat="@drawable/checkmark" />
+                                app:layout_constraintTop_toBottomOf="@+id/infectionCardTitle"
+                                android:orientation="vertical">
 
-                            <ImageView
-                                android:id="@+id/pdIcon"
-                                android:layout_width="16dp"
-                                android:layout_height="16dp"
-                                android:layout_marginTop="1dp"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/pd"
-                                app:srcCompat="@drawable/checkmark" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
+                                    android:fontFamily="@font/montserrat_semibold"
+                                    android:text="ILA"
+                                    android:textColor="@color/primaryTextColor" />
 
-                            <ImageView
-                                android:id="@+id/ilaIcon"
-                                android:layout_width="16dp"
-                                android:layout_height="16dp"
-                                android:layout_marginTop="1dp"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintHorizontal_bias="0.64"
-                                app:layout_constraintStart_toEndOf="@+id/pdIcon"
-                                app:layout_constraintTop_toBottomOf="@+id/ila"
-                                app:srcCompat="@drawable/checkmark" />
+                                <ImageView
+                                    android:id="@+id/ilaIcon"
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
+                                    android:layout_marginTop="1dp"
+                                    app:srcCompat="@drawable/checkmark"
+                                    android:layout_gravity="center" />
+
+
+                            </LinearLayout>
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -713,7 +749,7 @@
                             android:layout_margin="10dp">
 
                             <TextView
-                                android:id="@+id/weatherValue"
+                                android:id="@+id/weatherCardTitle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="32dp"
@@ -727,111 +763,123 @@
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
-                            <TextView
+                            <!-- Textboxes for today weather  -->
+                            <LinearLayout
                                 android:id="@+id/idag"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="36dp"
-                                android:layout_marginTop="5dp"
-                                android:fontFamily="@font/montserrat_medium"
-                                android:text="@string/todayText"
-                                android:textColor="@color/primaryTextColor"
-                                app:layout_constraintBottom_toBottomOf="@+id/imorgen"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="@+id/imorgen"
-                                app:layout_constraintVertical_bias="1.0" />
-
-                            <ImageView
-                                android:id="@+id/vaer_idag"
-                                android:layout_width="16dp"
-                                android:layout_height="16dp"
-                                android:layout_marginTop="2dp"
-                                android:src="@drawable/sunny"
-                                app:layout_constraintEnd_toEndOf="@+id/temp_idag"
-                                app:layout_constraintStart_toStartOf="@+id/temp_idag"
-                                app:layout_constraintTop_toBottomOf="@+id/idag" />
-
-                            <TextView
-                                android:id="@+id/temp_idag"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="48dp"
-                                android:text="6*"
-                                android:textColor="@color/primaryTextColor"
-                                android:textSize="11sp"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/vaer_idag" />
-
-                            <TextView
-                                android:id="@+id/imorgen"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/montserrat_medium"
-                                android:text="@string/tomorrow"
-                                android:textColor="@color/primaryTextColor"
-                                app:layout_constraintBottom_toBottomOf="@+id/storm"
                                 app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="0.115"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="@+id/storm"
-                                app:layout_constraintVertical_bias="0.0" />
+                                app:layout_constraintTop_toBottomOf="@+id/weatherCardTitle"
+                                android:orientation="vertical" >
 
-                            <ImageView
-                                android:id="@+id/vaer_imorgen"
-                                android:layout_width="16dp"
-                                android:layout_height="16dp"
-                                android:layout_marginTop="2dp"
-                                android:src="@drawable/sunny"
-                                app:layout_constraintEnd_toEndOf="@+id/temp_imorgen"
-                                app:layout_constraintStart_toStartOf="@+id/temp_imorgen"
-                                app:layout_constraintTop_toBottomOf="@+id/imorgen" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
+                                    android:fontFamily="@font/montserrat_medium"
+                                    android:text="@string/todayText"
+                                    android:textColor="@color/primaryTextColor" />
 
-                            <TextView
-                                android:id="@+id/temp_imorgen"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="7*"
-                                android:textColor="@color/primaryTextColor"
-                                android:textSize="11sp"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/vaer_imorgen" />
+                                <ImageView
+                                    android:id="@+id/vaer_idag"
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
+                                    android:layout_marginTop="2dp"
+                                    android:src="@drawable/sunny"
+                                    android:layout_gravity="center"/>
 
-                            <TextView
+                                <TextView
+                                    android:id="@+id/temp_idag"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="2dp"
+                                    android:text="6*"
+                                    android:textColor="@color/primaryTextColor"
+                                    android:textSize="11sp"
+                                    android:layout_gravity="center"/>
+
+                            </LinearLayout>
+
+                            <!-- Textboxes for tomorrows weather  -->
+                            <LinearLayout
+                              android:id="@+id/imorgen"
+                              android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              app:layout_constraintEnd_toEndOf="parent"
+                              app:layout_constraintStart_toStartOf="parent"
+                              app:layout_constraintTop_toBottomOf="@+id/weatherCardTitle"
+                              app:layout_constraintVertical_bias="0.0"
+                              android:orientation="vertical" >
+
+                              <TextView
+                                  android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:layout_marginTop="8dp"
+                                  android:fontFamily="@font/montserrat_medium"
+                                  android:text="@string/tomorrow"
+                                  android:textColor="@color/primaryTextColor" />
+
+                              <ImageView
+                                  android:id="@+id/vaer_imorgen"
+                                  android:layout_width="16dp"
+                                  android:layout_height="16dp"
+                                  android:layout_marginTop="2dp"
+                                  android:src="@drawable/sunny"
+                                  android:layout_gravity="center"/>
+
+                              <TextView
+                                  android:id="@+id/temp_imorgen"
+                                  android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:text="7*"
+                                  android:textColor="@color/primaryTextColor"
+                                  android:textSize="11sp"
+                                  android:layout_gravity="center"/>
+
+                          </LinearLayout>
+
+                            <!-- Textboxes for storm -->
+                            <LinearLayout
                                 android:id="@+id/storm"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:layout_marginEnd="28dp"
-                                android:fontFamily="@font/montserrat_medium"
-                                android:text="@string/storm"
-                                android:textColor="@color/primaryTextColor"
-                                app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/weatherValue"
-                                app:layout_constraintVertical_bias="0.0" />
+                                app:layout_constraintHorizontal_bias="0.992"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/weatherCardTitle"
+                                android:orientation="vertical" >
 
-                            <ImageView
-                                android:id="@+id/storm_vaer"
-                                android:layout_width="16dp"
-                                android:layout_height="16dp"
-                                android:layout_marginTop="2dp"
-                                android:layout_marginEnd="47dp"
-                                android:src="@drawable/sunny"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintHorizontal_bias="1.0"
-                                app:layout_constraintStart_toEndOf="@+id/vaer_imorgen"
-                                app:layout_constraintTop_toBottomOf="@+id/storm" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
+                                    android:fontFamily="@font/montserrat_medium"
+                                    android:text="@string/storm"
+                                    android:textColor="@color/primaryTextColor"
+                                    android:layout_gravity="center"/>
 
-                            <TextView
-                                android:id="@+id/meldt_storm"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="12dp"
-                                android:text="@string/no_storm"
-                                android:textColor="@color/primaryTextColor"
-                                android:textSize="11sp"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/storm_vaer" />
+                                <ImageView
+                                    android:id="@+id/storm_vaer"
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
+                                    android:layout_marginTop="2dp"
+                                    android:src="@drawable/sunny"
+                                    android:layout_gravity="center"/>
+
+                                <TextView
+                                    android:id="@+id/meldt_storm"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/no_storm"
+                                    android:textColor="@color/primaryTextColor"
+                                    android:textSize="11sp"
+                                    android:layout_gravity="center"/>
+
+
+                            </LinearLayout>
+
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
 

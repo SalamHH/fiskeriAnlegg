@@ -20,16 +20,16 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import no.uio.ifi.team16.stim.data.Site
-import no.uio.ifi.team16.stim.databinding.FragmentGeneralInfoBinding
+import no.uio.ifi.team16.stim.databinding.FragmentWaterBinding
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.util.*
 import javax.inject.Inject
 
-class GeneralInfoFragment : Fragment() {
+class WaterFragment : Fragment() {
 
-    private lateinit var binding: FragmentGeneralInfoBinding
+    private lateinit var binding: FragmentWaterBinding
     private val viewModel: MainActivityViewModel by activityViewModels()
     private var salinityChartPressed = true
     private var salinityChart = listOf<Entry>()
@@ -52,7 +52,7 @@ class GeneralInfoFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentGeneralInfoBinding.inflate(inflater, container, false)
+        binding = FragmentWaterBinding.inflate(inflater, container, false)
 
         /////////////
         //Animation//
@@ -141,19 +141,12 @@ class GeneralInfoFragment : Fragment() {
         ///////////////////
 
         setSalinityChart()
-        toggleButtonColors()
 
-        binding.salinitychartButton.setOnClickListener {
-            if (!salinityChartPressed) {
-                setSalinityChart()
-                toggleButtonColors()
-            }
-        }
-
-        binding.tempchartButton.setOnClickListener {
-            if (salinityChartPressed) {
+        binding.chartButton.setOnClickListener {
+            if (binding.chartButton.isChecked()) {
                 setTemperatureChart()
-                toggleButtonColors()
+            } else {
+                setSalinityChart()
             }
         }
 
@@ -339,36 +332,6 @@ class GeneralInfoFragment : Fragment() {
                 }
                 binding.Salttablelayout.requestLayout()
             }
-        }
-    }
-
-    private fun toggleButtonColors() {
-        if (salinityChartPressed) {
-            binding.salinitychartButton.setBackgroundColor(
-                resources.getColor(
-                    R.color.darkest_skyblue,
-                    null
-                )
-            )
-            binding.tempchartButton.setBackgroundColor(
-                resources.getColor(
-                    R.color.dark_skyblue,
-                    null
-                )
-            )
-        } else {
-            binding.salinitychartButton.setBackgroundColor(
-                resources.getColor(
-                    R.color.dark_skyblue,
-                    null
-                )
-            )
-            binding.tempchartButton.setBackgroundColor(
-                resources.getColor(
-                    R.color.darkest_skyblue,
-                    null
-                )
-            )
         }
     }
 
