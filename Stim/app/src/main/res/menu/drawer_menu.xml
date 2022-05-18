@@ -18,9 +18,9 @@
             android:title="Hvordan bruke STIM" />
 
         <item
-            android:id="@+id/appInfoFragment"
+            android:id="@+id/infoFragment"
             android:icon="@drawable/info"
-            android:title="@string/app_info" />
+            android:title="App info" />
     </group>
 
 </menu>
