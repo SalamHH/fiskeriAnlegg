@@ -27,6 +27,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        window.statusBarColor = getColor(R.color.skyblue)
 
         prefrences = getSharedPreferences(Options.SHARED_PREFERENCES_KEY, MODE_PRIVATE)
 
@@ -34,18 +35,15 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         val navController = this.findNavController(R.id.myNavHostFragment)
         appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.favoriteSitesFragment, R.id.mapFragment, R.id.tutorialFragment),
+            setOf(R.id.favoriteSitesFragment, R.id.mapFragment, R.id.appInfoFragment, R.id.tutorialFragment),
             binding.drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.navView.setupWithNavController(navController)
 
-        window.statusBarColor = getColor(R.color.skyblue)
-
         //initial load of data
         viewModel.loadPrefrences(prefrences)
         viewModel.loadNorKyst800()
-        //viewModel.loadDefaultInfectiousPressure()
         viewModel.loadFavouriteSites()
 
         //setup periodical loading of data
@@ -80,5 +78,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return item.onNavDestinationSelected(findNavController(R.id.myNavHostFragment))
+                || super.onOptionsItemSelected(item)
     }
 }

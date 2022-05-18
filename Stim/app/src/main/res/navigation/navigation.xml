@@ -32,8 +32,8 @@
             android:id="@+id/action_siteInfoFragment_to_weatherFragment"
             app:destination="@id/weatherFragment" />
         <action
-            android:id="@+id/action_siteInfoFragment_to_generalInfoFragment"
-            app:destination="@id/generalInfoFragment" />
+            android:id="@+id/action_siteInfoFragment_to_waterFragment"
+            app:destination="@id/waterFragment" />
         <action
             android:id="@+id/action_siteInfoFragment_to_infectionFragment"
             app:destination="@id/infectionFragment"
@@ -45,9 +45,9 @@
         android:name="no.uio.ifi.team16.stim.WeatherFragment"
         tools:layout="@layout/fragment_weather" />
     <fragment
-        android:id="@+id/generalInfoFragment"
-        android:name="no.uio.ifi.team16.stim.GeneralInfoFragment"
-        tools:layout="@layout/fragment_general_info" />
+        android:id="@+id/waterFragment"
+        android:name="no.uio.ifi.team16.stim.WaterFragment"
+        tools:layout="@layout/fragment_water" />
     <fragment
         android:id="@+id/infectionFragment"
         android:name="no.uio.ifi.team16.stim.InfectionFragment"
@@ -57,6 +57,11 @@
         android:name="no.uio.ifi.team16.stim.TutorialFragment"
         android:label="fragment_tutorial"
         tools:layout="@layout/fragment_tutorial" />
+    <fragment
+        android:id="@+id/appInfoFragment"
+        android:name="no.uio.ifi.team16.stim.AppInfoFragment"
+        android:label="App Info"
+        tools:layout="@layout/fragment_app_info" />
 
 
 </navigation>
