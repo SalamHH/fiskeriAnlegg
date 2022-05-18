@@ -18,15 +18,14 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/recycleview_element_overview" />
 
-    <!-- Dersom ingen anlegg er valgt -->
+    <!-- if the user has no favorites: -->
 
     <RelativeLayout
-        android:id="@+id/ingenAnlegg"
+        android:id="@+id/noFavoriteSites"
         android:layout_width="0dp"
         android:orientation="vertical"
         android:elevation="50dp"
@@ -36,101 +35,106 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/obs"
+            android:id="@+id/NB"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="128dp"
             android:gravity="center_horizontal"
-            android:text="Du har ikke valgt noen favoritt anlegg enda… "
+            android:text="@string/NB_text"
             android:textColor="@color/colorAccent"
             android:textSize="14sp"
             android:fontFamily="@font/montserrat_semibold">
         </TextView>
 
         <TextView
-            android:id="@+id/obs2"
+            android:id="@+id/NB_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/obs"
+            android:layout_below="@+id/NB"
             android:layout_centerInParent="true"
             android:gravity="center_horizontal"
-            android:text="Følg stegene under for å legge til dine favoritter:"
+            android:text="@string/NB_2_text"
             android:textColor="@color/colorAccent"
             android:textSize="14sp"
             android:fontFamily="@font/montserrat_semibold">
         </TextView>
 
         <ImageView
-            android:id="@+id/tall1"
+            android:id="@+id/number1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/obs2"
-            android:layout_marginTop="40dp"
+            android:layout_below="@+id/NB_2"
             android:layout_centerHorizontal="true"
-            app:srcCompat="@drawable/numeric_1_circle_outline">
+            android:layout_marginTop="40dp"
+            android:contentDescription="@string/Content_description_step1"
+            app:srcCompat="@drawable/numeric_1_circle_outline"
+            tools:ignore="ImageContrastCheck">
 
         </ImageView>
 
         <TextView
-            android:id="@+id/forste"
+            android:id="@+id/step1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tall1"
+            android:layout_below="@+id/number1"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="15dp"
+            android:fontFamily="@font/montserrat"
+            android:gravity="center_horizontal"
+            android:text="@string/Step1_text"
+            android:textColor="@color/colorAccent"
+            android:textSize="12sp"
+            tools:ignore="TextContrastCheck" />
+
+        <ImageView
+            android:id="@+id/number2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/step1"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="30dp"
+            android:contentDescription="@string/Content_description_step2"
+            app:srcCompat="@drawable/numeric_2_circle_outline"
+            tools:ignore="ImageContrastCheck" />
+
+        <TextView
+            android:id="@+id/step2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/number2"
             android:layout_centerInParent="true"
             android:gravity="center_horizontal"
             android:layout_marginTop="15dp"
             android:layout_marginStart="30dp"
-            android:text="Trykk på menyen i øverste venstre hjørnet og velg Kart"
+            android:text="@string/Step2_text"
             android:textColor="@color/colorAccent"
             android:textSize="12sp"
             android:fontFamily="@font/montserrat">
         </TextView>
 
         <ImageView
-            android:id="@+id/tall2"
+            android:id="@+id/number3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:layout_below="@+id/forste"
+            android:layout_below="@+id/step2"
             android:layout_centerInParent="true"
-            app:srcCompat="@drawable/numeric_2_circle_outline">
-        </ImageView>
+            app:srcCompat="@drawable/numeric_3_circle_outline"
+            android:contentDescription="@string/Content_description_step3">
 
-        <TextView
-            android:id="@+id/andre"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tall2"
-            android:layout_centerInParent="true"
-            android:gravity="center_horizontal"
-            android:layout_marginTop="15dp"
-            android:layout_marginStart="30dp"
-            android:text="Søk etter anlegg ved å skrive kommunenummer eller navn på anlegget"
-            android:textColor="@color/colorAccent"
-            android:textSize="12sp"
-            android:fontFamily="@font/montserrat">
-        </TextView>
-
-        <ImageView
-            android:id="@+id/tall3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:layout_below="@+id/andre"
-            android:layout_centerInParent="true"
-            app:srcCompat="@drawable/numeric_3_circle_outline">
         </ImageView>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tall3"
+            android:layout_below="@+id/number3"
             android:layout_centerInParent="true"
             android:gravity="center_horizontal"
             android:layout_marginTop="15dp"
             android:layout_marginStart="30dp"
-            android:text="Trekk opp menyen fra bunn og trykk på hjerte ikonet for å lagre et anlegg"
+            android:text="@string/Step3_text"
             android:textColor="@color/colorAccent"
             android:textSize="12sp"
             android:fontFamily="@font/montserrat">

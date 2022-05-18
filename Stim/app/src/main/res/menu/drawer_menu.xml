@@ -4,12 +4,12 @@
         <item
             android:id="@+id/mapFragment"
             android:icon="@drawable/map"
-            android:title="@string/kart" />
+            android:title="@string/Map" />
 
         <item
             android:id="@+id/favoriteSitesFragment"
             android:icon="@drawable/favorite"
-            android:title="@string/favoritter" />
+            android:title="@string/Favorites" />
     </group>
     <group android:id="@+id/ekstra" >
         <item

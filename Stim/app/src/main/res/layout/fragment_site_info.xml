@@ -388,7 +388,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="32dp"
                                 android:fontFamily="@font/montserrat_bold"
-                                android:text="@string/vann"
+                                android:text="@string/water"
                                 android:textAlignment="center"
                                 android:textColor="@color/primaryTextColor"
                                 android:textSize="15sp"
@@ -528,7 +528,7 @@
                         tools:ignore="ContentDescription,ImageContrastCheck" />
 
                     <ImageView
-                        android:id="@+id/circleFilledWhiteIcon2"
+                        android:id="@+id/whitecircle"
                         android:layout_width="71dp"
                         android:layout_height="66dp"
                         android:layout_gravity="center"
@@ -745,7 +745,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="32dp"
                                 android:fontFamily="@font/montserrat_bold"
-                                android:text="@string/vaer"
+                                android:text="@string/weather"
                                 android:textAlignment="center"
                                 android:textColor="@color/primaryTextColor"
                                 android:textSize="15sp"

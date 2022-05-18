@@ -46,15 +46,15 @@
             <!-- SALTHOLDIGHET OF VANN -->
 
             <ImageView
-                android:id="@+id/circleFilledWhiteIcon2"
+                android:id="@+id/whitecircle"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:paddingTop="10dp"
-                app:layout_constraintBottom_toBottomOf="@id/guideline3"
+                app:layout_constraintBottom_toBottomOf="@id/guideline"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/guideline3"
+                app:layout_constraintTop_toTopOf="@id/guideline"
                 app:srcCompat="@drawable/circle_filled_white"
                 tools:ignore="ContentDescription" />
 
@@ -64,16 +64,16 @@
                 android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:transitionName="icon_water"
-                app:layout_constraintBottom_toBottomOf="@id/guideline3"
+                app:layout_constraintBottom_toBottomOf="@id/guideline"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/guideline3"
+                app:layout_constraintTop_toTopOf="@id/guideline"
                 app:srcCompat="@drawable/mdi___waves"
                 tools:ignore="ContentDescription,ImageContrastCheck" />
 
             <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline3"
+                android:id="@+id/guideline"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -85,10 +85,10 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/overwave"
                 android:gravity="center"
-                android:text="@string/vanndata"
+                android:text="@string/waterdata"
                 android:textColor="@color/white"
                 android:textSize="40sp"
-                app:layout_constraintTop_toBottomOf="@id/circleFilledWhiteIcon2"
+                app:layout_constraintTop_toBottomOf="@id/whitecircle"
                 tools:layout_editor_absoluteX="0dp" />
 
             <TextView
@@ -138,8 +138,6 @@
                             android:layout_marginTop="10dp"
                             android:gravity="center"
                             android:orientation="horizontal">
-
-                            <!-- TODO: fix temperature icon -->
 
                             <TextView
                                 android:id="@+id/boxTempText"

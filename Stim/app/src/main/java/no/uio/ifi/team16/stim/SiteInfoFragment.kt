@@ -1,6 +1,5 @@
 package no.uio.ifi.team16.stim
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
@@ -15,7 +14,7 @@ import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.data.WeatherForecast
 import no.uio.ifi.team16.stim.databinding.FragmentSiteInfoBinding
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
-import no.uio.ifi.team16.stim.util.Options
+import no.uio.ifi.team16.stim.util.InfectionStatusCalculator
 
 
 class SiteInfoFragment : StimFragment() {
@@ -23,13 +22,26 @@ class SiteInfoFragment : StimFragment() {
     private lateinit var binding: FragmentSiteInfoBinding
     private val viewModel: MainActivityViewModel by activityViewModels()
     private lateinit var site: Site
-    private var checked : Boolean = false
+    private var checkIfFavorite = false
 
+    /**
+     * Fragment showing the general info screen of a site.
+     * Contains all info the user needs at a quick glance:
+     * If the site is favorited. General info about the site.
+     * infection of salmonlouse, PD or ILA. Currents, salt and temperature.
+     * Today and tomorrows weather, including storm forecast.
+     */
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         binding = FragmentSiteInfoBinding.inflate(inflater, container, false)
         site = viewModel.getCurrentSite() ?: return binding.root
-        if (viewModel.getFavouriteSitesData().value?.contains(site) == true) checked = true
+
+        //Check if site is favorited
+        if (viewModel.getFavouriteSitesData().value?.contains(site) == true) checkIfFavorite = true
 
         //load data pertaining to this site
         viewModel.loadNorKyst800AtSite(site)
@@ -44,124 +56,37 @@ class SiteInfoFragment : StimFragment() {
             getString(R.string.temperature, site.weatherForecast?.first?.temperature)
         binding.temperatureTomorrow.text =
             getString(R.string.temperature, site.weatherForecast?.second?.temperature)
-        binding.positionView.text = "${site.latLong.lat}, ${site.latLong.lng}"
+        binding.positionView.text = getString(
+            R.string.Location_placeholder,
+            site.latLong.lat.toFloat(),
+            site.latLong.lng.toFloat()
+        )
 
         //weatherdata
         viewModel.getWeatherData().observe(viewLifecycleOwner, this::onWeatherLoaded)
 
         //barentswatchdata
-        viewModel.getBarentsWatchData(site).observe(viewLifecycleOwner) {
-            if (it?.listPD?.isNotEmpty() == true) {
-                binding.pdIcon.setImageDrawable(
-                    ResourcesCompat.getDrawable(
-                        resources,
-                        no.uio.ifi.team16.stim.R.drawable.farevarsel,
-                        null
-                    )
-                )
-            }
-            if (it?.listILA?.isNotEmpty() == true) {
-                binding.ilaIcon.setImageDrawable(
-                    ResourcesCompat.getDrawable(
-                        resources,
-                        no.uio.ifi.team16.stim.R.drawable.ila_bad,
-                        null
-                    )
-                )
-            }
-        }
+        setBarrentsWatchInfo()
 
         //set info to cards
-        var hasWaterInfo = false
-        var hasInfectionInfo = false
         setWaterInfo()
         setInfectionInfo()
 
         //infocards
-        binding.generalInfoBox.setOnClickListener {
-            // If the CardView is already expanded, set its visibility
-            //  to gone and change the expand less icon to expand more.
-            // If the CardView is already expanded, set its visibility
-            //  to gone and change the expand less icon to expand more.
-            if (binding.relativelayout.visibility == View.VISIBLE) {
+        setExpandableGeneralInfo()
 
-                // The transition of the hiddenView is carried out
-                //  by the TransitionManager class.
-                // Here we use an object of the AutoTransition
-                // Class to create a default transition.
-                TransitionManager.beginDelayedTransition(
-                    binding.generalInfoBox,
-                    AutoTransition()
-                )
-                binding.relativelayout.setVisibility(View.GONE)
-                binding.arrow.setImageResource(R.drawable.down_darkblue)
-            } else {
-                TransitionManager.beginDelayedTransition(
-                    binding.generalInfoBox,
-                    AutoTransition()
-                )
-                binding.relativelayout.visibility = View.VISIBLE
-                binding.arrow.setImageResource(R.drawable.up_darkblue)
-            }
+        setWeatherInfoCard()
 
-            //anleggsnummer
-            binding.siteNrView.text = site.nr.toString()
-
-            //plassering
-            binding.placementView.text = site.placementType ?: "-----"
-
-            //kapasitet
-            binding.capacityView.text = site.capacity.toString()
-
-            //vanntype
-            binding.waterTypeView.text = site.waterType ?: "-----"
-
-            //kommune
-            binding.municipalityView.text = site.placement?.municipalityName ?: "-----"
-        }
-
-        binding.weatherInfoCard.setOnClickListener {
-            val extras = FragmentNavigatorExtras(binding.weatherIcon to "image_weather")
-            view?.findNavController()?.navigate(
-                R.id.action_siteInfoFragment_to_weatherFragment,
-                null,
-                null,
-                extras)
-        }
+        //Stop the user if data not loaded
 
         binding.waterInfoCard.setOnClickListener {
-            val extras = FragmentNavigatorExtras(binding.wavesIcon to "icon_water")
-
-            if (hasWaterInfo) {
-                view?.findNavController()
-                    ?.navigate(R.id.action_siteInfoFragment_to_waterFragment,
-                        null,
-                        null,
-                        extras
-                    )
-            } else {
-                val text = "Ikke tilgjenglig"
-                val duration = Toast.LENGTH_SHORT
-                val toast = Toast.makeText(context, text, duration)
-                toast.show()
-            }
+            val newFragment = NoDataStatusDialogFragment()
+            newFragment.show(parentFragmentManager, "nodata")
         }
-        
+
         binding.infectionInfoCard.setOnClickListener {
-            if (hasInfectionInfo) {
-                val extras = FragmentNavigatorExtras(binding.infectionIcon to "image_big")
-                view?.findNavController()?.navigate(
-                    R.id.action_siteInfoFragment_to_infectionFragment,
-                    null,
-                    null,
-                    extras
-                )
-            } else {
-                val text = "Ikke tilgjenglig"
-                val duration = Toast.LENGTH_SHORT
-                val toast = Toast.makeText(context, text, duration)
-                toast.show()
-            }
+            val newFragment = NoDataStatusDialogFragment()
+            newFragment.show(parentFragmentManager, "nodata")
         }
 
         setHasOptionsMenu(true)
@@ -169,15 +94,15 @@ class SiteInfoFragment : StimFragment() {
         //remove loading screen if ANY of norkyst800, barentsWatch or infectiousPressure are loaded for this site
         viewModel.getNorKyst800AtSiteData(site).observe(viewLifecycleOwner) {
             binding.LoadingScreen.loadingLayout.visibility = View.GONE
-            hasWaterInfo = true
+            setWaterInfoCard()
         }
         viewModel.getInfectiousPressureTimeSeriesData(site).observe(viewLifecycleOwner) {
             binding.LoadingScreen.loadingLayout.visibility = View.GONE
-            hasInfectionInfo = true
+            setInfectionInfoCard()
         }
         viewModel.getBarentsWatchData(site).observe(viewLifecycleOwner) {
             binding.LoadingScreen.loadingLayout.visibility = View.GONE
-            hasInfectionInfo = true
+            setInfectionInfoCard()
         }
 
         return binding.root
@@ -186,7 +111,7 @@ class SiteInfoFragment : StimFragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.site_info_toolbar, menu)
         val item = menu[0]
-        if (checked) item.setIcon(R.drawable.heart)
+        if (checkIfFavorite) item.setIcon(R.drawable.heart)
         else item.setIcon(R.drawable.heart_outline)
         super.onCreateOptionsMenu(menu, inflater)
     }
@@ -194,10 +119,10 @@ class SiteInfoFragment : StimFragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.toString()) {
             "Fav" -> {
-                if (checked) item.setIcon(R.drawable.heart_outline)
+                if (checkIfFavorite) item.setIcon(R.drawable.heart_outline)
                 else item.setIcon(R.drawable.heart)
-                checked = !checked
-                favoriteOnClick(site, checked)
+                checkIfFavorite = !checkIfFavorite
+                favoriteOnClick(site, checkIfFavorite)
                 return true
             }
         }
@@ -239,17 +164,17 @@ class SiteInfoFragment : StimFragment() {
                 val salt = getSalinity()
                 val strom = getVelocity()
                 if (temp != null) {
-                    binding.tempratureValue.text = "%4.1f".format(temp) + "°"
+                    binding.tempratureValue.text = getString(R.string.Temperature_placeholder, temp)
                 } else { //lastet inn data korrekt, men ingen tilgjengelig i nærheten
                     binding.tempratureValue.text = "N/A"
                 }
                 if (salt != null) {
-                    binding.salinityValue.text = "%4.1f".format(salt)
+                    binding.salinityValue.text = getString(R.string.Salt_placeholder, salt)
                 } else { //lastet inn data korrekt, men ingen tilgjengelig i nærheten
                     binding.salinityValue.text = "N/A"
                 }
                 if (strom != null) {
-                    binding.currentsValue.text = "%4.1f m/s".format(strom)
+                    binding.currentsValue.text = getString(R.string.Currents_placeholder, strom)
                 } else { //lastet inn data korrekt, men ingen tilgjengelig i nærheten
                     binding.currentsValue.text = "N/A"
                 }
@@ -262,8 +187,17 @@ class SiteInfoFragment : StimFragment() {
     }
 
     private fun setInfectionInfo() {
+        val statuscalculator = InfectionStatusCalculator(resources)
+
         viewModel.getInfectiousPressureTimeSeriesData(site).observe(viewLifecycleOwner) {
             it?.observeConcentrations(viewLifecycleOwner) { _, infectiondata ->
+                binding.dangerSalmonLouse.setImageDrawable(
+                    statuscalculator.calculateInfectionStatusIcon(
+                        infectiondata.toTypedArray()
+                    )
+                )
+                binding.fare.contentDescription =
+                    statuscalculator.calculateInfectionStatusText(infectiondata.toTypedArray())
                 binding.dangerSalmonLouse.setImageDrawable(calculateInfectionStatusIcon(infectiondata.toTypedArray()))
             } ?: run { //failed to load InfPRTS:
                 binding.dangerSalmonLouse.setImageDrawable(
@@ -273,53 +207,96 @@ class SiteInfoFragment : StimFragment() {
                         null
                     )
                 )
+                binding.fare.contentDescription = resources.getText(R.string.No_infection_found)
             }
         }
     }
 
-    private fun calculateInfectionStatusIcon(infectiondata: Array<Float>): Drawable? {
+    private fun setBarrentsWatchInfo() {
+        viewModel.getBarentsWatchData(site).observe(viewLifecycleOwner) {
+            if (it?.listPD?.isNotEmpty() == true) {
+                binding.pdIcon.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.farevarsel,
+                        null
+                    )
+                )
+            }
+            if (it?.listILA?.isNotEmpty() == true) {
+                binding.ilaIcon.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.ila_bad,
+                        null
+                    )
+                )
+            }
+        }
+    }
 
-        if (infectiondata.lastIndex > 1 && infectiondata.average() > Options.infectionExists) {
-            //sjekker om det er signifikant økning/miskning på de siste 3 datapunktene
-            val lastThree = arrayOf(
-                infectiondata[infectiondata.lastIndex - 2],
-                infectiondata[infectiondata.lastIndex - 1],
-                infectiondata[infectiondata.lastIndex]
-            )
-            return if (lastThree.average() - infectiondata.average() > Options.increase) {
-                ResourcesCompat.getDrawable(
-                    resources,
-                    no.uio.ifi.team16.stim.R.drawable.arrow_up,
-                    null
+    private fun setExpandableGeneralInfo() {
+        binding.generalInfoBox.setOnClickListener {
+            //fix expandable infobox
+            if (binding.relativelayout.visibility == View.VISIBLE) {
+                TransitionManager.beginDelayedTransition(
+                    binding.generalInfoBox,
+                    AutoTransition()
                 )
-            } else if (infectiondata.average() - lastThree.average() > Options.decrease) {
-                ResourcesCompat.getDrawable(
-                    resources,
-                    no.uio.ifi.team16.stim.R.drawable.arrow_down,
-                    null
-                )
+                binding.relativelayout.visibility = View.GONE
+                binding.pil.setImageResource(R.drawable.down_darkblue)
             } else {
-                return if (infectiondata.average() > Options.high) {
-                    ResourcesCompat.getDrawable(
-                        resources,
-                        no.uio.ifi.team16.stim.R.drawable.farevarsel,
-                        null
-                    )
-                } else {
-                    ResourcesCompat.getDrawable(
-                        resources,
-                        no.uio.ifi.team16.stim.R.drawable.no_change,
-                        null
-                    )
-                }
+                TransitionManager.beginDelayedTransition(
+                    binding.generalInfoBox,
+                    AutoTransition()
+                )
+                binding.relativelayout.visibility = View.VISIBLE
+                binding.pil.setImageResource(R.drawable.up_darkblue)
             }
-        } else {
-            return ResourcesCompat.getDrawable(
-                resources,
-                no.uio.ifi.team16.stim.R.drawable.checkmark,
-                null
+
+            //Put all general info of site
+            binding.anleggsnrView.text = site.nr.toString()
+            binding.plasseringView.text = site.placementType ?: "-----"
+            binding.kapasitetView.text = site.capacity.toString()
+            binding.vannTypeView.text = site.waterType ?: "-----"
+            binding.prodOmraadeView.text = site.placement?.municipalityName ?: "-----"
+        }
+    }
+
+    private fun setWeatherInfoCard() {
+        binding.weatherInfoCard.setOnClickListener {
+            val extras = FragmentNavigatorExtras(binding.weatherIcon to "image_weather")
+            view?.findNavController()?.navigate(
+                R.id.action_siteInfoFragment_to_weatherFragment,
+                null,
+                null,
+                extras
             )
         }
     }
 
+    private fun setWaterInfoCard() {
+        binding.waterInfoCard.setOnClickListener {
+            val extras = FragmentNavigatorExtras(binding.wavesIcon to "icon_water")
+            view?.findNavController()
+                ?.navigate(
+                    R.id.action_siteInfoFragment_to_waterFragment,
+                    null,
+                    null,
+                    extras
+                )
+        }
+    }
+
+    private fun setInfectionInfoCard() {
+        binding.infectionInfoCard.setOnClickListener {
+            val extras = FragmentNavigatorExtras(binding.infectionIcon to "image_big")
+            view?.findNavController()?.navigate(
+                R.id.action_siteInfoFragment_to_infectionFragment,
+                null,
+                null,
+                extras
+            )
+        }
+    }
 }

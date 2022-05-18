@@ -38,7 +38,7 @@ class FavoriteSitesFragment : StimFragment() {
                 adapter.favs = sites
                 adapter.notifyDataSetChanged()
             }
-            binding.ingenAnlegg.isVisible = sites?.size == 0
+            binding.noFavoriteSites.isVisible = sites?.size == 0
         }
         return binding.root
     }

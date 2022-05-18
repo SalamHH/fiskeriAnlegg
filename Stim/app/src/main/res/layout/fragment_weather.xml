@@ -79,7 +79,7 @@
                 android:fontFamily="@font/overwave"
                 android:gravity="center"
                 android:paddingBottom="5dp"
-                android:text="@string/vaer"
+                android:text="@string/weather"
                 android:textColor="@color/white"
                 android:textSize="40sp"
                 app:layout_constraintBottom_toTopOf="@id/weatherDay1"

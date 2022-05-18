@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     app:cardBackgroundColor="@color/colorAccent"
@@ -9,7 +10,6 @@
     app:cardMaxElevation="10dp"
     app:cardPreventCornerOverlap="true"
     app:cardUseCompatPadding="true">
-
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -20,7 +20,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ikoner for smittestatus"
+            android:text="@string/icons_for_infection"
             android:textStyle="bold"
             android:fontFamily="@font/montserrat_bold"
             android:layout_gravity="center"
@@ -34,20 +34,21 @@
             android:layout_marginBottom="5dp">
 
             <ImageView
-                android:id="@+id/fantIkkeData"
+                android:id="@+id/noData"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/no_data" />
+                android:src="@drawable/no_data"
+                tools:ignore="ImageContrastCheck, contentDescription" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:text="Fant ikke smittedata"
+                android:text="@string/no_infectiouspressure_found"
                 android:textSize="15sp"
                 android:textColor="@color/primaryTextColor"
                 android:fontFamily="@font/montserrat_light"
-                android:layout_toEndOf="@+id/fantIkkeData"
+                android:layout_toEndOf="@+id/noData"
                 android:layout_centerVertical="true" />
 
         </RelativeLayout>
@@ -58,20 +59,21 @@
             android:layout_marginBottom="5dp">
 
             <ImageView
-                android:id="@+id/ingenSmitte"
+                android:id="@+id/noInfection"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/checkmark" />
+                android:src="@drawable/checkmark"
+                tools:ignore="ImageContrastCheck, contentDescription" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:text="Veldig lav/ingen smitte"
+                android:text="@string/No_infection_found"
                 android:textSize="15sp"
                 android:textColor="@color/primaryTextColor"
                 android:fontFamily="@font/montserrat_light"
-                android:layout_toEndOf="@+id/ingenSmitte"
+                android:layout_toEndOf="@+id/noInfection"
                 android:layout_centerVertical="true" />
 
         </RelativeLayout>
@@ -85,13 +87,14 @@
                 android:id="@+id/decrease"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/arrow_down" />
+                android:src="@drawable/arrow_down"
+                tools:ignore="ImageContrastCheck, contentDescription" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:text="Signifikant smittemiskning"
+                android:text="@string/Significant_infection_decrease"
                 android:textSize="15sp"
                 android:textColor="@color/primaryTextColor"
                 android:fontFamily="@font/montserrat_light"
@@ -109,13 +112,14 @@
                 android:id="@+id/lavSmitte"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/no_change" />
+                android:src="@drawable/no_change"
+                tools:ignore="ImageContrastCheck, contentDescription" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:text="Lav/medium smitte"
+                android:text="@string/Low_infection"
                 android:textSize="15sp"
                 android:textColor="@color/primaryTextColor"
                 android:fontFamily="@font/montserrat_light"
@@ -133,13 +137,14 @@
                 android:id="@+id/increase"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/arrow_up" />
+                android:src="@drawable/arrow_up"
+                tools:ignore="ImageContrastCheck, contentDescription" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:text="Signifikant smitteøkning"
+                android:text="@string/singificant_infectionincrease"
                 android:textSize="15sp"
                 android:textColor="@color/primaryTextColor"
                 android:fontFamily="@font/montserrat_light"
@@ -156,13 +161,14 @@
                 android:id="@+id/high"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/farevarsel" />
+                android:src="@drawable/farevarsel"
+                tools:ignore="ImageContrastCheck, contentDescription" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:text="Høy smitte"
+                android:text="@string/high_infection"
                 android:textSize="15sp"
                 android:textColor="@color/primaryTextColor"
                 android:fontFamily="@font/montserrat_light"
@@ -172,6 +178,5 @@
         </RelativeLayout>
 
     </LinearLayout>
-
 
 </androidx.cardview.widget.CardView>

@@ -9,10 +9,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 
 /**
- * Dialogfragment som forklarer de ulike statuslikonene for smittedata
+ * Dialogfragment som viser at dataen som lastes ikke enda er tilgjenglig
  */
 
-class StatusDialogFragment : DialogFragment() {
+class NoDataStatusDialogFragment : DialogFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -22,6 +22,9 @@ class StatusDialogFragment : DialogFragment() {
 
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        return requireActivity().layoutInflater.inflate(R.layout.fragment_dialog_status, container)
+        return requireActivity().layoutInflater.inflate(
+            R.layout.fragment_dialog_status_no_data,
+            container
+        )
     }
 }

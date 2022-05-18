@@ -7,19 +7,19 @@
     android:background="@drawable/background_blue"
     android:backgroundTint="@color/skyblue"
     android:backgroundTintMode="multiply"
-    android:gravity="center"
-    tools:context=".SiteInfoFragment">
+    android:gravity="center">
 
-    <!--Background for icon on toolbar -->
+    <!--Background for the hamburgermenu -->
+
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         android:elevation="2dp"
+        android:padding="7dp"
         android:src="@drawable/circle"
-        android:padding="7dp" />
-
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription,ImageContrastCheck" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -42,18 +42,19 @@
             <ImageView
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:src="@drawable/ic_baseline_directions_boat_filled_24"
                 android:layout_gravity="center"
-                android:layout_marginTop="20dp" />
+                android:layout_marginTop="20dp"
+                android:src="@drawable/ic_baseline_directions_boat_filled_24"
+                tools:ignore="ContentDescription,ImageContrastCheck" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="Stim er studentprosjekt utviklet for å støtte opp under den daglige driften til ansatte og fiskehelsepersonell ved oppdrettsanlegg i Norge"
+                android:text="@string/Appinfo_description"
+                android:textAlignment="center"
                 android:textColor="@color/white"
-                android:layout_gravity="center"
-                android:textAlignment="center"/>
+                tools:ignore="TextContrastCheck" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -62,7 +63,7 @@
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="15dp"
                 android:fontFamily="@font/overwave"
-                android:text="Datakilder"
+                android:text="@string/datasources"
                 android:textAppearance="?attr/textAppearanceHeadline5"
                 android:textColor="@color/white"
                 android:textSize="30sp" />
@@ -90,20 +91,22 @@
                         android:textAllCaps="true"
                         android:textColor="@color/api_title_color"
                         android:textSize="16sp"
-                        android:text="THREDDS - Smittepress" />
+                        android:text="@string/thredds_infectiouspressure" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:layout_marginBottom="10dp"
+                        android:text="@string/Infectiouspressure_description"
                         android:textColor="@color/api_text_color"
-                        android:text="Lakselus data" />
+                        tools:ignore="TextContrastCheck" />
 
                 </LinearLayout>
+
             </androidx.cardview.widget.CardView>
 
-            <!-- APT-2 -->
+            <!-- APT-2: THREDDS NORKYST800 -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -126,57 +129,21 @@
                         android:textAllCaps="true"
                         android:textColor="@color/api_title_color"
                         android:textSize="16sp"
-                        android:text="THREDDS - NorKyst800" />
+                        android:text="@string/thredds_norkyst800" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:layout_marginBottom="10dp"
+                        android:text="@string/Norkyst800_description"
                         android:textColor="@color/api_text_color"
-                        android:text="Temperatur, saltholdighet, strømmninger" />
+                        tools:ignore="TextContrastCheck" />
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- APT-3 -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="10dp"
-                android:layout_marginTop="15dp"
-                app:cardBackgroundColor="@color/api_card_color"
-                app:cardCornerRadius="10dp">
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="10dp"
-                        android:textStyle="bold"
-                        android:textAllCaps="true"
-                        android:textColor="@color/api_title_color"
-                        android:textSize="16sp"
-                        android:text="Akvakulturregisteret" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:textColor="@color/api_text_color"
-                        android:text="Navn på oppdrettsanlegg og plassering" />
-
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <!-- APT-4 -->
+            <!-- APT-3: Siteregister -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -200,20 +167,21 @@
                         android:textAllCaps="true"
                         android:textColor="@color/api_title_color"
                         android:textSize="16sp"
-                        android:text="Kartverket/GeoNorge adresseoppslag" />
+                        android:text="@string/Siteregister" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:layout_marginBottom="10dp"
+                        android:text="@string/siteregister_description"
                         android:textColor="@color/api_text_color"
-                        android:text="Adresse og kommunenummer på kartet" />
+                        tools:ignore="TextContrastCheck" />
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- APT-5 -->
+            <!-- APT-4: Map and Geonorge-->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -237,20 +205,21 @@
                         android:textAllCaps="true"
                         android:textColor="@color/api_title_color"
                         android:textSize="16sp"
-                        android:text="MET LocationForecast " />
+                        android:text="@string/map_Geonorge" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:layout_marginBottom="10dp"
+                        android:text="@string/Map_geonorge_description"
                         android:textColor="@color/api_text_color"
-                        android:text="Værvarsel for et anlegg" />
+                        tools:ignore="TextContrastCheck" />
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- APT-6 -->
+            <!-- APT-5 : MET locationforecast -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -274,7 +243,7 @@
                         android:textAllCaps="true"
                         android:textColor="@color/api_title_color"
                         android:textSize="16sp"
-                        android:text="Maps Static API" />
+                        android:text="@string/Met_locationforcast" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -282,12 +251,51 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginBottom="10dp"
                         android:textColor="@color/api_text_color"
-                        android:text="Bilde av hvert anlegg" />
+                        android:text="@string/Met_description" />
 
                 </LinearLayout>
+
             </androidx.cardview.widget.CardView>
 
-            <!-- APT-7 -->
+            <!-- APT-6 : Maps static-->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginTop="15dp"
+                app:cardBackgroundColor="@color/api_card_color"
+                app:cardCornerRadius="10dp">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="10dp"
+                        android:textStyle="bold"
+                        android:textAllCaps="true"
+                        android:textColor="@color/api_title_color"
+                        android:textSize="16sp"
+                        android:text="@string/maps_static_api" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:textColor="@color/api_text_color"
+                        android:text="@string/maps_static_description" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- APT-7 : Barentswatch fishhealth-->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -312,7 +320,7 @@
                         android:textAllCaps="true"
                         android:textColor="@color/api_title_color"
                         android:textSize="16sp"
-                        android:text="BarentsWatch FishHealth API" />
+                        android:text="@string/barentswatch_fishhealth_api" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -320,9 +328,10 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginBottom="10dp"
                         android:textColor="@color/api_text_color"
-                        android:text="Lakseanemi og pankerassykdom data" />
+                        android:text="@string/barrentswatch_description" />
 
                 </LinearLayout>
+
             </androidx.cardview.widget.CardView>
 
             <TextView
@@ -330,15 +339,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="20dp"
-                android:text="versjon 1.0"
+                android:text="@string/version"
                 android:textColor="@color/secondaryTextColor"
                 android:layout_gravity="center"
                 android:textAlignment="center"/>
 
-
-
-
         </LinearLayout>
+
     </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
