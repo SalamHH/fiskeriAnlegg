@@ -40,7 +40,7 @@ class Options {
 
         //InfectiousPressureTimeseries
         const val infectiousPressureTimeSeriesSpan =
-            20 //how many weeks from now to load in a timeseries
+            10 //how many weeks from now to load in a timeseries
         const val siteRadius = 1 //the amount of grids around the site to use in timeseriesdata,
         //a value of 1 corresponds to using a 3x3 grid(the site grid, and 1 grid point all around)
         //and a value of 2 to a 5x5 grid (the site grid, and 2 grid points all around).

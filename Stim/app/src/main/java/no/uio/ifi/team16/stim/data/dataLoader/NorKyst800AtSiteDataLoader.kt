@@ -28,6 +28,9 @@ class NorKyst800AtSiteDataLoader {
     //the catalog url is assumed to be time-invariant. Here all entries are listed.
     private val catalogUrl =
         "https://thredds.met.no/thredds/catalog/fou-hi/norkyst800m-1h/catalog.html"
+    private var forecastUrlCache: String? = null
+    //private val historicalUrlCache : String? = null
+
 
     /////////////
     // LOADERS //
@@ -36,17 +39,24 @@ class NorKyst800AtSiteDataLoader {
     suspend fun load(
         site: Site
     ): NorKyst800AtSite? {
-        val forecastUrl = loadForecastUrl() ?: run {
-            Log.e(
-                TAG,
-                "Failed to load the forecast URL from the catalog, is the catalog URL correct?"
-            )
-            return null
+        //get the forecast utl from the catalo, caching the result.
+        val forecastUrl = forecastUrlCache ?: run {
+            val url = loadForecastUrl() ?: run {
+                Log.e(
+                    TAG,
+                    "Failed to load the forecast URL from the catalog, is the catalog URL correct?"
+                )
+                return null
+            }
+            forecastUrlCache = url
+            url
         }
         val currentUrl = forecastUrlIntoCurrentUrl(forecastUrl)
+
         //load for each set
         val forecastAtSite = loadWithUrl(site, forecastUrl)
         val currentAtSite = loadWithUrl(site, currentUrl)
+
         //now merge the two datasets
         return if (currentAtSite == null) {
             if (forecastAtSite == null) { //both unsuccesfull
@@ -85,7 +95,7 @@ class NorKyst800AtSiteDataLoader {
      *
      * @return Norkyst800 data in the given range
      */
-    suspend fun loadWithUrl(site: Site, baseUrl: String): NorKyst800? {
+    private suspend fun loadWithUrl(site: Site, baseUrl: String): NorKyst800? {
         val depthRange = Options.norKyst800AtSiteDepthRange
 
         //////////////////////
@@ -192,6 +202,7 @@ class NorKyst800AtSiteDataLoader {
     @OptIn(ExperimentalTime::class)
     private suspend fun requestData(url: String, name: String): String? {
         val (string, elapsed) = measureTimedValue {
+            Log.d(TAG, "Loading $name response from $url")
             Fuel.get(url).awaitStringResult().onError { error ->
                 Log.e(TAG, "Failed to load norkyst800data - $name from $url due to:\n $error")
                 return null
@@ -203,7 +214,7 @@ class NorKyst800AtSiteDataLoader {
                 return null
             }
         }
-        Log.e(TAG, "Loaded $name response from $url in $elapsed")
+        Log.d(TAG, "Loaded $name response from $url in $elapsed")
 
         if (string.isEmpty()) {
             Log.e(TAG, "Empty $name response")
