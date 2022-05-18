@@ -1,14 +1,11 @@
 package no.uio.ifi.team16.stim
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.appcompat.widget.SearchView
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,7 +16,6 @@ import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.maps.android.heatmaps.HeatmapTileProvider
 import com.leinardi.android.speeddial.SpeedDialActionItem
-import com.leinardi.android.speeddial.SpeedDialView
 import no.uio.ifi.team16.stim.data.Municipality
 import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.databinding.FragmentMapBinding
@@ -41,7 +37,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
 
     private lateinit var map: GoogleMap
     private lateinit var binding: FragmentMapBinding
-    private lateinit var speedDial: SpeedDialView
+    //private lateinit var speedDial: SpeedDialView
     private var heatMapUsed: SpeedDialActionItem? = null
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
     private var locationClient: FusedLocationProviderClient? = null
@@ -69,7 +65,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         }
 
         binding = FragmentMapBinding.inflate(layoutInflater)
-        speedDial = binding.speedDial
+        //speedDial = binding.speedDial
 
         val mapFragment = SupportMapFragment.newInstance()
         activity?.supportFragmentManager?.beginTransaction()?.add(R.id.mapView, mapFragment)?.commit()
@@ -101,6 +97,15 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
 
         setHasOptionsMenu(true)
 
+        binding.heatMapButton.setOnClickListener {
+            usingHeatmap = if (usingHeatmap) {
+                tileOverlay?.remove()
+                false
+            } else {
+                drawHeatmap(map)
+                true
+            }
+        }
 
 
         return binding.root
@@ -176,7 +181,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         }
 
         closeKeyboard()
-        initSpeedDial(requireContext(), googleMap)
     }
 
     /**
@@ -309,9 +313,8 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
             viewModel.loadSitesAtLocation(center)
         }
         if (usingHeatmap) {
-            heatMapUsed?.let { heatMap ->
-                drawHeatmap(heatMap, map)
-            }
+            drawHeatmap(map)
+            Log.d(TAG, "AAAAAAAAAAAAAAAAAAAAAAAA")
         }
     }
 
@@ -377,78 +380,34 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
 
     var tileOverlay: TileOverlay? = null
 
-    private fun initSpeedDial(context: Context, googleMap: GoogleMap) {
+    private fun drawHeatmap(googleMap: GoogleMap): Boolean {
+        // INFECTIOUSPRESSURE HEATMAP
+        viewModel.getInfectiousPressureData()
+            .observe(viewLifecycleOwner) { infectiousPressure ->
+                val z = googleMap.cameraPosition.zoom
+                val screenBound = googleMap.projection.visibleRegion.latLngBounds
 
-        //val xRange = fromClosedRange(0,2602,50) //IMPORTANT: THESE ARE THE CORRECT WAYS TO INDEX!
-        //val yRange = fromClosedRange(0,902,50)
+                val n = if (z < 9) {
+                    1
+                } else {
+                    Math.max(1 + 20 * (z - 9.884714) / (4.992563 - 9.884714), 1.0).toInt()
+                }
 
-        speedDial.addActionItem(
-            SpeedDialActionItem.Builder(R.id.heatmap_infectiousPressure, R.drawable.mdi___virus)
-                .setFabBackgroundColor(ContextCompat.getColor(context, R.color.dark_skyblue))
-                .setFabImageTintColor(ContextCompat.getColor(context, R.color.white))
-                .create()
-        )
-        speedDial.addActionItem(
-            SpeedDialActionItem.Builder(R.id.heatmap_salinity, R.drawable.salt)
-                .setFabBackgroundColor(ContextCompat.getColor(context, R.color.dark_skyblue))
-                .setFabImageTintColor(ContextCompat.getColor(context, R.color.white))
-                .create()
-        )
-        speedDial.addActionItem(
-            SpeedDialActionItem.Builder(R.id.heatmap_temperature, R.drawable.farevarsel)
-                .setFabBackgroundColor(ContextCompat.getColor(context, R.color.dark_skyblue))
-                .setFabImageTintColor(ContextCompat.getColor(context, R.color.white))
-                .create()
-        )
-        speedDial.addActionItem(
-            SpeedDialActionItem.Builder(R.id.heatmap_velocity, R.drawable.down_icon)
-                .setFabBackgroundColor(ContextCompat.getColor(context, R.color.dark_skyblue))
-                .setFabImageTintColor(ContextCompat.getColor(context, R.color.white))
-                .create()
-        )
-
-        speedDial.setOnActionSelectedListener(SpeedDialView.OnActionSelectedListener { actionItem ->
-            heatMapUsed = actionItem
-            usingHeatmap = true
-            val result = drawHeatmap(actionItem, googleMap)
-            speedDial.close()
-            result
-        })
-    }
-
-    private fun drawHeatmap(actionItem: SpeedDialActionItem, googleMap: GoogleMap): Boolean {
-        tileOverlay?.remove()
-        when (actionItem.id) {
-            R.id.heatmap_infectiousPressure -> {
-                Toast.makeText(
-                    context,
-                    "Speed Dial 'infectiousPressure' klikket!",
-                    Toast.LENGTH_LONG
-                ).show()
-                // INFECTIOUSPRESSURE HEATMAP
-                Log.d(TAG, "USING INFECTIOUSPRESSURE")
-                viewModel.getInfectiousPressureData()
-                    .observe(viewLifecycleOwner) { infectiousPressure ->
-                        val z = googleMap.cameraPosition.zoom
-                        val screenBound = googleMap.projection.visibleRegion.latLngBounds
-
-                        val n =
-                            Math.max(1 + 20 * (z - 9.884714) / (4.992563 - 9.884714), 1.0).toInt()
-                        val scale = 50.0
-                        infectiousPressure?.let {
-                            val data = it.getHeatMapData(screenBound, n)
-                            val heatMapProvider = HeatmapTileProvider.Builder()
-                                .weightedData(data) // load our weighted data
-                                .radius((scale).roundToInt()) // finn måte å gjøre om til 800x800 m
-                                .build()
-                            tileOverlay = googleMap.addTileOverlay(
-                                TileOverlayOptions().tileProvider(heatMapProvider)
-                            )
-                        }
+                val scale = 50.0
+                infectiousPressure?.let {
+                    val data = it.getHeatMapData(screenBound, n)
+                    if (data.isNotEmpty()) {
+                        tileOverlay?.remove()
+                        val heatMapProvider = HeatmapTileProvider.Builder()
+                            .weightedData(data) // load our weighted data
+                            .radius((scale).roundToInt()) // finn måte å gjøre om til 800x800 m
+                            .build()
+                        tileOverlay = googleMap.addTileOverlay(
+                            TileOverlayOptions().tileProvider(heatMapProvider)
+                        )
                     }
-                return true // false will close it without animation
+                }
             }
-        }
-        return false
+        return true // false will close it without animation
     }
 }
