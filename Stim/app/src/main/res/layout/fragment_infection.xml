@@ -266,7 +266,7 @@
                             android:textColor="@color/primaryTextColor"
                             android:textSize="13sp"
                             android:lineSpacingMultiplier="1.2"
-                            android:gravity="fill_horizontal" />
+                            android:gravity="center" />
 
                         <ImageView
                             android:id="@+id/pil"
