@@ -75,27 +75,14 @@ class InfectiousPressure(
             Pair(x / 800, y / 800)
         }
 
-        //Log.d(TAG, "${screenBound.northeast.asLatLong()} to ${projection.project(LatLong(northEastIndex.first.toDouble(), northEastIndex.second.toDouble()))}")
-
-        //find "distance" on screen
-        val height = (southWestIndex.first - northEastIndex.first)
-        val width = (northEastIndex.second - southWestIndex.second)
-        Log.d(
-            TAG,
-            "NE: ${screenBound.northeast}, SW: ${screenBound.southwest}\\NEi: ${northEastIndex}, SWi: ${southWestIndex}\\, HEIGHT: ${height}, WIDTH: ${width}"
-        )
-        //we want height/chunks = num nodes =>
-
         val maxX = Math.min(northWestIndex.second.roundToInt(), Options.norKyst800XEnd - 1)
         val minX = Math.max(southEastIndex.second.roundToInt(), 0)
         val maxY = Math.min(northEastIndex.first.roundToInt(), Options.norKyst800YEnd - 1)
         val minY = Math.max(southWestIndex.first.roundToInt(), 0)
 
-        val xStride = 1 //Math.max(1, (width / Options.heatMapResolution).roundToInt())
-        val yStride = 1 //Math.max(1, (height / Options.heatMapResolution).roundToInt())
+        val xRange = IntProgression.fromClosedRange(minX, maxX, n)
+        val yRange = IntProgression.fromClosedRange(minY, maxY, n)
 
-        val xRange = IntProgression.fromClosedRange(minX, maxX, n) //
-        val yRange = IntProgression.fromClosedRange(minY, maxY, n) //
         Log.d(
             TAG,
             "MAKING HEATMAP ${xRange.first} - ${xRange.last} | ${xRange.step} ::::: ${yRange.first} - ${yRange.last} | ${yRange.step}"
@@ -103,12 +90,10 @@ class InfectiousPressure(
 
         val dx = Options.defaultNorKyst800XStride * 800
         val dy = Options.defaultNorKyst800YStride * 800
-        //Log.d(TAG, "making salinity-heatmap")
+        //todo: optimize
         return concentration.get(xRange, yRange)
             .flatMapIndexed { x, row -> //get at surface(0), current time.flatMapIndexed { y, row ->
                 row.mapIndexed { y, entry ->
-                    //Log.d(TAG, entry.toString())
-                    //og.d(TAG, entry.toString())
                     WeightedLatLng(
                         inverseProjection.projectXY(
                             Pair(
