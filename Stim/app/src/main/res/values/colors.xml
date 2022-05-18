@@ -42,4 +42,12 @@
 
 
 
+    <!-- colors for API-info in app info -->
+    <color name="yee">#799CD5</color>
+    <color name="api_card_color">@color/secondaryTextColor</color>
+    <color name="api_title_color">@color/api_text_color</color>
+    <color name="api_text_color">#2B2A2A</color>
+
+
+
 </resources>
