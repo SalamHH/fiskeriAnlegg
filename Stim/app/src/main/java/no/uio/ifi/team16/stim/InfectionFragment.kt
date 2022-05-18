@@ -86,49 +86,56 @@ class InfectionFragment : StimFragment() {
         }
 
         viewModel.getInfectiousPressureTimeSeriesData(site).observe(viewLifecycleOwner) {
-            it?.observeConcentrationsGraph(viewLifecycleOwner) { graph ->
-                val infectionData =
-                    graph.map { xy -> xy.y }.toTypedArray() //get contamination as separate list
-                val weekList = graph.map { xy -> xy.x } //get weeks as separate list
+            it?.let { inf ->
+                //write current infectioninfo to texgtview
+                binding.infectionValue.text = "%4.2f".format(inf.getCurrentConcentration())
 
-                //CREATE TABLE
-                createTable(infectionData, weekList, inflater, container)
+                //make a graph when historical data is ready
+                inf.observeConcentrationsGraph(viewLifecycleOwner) { graph ->
+                    val infectionData =
+                        graph.map { xy -> xy.y }.toTypedArray() //get contamination as separate list
+                    val weekList = graph.map { xy -> xy.x } //get weeks as separate list
 
-                //CHART
-                val linedataset = LineDataSet(
-                    graph,
-                    CHART_LABEL
-                )
+                    //CREATE TABLE
+                    createTable(infectionData, weekList, inflater, container)
 
-                //set max of yaxis to max of loaded dataset
-                //THE BEZIER CURVE DOES NOT CONSERVE MIN / MAX OF INTERPOLATED POINTS, SO IT WILL CLIP!!
-                //TODO get interpolation(CUBIC BEZIER), and find min max of that, or change to linear(not bezier), or use max+1 min-1
-                binding.infectionChart.apply {
-                    axisLeft.apply {
-                        if (infectionData.isNotEmpty()) {
-                            axisMaximum =
-                                infectionData.maxOf { v -> v } + 1f //clipping might still occurr
+                    //CHART
+                    val linedataset = LineDataSet(
+                        graph,
+                        CHART_LABEL
+                    )
+
+                    //set max of yaxis to max of loaded dataset
+                    //THE BEZIER CURVE DOES NOT CONSERVE MIN / MAX OF INTERPOLATED POINTS, SO IT WILL CLIP!!
+                    //TODO get interpolation(CUBIC BEZIER), and find min max of that, or change to linear(not bezier), or use max+1 min-1
+                    binding.infectionChart.apply {
+                        axisLeft.apply {
+                            if (infectionData.isNotEmpty()) {
+                                axisMaximum =
+                                    infectionData.maxOf { v -> v } + 1f //clipping might still occurr
+                            }
                         }
                     }
-                }
 
-                chartStyle.styleLineDataSet(linedataset, requireContext())
-                binding.infectionChart.data = LineData(linedataset)
-                binding.infectionChart.invalidate()
-                chartStyle.styleChart(binding.infectionChart)
+                    chartStyle.styleLineDataSet(linedataset, requireContext())
+                    binding.infectionChart.data = LineData(linedataset)
+                    binding.infectionChart.invalidate()
+                    chartStyle.styleChart(binding.infectionChart)
 
-                //STATUS
-                if (infectionData.isNotEmpty()) {
-                    binding.infectionStatusText.text = calculateInfectionStatusText(infectionData)
-                    if (calculateInfectionStatusIcon(infectionData) != null) {
-                        binding.StatusIcon.setImageDrawable(
-                            calculateInfectionStatusIcon(
-                                infectionData
+                    //STATUS
+                    if (infectionData.isNotEmpty()) {
+                        binding.infectionStatusText.text =
+                            calculateInfectionStatusText(infectionData)
+                        if (calculateInfectionStatusIcon(infectionData) != null) {
+                            binding.StatusIcon.setImageDrawable(
+                                calculateInfectionStatusIcon(
+                                    infectionData
+                                )
                             )
-                        )
+                        }
+                    } else {
+                        binding.infectionStatusText.text = "Fant ikke smittedata"
                     }
-                } else {
-                    binding.infectionStatusText.text = "Fant ikke smittedata"
                 }
             }
         }
