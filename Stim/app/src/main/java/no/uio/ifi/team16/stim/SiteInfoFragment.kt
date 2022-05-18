@@ -228,13 +228,34 @@ class SiteInfoFragment : StimFragment() {
     }
 
     private fun setWaterInfo() {
+        binding.temp.text = "..."
+        binding.varsel.text = "..."
+        binding.strom.text = "..."
         viewModel.getNorKyst800AtSiteData(site).observe(viewLifecycleOwner) {
             it?.apply { //succesfully loaded data
-                binding.temp.text = "%4.1f".format(getTemperature()) + "°"
-                binding.varsel.text = "%4.1f".format(getSalinity())
+                //but there might be no data around!
+                val temp = getTemperature()
+                val salt = getSalinity()
+                val strom = getVelocity()
+                if (temp != null) {
+                    binding.temp.text = "%4.1f".format(getTemperature()) + "°"
+                } else { //lastet inn data korrekt, men ingen tilgjengelig i nærheten
+                    binding.temp.text = "N/A"
+                }
+                if (temp != null) {
+                    binding.varsel.text = "%4.1f".format(getSalinity())
+                } else { //lastet inn data korrekt, men ingen tilgjengelig i nærheten
+                    binding.varsel.text = "N/A"
+                }
+                if (temp != null) {
+                    binding.strom.text = "%4.1f m/s".format(getVelocity())
+                } else { //lastet inn data korrekt, men ingen tilgjengelig i nærheten
+                    binding.strom.text = "N/A"
+                }
             } ?: run {
                 binding.temp.text = "N/A"
                 binding.varsel.text = "N/A"
+                binding.strom.text = "N/A"
             }
         }
     }

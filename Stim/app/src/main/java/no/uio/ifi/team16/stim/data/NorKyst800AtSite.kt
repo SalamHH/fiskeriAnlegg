@@ -110,6 +110,61 @@ data class NorKyst800AtSite(
             Entry(seconds / 3600, temp)
         }
 
+    fun getVelocity(): Float? = getVelocity(getCurrentTimeIndex(), 0, 0, 0)
+
+    fun getVelocity(time: Int, depth: Int, y: Int, x: Int): Float? {
+        val u = norKyst800.velocity.first.get(time, depth, radius + y, radius + x)
+            ?: averageOf(time, depth, norKyst800.temperature)
+        val v = norKyst800.velocity.second.get(time, depth, radius + y, radius + x)
+            ?: averageOf(time, depth, norKyst800.temperature)
+        //val w = norKyst800.velocity.third.get(time, depth, radius + y, radius + x)
+        //    ?: averageOf(time, depth, norKyst800.temperature) TODO add vertical component?
+        return u?.let { uu ->
+            v?.let { vv ->
+                Math.sqrt((u * u + v * v).toDouble()).toFloat()
+            }
+        }
+    }
+
+    fun getVelocityVector(): Triple<Float, Float, Float>? =
+        getVelocityVector(getCurrentTimeIndex(), 0, radius, radius)
+
+    fun getVelocityVector(time: Int, depth: Int, y: Int, x: Int): Triple<Float, Float, Float>? {
+        var u = norKyst800.velocity.first.get(time, depth, radius + y, radius + x)
+        var v = norKyst800.velocity.second.get(time, depth, radius + y, radius + x)
+        var w = norKyst800.velocity.third.get(time, depth, radius + y, radius + x)
+        if (u == null || v == null || w == null) {
+            u = averageOf(time, 0, norKyst800.velocity.first)
+            v = averageOf(time, 0, norKyst800.velocity.second)
+            w = averageOf(time, 0, norKyst800.velocity.third)
+            if (u == null || v == null || w == null) {
+                return null
+            }
+        }
+        return Triple(
+            u,
+            v,
+            w
+        )
+    }
+
+    fun getVelocityDirectionInXYPlane(): Float? =
+        getVelocityDirectionInXYPlane(getCurrentTimeIndex(), 0, radius, radius)
+
+    fun getVelocityDirectionInXYPlane(time: Int, depth: Int, y: Int, x: Int): Float? {
+        val u = norKyst800.velocity.first.get(time, depth, radius + y, radius + x)
+            ?: averageOf(time, depth, norKyst800.temperature)
+        val v = norKyst800.velocity.second.get(time, depth, radius + y, radius + x)
+            ?: averageOf(time, depth, norKyst800.temperature)
+        //val w = norKyst800.velocity.third.get(time, depth, radius + y, radius + x)
+        //    ?: averageOf(time, depth, norKyst800.temperature) TODO add vertical component?
+        return u?.let { _ ->
+            v?.let { _ -> //return null if any of them null
+                Math.sqrt((u * u + v * v).toDouble()).toFloat()
+            }
+        }
+    }
+
     ///////////////
     // UTILITIES //
     ///////////////

@@ -196,6 +196,7 @@ class WaterFragment : Fragment() {
         tempChartStyle = TemperatureLineStyle(requireContext())
 
         viewModel.getNorKyst800AtSiteData(site).observe(viewLifecycleOwner) {
+
             it?.apply {
                 temperatureChart = it.getTemperatureAtSurfaceAsGraph()
             }
@@ -235,13 +236,14 @@ class WaterFragment : Fragment() {
      * Uses same layout as the infection table.
      */
     private fun setTemperatureTable(inflater: LayoutInflater, container: ViewGroup?) {
+        //TODO: i mapper ikke nødvendigvis til timer! bruk heller x
         viewModel.getNorKyst800AtSiteData(site).observe(viewLifecycleOwner) {
             it?.apply {
                 binding.tablelayout.removeAllViews()
                 val tempgraphdata = getTemperatureAtSurfaceAsGraph()
-                for (i in 0..23) {
-                    val x = tempgraphdata[i].x
-                    val y = tempgraphdata[i].y
+                tempgraphdata.forEachIndexed { i, e ->
+                    val x = e.x
+                    val y = e.y
                     val newRow = TableRow(requireContext())
                     val view = inflater.inflate(R.layout.infection_table_row, container, false)
                     view.findViewById<TextView>(R.id.table_display_week).text =
@@ -275,14 +277,15 @@ class WaterFragment : Fragment() {
      */
 
     private fun setSalinityTable(inflater: LayoutInflater, container: ViewGroup?) {
+        //TODO: i mapper ikke nødvendigvis til timer! bruk heller x
         viewModel.getNorKyst800AtSiteData(site).observe(viewLifecycleOwner) {
             it?.apply {
                 val saltgraphdata = getSalinityAtSurfaceAsGraph()
                 binding.Salttablelayout.removeAllViews()
 
-                for (i in 0..23) {
-                    val x = saltgraphdata[i].x
-                    val y = saltgraphdata[i].y
+                saltgraphdata.forEachIndexed { i, e ->
+                    val x = e.x
+                    val y = e.y
                     val newRow = TableRow(requireContext())
                     val view = inflater.inflate(R.layout.infection_table_row, container, false)
                     view.findViewById<TextView>(R.id.table_display_week).text =
@@ -342,12 +345,13 @@ class WaterFragment : Fragment() {
                             "%4.1f".format(salt)
                         } ?: "N/A"
                     binding.Velocitytext.text =
-                        getVelocity(site.latLong, 0, 0)?.let { velocity ->
+                        getVelocity()?.let { velocity ->
                             "%4.1f m/s".format(velocity)
                         } ?: "N/A"
-                    val velocity = getVelocityDirectionInXYPlane(site.latLong, 0, 0)
+                    val velocity = getVelocityDirectionInXYPlane()
                     if (velocity != null) {
                         setVelocityDirection(velocity)
+                    }
                     hasLoadedData = true
                 } ?: run {
                     Toast.makeText(
@@ -357,10 +361,11 @@ class WaterFragment : Fragment() {
                     ).show()
                     binding.temperatureTextview.text = "N/A"
                     binding.saltTextview.text = "N/A"
-                        binding.Velocitytext.text = "N/A"
+                    binding.Velocitytext.text = "N/A"
                 }
             }
         }
+
 
         //try to get from global data(must be loaded at some point!)
         viewModel.getNorKyst800Data().observe(viewLifecycleOwner) {
@@ -375,13 +380,14 @@ class WaterFragment : Fragment() {
 
                             "%4.1f".format(salt)
                         } ?: "N/A"
-                    binding.SorroundingVelocitytext.text =
+                    binding.Velocitytext.text =
                         getSorroundingVelocity(site.latLong, 0, 0)?.let { velocity ->
                             "%4.1f m/s".format(velocity)
                         } ?: "N/A"
                     val velocity = getVelocityDirectionInXYPlane(site.latLong, 0, 0)
                     if (velocity != null) {
                         setVelocityDirection(velocity)
+                    }
                     hasLoadedData = true
                 } ?: run {
                     Toast.makeText(
@@ -421,7 +427,6 @@ class WaterFragment : Fragment() {
         }
     }
 
-    //TODO - does this work??
     private fun setVelocityDirection(direction: Float) {
         var degrees = 270 - (direction / Math.PI) * 180
         Log.d("GIF", "radians $direction + interpreted to degrees $degrees")
