@@ -72,7 +72,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
 
         //Bottom Sheet behavior
         bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet)
-        bottomSheetBehavior.setPeekHeight(230, true)
+        bottomSheetBehavior.setPeekHeight(290, true)
         bottomSheetBehavior.isDraggable = true
         bottomSheetBehavior.isHideable = false
 
@@ -99,9 +99,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         mSearchView.setBackgroundResource(R.drawable.long_circle)
 
         mSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            /**
-             * Called when the user searches for something
-             */
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (query != null && query.isNotBlank()) {
                     doSiteSearchOnMovement = false
@@ -114,9 +111,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
                 return false
             }
 
-            /**
-             * Called on text input in search field, does nothing
-             */
             override fun onQueryTextChange(newText: String): Boolean {
                 return false
             }
@@ -177,8 +171,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
                 )
             binding.recyclerView.adapter = adapter
 
-            bottomSheetBehavior.setPeekHeight(400, true)
-            bottomSheetBehavior.isDraggable = true
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
 
             binding.openHeaderBottomsheet.kommuneText.text = getString(R.string.blank)

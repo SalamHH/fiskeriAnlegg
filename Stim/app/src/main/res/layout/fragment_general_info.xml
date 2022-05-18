@@ -31,7 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        tools:context=".WaterFragment"
+        tools:context=".GeneralInfoFragment"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -270,19 +270,60 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
+                        <GridLayout
+                            android:id="@+id/buttonGrid"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_margin="5dp"
+                            android:orientation="horizontal"
+                            android:rowCount="1"
+                            android:columnCount="2">
+
+                            <LinearLayout android:layout_columnWeight="0.5">
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/tempchartButton"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginEnd="2dp"
+                                    android:backgroundTint="@color/dark_skyblue"
+                                    android:fontFamily="@font/montserrat_bold"
+                                    android:text="Vanntemperatur"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                            <LinearLayout android:layout_columnWeight="0.5">
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/salinitychartButton"
+                                    android:layout_height="match_parent"
+                                    android:layout_width="wrap_content"
+                                    android:layout_marginStart="2dp"
+                                    android:backgroundTint="@color/dark_skyblue"
+                                    android:text="Saltholdighet"
+                                    android:fontFamily="@font/montserrat_bold"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                        </GridLayout>
+
                         <TextView
                             android:id="@+id/salinityChartHeader"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_below="@id/buttonGrid"
                             android:layout_centerHorizontal="true"
                             android:layout_marginStart="5dp"
-                            android:layout_marginTop="10dp"
+                            android:layout_marginTop="5dp"
                             android:layout_marginEnd="5dp"
                             android:layout_marginBottom="5dp"
+                            android:fontFamily="@font/montserrat_light_italic"
                             android:text="Graf over saltholdighet"
-                            android:textAllCaps="true"
                             android:textColor="@color/primaryTextColor"
-                            android:textSize="16sp" />
+                            android:textSize="15sp" />
 
                         <LinearLayout
                             android:id="@+id/graphview"
@@ -325,20 +366,6 @@
                             android:textStyle="italic"
                             android:textColor="@color/primaryTextColor"
                             android:textSize="12sp" />
-
-                        <ToggleButton
-                            android:id="@+id/chartButton"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginEnd="2dp"
-                            android:layout_below="@id/ukenrtag"
-                            android:backgroundTint="@color/dark_skyblue"
-                            android:fontFamily="@font/montserrat_bold"
-                            android:textColor="@color/colorAccent"
-                            android:textOn= "Se Saltholdighet"
-                            android:textOff="Se Vanntemperatur"
-                            android:checked="false"
-                            android:textStyle="bold" />
 
                     </RelativeLayout>
 

@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorAccent">
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -33,6 +32,19 @@
             android:clickable="true"
             android:focusable="true" />
 
+        <!--<androidx.appcompat.widget.SearchView
+            android:id="@+id/searchView"
+            android:layout_width="313dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="50dp"
+            android:background="@color/dark_skyblue"
+            android:elevation="5dp"
+            app:iconifiedByDefault="false"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:queryHint="Search Here" />
+          -->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -41,7 +53,7 @@
         android:id="@+id/bottom_sheet"
         style="@style/Widget.MaterialComponents.BottomSheet"
         android:layout_width="match_parent"
-        android:layout_height="700dp"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         app:layout_insetEdge="bottom"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
@@ -54,7 +66,6 @@
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorAccent"
             tools:listitem="@layout/recycleview_element_overview" />
 
     </LinearLayout>

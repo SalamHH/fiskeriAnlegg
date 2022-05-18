@@ -22,7 +22,6 @@ class TutorialFragment : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.fragment_tutorial)
-        window.statusBarColor = getColor(R.color.skyblue)
 
         // Instantiate a ViewPager2 and a PagerAdapter.
         viewPager = findViewById(R.id.viewpager)
