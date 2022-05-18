@@ -26,7 +26,11 @@ import no.uio.ifi.team16.stim.util.LatLong
  */
 class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveListener {
 
-    private val TAG = "MapFragment"
+    companion object {
+        private const val TAG = "MapFragment"
+        private const val MIN_ZOOM_FOR_MAP_SEARCH = 6F
+    }
+
     private lateinit var map: GoogleMap
     private lateinit var binding: FragmentMapBinding
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
@@ -36,7 +40,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
     private var mapBounds: CameraPosition? = null
     private var zoomLevel = 12F
     private val markerMap: MutableMap<Marker, Site> = mutableMapOf()
-    private var moveToMunicipality = false
+    private var doSiteSearchOnMovement = true
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -97,7 +101,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         mSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (query != null && query.isNotBlank()) {
-                    moveToMunicipality = true
+                    doSiteSearchOnMovement = false
                     closeKeyboard()
                     map.clear()
                     markerMap.clear()
@@ -131,15 +135,10 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         mapReady = true
 
         map.setOnCameraMoveListener(this::onCameraMove)
-        map.setOnCameraIdleListener(this::onRefresh)
+        map.setOnCameraIdleListener(this::onCameraIdle)
         map.setMapStyle(MapStyleOptions.loadRawResourceStyle(requireContext(), R.raw.map_style))
         map.uiSettings.isMyLocationButtonEnabled = false
-        map.setOnCameraMoveStartedListener {
-            if (it == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
-                bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-                closeKeyboard()
-            }
-        }
+        map.setOnCameraMoveStartedListener(this::onCameraMoveStarted)
 
         mapBounds?.let { bounds ->
             // Move to last camera position
@@ -178,7 +177,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
 
             val cameraUpdate = CameraUpdateFactory.newLatLngZoom(sites[0].latLong.toGoogle(), zoomLevel)
             map.animateCamera(cameraUpdate)
-            moveToMunicipality = false
         }
     }
 
@@ -189,7 +187,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         if (mapReady && municipality != null && municipality.sites.isNotEmpty()) {
             onSiteUpdate(municipality.sites)
 
-            if (moveToMunicipality) {
+            if (!doSiteSearchOnMovement) {
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
                 if (municipality.sites.size > 1) {
                     // Move camera to fit all sites
@@ -229,7 +227,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
             val firstSite = municipality.sites[0]
             binding.openHeaderBottomsheet.kommuneText.text = firstSite.placement?.municipalityName
         }
-        moveToMunicipality = false
     }
 
     /**
@@ -267,11 +264,24 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
     }
 
     /**
-     * Called when the user pressed the load button
+     * Called when the user starts moving the map
      */
-    private fun onRefresh() {
-        val center = LatLong.fromGoogle(map.cameraPosition.target)
-        viewModel.loadSitesAtLocation(center)
+    private fun onCameraMoveStarted(reason: Int) {
+        if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            closeKeyboard()
+            doSiteSearchOnMovement = true
+        }
+    }
+
+    /**
+     * Called when the user has stopped moving the map
+     */
+    private fun onCameraIdle() {
+        if (doSiteSearchOnMovement && zoomLevel >= MIN_ZOOM_FOR_MAP_SEARCH) {
+            val center = LatLong.fromGoogle(map.cameraPosition.target)
+            viewModel.loadSitesAtLocation(center)
+        }
     }
 
     /**
@@ -286,8 +296,11 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
      * Adds or removes a site from favourites
      */
     private fun favoriteOnClick(site: Site, checked: Boolean) {
-        if (checked) viewModel.registerFavouriteSite(site)
-        else viewModel.removeFavouriteSite(site)
+        if (checked) {
+            viewModel.registerFavouriteSite(site)
+        } else {
+            viewModel.removeFavouriteSite(site)
+        }
     }
 
     /**
@@ -322,7 +335,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
                 if (location != null) {
                     val latLng = LatLng(location.latitude, location.longitude)
                     map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel))
-                    onRefresh()
+                    onCameraIdle()
                 }
             }
         }
