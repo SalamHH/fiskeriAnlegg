@@ -16,7 +16,8 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
         app:srcCompat="@drawable/oval_background"
-        app:tint="#80B6B4B4" />
+        app:tint="#80B6B4B4"
+        tools:ignore="ContentDescription,ImageContrastCheck" />
 
     <TextView
         android:id="@+id/header_btmSheet"
@@ -27,7 +28,8 @@
         android:gravity="center"
         android:text="@string/bottomsheet_default_header"
         android:textColor="@color/skyblue"
-        android:textSize="30sp" />
+        android:textSize="30sp"
+        tools:ignore="TextContrastCheck" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -39,7 +41,8 @@
             android:layout_height="60dp"
             android:src="@drawable/map"
             app:tint="@color/darker_skyblue"
-            android:padding="12dp" />
+            android:padding="12dp"
+            tools:ignore="ContentDescription" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -52,7 +55,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat_bold"
-                android:text="Kommune:"
+                android:text="@string/municipality_"
                 android:textColor="@color/primaryTextColor"
                 android:textStyle="bold" />
 
@@ -72,7 +75,8 @@
             android:layout_height="60dp"
             android:src="@drawable/info"
             app:tint="@color/darker_skyblue"
-            android:padding="12dp" />
+            android:padding="12dp"
+            tools:ignore="ContentDescription" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -85,7 +89,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat_bold"
-                android:text="Antall sites funnet:"
+                android:text="@string/number_of_sites_found"
                 android:textColor="@color/primaryTextColor"
                 android:textStyle="bold" />
 

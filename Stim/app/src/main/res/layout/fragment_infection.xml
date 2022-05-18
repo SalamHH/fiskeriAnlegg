@@ -269,7 +269,7 @@
                             android:gravity="center" />
 
                         <ImageView
-                            android:id="@+id/pil"
+                            android:id="@+id/arrow"
                             android:layout_width="15dp"
                             android:layout_height="15dp"
                             android:layout_gravity="center"

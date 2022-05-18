@@ -74,14 +74,14 @@ class InfectionFragment : StimFragment() {
                     AutoTransition()
                 )
                 binding.infoTextExtra.visibility = View.GONE
-                binding.pil.setImageResource(R.drawable.down_darkblue)
+                binding.arrow.setImageResource(R.drawable.down_darkblue)
             } else {
                 TransitionManager.beginDelayedTransition(
                     binding.InformationCard,
                     AutoTransition()
                 )
                 binding.infoTextExtra.visibility = View.VISIBLE
-                binding.pil.setImageResource(R.drawable.up_darkblue)
+                binding.arrow.setImageResource(R.drawable.up_darkblue)
             }
         }
 

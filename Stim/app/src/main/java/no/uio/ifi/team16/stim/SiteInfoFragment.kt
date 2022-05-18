@@ -40,11 +40,11 @@ class SiteInfoFragment : StimFragment() {
         //fill inn data not requiring loads
         binding.LoadingScreen.loadingLayout.visibility = View.VISIBLE //show loading screen
         binding.siteName.text = site.name
-        binding.tempIdag.text =
+        binding.temperatureToday.text =
             getString(R.string.temperature, site.weatherForecast?.first?.temperature)
-        binding.tempImorgen.text =
+        binding.temperatureTomorrow.text =
             getString(R.string.temperature, site.weatherForecast?.second?.temperature)
-        binding.posisjonView.text = "${site.latLong.lat}, ${site.latLong.lng}"
+        binding.positionView.text = "${site.latLong.lat}, ${site.latLong.lng}"
 
         //weatherdata
         viewModel.getWeatherData().observe(viewLifecycleOwner, this::onWeatherLoaded)
@@ -94,30 +94,30 @@ class SiteInfoFragment : StimFragment() {
                     AutoTransition()
                 )
                 binding.relativelayout.setVisibility(View.GONE)
-                binding.pil.setImageResource(R.drawable.down_darkblue)
+                binding.arrow.setImageResource(R.drawable.down_darkblue)
             } else {
                 TransitionManager.beginDelayedTransition(
                     binding.generalInfoBox,
                     AutoTransition()
                 )
                 binding.relativelayout.visibility = View.VISIBLE
-                binding.pil.setImageResource(R.drawable.up_darkblue)
+                binding.arrow.setImageResource(R.drawable.up_darkblue)
             }
 
             //anleggsnummer
-            binding.anleggsnrView.text = site.nr.toString()
+            binding.siteNrView.text = site.nr.toString()
 
             //plassering
-            binding.plasseringView.text = site.placementType ?: "-----"
+            binding.placementView.text = site.placementType ?: "-----"
 
             //kapasitet
-            binding.kapasitetView.text = site.capacity.toString()
+            binding.capacityView.text = site.capacity.toString()
 
             //vanntype
-            binding.vannTypeView.text = site.waterType ?: "-----"
+            binding.waterTypeView.text = site.waterType ?: "-----"
 
             //kommune
-            binding.prodOmraadeView.text = site.placement?.municipalityName ?: "-----"
+            binding.municipalityView.text = site.placement?.municipalityName ?: "-----"
         }
 
         binding.weatherInfoCard.setOnClickListener {
@@ -211,18 +211,18 @@ class SiteInfoFragment : StimFragment() {
 
     private fun onWeatherLoaded(forecast: WeatherForecast?) {
         forecast?.apply {
-            binding.vaerIdag.setImageDrawable(first.icon.asDrawable(requireContext()))
-            binding.vaerImorgen.setImageDrawable(second.icon.asDrawable(requireContext()))
-            binding.tempIdag.text = getString(R.string.temperature, first.temperature)
-            binding.tempImorgen.text = getString(R.string.temperature, second.temperature)
+            binding.weatherToday.setImageDrawable(first.icon.asDrawable(requireContext()))
+            binding.weatherTomorrow.setImageDrawable(second.icon.asDrawable(requireContext()))
+            binding.temperatureToday.text = getString(R.string.temperature, first.temperature)
+            binding.temperatureTomorrow.text = getString(R.string.temperature, second.temperature)
 
             forecast.storm?.let { storm ->
                 if (storm.day.isToday()) {
-                    binding.meldtStorm.text = getString(R.string.storm_today)
+                    binding.stormSignal.text = getString(R.string.storm_today)
                 } else {
-                    binding.meldtStorm.text = getString(R.string.storm_at, storm.day.getTranslation(requireContext()))
+                    binding.stormSignal.text = getString(R.string.storm_at, storm.day.getTranslation(requireContext()))
                 }
-                binding.stormVaer.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.storm, null))
+                binding.stormWeather.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.storm, null))
             }
         }
     }
@@ -264,9 +264,9 @@ class SiteInfoFragment : StimFragment() {
     private fun setInfectionInfo() {
         viewModel.getInfectiousPressureTimeSeriesData(site).observe(viewLifecycleOwner) {
             it?.observeConcentrations(viewLifecycleOwner) { _, infectiondata ->
-                binding.fare.setImageDrawable(calculateInfectionStatusIcon(infectiondata.toTypedArray()))
+                binding.dangerSalmonLouse.setImageDrawable(calculateInfectionStatusIcon(infectiondata.toTypedArray()))
             } ?: run { //failed to load InfPRTS:
-                binding.fare.setImageDrawable(
+                binding.dangerSalmonLouse.setImageDrawable(
                     ResourcesCompat.getDrawable(
                         resources,
                         R.drawable.no_data,

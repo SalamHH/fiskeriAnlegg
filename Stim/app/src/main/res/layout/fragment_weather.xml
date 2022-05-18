@@ -19,11 +19,12 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:elevation="20dp"
+            android:padding="7dp"
             android:src="@drawable/circle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:padding="7dp"
-            android:elevation="20dp"/>
+            tools:ignore="ContentDescription,ImageContrastCheck" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -68,7 +69,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/circleFilledWhiteIcon4"
                 app:srcCompat="@drawable/mdi___cloud_outline"
-                tools:ignore="ContentDescription" />
+                tools:ignore="ContentDescription,ImageContrastCheck" />
 
             <TextView
                 android:id="@+id/weatherHeaderText"
@@ -90,12 +91,12 @@
                 android:id="@+id/sitename"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
                 android:fontFamily="@font/montserrat_bold"
-                android:textColor="@color/primaryTextColor"
                 android:gravity="center"
                 android:text="@string/site_name"
-                app:layout_constraintTop_toBottomOf="@id/weatherHeaderText" />
+                android:textColor="@color/primaryTextColor"
+                app:layout_constraintTop_toBottomOf="@id/weatherHeaderText"
+                tools:ignore="TextContrastCheck" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/weatherDay1"
@@ -138,7 +139,8 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="10dp"
                         android:contentDescription="@string/weather_icon"
-                        android:src="@drawable/sunny" />
+                        android:src="@drawable/sunny"
+                        tools:ignore="ImageContrastCheck" />
 
                     <TextView
                         android:id="@+id/temperatureView1"
@@ -195,7 +197,8 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="10dp"
                         android:contentDescription="@string/weather_icon"
-                        android:src="@drawable/sunny" />
+                        android:src="@drawable/sunny"
+                        tools:ignore="ImageContrastCheck" />
 
                     <TextView
                         android:id="@+id/temperatureView2"
@@ -252,7 +255,8 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="10dp"
                         android:contentDescription="@string/weather_icon"
-                        android:src="@drawable/sunny" />
+                        android:src="@drawable/sunny"
+                        tools:ignore="ImageContrastCheck" />
 
                     <TextView
                         android:id="@+id/temperatureView3"
@@ -310,7 +314,8 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="10dp"
                         android:contentDescription="@string/weather_icon"
-                        android:src="@drawable/sunny" />
+                        android:src="@drawable/sunny"
+                        tools:ignore="ImageContrastCheck" />
 
                     <TextView
                         android:id="@+id/temperatureView4"
@@ -367,7 +372,8 @@
                         android:paddingEnd="5dp"
                         android:text="@string/blank"
                         android:textColor="@color/primaryTextColor"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"
+                        tools:ignore="TextContrastCheck" />
 
                     <pl.droidsonroids.gif.GifImageView
                         android:id="@+id/stormanimation"

@@ -19,6 +19,7 @@
         tools:visibility="gone" />
 
     <!--Background for icons on toolbar -->
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,18 +30,20 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="7dp"
             android:src="@drawable/circle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:padding="7dp" />
+            tools:ignore="ContentDescription,ImageContrastCheck" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="7dp"
             android:src="@drawable/circle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:padding="7dp" />
+            tools:ignore="ContentDescription,ImageContrastCheck" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -59,7 +62,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Name of site-->
+            <!-- Name of site -->
+
             <TextView
                 android:id="@+id/siteName"
                 android:layout_width="match_parent"
@@ -70,6 +74,8 @@
                 android:text="@string/site_name"
                 android:textColor="@color/colorAccent"
                 android:textSize="45sp" />
+
+            <!-- General information card -->
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/generalInfoBox"
@@ -100,10 +106,10 @@
                         android:layout_marginEnd="5dp"
                         android:orientation="horizontal">
 
-                        <!-- GENERAL INFO ABOUT THE SITE -->
+                        <!-- General information about the site -->
 
                         <TextView
-                            android:id="@+id/generellInformasjon"
+                            android:id="@+id/generalInformation"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -111,7 +117,7 @@
                             android:layout_marginBottom="5dp"
                             android:fontFamily="@font/montserrat_semibold"
                             android:gravity="center_horizontal"
-                            android:text="Generell informasjon om anlegget"
+                            android:text="@string/general_info_about_site"
                             android:textColor="@color/primaryTextColor"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -119,7 +125,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <ImageView
-                            android:id="@+id/pil"
+                            android:id="@+id/arrow"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -127,10 +133,11 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.0"
-                            app:layout_constraintStart_toEndOf="@+id/generellInformasjon"
+                            app:layout_constraintStart_toEndOf="@+id/generalInformation"
                             app:layout_constraintTop_toTopOf="parent"
                             app:srcCompat="@drawable/down_darkblue"
-                            app:tint="@color/primaryTextColor"/>
+                            app:tint="@color/primaryTextColor"
+                            android:contentDescription="@string/ContentDescription_arrow_pointing_down" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -143,20 +150,20 @@
                         android:layout_marginBottom="5dp"
                         android:visibility="gone">
 
-                        <!-- POSISJON -->
+                        <!-- POSITION -->
 
                         <TextView
-                            android:id="@+id/posisjon"
+                            android:id="@+id/position"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
                             android:layout_marginTop="5dp"
                             android:fontFamily="@font/montserrat_semibold"
-                            android:text="Posisjon: "
+                            android:text="@string/position"
                             android:textColor="@color/primaryTextColor" />
 
                         <TextView
-                            android:id="@+id/posisjonView"
+                            android:id="@+id/positionView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentTop="true"
@@ -165,26 +172,28 @@
                             android:layout_marginEnd="5dp"
                             android:fontFamily="@font/montserrat"
                             android:text="@string/blank"
-                            android:textColor="@color/primaryTextColor" />
+                            android:textColor="@color/primaryTextColor"
+                            tools:ignore="RelativeOverlap" />
 
-                        <!-- ANLEGGSNUMMER -->
+                        <!-- SITE NUMBER -->
 
                         <TextView
+                            android:id="@+id/siteNr"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/posisjonView"
+                            android:layout_below="@id/positionView"
                             android:layout_alignParentStart="true"
                             android:layout_marginTop="5dp"
                             android:layout_marginEnd="5dp"
                             android:fontFamily="@font/montserrat_semibold"
-                            android:text="Anleggsnummer:"
+                            android:text="@string/site_number"
                             android:textColor="@color/primaryTextColor" />
 
                         <TextView
-                            android:id="@+id/anleggsnrView"
+                            android:id="@+id/siteNrView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/posisjonView"
+                            android:layout_below="@id/positionView"
                             android:layout_alignParentEnd="true"
                             android:layout_marginTop="5dp"
                             android:layout_marginEnd="5dp"
@@ -192,24 +201,25 @@
                             android:text="@string/blank"
                             android:textColor="@color/primaryTextColor" />
 
-                        <!-- PLASSERING -->
+                        <!-- PLACEMENT -->
 
                         <TextView
+                            android:id="@+id/placement"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/anleggsnrView"
+                            android:layout_below="@id/siteNrView"
                             android:layout_alignParentStart="true"
                             android:layout_marginTop="5dp"
                             android:layout_marginEnd="5dp"
                             android:fontFamily="@font/montserrat_semibold"
-                            android:text="Plassering:"
+                            android:text="@string/placement"
                             android:textColor="@color/primaryTextColor" />
 
                         <TextView
-                            android:id="@+id/plasseringView"
+                            android:id="@+id/placementView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/anleggsnrView"
+                            android:layout_below="@id/siteNrView"
                             android:layout_alignParentEnd="true"
                             android:layout_marginTop="5dp"
                             android:layout_marginEnd="5dp"
@@ -217,24 +227,25 @@
                             android:text="@string/blank"
                             android:textColor="@color/primaryTextColor" />
 
-                        <!-- KAPASITET -->
+                        <!-- CAPACITY -->
 
                         <TextView
+                            android:id="@+id/capacity"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/plasseringView"
+                            android:layout_below="@id/placementView"
                             android:layout_alignParentStart="true"
                             android:layout_marginTop="5dp"
                             android:layout_marginEnd="5dp"
                             android:fontFamily="@font/montserrat_semibold"
-                            android:text="Kapasitet:"
+                            android:text="@string/capacity"
                             android:textColor="@color/primaryTextColor" />
 
                         <TextView
-                            android:id="@+id/kapasitetView"
+                            android:id="@+id/capacityView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/plasseringView"
+                            android:layout_below="@id/placementView"
                             android:layout_alignParentEnd="true"
                             android:layout_marginTop="5dp"
                             android:layout_marginEnd="5dp"
@@ -242,24 +253,25 @@
                             android:text="@string/blank"
                             android:textColor="@color/primaryTextColor" />
 
-                        <!-- VANNTYPE -->
+                        <!-- WATER TYPE -->
 
                         <TextView
+                            android:id="@+id/waterType"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/kapasitetView"
+                            android:layout_below="@id/capacityView"
                             android:layout_alignParentStart="true"
                             android:layout_marginTop="5dp"
                             android:layout_marginEnd="5dp"
                             android:fontFamily="@font/montserrat_semibold"
-                            android:text="Vanntype:"
+                            android:text="@string/water_type"
                             android:textColor="@color/primaryTextColor" />
 
                         <TextView
-                            android:id="@+id/vannTypeView"
+                            android:id="@+id/waterTypeView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/kapasitetView"
+                            android:layout_below="@id/capacityView"
                             android:layout_alignParentEnd="true"
                             android:layout_marginTop="5dp"
                             android:layout_marginEnd="5dp"
@@ -267,24 +279,25 @@
                             android:text="@string/blank"
                             android:textColor="@color/primaryTextColor" />
 
-                        <!-- KOMMUNE -->
+                        <!-- MUNICIPALITY -->
 
                         <TextView
+                            android:id="@+id/municipality"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/vannTypeView"
+                            android:layout_below="@id/waterTypeView"
                             android:layout_alignParentStart="true"
                             android:layout_marginTop="5dp"
                             android:layout_marginEnd="5dp"
                             android:fontFamily="@font/montserrat_semibold"
-                            android:text="Kommune:"
+                            android:text="@string/municipality"
                             android:textColor="@color/primaryTextColor" />
 
                         <TextView
-                            android:id="@+id/prodOmraadeView"
+                            android:id="@+id/municipalityView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/vannTypeView"
+                            android:layout_below="@id/waterTypeView"
                             android:layout_alignParentEnd="true"
                             android:layout_marginTop="5dp"
                             android:layout_marginEnd="5dp"
@@ -299,7 +312,8 @@
             </androidx.cardview.widget.CardView>
 
 
-            <!-- Information cards-->
+            <!-- Information cards -->
+
             <LinearLayout
                 android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
@@ -310,26 +324,12 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-
                 <!-- Water information card -->
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/constraintLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
-
-                    <androidx.constraintlayout.widget.Guideline
-                        android:id="@+id/guideline12"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        app:layout_constraintGuide_percent="0.8" />
-
-                    <androidx.constraintlayout.widget.Guideline
-                        android:id="@+id/guideline13"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        app:layout_constraintGuide_percent="0.2" />
 
                     <ImageView
                         android:id="@+id/wavesIcon"
@@ -344,7 +344,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/waterInfoCard"
                         app:srcCompat="@drawable/mdi___waves"
-                        />
+                        tools:ignore="ContentDescription,ImageContrastCheck" />
 
                     <ImageView
                         android:id="@+id/circleFilledWhiteIcon"
@@ -356,7 +356,8 @@
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/waterInfoCard"
-                        app:srcCompat="@drawable/circle_filled_white" />
+                        app:srcCompat="@drawable/circle_filled_white"
+                        tools:ignore="ContentDescription" />
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/waterInfoCard"
@@ -380,6 +381,7 @@
                             android:layout_margin="10dp">
 
                             <!-- Water card title -->
+
                             <TextView
                                 android:id="@+id/waterCardTitle"
                                 android:layout_width="wrap_content"
@@ -396,6 +398,7 @@
                                 app:layout_constraintTop_toTopOf="parent" />
 
                             <!-- Textboxes for currents -->
+
                             <LinearLayout
                                 android:id="@+id/currents"
                                 android:layout_width="wrap_content"
@@ -413,7 +416,7 @@
                                     android:layout_marginTop="8dp"
                                     android:layout_gravity="center"
                                     android:fontFamily="@font/montserrat_semibold"
-                                    android:text="STRØMN."
+                                    android:text="@string/currents"
                                     android:textColor="@color/primaryTextColor" />
 
                                 <TextView
@@ -421,14 +424,15 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
-                                    android:text="TextView"
                                     android:textColor="@color/api_title_color"
-                                    android:textSize="14sp"
-                                    tools:text="0.04m/s" />
+                                    android:textSize="12sp"
+                                    tools:ignore="TextContrastCheck"
+                                    tools:text="@string/blank" />
 
                             </LinearLayout>
 
                             <!-- Textboxes for temprature -->
+
                             <LinearLayout
                                 android:id="@+id/temperature"
                                 android:layout_width="wrap_content"
@@ -444,24 +448,25 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="8dp"
                                     android:fontFamily="@font/montserrat_semibold"
-                                    android:text="TEMP."
+                                    android:text="@string/temp"
                                     android:textColor="@color/primaryTextColor" />
 
                                 <TextView
                                     android:id="@+id/tempratureValue"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
                                     android:layout_marginTop="1dp"
-                                    android:textColor="@color/primaryTextColor"
-                                    android:textSize="14sp"
-                                    tools:text="-3*"
                                     android:textAlignment="center"
-                                    android:layout_gravity="center"/>
-
+                                    android:textColor="@color/primaryTextColor"
+                                    android:textSize="12sp"
+                                    tools:ignore="TextContrastCheck"
+                                    tools:text="@string/blank" />
 
                             </LinearLayout>
 
                             <!-- Textboxes for salinity -->
+
                             <LinearLayout
                                 android:id="@+id/salinity"
                                 android:layout_width="wrap_content"
@@ -477,49 +482,35 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="8dp"
                                     android:fontFamily="@font/montserrat_semibold"
-                                    android:text="SALT."
+                                    android:text="@string/salt"
                                     android:textColor="@color/primaryTextColor" />
 
                                 <TextView
                                     android:id="@+id/salinityValue"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="1dp"
-                                    android:textColor="@color/primaryTextColor"
-                                    android:textSize="14sp"
-                                    android:textAlignment="center"
                                     android:layout_gravity="center"
-                                    tools:text="2.3" />
-
+                                    android:layout_marginTop="1dp"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/primaryTextColor"
+                                    android:textSize="12sp"
+                                    tools:ignore="TextContrastCheck"
+                                    tools:text="@string/blank" />
 
                             </LinearLayout>
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                     </androidx.cardview.widget.CardView>
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <!-- Infection card -->
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/constraintLayout3"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
-
-                    <androidx.constraintlayout.widget.Guideline
-                        android:id="@+id/guideline10"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        app:layout_constraintGuide_percent="0.2"
-                        tools:visibility="invisible" />
-
-                    <androidx.constraintlayout.widget.Guideline
-                        android:id="@+id/guideline11"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        app:layout_constraintGuide_percent="0.8"
-                        tools:visibility="invisible" />
 
                     <ImageView
                         android:id="@+id/infectionIcon"
@@ -533,7 +524,8 @@
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/infectionInfoCard"
-                        app:srcCompat="@drawable/mdi___virus" />
+                        app:srcCompat="@drawable/mdi___virus"
+                        tools:ignore="ContentDescription,ImageContrastCheck" />
 
                     <ImageView
                         android:id="@+id/circleFilledWhiteIcon2"
@@ -546,7 +538,8 @@
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/infectionInfoCard"
-                        app:srcCompat="@drawable/circle_filled_white" />
+                        app:srcCompat="@drawable/circle_filled_white"
+                        tools:ignore="ContentDescription,ImageContrastCheck" />
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/infectionInfoCard"
@@ -584,37 +577,42 @@
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
-                            <!-- Textboxes for lakselus -->
+                            <!-- Textboxes for salmon louse -->
+
                             <LinearLayout
-                                android:id="@+id/lakselus"
+                                android:id="@+id/salmonLouse"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintHorizontal_bias="0.13"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@+id/infectionCardTitle"
-                                android:orientation="vertical">
+                                android:orientation="vertical"
+                                tools:ignore="UseCompoundDrawables">
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="8dp"
                                     android:fontFamily="@font/montserrat_semibold"
-                                    android:text="LUS"
+                                    android:text="@string/salmon_louse"
                                     android:textColor="@color/primaryTextColor" />
 
                                 <ImageView
-                                    android:id="@+id/fare"
+                                    android:id="@+id/dangerSalmonLouse"
                                     android:layout_width="16dp"
                                     android:layout_height="16dp"
-                                    android:layout_marginTop="1dp"
                                     android:layout_gravity="center"
-                                    app:srcCompat="@drawable/checkmark" />
+                                    android:layout_marginTop="1dp"
+                                    android:contentDescription="@string/salmon_louse_data_not_found"
+                                    app:srcCompat="@drawable/checkmark"
+                                    tools:ignore="ImageContrastCheck" />
 
 
                             </LinearLayout>
 
-                            <!-- Textboxes for PD-->
+                            <!-- Textboxes for pancreas disease-->
+
                             <LinearLayout
                                 android:id="@+id/pd"
                                 android:layout_width="wrap_content"
@@ -623,27 +621,31 @@
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@+id/infectionCardTitle"
                                 app:layout_constraintVertical_bias="0.0"
-                                android:orientation="vertical">
+                                android:orientation="vertical"
+                                tools:ignore="UseCompoundDrawables">
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="8dp"
                                     android:fontFamily="@font/montserrat_semibold"
-                                    android:text="PD"
+                                    android:text="@string/pd"
                                     android:textColor="@color/primaryTextColor" />
 
                                 <ImageView
                                     android:id="@+id/pdIcon"
                                     android:layout_width="16dp"
                                     android:layout_height="16dp"
+                                    android:layout_gravity="center"
                                     android:layout_marginTop="1dp"
+                                    android:contentDescription="@string/pancreas_disease_data_not_found"
                                     app:srcCompat="@drawable/checkmark"
-                                    android:layout_gravity="center"/>
+                                    tools:ignore="ImageContrastCheck" />
 
                             </LinearLayout>
 
-                            <!-- Textboxes for ILA -->
+                            <!-- Textboxes for infecious samlon anemia -->
+
                             <LinearLayout
                                 android:id="@+id/ila"
                                 android:layout_width="wrap_content"
@@ -652,23 +654,26 @@
                                 app:layout_constraintHorizontal_bias="0.865"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@+id/infectionCardTitle"
-                                android:orientation="vertical">
+                                android:orientation="vertical"
+                                tools:ignore="UseCompoundDrawables">
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="8dp"
                                     android:fontFamily="@font/montserrat_semibold"
-                                    android:text="ILA"
+                                    android:text="@string/ila"
                                     android:textColor="@color/primaryTextColor" />
 
                                 <ImageView
                                     android:id="@+id/ilaIcon"
                                     android:layout_width="16dp"
                                     android:layout_height="16dp"
+                                    android:layout_gravity="center"
                                     android:layout_marginTop="1dp"
+                                    android:contentDescription="@string/ila_data_not_found"
                                     app:srcCompat="@drawable/checkmark"
-                                    android:layout_gravity="center" />
+                                    tools:ignore="ImageContrastCheck" />
 
 
                             </LinearLayout>
@@ -678,27 +683,12 @@
                     </androidx.cardview.widget.CardView>
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <!-- Weather card -->
+                <!-- Weather information card -->
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/constraintLayout5"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
-
-                    <androidx.constraintlayout.widget.Guideline
-                        android:id="@+id/guideline9"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        app:layout_constraintGuide_percent="0.8"
-                        tools:visibility="invisible" />
-
-                    <androidx.constraintlayout.widget.Guideline
-                        android:id="@+id/guideline5"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        app:layout_constraintGuide_percent="0.2"
-                        tools:visibility="invisible" />
 
                     <ImageView
                         android:id="@+id/weatherIcon"
@@ -712,7 +702,8 @@
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/weatherInfoCard"
-                        app:srcCompat="@drawable/mdi___cloud_outline" />
+                        app:srcCompat="@drawable/mdi___cloud_outline"
+                        tools:ignore="ContentDescription,ImageContrastCheck" />
 
                     <ImageView
                         android:id="@+id/circleFilledWhiteIcon3"
@@ -725,7 +716,8 @@
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/weatherInfoCard"
-                        app:srcCompat="@drawable/circle_filled_white" />
+                        app:srcCompat="@drawable/circle_filled_white"
+                        tools:ignore="ContentDescription" />
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/weatherInfoCard"
@@ -740,7 +732,6 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
-
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/constraintLayout6"
@@ -763,9 +754,10 @@
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
-                            <!-- Textboxes for today weather  -->
+                            <!-- Textboxes for todays weather  -->
+
                             <LinearLayout
-                                android:id="@+id/idag"
+                                android:id="@+id/today"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -783,28 +775,32 @@
                                     android:textColor="@color/primaryTextColor" />
 
                                 <ImageView
-                                    android:id="@+id/vaer_idag"
+                                    android:id="@+id/weatherToday"
                                     android:layout_width="16dp"
                                     android:layout_height="16dp"
+                                    android:layout_gravity="center"
                                     android:layout_marginTop="2dp"
+                                    android:contentDescription="@string/weather_symbol_not_found"
                                     android:src="@drawable/sunny"
-                                    android:layout_gravity="center"/>
+                                    tools:ignore="ImageContrastCheck" />
 
                                 <TextView
-                                    android:id="@+id/temp_idag"
+                                    android:id="@+id/temperatureToday"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
                                     android:layout_marginTop="2dp"
-                                    android:text="6*"
                                     android:textColor="@color/primaryTextColor"
-                                    android:textSize="11sp"
-                                    android:layout_gravity="center"/>
+                                    android:textSize="12sp"
+                                    tools:ignore="TextContrastCheck"
+                                    tools:text="@string/blank" />
 
                             </LinearLayout>
 
-                            <!-- Textboxes for tomorrows weather  -->
+                            <!-- Textboxes for tomorrows weather -->
+
                             <LinearLayout
-                              android:id="@+id/imorgen"
+                              android:id="@+id/tomorrow"
                               android:layout_width="wrap_content"
                               android:layout_height="wrap_content"
                               app:layout_constraintEnd_toEndOf="parent"
@@ -821,32 +817,36 @@
                                   android:text="@string/tomorrow"
                                   android:textColor="@color/primaryTextColor" />
 
-                              <ImageView
-                                  android:id="@+id/vaer_imorgen"
-                                  android:layout_width="16dp"
-                                  android:layout_height="16dp"
-                                  android:layout_marginTop="2dp"
-                                  android:src="@drawable/sunny"
-                                  android:layout_gravity="center"/>
+                                <ImageView
+                                    android:id="@+id/weatherTomorrow"
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
+                                    android:layout_gravity="center"
+                                    android:layout_marginTop="2dp"
+                                    android:contentDescription="@string/weather_symbol_not_found"
+                                    android:src="@drawable/sunny"
+                                    tools:ignore="ImageContrastCheck" />
 
-                              <TextView
-                                  android:id="@+id/temp_imorgen"
-                                  android:layout_width="wrap_content"
-                                  android:layout_height="wrap_content"
-                                  android:text="7*"
-                                  android:textColor="@color/primaryTextColor"
-                                  android:textSize="11sp"
-                                  android:layout_gravity="center"/>
+                                <TextView
+                                    android:id="@+id/temperatureTomorrow"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:textColor="@color/primaryTextColor"
+                                    android:textSize="12sp"
+                                    tools:ignore="TextContrastCheck"
+                                    tools:text="@string/blank" />
 
                           </LinearLayout>
 
                             <!-- Textboxes for storm -->
+
                             <LinearLayout
                                 android:id="@+id/storm"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintHorizontal_bias="0.992"
+                                app:layout_constraintHorizontal_bias="0.94"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@+id/weatherCardTitle"
                                 android:orientation="vertical" >
@@ -861,38 +861,38 @@
                                     android:layout_gravity="center"/>
 
                                 <ImageView
-                                    android:id="@+id/storm_vaer"
+                                    android:id="@+id/stormWeather"
                                     android:layout_width="16dp"
                                     android:layout_height="16dp"
+                                    android:layout_gravity="center"
                                     android:layout_marginTop="2dp"
+                                    android:contentDescription="@string/weather_symbol_not_found"
                                     android:src="@drawable/sunny"
-                                    android:layout_gravity="center"/>
+                                    tools:ignore="TooManyViews,ImageContrastCheck" />
 
                                 <TextView
-                                    android:id="@+id/meldt_storm"
+                                    android:id="@+id/stormSignal"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
                                     android:text="@string/no_storm"
                                     android:textColor="@color/primaryTextColor"
-                                    android:textSize="11sp"
-                                    android:layout_gravity="center"/>
+                                    android:textSize="12sp"
+                                    tools:ignore="TextContrastCheck" />
 
 
                             </LinearLayout>
 
-
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                     </androidx.cardview.widget.CardView>
-                </androidx.constraintlayout.widget.ConstraintLayout>
 
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </LinearLayout>
 
         </LinearLayout>
+
     </ScrollView>
-
-
-    <!-- Information cards -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

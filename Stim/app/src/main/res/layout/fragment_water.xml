@@ -18,11 +18,12 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:elevation="20dp"
+            android:padding="7dp"
             android:src="@drawable/circle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:padding="7dp"
-            android:elevation="20dp"/>
+            tools:ignore="ContentDescription,ImageContrastCheck" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -44,10 +45,6 @@
 
             <!-- SALTHOLDIGHET OF VANN -->
 
-
-            <!--TODO: fix header icon -->
-
-
             <ImageView
                 android:id="@+id/circleFilledWhiteIcon2"
                 android:layout_width="100dp"
@@ -58,7 +55,8 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/guideline3"
-                app:srcCompat="@drawable/circle_filled_white" />
+                app:srcCompat="@drawable/circle_filled_white"
+                tools:ignore="ContentDescription" />
 
             <ImageView
                 android:id="@+id/waterIcon"
@@ -72,7 +70,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/guideline3"
                 app:srcCompat="@drawable/mdi___waves"
-                tools:layout_editor_absoluteY="31dp" />
+                tools:ignore="ContentDescription,ImageContrastCheck" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline3"
@@ -97,11 +95,11 @@
                 android:id="@+id/sitename"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
                 android:fontFamily="@font/montserrat_bold"
                 android:gravity="center"
                 android:text="@string/site_name"
-                app:layout_constraintTop_toBottomOf="@id/header" />
+                app:layout_constraintTop_toBottomOf="@id/header"
+                tools:ignore="TextContrastCheck" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -149,7 +147,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="10dp"
                                 android:gravity="center_horizontal"
-                                android:text="Vanntemperatur:"
+                                android:text="@string/waterTemperature"
                                 android:textColor="@color/primaryTextColor"
                                 android:fontFamily="@font/montserrat_light"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -167,14 +165,15 @@
                                 app:layout_constraintHorizontal_bias="0.5"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@id/boxTempText"
-                                app:srcCompat="@drawable/watertemp_icon" />
+                                app:srcCompat="@drawable/watertemp_icon"
+                                tools:ignore="ContentDescription,ImageContrastCheck" />
 
                             <TextView
                                 android:id="@+id/temperatureTextview"
                                 android:layout_width="wrap_content"
                                 android:layout_height="0dp"
                                 android:gravity="center_vertical"
-                                android:text="----°"
+                                android:text="@string/blank"
                                 android:textColor="@color/primaryTextColor"
                                 android:textSize="30sp"
                                 app:layout_constraintBottom_toBottomOf="parent"
@@ -213,7 +212,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_horizontal"
-                                android:text="Saltholdighet i vannet:"
+                                android:text="@string/waterSalinityLevel"
                                 android:textColor="@color/primaryTextColor"
                                 android:fontFamily="@font/montserrat_light"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -230,14 +229,15 @@
                                 app:layout_constraintEnd_toStartOf="@+id/saltTextview"
                                 app:layout_constraintHorizontal_bias="0.5"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/boxSaltText" />
+                                app:layout_constraintTop_toBottomOf="@id/boxSaltText"
+                                tools:ignore="ContentDescription,ImageContrastCheck" />
 
                             <TextView
                                 android:id="@+id/saltTextview"
                                 android:layout_width="wrap_content"
                                 android:layout_height="0dp"
                                 android:gravity="center_vertical"
-                                android:text="----"
+                                android:text="@string/blank"
                                 android:textColor="@color/primaryTextColor"
                                 android:textSize="30sp"
                                 app:layout_constraintBottom_toBottomOf="parent"
@@ -279,7 +279,7 @@
                             android:layout_marginTop="10dp"
                             android:layout_marginEnd="5dp"
                             android:layout_marginBottom="5dp"
-                            android:text="Graf over saltholdighet"
+                            android:text="@string/salinityChart"
                             android:textAllCaps="true"
                             android:textColor="@color/primaryTextColor"
                             android:textSize="16sp" />
@@ -321,7 +321,7 @@
                             android:layout_centerHorizontal="true"
                             android:layout_marginBottom="5dp"
                             android:fontFamily="@font/montserrat_light"
-                            android:text="Tid i timer"
+                            android:text="@string/timeInHours"
                             android:textStyle="italic"
                             android:textColor="@color/primaryTextColor"
                             android:textSize="12sp" />
@@ -330,14 +330,14 @@
                             android:id="@+id/chartButton"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_marginEnd="2dp"
                             android:layout_below="@id/ukenrtag"
+                            android:layout_marginEnd="2dp"
                             android:backgroundTint="@color/dark_skyblue"
+                            android:checked="false"
                             android:fontFamily="@font/montserrat_bold"
                             android:textColor="@color/colorAccent"
-                            android:textOn= "Se Saltholdighet"
-                            android:textOff="Se Vanntemperatur"
-                            android:checked="false"
+                            android:textOff="@string/seeWaterTemperature"
+                            android:textOn="@string/seeSalinity"
                             android:textStyle="bold" />
 
                     </RelativeLayout>
@@ -380,7 +380,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="10dp"
                                 android:gravity="center_horizontal"
-                                android:text="Strømmninger:"
+                                android:text="@string/currents_"
                                 android:textColor="@color/primaryTextColor"
                                 android:fontFamily="@font/montserrat_light"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -399,14 +399,15 @@
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@id/Velocityheader"
                                 app:srcCompat="@drawable/stromning_icon"
-                                app:tint="@color/orange" />
+                                app:tint="@color/orange"
+                                tools:ignore="ContentDescription" />
 
                             <TextView
                                 android:id="@+id/Velocitytext"
                                 android:layout_width="wrap_content"
                                 android:layout_height="0dp"
                                 android:gravity="center_vertical"
-                                android:text="----"
+                                android:text="@string/blank"
                                 android:textColor="@color/primaryTextColor"
                                 android:textSize="30sp"
                                 app:layout_constraintBottom_toBottomOf="parent"
@@ -445,7 +446,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="10dp"
                                 android:gravity="center_horizontal"
-                                android:text="Strømretning:"
+                                android:text="@string/currentDirection"
                                 android:textColor="@color/primaryTextColor"
                                 android:fontFamily="@font/montserrat_light"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -464,7 +465,8 @@
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@id/VelocityDirectionheader"
                                 app:srcCompat="@drawable/compass"
-                                app:tint="@color/orange" />
+                                app:tint="@color/orange"
+                                tools:ignore="ContentDescription" />
 
                             <ImageView
                                 android:id="@+id/VelocityDirectionArrow"
@@ -477,7 +479,8 @@
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintHorizontal_bias="0.5"
                                 app:layout_constraintStart_toEndOf="@+id/VelocityDirectionIcon"
-                                app:layout_constraintTop_toBottomOf="@id/VelocityDirectionheader" />
+                                app:layout_constraintTop_toBottomOf="@id/VelocityDirectionheader"
+                                android:contentDescription="@string/current_velocity_direction" />
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -509,7 +512,7 @@
                             android:layout_margin="10dp"
                             android:fontFamily="@font/montserrat_bold"
                             android:gravity="center_horizontal"
-                            android:text="Informasjon om vanntemperatur og saltholdighetdata"
+                            android:text="@string/info_about_watertemp_and_salinity"
                             android:textColor="@color/primaryTextColor"
                             android:textSize="15sp"
                             android:textStyle="bold" />
@@ -522,7 +525,7 @@
                             android:layout_margin="10dp"
                             android:fontFamily="@font/montserrat_light"
                             android:gravity="center"
-                            android:text="Denne grafen viser til saltholdighet og vanntemperatur funnet i anlegget. For å endre grafen vist klikker du på knappen lenger oppe. Du kan også zoome inn og navigere grafen med touch. Nedenfor finner du tabeller med all data."
+                            android:text="@string/infoAboutChart"
                             android:textColor="@color/primaryTextColor"
                             android:textSize="13sp" />
 
@@ -533,21 +536,22 @@
                             android:layout_gravity="center_horizontal"
                             android:layout_margin="10dp"
                             android:fontFamily="@font/montserrat_light"
-                            android:gravity="left"
-                            android:text="Vanndata er nyttig for å regulere fiskens helse. For kaldt vann og for mye strømninger kan for eksempel lede til vanskeligheter for å vokse. Resultat fra ny forskning ved Havforskningsinstituttet viser at vedvarende strømstyrke som smålaks opplever ikke bør overstige ca. 50 cm/s. Dette varierer derimot ut fra størrelsen på fisken, der stor laks tåler mindre enn liten. Vanntemperaturen påvirker laksen sin kapasitet til å svømme mot strømmen betydelig hvis temperaturen er 3°C i motsetning 8-23°C. Selv om laks vokser best ved 9-18°C kan da fint tåle langt lavere temperaturer, men da synker altså evnen til å håndtere sterk strøm. I tillegg påvirker vanntemperaturen utviklingen og dødeligheten av lakselus, der den øker i varmere temperaturer."
+                            android:gravity="start"
+                            android:text="@string/waterDataInformation"
                             android:textColor="@color/primaryTextColor"
                             android:textSize="13sp"
                             android:visibility="gone" />
 
                         <ImageView
-                            android:id="@+id/pil"
+                            android:id="@+id/arrow"
                             android:layout_width="15dp"
                             android:layout_height="15dp"
                             android:layout_gravity="center"
                             android:layout_marginStart="10dp"
                             android:layout_marginBottom="10dp"
                             app:srcCompat="@drawable/down_darkblue"
-                            app:tint="@color/primaryTextColor" />
+                            app:tint="@color/primaryTextColor"
+                            android:contentDescription="@string/ContentDescription_arrow_pointing_down" />
 
                     </LinearLayout>
 
@@ -581,7 +585,7 @@
                                 android:background="@color/darker_skyblue"
                                 android:fontFamily="@font/montserrat_bold"
                                 android:gravity="center"
-                                android:text="Tid"
+                                android:text="@string/time"
                                 android:textColor="@color/secondaryTextColor"
                                 android:textStyle="bold" />
 
@@ -592,7 +596,7 @@
                                 android:background="@color/darker_skyblue"
                                 android:fontFamily="@font/montserrat_light"
                                 android:gravity="center"
-                                android:text="Vanntemperatur"
+                                android:text="@string/waterTemp"
                                 android:textColor="@color/secondaryTextColor"
                                 android:textStyle="bold" />
 
@@ -637,7 +641,7 @@
                                 android:background="@color/darker_skyblue"
                                 android:fontFamily="@font/montserrat_bold"
                                 android:gravity="center"
-                                android:text="Tid"
+                                android:text="@string/time"
                                 android:textColor="@color/secondaryTextColor"
                                 android:textStyle="bold" />
 
@@ -648,7 +652,7 @@
                                 android:background="@color/darker_skyblue"
                                 android:fontFamily="@font/montserrat_light"
                                 android:gravity="center"
-                                android:text="Saltholdighet"
+                                android:text="@string/salinity"
                                 android:textColor="@color/secondaryTextColor"
                                 android:textStyle="bold" />
 
