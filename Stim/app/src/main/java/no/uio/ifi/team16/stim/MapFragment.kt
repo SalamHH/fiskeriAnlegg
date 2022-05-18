@@ -387,7 +387,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
                 val z = googleMap.cameraPosition.zoom
                 val screenBound = googleMap.projection.visibleRegion.latLngBounds
 
-                val n = if (z < 9) {
+                val n = if (z > 7) {
                     1
                 } else {
                     Math.max(1 + 20 * (z - 9.884714) / (4.992563 - 9.884714), 1.0).toInt()

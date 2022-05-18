@@ -40,7 +40,7 @@ class SitesDataLoader {
      * or using Fules own syntax, listof(param1string to param1, ...)
      * @return a list of sites returned from the query with given parameters, or null if fetching or parsing fails
      */
-    private suspend fun loadWithParameters(parameters: Parameters?): List<Site>? {
+    private suspend fun loadWithParameters(parameters: Parameters): List<Site>? {
         var responseStr = ""
         try {
             responseStr = Fuel.get(BASE_URL, parameters).awaitString()
@@ -85,6 +85,37 @@ class SitesDataLoader {
                 Log.e(TAG, "Failed to create a site due to: $failure")
             }
         }
+
+        //the API only returns 100 sites at a time, if we got 100 sites, load the next 100
+        if (out.size == 100) {
+            //get the used range parameters, and load with the next ones
+            val nextParameters: MutableList<Pair<String, Any?>> = mutableListOf()
+            parameters
+                .firstOrNull { (param, _) -> param == "range" }
+                ?.second
+                ?.toString()
+                ?.split("-")
+                ?.getOrNull(1)
+                ?.toIntOrNull()
+                ?.let { previousRangeEnd ->
+                    val parametersWithoutRange =
+                        parameters.filter { (param, _) -> param != "range" }
+                    val nextRangeEnd = previousRangeEnd + 100
+                    nextParameters.add("range" to "${previousRangeEnd + 1}-$nextRangeEnd")
+                    nextParameters.addAll(parametersWithoutRange)
+                } ?: run { //no range parameter, implicit 0-100
+                nextParameters.add("range" to "100-199")
+                nextParameters.addAll(parameters)
+            }
+            loadWithParameters(
+                nextParameters
+            )?.let { nextList ->
+                out.addAll(
+                    nextList
+                )
+            }
+        }
+        Log.d(TAG, "loaded ${out.size} sites!")
         return out.toList()
     }
 
