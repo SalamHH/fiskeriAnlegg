@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
 
         //initial load of data
         viewModel.loadPrefrences(prefrences)
-        viewModel.loadNorKyst800() // todo hva brukes dette til?
+        //viewModel.loadNorKyst800() // todo hva brukes dette til?
         viewModel.loadInfectiousPressure() // todo hva brukes dette til?
         viewModel.loadFavouriteSites()
 

@@ -75,6 +75,8 @@ class InfectiousPressure(
             Pair(x / 800, y / 800)
         }
 
+        //Log.d(TAG, "${screenBound.northeast.asLatLong()} to ${projection.project(LatLong(northEastIndex.first.toDouble(), northEastIndex.second.toDouble()))}")
+
         //find "distance" on screen
         val height = (southWestIndex.first - northEastIndex.first)
         val width = (northEastIndex.second - southWestIndex.second)
