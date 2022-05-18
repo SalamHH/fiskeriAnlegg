@@ -214,8 +214,6 @@ class InfectionFragment : StimFragment() {
             }
         }
 
-
-
     fun format(time: ZonedDateTime?): String? {
         val day = time?.dayOfMonth.toString()
         val month = time?.month.toString()
@@ -233,18 +231,18 @@ class InfectionFragment : StimFragment() {
                 infectiondata[infectiondata.lastIndex]
             )
             return if (lastThree.average() - infectiondata.average() > Options.increase) {
-                "Signifikant økning i smitte"
+                "Signifikant økning i lakselussmitte"
             } else if (infectiondata.average() - lastThree.average() > Options.decrease) {
-                "Signifikant minskning i smitte"
+                "Signifikant minskning i lakselussmitte"
             } else {
                 return if (infectiondata.average() > Options.high) {
-                    "Høyt smittenivå"
+                    "Høyt lakselussmittenivå"
                 } else {
-                    "Lavt smittenivå"
+                    "Lavt lakselussmittenivå"
                 }
             }
         } else {
-            return "Veldig lav/Ingen smitte"
+            return "Veldig lav/Ingen lakselussmitte"
         }
     }
 
