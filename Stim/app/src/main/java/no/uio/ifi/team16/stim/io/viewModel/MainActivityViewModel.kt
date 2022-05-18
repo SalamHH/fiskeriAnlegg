@@ -1,6 +1,7 @@
 package no.uio.ifi.team16.stim.io.viewModel
 
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -99,6 +100,7 @@ class MainActivityViewModel : ViewModel() {
                 infectiousPressureRepository.getDefault() //either loaded, retrieved from cache or faked
             //invokes the observer
             infectiousPressureData.postValue(loaded)
+            Log.d(TAG, "LOADED INFECTIOUSPRESSURE")
         }
     }
 

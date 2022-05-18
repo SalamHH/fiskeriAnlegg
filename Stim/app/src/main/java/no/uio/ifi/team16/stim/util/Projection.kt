@@ -16,6 +16,5 @@ fun CoordinateTransform.projectXY(xy: Pair<Float, Float>): LatLong =
         ProjCoordinate(xy.first.toDouble(), xy.second.toDouble()),
         ProjCoordinate(0.0, 0.0)
     ).let { p ->
-        //println("mapped point ${xy.first}, ${xy.second} to LatLong(${p.y}, ${p.x})")
         LatLong(p.y, p.x)
     }

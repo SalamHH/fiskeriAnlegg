@@ -65,7 +65,13 @@ fun NullableFloatArray4D.get(depth: Int, time: Int, row: Int, column: Int): Floa
 fun NullableFloatArray1D.get(indexes: IntProgression): NullableFloatArray1D =
     indexes.map { i -> this[i] }.toTypedArray()
 
+fun FloatArray1D.get(indexes: IntProgression): FloatArray1D =
+    indexes.map { i -> this[i] }.toFloatArray()
+
 fun NullableFloatArray2D.get(rows: IntProgression, columns: IntProgression): NullableFloatArray2D =
+    rows.map { r -> this[r].get(columns) }.toTypedArray()
+
+fun FloatArray2D.get(rows: IntProgression, columns: IntProgression): FloatArray2D =
     rows.map { r -> this[r].get(columns) }.toTypedArray()
 
 fun NullableFloatArray3D.get(

@@ -151,22 +151,30 @@ data class NorKyst800(
         val inverseProjection = ctFactory.createTransform(stereoCRT, latLngCRT)
 
         //find indexes of screenbound
-        val northEastIndex = projection.project(screenBound.northeast.asLatLong())
-        val southWestIndex = projection.project(screenBound.southwest.asLatLong())
+        val northEastIndex = projection.project(screenBound.northeast.asLatLong()).let { (x, y) ->
+            Pair(x / 800, y / 800)
+        }
+        val southWestIndex = projection.project(screenBound.southwest.asLatLong()).let { (x, y) ->
+            Pair(x / 800, y / 800)
+        }
+
+        //find "distance" on screen
+        val height = (northEastIndex.second - southWestIndex.second)
+        val width = (northEastIndex.first - southWestIndex.first)
 
         val maxX = Math.min(northEastIndex.second.roundToInt(), Options.norKyst800XEnd)
         val minX = Math.max(southWestIndex.second.roundToInt(), 0)
         val maxY = Math.min(northEastIndex.first.roundToInt(), Options.norKyst800YEnd)
         val minY = Math.max(southWestIndex.first.roundToInt(), 0)
 
-        val xStride = Math.max(1, ((maxX - minX) / Options.heatMapResolution).roundToInt())
-        val yStride = Math.max(1, ((maxY - minY) / Options.heatMapResolution).roundToInt())
+        val xStride = Math.max(1, (width / Options.heatMapResolution).roundToInt())
+        val yStride = Math.max(1, (height / Options.heatMapResolution).roundToInt())
 
         val xRange = fromClosedRange(minX, maxX, xStride) //
         val yRange = fromClosedRange(minY, maxY, yStride) //
         Log.d(
             TAG,
-            "MAKING HEATMAP ${xRange.first} - ${xRange.last} | ${xRange.step} ... ${yRange.first} - ${yRange.last} | ${yRange.step}"
+            "MAKING HEATMAP ${xRange.first} - ${xRange.last} | ${xRange.step} ::::: ${yRange.first} - ${yRange.last} | ${yRange.step}"
         )
 
         val dx = Options.defaultNorKyst800XStride * 800
