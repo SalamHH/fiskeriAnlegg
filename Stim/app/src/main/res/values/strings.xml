@@ -163,5 +163,6 @@
     <string name="tutorial_slide_3_text">Finn din kommune på kartet for å se alle anlegg i kommunen.</string>
     <string name="lagre_dine_favoritter">Lagre dine favoritter</string>
     <string name="tutorial_slide_text_4">Legg til dine anlegg til favorittsiden ved å trykke på hjertet.</string>
+    <string name="current_infection">Nåværende smittepress:</string>
 
 </resources>

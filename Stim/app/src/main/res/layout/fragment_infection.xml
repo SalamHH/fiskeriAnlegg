@@ -128,66 +128,68 @@
                     app:cardUseCompatPadding="true">
 
                     <RelativeLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:layout_gravity="center_horizontal">
 
-                        <ImageView
-                            android:id="@+id/StatusIcon"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_toStartOf="@id/infectionStatusText"
-                            android:layout_above="@id/infectionValue"
-                            android:clickable="false"
-                            android:padding="5dp"
-                            android:src="@drawable/no_data"
-                            tools:ignore="ContentDescription,ImageContrastCheck" />
-
-                        <TextView
-                            android:id="@+id/infectionStatusText"
+                        <LinearLayout
+                            android:id="@+id/infectionstatuslayout"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginEnd="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:fontFamily="@font/montserrat"
-                            android:text="@string/calculating_status"
-                            android:textColor="@color/primaryTextColor"
-                            android:textSize="15sp"
-                            tools:ignore="TextContrastCheck"/>
+                            android:layout_centerHorizontal="true">
 
-                        <TextView
-                            android:id="@+id/infectionValueExplainer"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            <ImageView
+                                android:id="@+id/StatusIcon"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:clickable="false"
+                                android:padding="5dp"
+                                android:src="@drawable/no_data"
+                                tools:ignore="ContentDescription,ImageContrastCheck" />
+
+                            <TextView
+                                android:id="@+id/infectionStatusText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="10dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginEnd="10dp"
+                                android:layout_marginBottom="10dp"
+                                android:fontFamily="@font/montserrat"
+                                android:text="@string/calculating_status"
+                                android:textColor="@color/primaryTextColor"
+                                android:textSize="15sp"
+                                tools:ignore="TextContrastCheck" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_below="@id/infectionstatuslayout"
                             android:layout_centerHorizontal="true"
-                            android:layout_marginStart="10dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginEnd="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:fontFamily="@font/montserrat"
-                            android:text="Nåværende smittepress: "
-                            android:layout_below="@id/infectionStatusText"
-                            android:textColor="@color/primaryTextColor"
-                            android:textSize="15sp" />
-
-                        <TextView
-                            android:id="@+id/infectionValue"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginStart="10dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginEnd="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:fontFamily="@font/montserrat"
-                            android:text=" --- "
-                            android:layout_below="@id/infectionStatusText"
-                            android:layout_toEndOf="@id/infectionValueExplainer"
-                            android:textColor="@color/primaryTextColor"
-                            android:textSize="15sp" />
+                            android:layout_margin="10dp">
+
+                            <TextView
+                                android:id="@+id/infectionValueExplainer"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/montserrat"
+                                android:text="@string/current_infection"
+                                android:textColor="@color/primaryTextColor"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:id="@+id/infectionValue"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/montserrat"
+                                android:text="@string/blank"
+                                android:layout_marginStart="2dp"
+                                android:textColor="@color/primaryTextColor"
+                                android:textSize="15sp" />
+                        </LinearLayout>
 
                     </RelativeLayout>
 

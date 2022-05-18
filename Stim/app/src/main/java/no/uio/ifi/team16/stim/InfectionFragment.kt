@@ -94,29 +94,30 @@ class InfectionFragment : StimFragment() {
                         graph.map { xy -> xy.y }.toTypedArray() //get contamination as separate list
                     val weekList = graph.map { xy -> xy.x } //get weeks as separate list
 
-                //TABLE
-                createInfectionTable(infectionData, weekList, inflater, container)
+                    //TABLE
+                    createInfectionTable(infectionData, weekList, inflater, container)
 
-                //CHART
-                createInfectionChart(graph, infectionData)
+                    //CHART
+                    createInfectionChart(graph, infectionData)
 
-                //STATUS
-                val statuscalculator = InfectionStatusCalculator(resources)
-                if (infectionData.isNotEmpty()) {
-                    binding.infectionStatusText.text =
-                        statuscalculator.calculateInfectionStatusText(infectionData)
-                    if (statuscalculator.calculateInfectionStatusIcon(infectionData) != null) {
-                        binding.StatusIcon.setImageDrawable(
-                            statuscalculator.calculateInfectionStatusIcon(
-                                infectionData
-                            )
-                        )
-                        binding.StatusIcon.contentDescription =
+                    //STATUS
+                    val statuscalculator = InfectionStatusCalculator(resources)
+                    if (infectionData.isNotEmpty()) {
+                        binding.infectionStatusText.text =
                             statuscalculator.calculateInfectionStatusText(infectionData)
+                        if (statuscalculator.calculateInfectionStatusIcon(infectionData) != null) {
+                            binding.StatusIcon.setImageDrawable(
+                                statuscalculator.calculateInfectionStatusIcon(
+                                    infectionData
+                                )
+                            )
+                            binding.StatusIcon.contentDescription =
+                                statuscalculator.calculateInfectionStatusText(infectionData)
+                        }
+                    } else {
+                        binding.infectionStatusText.text =
+                            resources.getText(R.string.no_infectiouspressure_found)
                     }
-                } else {
-                    binding.infectionStatusText.text =
-                        resources.getText(R.string.no_infectiouspressure_found)
                 }
             }
         }
