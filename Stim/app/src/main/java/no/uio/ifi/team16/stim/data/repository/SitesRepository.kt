@@ -10,7 +10,6 @@ import no.uio.ifi.team16.stim.data.dataLoader.SitesDataLoader
  * The cache maps a municipalitynumber to a collection of municipality
  */
 class SitesRepository {
-    private val TAG = "SitesRepository"
     private val dataSource = SitesDataLoader()
 
     /**
@@ -29,7 +28,7 @@ class SitesRepository {
     private val siteNrCache: MutableMap<Int, Site?> = mutableMapOf()
 
     /**
-     * load the municipality at the given municipalitycode
+     * Load the municipality at the given municipalitycode
      */
     suspend fun getMunicipality(municipalityCode: String): Municipality? {
         var municipality = municipalityCache[municipalityCode]
@@ -71,7 +70,7 @@ class SitesRepository {
         if (sitesList != null) {
             nameCache[name] = sitesList.toMutableSet()
 
-            // lagre sites i nr-cache også
+            // save sites in nr-cache too
             for (site in sitesList) {
                 siteNrCache[site.nr] = site
             }
@@ -80,6 +79,9 @@ class SitesRepository {
         return sitesList
     }
 
+    /**
+     * Get a site with a given number
+     */
     private suspend fun getSiteByNr(nr: Int): Site? {
         var site = siteNrCache[nr]
         if (site != null) {

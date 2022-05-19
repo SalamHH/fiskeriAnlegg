@@ -12,6 +12,9 @@ import no.uio.ifi.team16.stim.data.repository.*
 import no.uio.ifi.team16.stim.util.LatLong
 import no.uio.ifi.team16.stim.util.Options
 
+/**
+ * The binding between the data repositories and the fragments (view)
+ */
 class MainActivityViewModel : ViewModel() {
 
     private lateinit var preferences: SharedPreferences

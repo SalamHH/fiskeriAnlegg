@@ -13,9 +13,9 @@ import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.data.StaticMapImageLoader
 
 /**
- * Recycleview som skal ta inn en liste over alle anlegg
+ * Recycleview showing a list of sites
  *
- * Benytter seg av layoutene:
+ * Uses the layout files:
  * Recycleview_element.xml
  * Recycleview.xml
  */
@@ -25,15 +25,13 @@ class RecycleViewAdapter(
     private val onClick: (Site) -> Unit,
     private val favOnClick: (Site, Boolean) -> Unit,
     val context: Context
-) :
-    RecyclerView.Adapter<RecycleViewAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<RecycleViewAdapter.ViewHolder>() {
 
     private val imageLoader = StaticMapImageLoader(context)
 
     /**
-     * Oppretter viewholder med alle views i element
+     * A viewHolder representing a site
      */
-
     inner class ViewHolder(view: View, val onClick: (Site) -> Unit) : RecyclerView.ViewHolder(view) {
         val nameView: TextView = view.findViewById(R.id.textview_name)
         val locationView: TextView = view.findViewById(R.id.textview_location)
@@ -51,8 +49,10 @@ class RecycleViewAdapter(
         }
     }
 
+    /**
+     * Creates a new view, which defines the UI of the list item
+     */
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
-        // Create a new view, which defines the UI of the list item
         val view = LayoutInflater.from(viewGroup.context)
             .inflate(R.layout.recycleview_element_overview, viewGroup, false)
 
@@ -60,7 +60,7 @@ class RecycleViewAdapter(
     }
 
     /**
-     * Setter data inn i view
+     * Puts data about a site into a view
      */
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
 
@@ -79,6 +79,8 @@ class RecycleViewAdapter(
         }
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
+    /**
+     * Returns the number of sites in the list
+     */
     override fun getItemCount() = sites.size
 }

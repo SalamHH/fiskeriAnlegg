@@ -4,14 +4,17 @@ import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.data.WeatherForecast
 import no.uio.ifi.team16.stim.data.dataLoader.WeatherDataLoader
 
+/**
+ * Entry point for the MET LocationForecast API
+ */
 class WeatherRepository {
 
-    private val TAG = "WeatherRepository"
     private val dataSource = WeatherDataLoader()
     private val cache: MutableMap<Site, WeatherForecast?> = mutableMapOf()
 
     /**
-     * Load the data from the datasource
+     * Fetch the weather forecast at a given site
+     * @param site the site to load the weather forecast into
      */
     suspend fun getWeatherForecast(site: Site): WeatherForecast? {
         var forecast = cache[site] ?: site.weatherForecast
