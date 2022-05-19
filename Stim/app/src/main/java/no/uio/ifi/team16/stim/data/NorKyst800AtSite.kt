@@ -1,12 +1,12 @@
 package no.uio.ifi.team16.stim.data
 
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
 import com.github.mikephil.charting.data.Entry
 import no.uio.ifi.team16.stim.util.NullableFloatArray2D
 import no.uio.ifi.team16.stim.util.NullableFloatArray4D
 import no.uio.ifi.team16.stim.util.Options
 import no.uio.ifi.team16.stim.util.get
-import java.time.Instant
-import kotlin.math.roundToInt
 
 /**
  * Class representing NorKyst800 data at a specific site.
@@ -17,7 +17,8 @@ import kotlin.math.roundToInt
  */
 data class NorKyst800AtSite(
     val siteId: Int,
-    val norKyst800: NorKyst800
+    val current: NorKyst800,
+    val all: LiveData<NorKyst800?>
 ) {
     val TAG = "NORKYST800AtSite"
 
@@ -61,62 +62,72 @@ data class NorKyst800AtSite(
     ///////////////
     // UTILITIES //
     ///////////////
-    private fun getCurrentTimeIndex() =
-        ((Instant.now().epochSecond.toFloat() - norKyst800.time[0]) / 3600).roundToInt()
-
-
     override fun toString() =
         "NorKyst800AtSite: \n" +
                 "\tsite: $siteId\n" +
-                "\tnorkyst: $norKyst800\n"
+                "\tnorkyst: $current\n"
 
-    fun getTemperature(): Float? = getTemperature(getCurrentTimeIndex(), 0, 0, 0)
-    fun getTemperature(y: Int, x: Int): Float? = getTemperature(getCurrentTimeIndex(), 0, y, x)
-    fun getTemperature(time: Int, depth: Int, y: Int, x: Int): Float? =
-        norKyst800.temperature.get(time, depth, radius + y, radius + x)
-            ?: averageOf(time, depth, norKyst800.temperature)
+    fun getTemperature(): Float? = getTemperature(0, 0, 0, 0)
+    fun getTemperature(y: Int, x: Int): Float? = getTemperature(0, 0, y, x)
+    private fun getTemperature(time: Int, depth: Int, y: Int, x: Int): Float? =
+        current.temperature.get(time, depth, radius + y, radius + x)
+            ?: averageOf(time, depth, current.temperature)
 
-    fun getSalinity(): Float? = getSalinity(getCurrentTimeIndex(), 0, 0, 0)
-    fun getSalinity(y: Int, x: Int): Float? = getSalinity(getCurrentTimeIndex(), 0, y, x)
-    fun getSalinity(time: Int, depth: Int, y: Int, x: Int): Float? =
-        norKyst800.salinity.get(time, depth, radius + y, radius + x)
-            ?: averageOf(time, depth, norKyst800.salinity)
-
-    /**
-     * return a graph(List of Entry) of salinity over time(hours)
-     */
-    fun getSalinityAtSurfaceAsGraph(): List<Entry> =
-        norKyst800.time.zip(
-            norKyst800.salinity
-                .mapNotNull { arr -> //for each latlong grid at a given time
-                    aggregation(arr.first()) //apply aggregation at surface
-                }
-        ).map { (seconds, salt) -> //we have List<Pair<...>> make it into List<Entry>
-            //also map seconds to hours
-            Entry(seconds / 3600, salt)
-        }
+    fun getSalinity(): Float? = getSalinity(0, 0, 0, 0)
+    fun getSalinity(y: Int, x: Int): Float? = getSalinity(0, 0, y, x)
+    private fun getSalinity(time: Int, depth: Int, y: Int, x: Int): Float? =
+        current.salinity.get(time, depth, radius + y, radius + x)
+            ?: averageOf(time, depth, current.salinity)
 
     /**
      * return a graph(List of Entry) of salinity over time(hours)
      */
-    fun getTemperatureAtSurfaceAsGraph(): List<Entry> =
-        norKyst800.time.zip(
-            norKyst800.temperature
-                .mapNotNull { arr -> //for each latlong grid at a given time
-                    aggregation(arr.first()) //apply aggregation at surface
-                }
-        ).map { (seconds, temp) -> //we have List<Pair<...>> make it into List<Entry>
-            //also map seconds to hours
-            Entry(seconds / 3600, temp)
+    fun observeTemperatureAtSurfaceAsGraph(
+        owner: LifecycleOwner,
+        action: (List<Entry>) -> Unit
+    ): Unit =
+        all.observe(owner) { nork ->
+            //make graph data
+            nork?.time?.zip(
+                nork.temperature
+                    .mapNotNull { arr -> //for each latlong grid at a given time
+                        aggregation(arr.first()) //apply aggregation at surface
+                    }
+            )?.map { (seconds, temp) -> //we have List<Pair<...>> make it into List<Entry>
+                //also map seconds to hours
+                Entry(seconds / 3600, temp)
+            }?.let { graph -> //perform action on the graph data
+                action(graph)
+            }
         }
 
-    fun getVelocity(): Float? = getVelocity(getCurrentTimeIndex(), 0, 0, 0)
+    fun observeSalinityAtSurfaceAsGraph(
+        owner: LifecycleOwner,
+        action: (List<Entry>) -> Unit
+    ): Unit =
+        all.observe(owner) { nork ->
+            //make graph data
+            nork?.time?.zip(
+                nork.salinity
+                    .mapNotNull { arr -> //for each latlong grid at a given time
+                        aggregation(arr.first()) //apply aggregation at surface
+                    }
+            )?.map { (seconds, salt) -> //we have List<Pair<...>> make it into List<Entry>
+                //also map seconds to hours
+                Entry(seconds / 3600, salt)
+            }?.let { graph -> //perform action on the graph data
+                action(graph)
+            }
+        }
+
+
+    fun getVelocity(): Float? = getVelocity(0, 0, 0, 0)
 
     fun getVelocity(time: Int, depth: Int, y: Int, x: Int): Float? {
-        val u = norKyst800.velocity.first.get(time, depth, radius + y, radius + x)
-            ?: averageOf(time, depth, norKyst800.temperature)
-        val v = norKyst800.velocity.second.get(time, depth, radius + y, radius + x)
-            ?: averageOf(time, depth, norKyst800.temperature)
+        val u = current.velocity.first.get(time, depth, radius + y, radius + x)
+            ?: averageOf(time, depth, current.velocity.first)
+        val v = current.velocity.second.get(time, depth, radius + y, radius + x)
+            ?: averageOf(time, depth, current.velocity.second)
         //val w = norKyst800.velocity.third.get(time, depth, radius + y, radius + x)
         //    ?: averageOf(time, depth, norKyst800.temperature) TODO add vertical component?
         return u?.let { uu ->
@@ -127,16 +138,16 @@ data class NorKyst800AtSite(
     }
 
     fun getVelocityVector(): Triple<Float, Float, Float>? =
-        getVelocityVector(getCurrentTimeIndex(), 0, radius, radius)
+        getVelocityVector(0, 0, radius, radius)
 
     fun getVelocityVector(time: Int, depth: Int, y: Int, x: Int): Triple<Float, Float, Float>? {
-        var u = norKyst800.velocity.first.get(time, depth, radius + y, radius + x)
-        var v = norKyst800.velocity.second.get(time, depth, radius + y, radius + x)
-        var w = norKyst800.velocity.third.get(time, depth, radius + y, radius + x)
+        var u = current.velocity.first.get(time, depth, radius + y, radius + x)
+        var v = current.velocity.second.get(time, depth, radius + y, radius + x)
+        var w = current.velocity.third.get(time, depth, radius + y, radius + x)
         if (u == null || v == null || w == null) {
-            u = averageOf(time, 0, norKyst800.velocity.first)
-            v = averageOf(time, 0, norKyst800.velocity.second)
-            w = averageOf(time, 0, norKyst800.velocity.third)
+            u = averageOf(time, 0, current.velocity.first)
+            v = averageOf(time, 0, current.velocity.second)
+            w = averageOf(time, 0, current.velocity.third)
             if (u == null || v == null || w == null) {
                 return null
             }
@@ -149,13 +160,13 @@ data class NorKyst800AtSite(
     }
 
     fun getVelocityDirectionInXYPlane(): Float? =
-        getVelocityDirectionInXYPlane(getCurrentTimeIndex(), 0, radius, radius)
+        getVelocityDirectionInXYPlane(0, 0, radius, radius)
 
-    fun getVelocityDirectionInXYPlane(time: Int, depth: Int, y: Int, x: Int): Float? {
-        val u = norKyst800.velocity.first.get(time, depth, radius + y, radius + x)
-            ?: averageOf(time, depth, norKyst800.temperature)
-        val v = norKyst800.velocity.second.get(time, depth, radius + y, radius + x)
-            ?: averageOf(time, depth, norKyst800.temperature)
+    private fun getVelocityDirectionInXYPlane(time: Int, depth: Int, y: Int, x: Int): Float? {
+        val u = current.velocity.first.get(time, depth, radius + y, radius + x)
+            ?: averageOf(time, depth, current.velocity.first)
+        val v = current.velocity.second.get(time, depth, radius + y, radius + x)
+            ?: averageOf(time, depth, current.velocity.second)
         //val w = norKyst800.velocity.third.get(time, depth, radius + y, radius + x)
         //    ?: averageOf(time, depth, norKyst800.temperature) TODO add vertical component?
         return u?.let { _ ->

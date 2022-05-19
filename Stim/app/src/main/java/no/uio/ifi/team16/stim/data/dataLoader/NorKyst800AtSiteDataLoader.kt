@@ -1,17 +1,23 @@
 package no.uio.ifi.team16.stim.data.dataLoader
 
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.coroutines.awaitString
 import com.github.kittinunf.fuel.coroutines.awaitStringResult
 import com.github.kittinunf.result.getOrElse
 import com.github.kittinunf.result.onError
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import no.uio.ifi.team16.stim.data.NorKyst800
 import no.uio.ifi.team16.stim.data.NorKyst800AtSite
 import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.data.dataLoader.parser.NorKyst800Parser
 import no.uio.ifi.team16.stim.util.Options
 import no.uio.ifi.team16.stim.util.project
+import java.time.Instant
+import java.time.ZoneId
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -51,21 +57,42 @@ class NorKyst800AtSiteDataLoader {
             forecastUrlCache = url
             url
         }
-        val currentUrl = forecastUrlIntoCurrentUrl(forecastUrl)
+        val historicalUrl = forecastUrlIntoHistoricalUrl(forecastUrl)
 
-        //load for each set
-        val forecastAtSite = loadWithUrl(site, forecastUrl)
-        val currentAtSite = loadWithUrl(site, currentUrl)
+        //the current data is in either historical or forecast dataset.
+        //if the clock is past 17, it is in the historical one, otherwise it is in the forecast.
+        val hourOfDay = Instant.now().atZone(ZoneId.systemDefault()).hour
+        var currentTimeIndex = 0
+        val currentUrl =
+            if (hourOfDay > 17) {
+                currentTimeIndex = hourOfDay //TODO: wrong!
+                historicalUrl
+            } else {
 
-        //now merge the two datasets
-        return if (currentAtSite != null && forecastAtSite != null) {
-            NorKyst800AtSite(
-                site.nr,
-                currentAtSite.append(forecastAtSite)
-            )
-        } else {
-            null
+                currentTimeIndex = hourOfDay //TODO: wrong!
+                forecastUrl
+            }
+
+        //start an async load of all the available data
+        val allData = MutableLiveData<NorKyst800>()
+        CoroutineScope(Dispatchers.IO).launch(Dispatchers.IO) {
+            //load for each set
+            val forecastAtSite = loadWithUrl(site, forecastUrl)
+            val historicalAtSite = loadWithUrl(site, historicalUrl)
+            //now merge the two datasets
+            if (historicalAtSite != null && forecastAtSite != null) {
+                allData.postValue(historicalAtSite.append(forecastAtSite))
+            }
         }
+
+        //load the current data
+        val currentAtSite = loadWithUrl(site, currentUrl) ?: return null
+
+        return NorKyst800AtSite(
+            site.nr,
+            currentAtSite,
+            allData
+        )
     }
 
 
@@ -236,6 +263,6 @@ class NorKyst800AtSiteDataLoader {
     }
 
     //replace .fc. with .an.
-    private fun forecastUrlIntoCurrentUrl(fcast: String): String =
+    private fun forecastUrlIntoHistoricalUrl(fcast: String): String =
         fcast.replace(".fc.", ".an.")
 }
