@@ -15,8 +15,7 @@ import no.uio.ifi.team16.stim.util.Options
 
 class MainActivityViewModel : ViewModel() {
 
-    private val TAG = "MainActivityViewModel"
-    private lateinit var prefrences: SharedPreferences
+    private lateinit var preferences: SharedPreferences
 
     //REPOSITORIES
     private val infectiousPressureRepository = InfectiousPressureRepository()
@@ -37,6 +36,7 @@ class MainActivityViewModel : ViewModel() {
     private val norKyst800Data = MutableLiveData<NorKyst800?>()
     private val norKyst800AtSiteData = mutableMapOf<Site, MutableLiveData<NorKyst800AtSite?>>()
     private val currentSitesData = MutableLiveData<List<Site>?>()
+    private var lineDataSet = MutableLiveData<LineDataSet?>(null)
     private val weatherData = MutableLiveData<WeatherForecast?>()
     private val barentsWatchData = mutableMapOf<Site, MutableLiveData<BarentsWatchAtSite?>>()
 
@@ -77,8 +77,8 @@ class MainActivityViewModel : ViewModel() {
         return favouriteSitesData
     }
 
-    fun loadPrefrences(preferences: SharedPreferences) {
-        prefrences = preferences
+    fun loadPrefrences(prefs: SharedPreferences) {
+        preferences = prefs
     }
 
     fun getCurrentSitesData(): LiveData<List<Site>?> {///nyyy
@@ -160,7 +160,7 @@ class MainActivityViewModel : ViewModel() {
     /**
      * Load the 100 first sited from the given municipality
      */
-    fun loadSitesAtMunicipality(municipalityCode: String) {
+    private fun loadSitesAtMunicipality(municipalityCode: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val loaded = sitesRepository.getMunicipality(municipalityCode)
             //invokes the observer
@@ -170,7 +170,7 @@ class MainActivityViewModel : ViewModel() {
 
     fun loadFavouriteSites() {
         viewModelScope.launch(Dispatchers.IO) {
-            val loaded = sitesRepository.getFavouriteSites(prefrences.getStringSet(Options.FAVOURITES, null))
+            val loaded = sitesRepository.getFavouriteSites(preferences.getStringSet(Options.FAVOURITES, null))
             //invokes the observer
             favouriteSitesData.postValue(loaded)
         }
@@ -233,8 +233,8 @@ class MainActivityViewModel : ViewModel() {
             favouriteSites?.add(site)
             favouriteSitesData.postValue(favouriteSites)
         }
-        prefrences.edit().apply{
-            val editStringSet = prefrences.getStringSet(Options.FAVOURITES, emptySet())?.toMutableSet()
+        preferences.edit().apply {
+            val editStringSet = preferences.getStringSet(Options.FAVOURITES, emptySet())?.toMutableSet()
             if (editStringSet != null) {
                 editStringSet.add(site.nr.toString())
                 putStringSet(Options.FAVOURITES, editStringSet.toSet())
@@ -248,8 +248,8 @@ class MainActivityViewModel : ViewModel() {
             favouriteSites?.remove(site)
             favouriteSitesData.postValue(favouriteSites)
         }
-        prefrences.edit().apply{
-            val editStringSet = prefrences.getStringSet(Options.FAVOURITES, emptySet())?.toMutableSet()
+        preferences.edit().apply {
+            val editStringSet = preferences.getStringSet(Options.FAVOURITES, emptySet())?.toMutableSet()
             if (editStringSet != null) {
                 editStringSet.remove(site.nr.toString())
                 putStringSet(Options.FAVOURITES, editStringSet.toSet())
