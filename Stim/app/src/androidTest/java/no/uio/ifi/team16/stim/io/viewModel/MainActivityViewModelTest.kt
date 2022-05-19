@@ -4,8 +4,9 @@ import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
 import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.util.Options
-import org.junit.Assert.assertEquals
+import org.junit.Assert.*
 import org.junit.Test
+import kotlin.system.measureTimeMillis
 
 /**
  * Integrasjonstest av ViewModel
@@ -28,10 +29,24 @@ class MainActivityViewModelTest {
         assertEquals("4615", viewModel.getMunicipalityData().value?.id)
         assertEquals("Fitjar", viewModel.getMunicipalityData().value?.sites?.get(0)?.placement?.municipalityName)
 
+        //assertnotequals
         // Søk etter navn på anlegg
         viewModel.doMapSearch("Klubben")
         Thread.sleep(1000)
         assertEquals(true, viewModel.getCurrentSitesData().value?.get(0)?.name?.contains("KLUBBEN"))
+
+    }
+
+    @Test
+    fun testResponstidSokAnlegg() {
+        // Søk etter site navn
+        val time=measureTimeMillis{
+            viewModel.doMapSearch("Torangskjeret")
+            Thread.sleep(1000)
+            assertNotNull(viewModel.getCurrentSitesData().value?.get(0)!!)
+        }
+        assertTrue(time<2000)
+
 
     }
 
