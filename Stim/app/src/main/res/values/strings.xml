@@ -73,6 +73,7 @@
     <string name="maps_static_description">Bilde av hvert anlegg</string>
     <string name="barentswatch_fishhealth_api">BarentsWatch FishHealth API</string>
     <string name="barrentswatch_description">Lakseanemi og pankerassykdom data</string>
+    <string name="laget_av_team_16">Laget av Team 16</string>
     <string name="version">versjon 1.0</string>
 
     <!-- Status dialog infection icon info -->
