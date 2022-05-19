@@ -1,7 +1,6 @@
 package no.uio.ifi.team16.stim.io.viewModel
 
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -36,7 +35,6 @@ class MainActivityViewModel : ViewModel() {
     private val norKyst800Data = MutableLiveData<NorKyst800?>()
     private val norKyst800AtSiteData = mutableMapOf<Site, MutableLiveData<NorKyst800AtSite?>>()
     private val currentSitesData = MutableLiveData<List<Site>?>()
-    private var lineDataSet = MutableLiveData<LineDataSet?>(null)
     private val weatherData = MutableLiveData<WeatherForecast?>()
     private val barentsWatchData = mutableMapOf<Site, MutableLiveData<BarentsWatchAtSite?>>()
 
@@ -91,16 +89,10 @@ class MainActivityViewModel : ViewModel() {
         }
     }
 
-    ///////////// used to load the data from its source, does ot return the data but puts it
-    // LOADERS // into its corresponding MutableLiveData container.
-    ///////////// The posting will wake the observer of that data.
     fun loadInfectiousPressure() {
         viewModelScope.launch(Dispatchers.IO) {
-            val loaded =
-                infectiousPressureRepository.getDefault() //either loaded, retrieved from cache or faked
-            //invokes the observer
+            val loaded = infectiousPressureRepository.getDefault()
             infectiousPressureData.postValue(loaded)
-            Log.d(TAG, "LOADED INFECTIOUSPRESSURE")
         }
     }
 
@@ -113,26 +105,6 @@ class MainActivityViewModel : ViewModel() {
                     site,
                     Options.infectiousPressureTimeSeriesSpan
                 ) //either loaded, retrieved from cache or faked
-            )
-        }
-    }
-
-    fun loadNorKyst800() {
-        viewModelScope.launch(Dispatchers.IO) {
-            //invokes the observer
-            norKyst800Data.postValue(
-                norKyst800Repository.getDefaultData() //either loaded or retrieved from cache
-            )
-        }
-    }
-
-    //load norkyst800, clearing the cache first
-    fun loadNorKyst800Anew() {
-        viewModelScope.launch(Dispatchers.IO) {
-            norKyst800Repository.clearCache()
-            //invokes the observer
-            norKyst800Data.postValue(
-                norKyst800Repository.getDefaultData() //either loaded or retrieved from cache
             )
         }
     }
