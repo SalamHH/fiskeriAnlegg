@@ -18,11 +18,11 @@ class TimeValueFormatter : ValueFormatter() {
             Instant.ofEpochSecond(secInAnHour * value.toLong()).atZone(ZoneId.systemDefault())
         val valueDay = Instant.ofEpochSecond(secInAnHour * value.toLong())
             .atZone(ZoneId.systemDefault()).dayOfWeek.toString()
-        return if (valueDate.hour == 0) {
-            valueDate.format(formatter) + ":00" + valueDay
-        } else {
-            valueDate.format(formatter) + ":00"
-        }
+        //return if (valueDate.hour == 0) {
+        return valueDate.format(formatter) + ":00 " + valueDay
+        // else {
+        //    valueDate.format(formatter) + ":00"
+        //}
     }
 
     // override this for e.g. LineChart or ScatterChart

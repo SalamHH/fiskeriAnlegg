@@ -39,6 +39,13 @@
     <string name="friday">Fredag</string>
     <string name="saturday">Lørdag</string>
     <string name="sunday">Søndag</string>
+    <string name="shortMonday">Man</string>
+    <string name="shortTuesday">Tir</string>
+    <string name="shortWednesday">Ons</string>
+    <string name="shortThursday">Tor</string>
+    <string name="shortFriday">Fre</string>
+    <string name="shortSaturday">Lør</string>
+    <string name="shortSunday">Søn</string>
     <string name="today">I dag</string>
     <string name="storm_predicted">En storm med styrke %.1f m/s inntreffer %s.</string>
     <string name="on">på</string>
