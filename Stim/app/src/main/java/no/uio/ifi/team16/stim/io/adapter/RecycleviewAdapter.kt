@@ -1,11 +1,9 @@
 package no.uio.ifi.team16.stim.io.adapter
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.ToggleButton
@@ -14,7 +12,13 @@ import no.uio.ifi.team16.stim.R
 import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.data.StaticMapImageLoader
 
-
+/**
+ * Recycleview som skal ta inn en liste over alle anlegg
+ *
+ * Benytter seg av layoutene:
+ * Recycleview_element.xml
+ * Recycleview.xml
+ */
 class RecycleViewAdapter(
     var sites: List<Site>,
     var favs: List<Site>,
@@ -23,17 +27,6 @@ class RecycleViewAdapter(
     val context: Context
 ) :
     RecyclerView.Adapter<RecycleViewAdapter.ViewHolder>() {
-
-    /**
-     * Recycleview som skal ta inn en liste over alle anlegg
-     * TODO - vurdere om alle anlegg har plass (?) evt legge til range/neste side eln
-     *
-     * Benytter seg av layoutene:
-     * Recycleview_element.xml
-     * Recycleview.xml
-     */
-
-    private val TAG = "_RECYCLERVIEW"
 
     private val imageLoader = StaticMapImageLoader(context)
 
