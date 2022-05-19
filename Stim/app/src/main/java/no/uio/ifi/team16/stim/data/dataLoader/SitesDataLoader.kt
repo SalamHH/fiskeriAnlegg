@@ -4,7 +4,10 @@ import android.util.Log
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.Parameters
 import com.github.kittinunf.fuel.coroutines.awaitString
-import no.uio.ifi.team16.stim.data.*
+import no.uio.ifi.team16.stim.data.AreaPlacement
+import no.uio.ifi.team16.stim.data.Capacity
+import no.uio.ifi.team16.stim.data.Municipality
+import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.util.LatLong
 import no.uio.ifi.team16.stim.util.Options
 import no.uio.ifi.team16.stim.util.capitalizeEachWord
@@ -21,12 +24,8 @@ import org.json.JSONArray
 class SitesDataLoader {
     companion object {
         private const val TAG = "SitesDataLoader"
+        private const val BASE_URL: String = "https://api.fiskeridir.no/pub-aqua/api/v1/sites"
     }
-
-    /**
-     * URL to the API
-     */
-    private val url: String = "https://api.fiskeridir.no/pub-aqua/api/v1/sites"
 
     /////////////
     // LOADERS //
@@ -44,7 +43,7 @@ class SitesDataLoader {
     private suspend fun loadWithParameters(parameters: Parameters?): List<Site>? {
         var responseStr = ""
         try {
-            responseStr = Fuel.get(url, parameters).awaitString()
+            responseStr = Fuel.get(BASE_URL, parameters).awaitString()
         } catch (e: Exception) {
             Log.e(TAG, "Kunne ikke hente municipality med params: $parameters", e)
         }
@@ -66,37 +65,31 @@ class SitesDataLoader {
             sites.getJSONObject(i)?.runCatching {
                 out.add(
                     Site(
-                        this.getInt("siteNr"),
-                        this.getString("name"),
-                        LatLong(this.getDouble("latitude"), this.getDouble("longitude")),
-                        //a site might not have an areaplacement(?)
-                        this.getJSONObject("placement")?.let { APJSON ->
+                        getInt("siteNr"),
+                        getString("name"),
+                        LatLong(getDouble("latitude"), getDouble("longitude")),
+                        // a site might not have an areaplacement
+                        getJSONObject("placement")?.let { ap ->
                             AreaPlacement(
-                                APJSON.getInt("municipalityCode"),
-                                APJSON.getString("municipalityName").capitalizeEachWord(),
-                                APJSON.getInt("countyCode"),
-                                runCatching { //many municipality have no production area, return null
-                                    ProdArea(
-                                        APJSON.getInt("prodAreaCode"),
-                                        APJSON.getString("prodAreaName"),
-                                        ProdAreaStatus.valueOf(APJSON.getString("prodAreaStatus"))
-                                    )
-                                }.getOrDefault(null) //placement might be null
+                                ap.getInt("municipalityCode"),
+                                ap.getString("municipalityName").capitalizeEachWord(),
+                                ap.getInt("countyCode"),
                             )
                         },
-                        this.getDouble("capacity"),
-                        this.getString("placementType"),
-                        this.getString("waterType")
+                        Capacity(getDouble("capacity"), getString("capacityUnitType")),
+                        getString("placementType"),
+                        getString("waterType")
                     )
                 )
             }?.onFailure { failure ->
-                Log.w(TAG, "Failed to create a site due to: $failure")
+                Log.e(TAG, "Failed to create a site due to: $failure")
             }
         }
         return out.toList()
     }
 
     /**
+     * Load sites with a given municipality code
      * @param municipalityCode municipalitycode to find sites in
      * @return municipality object with sites in the specified municipality
      * @see loadWithParameters
@@ -114,7 +107,11 @@ class SitesDataLoader {
             )
         }
 
-
+    /**
+     * Load sites with a given name
+     * @param name name of a site
+     * @return a list of matching sites or null if none found
+     */
     suspend fun loadSitesByName(name: String): List<Site>? {
         return loadWithParameters(
             listOf(
@@ -124,6 +121,11 @@ class SitesDataLoader {
         )
     }
 
+    /**
+     * Load a site with the given number/unique ID
+     * @param nr site number
+     * @return site or null if none exists
+     */
     suspend fun loadDataByNr(nr: String): Site? {
         val sites = loadWithParameters(
             listOf(
