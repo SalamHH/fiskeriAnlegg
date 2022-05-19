@@ -16,7 +16,6 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.maps.android.heatmaps.HeatmapTileProvider
-import com.leinardi.android.speeddial.SpeedDialActionItem
 import no.uio.ifi.team16.stim.data.Municipality
 import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.databinding.FragmentMapBinding
@@ -39,7 +38,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
 
     private lateinit var map: GoogleMap
     private lateinit var binding: FragmentMapBinding
-    private var heatMapUsed: SpeedDialActionItem? = null
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
     private var locationClient: FusedLocationProviderClient? = null
     private val viewModel: MainActivityViewModel by activityViewModels()
@@ -378,10 +376,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         }
     }
 
-
-    enum class HeatmapType { INFECTIOUSPRESSURE, SALINITY, TEMPERATURE, VELOCITY, NONE }
-
-    var tileOverlay: TileOverlay? = null
+    private var tileOverlay: TileOverlay? = null
 
     private fun drawHeatmap(googleMap: GoogleMap): Boolean {
         // INFECTIOUSPRESSURE HEATMAP
@@ -393,7 +388,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
                 val n = if (z > 7) {
                     1
                 } else {
-                    Math.max(1 + 20 * (z - 9.884714) / (4.992563 - 9.884714), 1.0).toInt()
+                    (1 + 20 * (z - 9.884714) / (4.992563 - 9.884714)).coerceAtLeast(1.0).toInt()
                 }
 
                 val scale = 50.0

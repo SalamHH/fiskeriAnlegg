@@ -13,10 +13,10 @@ import javax.inject.Inject
 /**
  * Class defining how a chart should be styled in the Spark Line Style
  */
-class SalinityLineStyle @Inject constructor(private val context: Context) {
+class SalinityLineStyle @Inject constructor() {
 
     /***
-     * stylizes the chart
+     * Stylizes the chart
      */
     fun styleChart(lineChart: LineChart) = lineChart.apply {
         axisRight.isEnabled = false
@@ -56,7 +56,7 @@ class SalinityLineStyle @Inject constructor(private val context: Context) {
     }
 
     /***
-     * stylizes the chart line
+     * Stylizes the chart line
      */
     fun styleLineDataSet(lineDataSet: LineDataSet, context: Context) = lineDataSet.apply {
         color = ContextCompat.getColor(context, R.color.chartlinecolor)

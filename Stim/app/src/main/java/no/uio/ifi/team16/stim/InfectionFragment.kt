@@ -61,7 +61,7 @@ class InfectionFragment : StimFragment() {
         site = viewModel.getCurrentSite() ?: return binding.root
         binding.sitename.text = site.name
 
-        chartStyle = SparkLineStyle(requireContext())
+        chartStyle = SparkLineStyle()
 
         //EXPANDABLE INFORMATION CARD
 

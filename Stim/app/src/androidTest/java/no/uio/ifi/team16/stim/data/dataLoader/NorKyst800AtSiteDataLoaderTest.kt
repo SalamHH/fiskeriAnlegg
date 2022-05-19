@@ -13,8 +13,11 @@ import org.locationtech.proj4j.CoordinateTransform
 import org.locationtech.proj4j.CoordinateTransformFactory
 
 class NorKyst800AtSiteDataLoaderTest {
-    val TAG = "NorKyst800AtSiteDataLoaderTest"
-    val dataLoader = NorKyst800AtSiteDataLoader()
+    companion object {
+        private const val TAG = "NorKyst800AtSiteDataLoaderTest"
+    }
+
+    private val dataLoader = NorKyst800AtSiteDataLoader()
 
     private val fakeResponse = """
         Dataset {
@@ -271,7 +274,7 @@ class NorKyst800AtSiteDataLoaderTest {
                 ctFactory.createTransform(latLngCRT, stereoCRT)
             }
 
-        var actualNorKyst =
+        val actualNorKyst =
             runBlocking {
                 //////////////////////
                 // DAS / ATTRIBUTES //

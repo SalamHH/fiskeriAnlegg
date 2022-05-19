@@ -10,7 +10,7 @@ import android.widget.TextView
 /**
  * Fragment that displays the tutorial layouts based on position.
  */
-class TutorialSlideFragment(val slide: Int) : StimFragment() {
+class TutorialSlideFragment(private val slide: Int) : StimFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

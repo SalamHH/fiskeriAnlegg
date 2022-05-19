@@ -49,25 +49,8 @@ class MainActivity : AppCompatActivity() {
 
         //initial load of data
         viewModel.loadPrefrences(prefrences)
-        //viewModel.loadNorKyst800() // todo hva brukes dette til?
-        viewModel.loadInfectiousPressure() // todo hva brukes dette til?
+        viewModel.loadInfectiousPressure()
         viewModel.loadFavouriteSites()
-
-        //setup periodical loading of data
-        /*Timer().schedule(
-            object : TimerTask() {
-                override fun run() {
-                    Log.d(TAG, "Reloading stale datasets")
-                    viewModel.loadNorKyst800Anew()
-                    /*TODO: infectiouspressure updates once a week, but it is impossible to predict when, maybe
-                    update every hour just in case? or just ignore and assume app does not live beyond an update cycle*/
-                }
-            },
-            (Calendar.getInstance().run {
-                60 * 60 - (60 * get(Calendar.MINUTE) + get(Calendar.SECOND)) //seconds until next hour
-            } * 1000).toLong(), //milliseconds until next hour
-            60 * 60 * 1000
-        )*/
     }
 
     override fun onTrimMemory(level: Int) {

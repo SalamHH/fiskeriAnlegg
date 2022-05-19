@@ -14,7 +14,7 @@ import javax.inject.Inject
 /**
  * Class defining how a chart should be styled in the Spark Line Style
  */
-class TemperatureLineStyle @Inject constructor(private val context: Context) {
+class TemperatureLineStyle @Inject constructor() {
 
     /***
      * stylizes the chart
@@ -60,7 +60,7 @@ class TemperatureLineStyle @Inject constructor(private val context: Context) {
 
         // highlight the entry and x-position 50 in the first (0) DataSet
         // highlight the entry and x-position 50 in the first (0) DataSet
-        val highlight: Highlight = Highlight(0f, 0, 0)
+        val highlight = Highlight(0f, 0, 0)
         highlightValue(highlight, false) // highlight this value, don't call listener
 
 

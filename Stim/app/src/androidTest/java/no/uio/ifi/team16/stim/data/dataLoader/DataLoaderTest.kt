@@ -1,12 +1,9 @@
 package no.uio.ifi.team16.stim.data.dataLoader
 
-import android.util.Log
 import kotlinx.coroutines.runBlocking
-import no.uio.ifi.team16.stim.util.*
-import org.junit.Assert.*
+import no.uio.ifi.team16.stim.util.LatLong
+import org.junit.Assert.assertNotNull
 import org.junit.Test
-
-
 
 class DataLoaderTest {
     private val sitesDataLoader = SitesDataLoader()
@@ -28,9 +25,4 @@ class DataLoaderTest {
         }
         assertNotNull(data)
     }
-
-
-
-
-
 }

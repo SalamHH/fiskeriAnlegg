@@ -14,5 +14,4 @@ class TempValueFormatter : ValueFormatter() {
     override fun getPointLabel(entry: Entry?): String {
         return String.format("%.2f°", entry?.y)
     }
-
 }

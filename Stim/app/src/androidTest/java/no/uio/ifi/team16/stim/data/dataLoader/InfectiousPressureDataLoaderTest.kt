@@ -15,10 +15,13 @@ import kotlin.math.roundToInt
 import kotlin.ranges.IntProgression.Companion.fromClosedRange
 
 class InfectiousPressureDataLoaderTest {
-    val TAG = "InfectiousPressureDataLoaderTest"
-    val dataLoader = InfectiousPressureDataLoader()
-    val testUrl =
-        "http://thredds.nodc.no:8080/thredds/fileServer/smittepress_new2018/agg_OPR_2022_9.nc"
+    companion object {
+        private const val TAG = "InfectiousPressureDataLoaderTest"
+        private const val TEST_URL =
+            "http://thredds.nodc.no:8080/thredds/fileServer/smittepress_new2018/agg_OPR_2022_9.nc"
+    }
+
+    private val dataLoader = InfectiousPressureDataLoader()
 
     /**
      * Test wether the dataloader is able to load a non-null object
@@ -46,7 +49,7 @@ class InfectiousPressureDataLoaderTest {
     fun testCorrectParse() {
         val data = runBlocking {
             dataLoader.load(
-                testUrl,
+                TEST_URL,
                 fromClosedRange(200, 210, 4),
                 fromClosedRange(200, 212, 7)
             )
@@ -99,7 +102,7 @@ class InfectiousPressureDataLoaderTest {
         var longitudes: FloatArray2D
 
         runBlocking {
-            NetcdfDataset.openDataset(testUrl).let { ncfile ->
+            NetcdfDataset.openDataset(TEST_URL).let { ncfile ->
                 val range2 = "${xRange.reformatFLS()},${yRange.reformatFLS()}"
 
                 val gridMapping: Variable = ncfile.findVariable("grid_mapping")

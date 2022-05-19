@@ -12,12 +12,15 @@ import androidx.viewpager2.widget.ViewPager2
 
 class TutorialFragment : FragmentActivity() {
 
+    companion object {
+        private const val PAGE_COUNT = 5
+    }
+
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
      * and next wizard steps.
      */
     private lateinit var viewPager: ViewPager2
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,9 +35,8 @@ class TutorialFragment : FragmentActivity() {
         viewPager.adapter = pagerAdapter
     }
 
-
     override fun onBackPressed() {
-        if (viewPager.currentItem == 0 || viewPager.currentItem == 5) {
+        if (viewPager.currentItem == 0 || viewPager.currentItem == PAGE_COUNT) {
             // If the user is currently looking at the first step, allow the system to handle the
             // Back button. This calls finish() on this activity and pops the back stack.
             super.onBackPressed()
@@ -46,7 +48,7 @@ class TutorialFragment : FragmentActivity() {
 
     private inner class TutorialSlidePageAdapter(fa: TutorialFragment) : FragmentStateAdapter(fa) {
 
-        override fun getItemCount(): Int = 5
+        override fun getItemCount(): Int = PAGE_COUNT
 
         override fun createFragment(position: Int): Fragment {
             return TutorialSlideFragment(position)

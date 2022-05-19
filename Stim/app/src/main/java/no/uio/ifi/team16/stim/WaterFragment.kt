@@ -16,7 +16,6 @@ import androidx.transition.AutoTransition
 import androidx.transition.TransitionInflater
 import androidx.transition.TransitionManager
 import com.github.mikephil.charting.components.LimitLine
-import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import no.uio.ifi.team16.stim.data.Site
@@ -32,8 +31,6 @@ class WaterFragment : Fragment() {
     private lateinit var binding: FragmentWaterBinding
     private val viewModel: MainActivityViewModel by activityViewModels()
     private var salinityChartPressed = true
-    private var salinityChart = listOf<Entry>()
-    private var temperatureChart = listOf<Entry>()
     private lateinit var site: Site
 
     @Inject
@@ -88,7 +85,7 @@ class WaterFragment : Fragment() {
                     binding.InformationCard,
                     AutoTransition()
                 )
-                binding.infoTextExtra.setVisibility(View.GONE)
+                binding.infoTextExtra.visibility = View.GONE
                 binding.arrow.setImageResource(R.drawable.down_darkblue)
             } else {
                 TransitionManager.beginDelayedTransition(
@@ -118,7 +115,7 @@ class WaterFragment : Fragment() {
         setSalinityChart()
 
         binding.chartButton.setOnClickListener {
-            if (binding.chartButton.isChecked()) {
+            if (binding.chartButton.isChecked) {
                 setTemperatureChart()
             } else {
                 setSalinityChart()
@@ -148,7 +145,7 @@ class WaterFragment : Fragment() {
         binding.salinityChart.visibility = View.VISIBLE
         binding.watertempChart.visibility = View.GONE
 
-        saltChartStyle = SalinityLineStyle(requireContext())
+        saltChartStyle = SalinityLineStyle()
 
         viewModel.getNorKyst800AtSiteData(site).observe(viewLifecycleOwner) { norkAtSite ->
             norkAtSite?.observeSalinityAtSurfaceAsGraph(viewLifecycleOwner) { salinityChart ->
@@ -190,7 +187,7 @@ class WaterFragment : Fragment() {
         binding.salinityChart.visibility = View.GONE
         binding.watertempChart.visibility = View.VISIBLE
 
-        tempChartStyle = TemperatureLineStyle(requireContext())
+        tempChartStyle = TemperatureLineStyle()
 
         viewModel.getNorKyst800AtSiteData(site).observe(viewLifecycleOwner) { norkAtSite ->
             norkAtSite?.observeTemperatureAtSurfaceAsGraph(viewLifecycleOwner) { temperatureChart ->
@@ -418,7 +415,7 @@ class WaterFragment : Fragment() {
     }
 
     private fun setVelocityDirection(direction: Float) {
-        var degrees = 270 - (direction / Math.PI) * 180
+        val degrees = 270 - (direction / Math.PI) * 180
         Log.d("GIF", "radians $direction + interpreted to degrees $degrees")
         binding.VelocityDirectionArrow.rotation = degrees.toFloat()
     }

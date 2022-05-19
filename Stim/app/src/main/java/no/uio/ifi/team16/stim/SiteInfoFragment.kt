@@ -2,7 +2,6 @@ package no.uio.ifi.team16.stim
 
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.get
 import androidx.fragment.app.activityViewModels
@@ -15,7 +14,6 @@ import no.uio.ifi.team16.stim.data.WeatherForecast
 import no.uio.ifi.team16.stim.databinding.FragmentSiteInfoBinding
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 import no.uio.ifi.team16.stim.util.InfectionStatusCalculator
-
 
 class SiteInfoFragment : StimFragment() {
 
