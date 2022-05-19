@@ -1,6 +1,7 @@
 package no.uio.ifi.team16.stim
 
 import android.annotation.SuppressLint
+import android.content.res.Resources
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -83,7 +84,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         bottomSheetBehavior.isDraggable = true
         bottomSheetBehavior.isHideable = false
 
-        val screenHeight = requireActivity().windowManager.currentWindowMetrics.bounds.height()
+        val screenHeight = Resources.getSystem().displayMetrics.heightPixels
         bottomSheetBehavior.maxHeight = round(screenHeight * 0.8).toInt()
 
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
