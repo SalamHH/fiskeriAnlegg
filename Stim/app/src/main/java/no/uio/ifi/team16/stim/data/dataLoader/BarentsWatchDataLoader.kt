@@ -60,7 +60,6 @@ class BarentsWatchDataLoader {
         try {
             token = jsonObject.getString("access_token")
             validityTime = jsonObject.getString("expires_in").toLong()
-            Log.d(TAG, token)
         } catch (e: Error) {
             Log.e(TAG, "Failed to read token from response due to $e")
             return null
