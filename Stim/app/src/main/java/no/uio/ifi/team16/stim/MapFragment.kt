@@ -38,7 +38,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
 
     private lateinit var map: GoogleMap
     private lateinit var binding: FragmentMapBinding
-    //private lateinit var speedDial: SpeedDialView
     private var heatMapUsed: SpeedDialActionItem? = null
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
     private var locationClient: FusedLocationProviderClient? = null
@@ -66,7 +65,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         }
 
         binding = FragmentMapBinding.inflate(layoutInflater)
-        //speedDial = binding.speedDial
 
         val mapFragment = SupportMapFragment.newInstance()
         activity?.supportFragmentManager?.beginTransaction()?.add(R.id.mapView, mapFragment)?.commit()
