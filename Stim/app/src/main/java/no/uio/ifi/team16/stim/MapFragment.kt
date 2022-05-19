@@ -349,7 +349,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
      * Called when the map is moved
      */
     override fun onCameraMove() {
-
+        zoomLevel = map.cameraPosition.zoom
     }
 
     /**
