@@ -59,9 +59,9 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="5dp"
         android:fontFamily="@font/montserrat_semibold"
-        android:text="@string/tutorial_slide_5_text2"
+        android:text="@string/tutorial_slide_4_text2"
         android:textColor="@color/secondaryTextColor"
-        android:textSize="20sp"
+        android:textSize="15sp"
         tools:layout_editor_absoluteY="439dp" />
 
     <RelativeLayout
