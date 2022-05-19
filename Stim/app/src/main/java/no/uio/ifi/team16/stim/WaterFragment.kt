@@ -150,37 +150,34 @@ class WaterFragment : Fragment() {
 
         saltChartStyle = SalinityLineStyle(requireContext())
 
-        viewModel.getNorKyst800AtSiteData(site).observe(viewLifecycleOwner) {
-            it?.apply {
-                //set chart
-                salinityChart = it.getSalinityAtSurfaceAsGraph()
-            }
+        viewModel.getNorKyst800AtSiteData(site).observe(viewLifecycleOwner) { norkAtSite ->
+            norkAtSite?.observeSalinityAtSurfaceAsGraph(viewLifecycleOwner) { salinityChart ->
+                if (salinityChart.isNotEmpty()) {
 
-            if (salinityChart.isNotEmpty()) {
+                    val linedatasetSalinity =
+                        LineDataSet(salinityChart, CHART_LABEL_SALT)
 
-                val linedatasetSalinity =
-                    LineDataSet(salinityChart, CHART_LABEL_SALT)
-
-                binding.salinityChart.apply {
-                    xAxis.apply {
-                        valueFormatter = TimeValueFormatter()
-                        //find hours from 1970 to now
-                        val currentHour = Instant.now().epochSecond.toFloat() / 3600
-                        addLimitLine(LimitLine(currentHour, "nåtid"))
-                        setDrawLimitLinesBehindData(true)
-                        moveViewToX(currentHour) //start at current time, showing values after
+                    binding.salinityChart.apply {
+                        xAxis.apply {
+                            valueFormatter = TimeValueFormatter()
+                            //find hours from 1970 to now
+                            val currentHour = Instant.now().epochSecond.toFloat() / 3600
+                            addLimitLine(LimitLine(currentHour, "nåtid"))
+                            setDrawLimitLinesBehindData(true)
+                            moveViewToX(currentHour) //start at current time, showing values after
+                        }
                     }
+                    //style linedataset
+                    saltChartStyle.styleLineDataSet(linedatasetSalinity, requireContext())
+                    binding.salinityChart.data = LineData(linedatasetSalinity)
+                    binding.salinityChart.notifyDataSetChanged()
+                    binding.salinityChart.invalidate()
+
+                    saltChartStyle.styleChart(binding.salinityChart)
+
+                    binding.salinityChartHeader.text = "Graf over saltholdighet"
+                    salinityChartPressed = true
                 }
-                //style linedataset
-                saltChartStyle.styleLineDataSet(linedatasetSalinity, requireContext())
-                binding.salinityChart.data = LineData(linedatasetSalinity)
-                binding.salinityChart.notifyDataSetChanged()
-                binding.salinityChart.invalidate()
-
-                saltChartStyle.styleChart(binding.salinityChart)
-
-                binding.salinityChartHeader.text = "Graf over saltholdighet"
-                salinityChartPressed = true
             }
         }
     }
@@ -195,38 +192,35 @@ class WaterFragment : Fragment() {
 
         tempChartStyle = TemperatureLineStyle(requireContext())
 
-        viewModel.getNorKyst800AtSiteData(site).observe(viewLifecycleOwner) {
+        viewModel.getNorKyst800AtSiteData(site).observe(viewLifecycleOwner) { norkAtSite ->
+            norkAtSite?.observeTemperatureAtSurfaceAsGraph(viewLifecycleOwner) { temperatureChart ->
+                if (temperatureChart.isNotEmpty()) {
+                    val linedataset =
+                        LineDataSet(temperatureChart, CHART_LABEL_TEMP)
 
-            it?.apply {
-                temperatureChart = it.getTemperatureAtSurfaceAsGraph()
-            }
-
-            if (temperatureChart.isNotEmpty()) {
-                val linedataset =
-                    LineDataSet(temperatureChart, CHART_LABEL_TEMP)
-
-                binding.watertempChart.apply {
-                    axisLeft.apply {
-                        valueFormatter = TempValueFormatter()
+                    binding.watertempChart.apply {
+                        axisLeft.apply {
+                            valueFormatter = TempValueFormatter()
+                        }
+                        xAxis.apply {
+                            valueFormatter = TimeValueFormatter()
+                            //find hours from 1970 to now
+                            val currentHour = Instant.now().epochSecond.toFloat() / 3600
+                            addLimitLine(LimitLine(currentHour, "nåtid"))
+                            setDrawLimitLinesBehindData(true)
+                            moveViewToX(currentHour) //start at current time, showing values after
+                        }
                     }
-                    xAxis.apply {
-                        valueFormatter = TimeValueFormatter()
-                        //find hours from 1970 to now
-                        val currentHour = Instant.now().epochSecond.toFloat() / 3600
-                        addLimitLine(LimitLine(currentHour, "nåtid"))
-                        setDrawLimitLinesBehindData(true)
-                        moveViewToX(currentHour) //start at current time, showing values after
-                    }
+                    //style linedataset
+                    tempChartStyle.styleLineDataSet(linedataset, requireContext())
+                    binding.watertempChart.data = LineData(linedataset)
+                    binding.watertempChart.invalidate()
+
+                    tempChartStyle.styleChart(binding.watertempChart)
+
+                    binding.salinityChartHeader.text = "Graf over vanntemperatur"
+                    salinityChartPressed = false
                 }
-                //style linedataset
-                tempChartStyle.styleLineDataSet(linedataset, requireContext())
-                binding.watertempChart.data = LineData(linedataset)
-                binding.watertempChart.invalidate()
-
-                tempChartStyle.styleChart(binding.watertempChart)
-
-                binding.salinityChartHeader.text = "Graf over vanntemperatur"
-                salinityChartPressed = false
             }
         }
     }
@@ -236,10 +230,9 @@ class WaterFragment : Fragment() {
      * Uses same layout as the infection table.
      */
     private fun setTemperatureTable(inflater: LayoutInflater, container: ViewGroup?) {
-        viewModel.getNorKyst800AtSiteData(site).observe(viewLifecycleOwner) {
-            it?.apply {
+        viewModel.getNorKyst800AtSiteData(site).observe(viewLifecycleOwner) { norkAtSite ->
+            norkAtSite?.observeTemperatureAtSurfaceAsGraph(viewLifecycleOwner) { tempgraphdata ->
                 binding.tablelayout.removeAllViews()
-                val tempgraphdata = getTemperatureAtSurfaceAsGraph()
                 tempgraphdata.take(23).forEachIndexed { i, e ->
                     val x = e.x
                     val y = e.y
@@ -276,9 +269,8 @@ class WaterFragment : Fragment() {
      */
 
     private fun setSalinityTable(inflater: LayoutInflater, container: ViewGroup?) {
-        viewModel.getNorKyst800AtSiteData(site).observe(viewLifecycleOwner) {
-            it?.apply {
-                val saltgraphdata = getSalinityAtSurfaceAsGraph()
+        viewModel.getNorKyst800AtSiteData(site).observe(viewLifecycleOwner) { norkAtSite ->
+            norkAtSite?.observeSalinityAtSurfaceAsGraph(viewLifecycleOwner) { saltgraphdata ->
                 binding.Salttablelayout.removeAllViews()
 
                 saltgraphdata.take(23).forEachIndexed { i, e ->
