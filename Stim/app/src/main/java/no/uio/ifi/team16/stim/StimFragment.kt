@@ -44,7 +44,7 @@ abstract class StimFragment : Fragment() {
     }
 
     /**
-     * Lukker tastaturet
+     * Closes the keyboard
      */
     protected fun closeKeyboard() {
         view?.let {
