@@ -22,6 +22,7 @@ import no.uio.ifi.team16.stim.databinding.FragmentMapBinding
 import no.uio.ifi.team16.stim.io.adapter.RecycleViewAdapter
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 import no.uio.ifi.team16.stim.util.LatLong
+import kotlin.math.round
 import kotlin.math.roundToInt
 
 
@@ -83,6 +84,9 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         bottomSheetBehavior.setPeekHeight(230, true)
         bottomSheetBehavior.isDraggable = true
         bottomSheetBehavior.isHideable = false
+
+        val screenHeight = requireActivity().windowManager.currentWindowMetrics.bounds.height()
+        bottomSheetBehavior.maxHeight = round(screenHeight * 0.8).toInt()
 
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         val adapter =
