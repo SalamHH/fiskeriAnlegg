@@ -43,7 +43,13 @@ class InfectionStatusCalculator(val resources: Resources) {
      * Method that calculates current infection status as an drawable
      */
     fun calculateInfectionStatusIcon(infectiondata: Array<Float>): Drawable? {
-        if (infectiondata.lastIndex > 1 && infectiondata.average() > Options.infectionExists) {
+        if (infectiondata.isEmpty()) {
+            return ResourcesCompat.getDrawable(
+                resources,
+                R.drawable.no_data,
+                null
+            )
+        } else if (infectiondata.lastIndex > 1 && infectiondata.average() > Options.infectionExists) {
             //sjekker om det er signifikant økning/miskning på de siste 3 datapunktene
             val lastThree = arrayOf(
                 infectiondata[infectiondata.lastIndex - 2],

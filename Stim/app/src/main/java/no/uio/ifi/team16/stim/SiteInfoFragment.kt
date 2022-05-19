@@ -227,12 +227,28 @@ class SiteInfoFragment : StimFragment() {
                         null
                     )
                 )
+            } else {
+                binding.pdIcon.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.checkmark,
+                        null
+                    )
+                )
             }
             if (it?.listILA?.isNotEmpty() == true) {
                 binding.ilaIcon.setImageDrawable(
                     ResourcesCompat.getDrawable(
                         resources,
                         R.drawable.ila_bad,
+                        null
+                    )
+                )
+            } else {
+                binding.ilaIcon.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.checkmark,
                         null
                     )
                 )

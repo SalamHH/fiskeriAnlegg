@@ -184,6 +184,7 @@ class InfectionFragment : StimFragment() {
     private fun calculateBarentsWatchInfection() {
         viewModel.getBarentsWatchData(site).observe(viewLifecycleOwner) {
             if (it?.listPD?.isNotEmpty() == true) {
+                Log.d("BARRENTS", ": PD OK")
                 binding.pdIcon.setImageDrawable(
                     ResourcesCompat.getDrawable(
                         resources,
@@ -192,23 +193,25 @@ class InfectionFragment : StimFragment() {
                     )
                 )
                 binding.suspicionUnknowndate.text =
-                    checkIfDataExistAndFormat("pd_ukjent_mistankedato", it)
+                    checkIfPDDataExistAndFormat("pd_ukjent_mistankedato", it)
                         ?: resources.getText(R.string.no_suspicion)
                 binding.suspicionSav2Date.text =
-                    checkIfDataExistAndFormat("pd_sav2_mistankedato", it)
+                    checkIfPDDataExistAndFormat("pd_sav2_mistankedato", it)
                         ?: resources.getText(R.string.no_suspicion)
                 binding.suspicionSav3Date.text =
-                    checkIfDataExistAndFormat("pd_sav3_mistankedato", it)
+                    checkIfPDDataExistAndFormat("pd_sav3_mistankedato", it)
                         ?: resources.getText(R.string.no_suspicion)
-                binding.provenUnknown.text = checkIfDataExistAndFormat("pd_ukjent_paavistdato", it)
+                binding.provenUnknown.text =
+                    checkIfPDDataExistAndFormat("pd_ukjent_paavistdato", it)
+                        ?: resources.getText(R.string.not_proven)
+                binding.provenSav2Date.text = checkIfPDDataExistAndFormat("pd_sav2_paavistdato", it)
                     ?: resources.getText(R.string.not_proven)
-                binding.provenSav2Date.text = checkIfDataExistAndFormat("pd_sav2_paavistdato", it)
-                    ?: resources.getText(R.string.not_proven)
-                binding.provenSav3Date.text = checkIfDataExistAndFormat("pd_sav3_paavistdato", it)
+                binding.provenSav3Date.text = checkIfPDDataExistAndFormat("pd_sav3_paavistdato", it)
                     ?: resources.getText(R.string.not_proven)
             }
 
             if (it?.listILA?.isNotEmpty() == true) {
+                Log.d("BARRENTS", ": ILA OK")
                 binding.ilaIcon.setImageDrawable(
                     ResourcesCompat.getDrawable(
                         resources,
@@ -216,8 +219,8 @@ class InfectionFragment : StimFragment() {
                         null
                     )
                 )
-                binding.mistankeDato.text = checkIfDataExistAndFormat("mistankedato", it)
-                binding.paavistDato.text = checkIfDataExistAndFormat("paavistdato", it)
+                binding.mistankeDato.text = checkIfILADataExistAndFormat("mistankedato", it)
+                binding.paavistDato.text = checkIfILADataExistAndFormat("paavistdato", it)
             }
         }
     }
@@ -230,12 +233,25 @@ class InfectionFragment : StimFragment() {
     }
 
 
-    private fun checkIfDataExistAndFormat(
+    private fun checkIfPDDataExistAndFormat(
         input: String,
         barrentsdata: BarentsWatchAtSite
     ): String? {
+        Log.d("BARRENTS", barrentsdata.listPD.toString())
         if (barrentsdata.listPD[input] != "null") {
             val time = ZonedDateTime.parse(barrentsdata.listPD[input])
+            return format(time)
+        }
+        return null
+    }
+
+    private fun checkIfILADataExistAndFormat(
+        input: String,
+        barrentsdata: BarentsWatchAtSite
+    ): String? {
+        Log.d("BARRENTS", barrentsdata.listILA.toString())
+        if (barrentsdata.listILA[input] != "null") {
+            val time = ZonedDateTime.parse(barrentsdata.listILA[input])
             return format(time)
         }
         return null
