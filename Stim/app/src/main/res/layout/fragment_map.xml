@@ -77,7 +77,8 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         app:layout_insetEdge="bottom"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        android:background="@color/colorAccent">
 
         <include
             layout="@layout/header_bottomsheet"
