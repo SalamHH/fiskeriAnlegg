@@ -118,7 +118,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         val mSearchView = mSearch.actionView as SearchView
         mSearchView.queryHint = "Søk her"
         mSearchView.setIconifiedByDefault(false)
-        mSearchView.setBackgroundResource(R.drawable.long_circle)
+        mSearchView.setBackgroundResource(R.drawable.searchbar_background)
 
         mSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             /**

@@ -82,10 +82,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginLeft="15dp"
+                android:layout_marginLeft="30dp"
                 android:layout_marginTop="0dp"
-                android:layout_marginRight="15dp"
-                app:cardBackgroundColor="@color/colorAccent"
+                android:layout_marginRight="30dp"
+                app:cardBackgroundColor="#4B6990"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="5dp"
                 app:cardMaxElevation="10dp"
@@ -118,9 +118,9 @@
                             android:fontFamily="@font/montserrat_semibold"
                             android:gravity="center_horizontal"
                             android:text="@string/general_info_about_site"
-                            android:textColor="@color/primaryTextColor"
+                            android:textColor="@color/colorAccent"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/arrow"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -129,15 +129,15 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_marginStart="10dp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.0"
                             app:layout_constraintStart_toEndOf="@+id/generalInformation"
                             app:layout_constraintTop_toTopOf="parent"
                             app:srcCompat="@drawable/down_darkblue"
-                            app:tint="@color/primaryTextColor"
-                            android:contentDescription="@string/ContentDescription_arrow_pointing_down" />
+                            app:tint="@color/colorAccent"
+                            android:contentDescription="@string/ContentDescription_arrow_pointing_down"
+                            app:layout_constraintHorizontal_chainStyle="packed"/>
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -160,7 +160,7 @@
                             android:layout_marginTop="5dp"
                             android:fontFamily="@font/montserrat_semibold"
                             android:text="@string/position"
-                            android:textColor="@color/primaryTextColor" />
+                            android:textColor="@color/colorAccent" />
 
                         <TextView
                             android:id="@+id/positionView"
@@ -172,7 +172,7 @@
                             android:layout_marginEnd="5dp"
                             android:fontFamily="@font/montserrat"
                             android:text="@string/blank"
-                            android:textColor="@color/primaryTextColor"
+                            android:textColor="@color/colorAccent"
                             tools:ignore="RelativeOverlap" />
 
                         <!-- SITE NUMBER -->
@@ -187,7 +187,7 @@
                             android:layout_marginEnd="5dp"
                             android:fontFamily="@font/montserrat_semibold"
                             android:text="@string/site_number"
-                            android:textColor="@color/primaryTextColor" />
+                            android:textColor="@color/colorAccent" />
 
                         <TextView
                             android:id="@+id/siteNrView"
@@ -199,7 +199,7 @@
                             android:layout_marginEnd="5dp"
                             android:fontFamily="@font/montserrat"
                             android:text="@string/blank"
-                            android:textColor="@color/primaryTextColor" />
+                            android:textColor="@color/colorAccent" />
 
                         <!-- PLACEMENT -->
 
@@ -213,7 +213,7 @@
                             android:layout_marginEnd="5dp"
                             android:fontFamily="@font/montserrat_semibold"
                             android:text="@string/placement"
-                            android:textColor="@color/primaryTextColor" />
+                            android:textColor="@color/colorAccent" />
 
                         <TextView
                             android:id="@+id/placementView"
@@ -225,7 +225,7 @@
                             android:layout_marginEnd="5dp"
                             android:fontFamily="@font/montserrat"
                             android:text="@string/blank"
-                            android:textColor="@color/primaryTextColor" />
+                            android:textColor="@color/colorAccent" />
 
                         <!-- CAPACITY -->
 
@@ -239,7 +239,7 @@
                             android:layout_marginEnd="5dp"
                             android:fontFamily="@font/montserrat_semibold"
                             android:text="@string/capacity"
-                            android:textColor="@color/primaryTextColor" />
+                            android:textColor="@color/colorAccent" />
 
                         <TextView
                             android:id="@+id/capacityView"
@@ -251,7 +251,7 @@
                             android:layout_marginEnd="5dp"
                             android:fontFamily="@font/montserrat"
                             android:text="@string/blank"
-                            android:textColor="@color/primaryTextColor" />
+                            android:textColor="@color/colorAccent" />
 
                         <!-- WATER TYPE -->
 
@@ -265,7 +265,7 @@
                             android:layout_marginEnd="5dp"
                             android:fontFamily="@font/montserrat_semibold"
                             android:text="@string/water_type"
-                            android:textColor="@color/primaryTextColor" />
+                            android:textColor="@color/colorAccent" />
 
                         <TextView
                             android:id="@+id/waterTypeView"
@@ -277,7 +277,7 @@
                             android:layout_marginEnd="5dp"
                             android:fontFamily="@font/montserrat"
                             android:text="@string/blank"
-                            android:textColor="@color/primaryTextColor" />
+                            android:textColor="@color/colorAccent" />
 
                         <!-- MUNICIPALITY -->
 
@@ -291,7 +291,7 @@
                             android:layout_marginEnd="5dp"
                             android:fontFamily="@font/montserrat_semibold"
                             android:text="@string/municipality"
-                            android:textColor="@color/primaryTextColor" />
+                            android:textColor="@color/colorAccent" />
 
                         <TextView
                             android:id="@+id/municipalityView"
@@ -303,7 +303,7 @@
                             android:layout_marginEnd="5dp"
                             android:fontFamily="@font/montserrat"
                             android:text="@string/blank"
-                            android:textColor="@color/primaryTextColor" />
+                            android:textColor="@color/colorAccent" />
 
                     </RelativeLayout>
 
@@ -391,8 +391,7 @@
                                 android:text="@string/water"
                                 android:textAlignment="center"
                                 android:textColor="@color/primaryTextColor"
-                                android:textSize="15sp"
-                                android:textStyle="bold"
+                                android:textSize="17sp"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
@@ -425,7 +424,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
                                     android:textColor="@color/api_title_color"
-                                    android:textSize="12sp"
+                                    android:textSize="14sp"
                                     tools:ignore="TextContrastCheck"
                                     tools:text="@string/blank" />
 
@@ -459,7 +458,7 @@
                                     android:layout_marginTop="1dp"
                                     android:textAlignment="center"
                                     android:textColor="@color/primaryTextColor"
-                                    android:textSize="12sp"
+                                    android:textSize="14sp"
                                     tools:ignore="TextContrastCheck"
                                     tools:text="@string/blank" />
 
@@ -493,7 +492,7 @@
                                     android:layout_marginTop="1dp"
                                     android:textAlignment="center"
                                     android:textColor="@color/primaryTextColor"
-                                    android:textSize="12sp"
+                                    android:textSize="14sp"
                                     tools:ignore="TextContrastCheck"
                                     tools:text="@string/blank" />
 
@@ -571,8 +570,7 @@
                                 android:text="@string/infection"
                                 android:textAlignment="center"
                                 android:textColor="@color/primaryTextColor"
-                                android:textSize="15sp"
-                                android:textStyle="bold"
+                                android:textSize="17sp"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
@@ -600,8 +598,8 @@
 
                                 <ImageView
                                     android:id="@+id/dangerSalmonLouse"
-                                    android:layout_width="16dp"
-                                    android:layout_height="16dp"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
                                     android:layout_gravity="center"
                                     android:layout_marginTop="1dp"
                                     android:contentDescription="@string/salmon_louse_data_not_found"
@@ -634,8 +632,8 @@
 
                                 <ImageView
                                     android:id="@+id/pdIcon"
-                                    android:layout_width="16dp"
-                                    android:layout_height="16dp"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
                                     android:layout_gravity="center"
                                     android:layout_marginTop="1dp"
                                     android:contentDescription="@string/pancreas_disease_data_not_found"
@@ -667,8 +665,8 @@
 
                                 <ImageView
                                     android:id="@+id/ilaIcon"
-                                    android:layout_width="16dp"
-                                    android:layout_height="16dp"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
                                     android:layout_gravity="center"
                                     android:layout_marginTop="1dp"
                                     android:contentDescription="@string/ila_data_not_found"
@@ -748,8 +746,7 @@
                                 android:text="@string/weather"
                                 android:textAlignment="center"
                                 android:textColor="@color/primaryTextColor"
-                                android:textSize="15sp"
-                                android:textStyle="bold"
+                                android:textSize="17sp"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
@@ -770,16 +767,15 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="8dp"
-                                    android:fontFamily="@font/montserrat_medium"
+                                    android:fontFamily="@font/montserrat_semibold"
                                     android:text="@string/todayText"
                                     android:textColor="@color/primaryTextColor" />
 
                                 <ImageView
                                     android:id="@+id/weatherToday"
-                                    android:layout_width="16dp"
-                                    android:layout_height="16dp"
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
                                     android:layout_gravity="center"
-                                    android:layout_marginTop="2dp"
                                     android:contentDescription="@string/weather_symbol_not_found"
                                     android:src="@drawable/sunny"
                                     tools:ignore="ImageContrastCheck" />
@@ -789,9 +785,8 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
-                                    android:layout_marginTop="2dp"
                                     android:textColor="@color/primaryTextColor"
-                                    android:textSize="12sp"
+                                    android:textSize="14sp"
                                     tools:ignore="TextContrastCheck"
                                     tools:text="@string/blank" />
 
@@ -809,20 +804,19 @@
                               app:layout_constraintVertical_bias="0.0"
                               android:orientation="vertical" >
 
-                              <TextView
-                                  android:layout_width="wrap_content"
-                                  android:layout_height="wrap_content"
-                                  android:layout_marginTop="8dp"
-                                  android:fontFamily="@font/montserrat_medium"
-                                  android:text="@string/tomorrow"
-                                  android:textColor="@color/primaryTextColor" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
+                                    android:fontFamily="@font/montserrat_semibold"
+                                    android:text="@string/tomorrow"
+                                    android:textColor="@color/primaryTextColor" />
 
                                 <ImageView
                                     android:id="@+id/weatherTomorrow"
-                                    android:layout_width="16dp"
-                                    android:layout_height="16dp"
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
                                     android:layout_gravity="center"
-                                    android:layout_marginTop="2dp"
                                     android:contentDescription="@string/weather_symbol_not_found"
                                     android:src="@drawable/sunny"
                                     tools:ignore="ImageContrastCheck" />
@@ -833,7 +827,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
                                     android:textColor="@color/primaryTextColor"
-                                    android:textSize="12sp"
+                                    android:textSize="14sp"
                                     tools:ignore="TextContrastCheck"
                                     tools:text="@string/blank" />
 
@@ -846,7 +840,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintHorizontal_bias="0.94"
+                                app:layout_constraintHorizontal_bias="0.95"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@+id/weatherCardTitle"
                                 android:orientation="vertical" >
@@ -855,17 +849,16 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="8dp"
-                                    android:fontFamily="@font/montserrat_medium"
+                                    android:fontFamily="@font/montserrat_semibold"
                                     android:text="@string/storm"
                                     android:textColor="@color/primaryTextColor"
                                     android:layout_gravity="center"/>
 
                                 <ImageView
                                     android:id="@+id/stormWeather"
-                                    android:layout_width="16dp"
-                                    android:layout_height="16dp"
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
                                     android:layout_gravity="center"
-                                    android:layout_marginTop="2dp"
                                     android:contentDescription="@string/weather_symbol_not_found"
                                     android:src="@drawable/sunny"
                                     tools:ignore="TooManyViews,ImageContrastCheck" />
@@ -877,7 +870,7 @@
                                     android:layout_gravity="center"
                                     android:text="@string/no_storm"
                                     android:textColor="@color/primaryTextColor"
-                                    android:textSize="12sp"
+                                    android:textSize="14sp"
                                     tools:ignore="TextContrastCheck" />
 
 

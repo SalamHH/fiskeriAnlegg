@@ -8,19 +8,19 @@
 
         <item
             android:id="@+id/favoriteSitesFragment"
-            android:icon="@drawable/favorite"
+            android:icon="@drawable/heart"
             android:title="@string/Favorites" />
     </group>
     <group android:id="@+id/ekstra" >
         <item
             android:id="@+id/tutorialFragment"
             android:icon="@drawable/info"
-            android:title="Hvordan bruke STIM" />
+            android:title="@string/how_to_STIM" />
 
         <item
             android:id="@+id/appInfoFragment"
-            android:icon="@drawable/info"
-            android:title="App info" />
+            android:icon="@drawable/boat"
+            android:title="@string/app_info"/>
     </group>
 
 </menu>

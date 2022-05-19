@@ -39,9 +39,9 @@
         <ImageView
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/map"
+            android:src="@drawable/municipality_icon"
             app:tint="@color/darker_skyblue"
-            android:padding="12dp"
+            android:padding="10dp"
             tools:ignore="ContentDescription" />
 
         <LinearLayout
@@ -75,9 +75,9 @@
         <ImageView
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/info"
+            android:src="@drawable/fish_marker"
             app:tint="@color/darker_skyblue"
-            android:padding="12dp"
+            android:padding="11dp"
             tools:ignore="ContentDescription" />
 
         <LinearLayout

@@ -66,7 +66,7 @@ class InfectionStatusCalculator(val resources: Resources) {
                 return if (infectiondata.average() > Options.high) {
                     ResourcesCompat.getDrawable(
                         resources,
-                        R.drawable.farevarsel,
+                        R.drawable.danger,
                         null
                     )
                 } else {

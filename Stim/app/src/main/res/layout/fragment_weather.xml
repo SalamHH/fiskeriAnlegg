@@ -377,8 +377,8 @@
 
                     <pl.droidsonroids.gif.GifImageView
                         android:id="@+id/stormanimation"
-                        android:layout_width="150dp"
-                        android:layout_height="100dp"
+                        android:layout_width="210dp"
+                        android:layout_height="140dp"
                         android:layout_margin="10dp"
                         android:layout_gravity="center_horizontal"
                         android:scaleType="fitXY"

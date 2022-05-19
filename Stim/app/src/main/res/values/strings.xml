@@ -16,7 +16,7 @@
     <!-- Drawer menu -->
     <string name="Map">Kart</string>
     <string name="Favorites">Favoritter</string>
-    <string name="settings">Instillinger</string>
+    <string name="how_to_STIM">Hvordan bruke STIM</string>
     <string name="app_info">App Info</string>
     <string name="stim">STIM</string>
     <string name="blank">-----</string>
@@ -30,7 +30,7 @@
 
     <!-- Weather fragment-->
     <string name="weather_icon">Weather icon</string>
-    <string name="storm_forecast">STORM FORECAST</string>
+    <string name="storm_forecast">STORMVARSEL</string>
     <string name="temperature">%.0f°</string>
     <string name="monday">Mandag</string>
     <string name="tuesday">Tirsdag</string>
@@ -116,7 +116,7 @@
     <string name="general_info_about_site">Generell informasjon om anlegget</string>
     <string name="ContentDescription_arrow_pointing_down">Pil for å utvide informasjonsvindu</string>
     <string name="position">Posisjon:</string>
-    <string name="site_number">Anleggsnummer:</string>
+    <string name="site_number">Anleggsnr:</string>
     <string name="placement">Plassering:</string>
     <string name="capacity">Kapasitet:</string>
     <string name="water_type">Vanntype:</string>
@@ -168,6 +168,7 @@
     <string name="lagre_dine_favoritter">Lagre dine favoritter</string>
     <string name="tutorial_slide_5_text">Legg til dine anlegg til favorittsiden ved å trykke på hjertet.</string>
     <string name="current_infection">Nåværende smittepress:</string>
+
 
 
 </resources>

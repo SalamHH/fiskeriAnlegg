@@ -34,7 +34,7 @@ class InfectionFragment : StimFragment() {
     private lateinit var site: Site
 
     @Inject
-    lateinit var chartStyle: SparkLineStyle
+    lateinit var chartStyle: InfectionLineStyle
 
     /**
      * Fragment that displays infection of salmonlouse using a graph and a table.
@@ -61,7 +61,7 @@ class InfectionFragment : StimFragment() {
         site = viewModel.getCurrentSite() ?: return binding.root
         binding.sitename.text = site.name
 
-        chartStyle = SparkLineStyle()
+        chartStyle = InfectionLineStyle()
 
         //EXPANDABLE INFORMATION CARD
 

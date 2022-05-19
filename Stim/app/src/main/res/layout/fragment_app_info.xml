@@ -44,8 +44,9 @@
                 android:layout_height="100dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"
-                android:src="@drawable/ic_baseline_directions_boat_filled_24"
-                tools:ignore="ContentDescription,ImageContrastCheck" />
+                android:src="@drawable/boat"
+                tools:ignore="ContentDescription,ImageContrastCheck"
+                app:tint="@color/darkest_skyblue"/>
 
             <TextView
                 android:layout_width="match_parent"

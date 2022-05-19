@@ -221,7 +221,7 @@ class SiteInfoFragment : StimFragment() {
                 binding.pdIcon.setImageDrawable(
                     ResourcesCompat.getDrawable(
                         resources,
-                        R.drawable.farevarsel,
+                        R.drawable.danger,
                         null
                     )
                 )

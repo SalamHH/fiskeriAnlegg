@@ -12,7 +12,7 @@ import javax.inject.Inject
 /**
  * Class defining how a chart should be styled in the Spark Line Style
  */
-class SparkLineStyle @Inject constructor() {
+class InfectionLineStyle @Inject constructor() {
 
     /***
      * stylizes the chart

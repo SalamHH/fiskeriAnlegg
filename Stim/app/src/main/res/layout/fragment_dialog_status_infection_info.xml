@@ -161,7 +161,7 @@
                 android:id="@+id/high"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/farevarsel"
+                android:src="@drawable/danger"
                 tools:ignore="ImageContrastCheck, contentDescription" />
 
             <TextView
