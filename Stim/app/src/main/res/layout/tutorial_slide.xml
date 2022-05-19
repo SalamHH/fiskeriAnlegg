@@ -84,8 +84,17 @@
             android:id="@+id/circle4"
             android:layout_width="15dp"
             android:layout_height="15dp"
+            android:layout_marginEnd="10dp"
             android:src="@drawable/lightcircle"
             android:layout_toEndOf="@id/circle3"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/circle5"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_toEndOf="@id/circle4"
+            android:src="@drawable/lightcircle"
             tools:ignore="ContentDescription" />
 
     </RelativeLayout>

@@ -38,6 +38,11 @@ class TutorialSlideFragment(private val slide: Int) : StimFragment() {
                     ?.setTextAppearance(R.style.tutorial_title)
                 return inflater.inflate(R.layout.tutorial_slide4, container, true)
             }
+            4 -> {
+                view?.findViewById<TextView>(R.id.tutorial_title5)
+                    ?.setTextAppearance(R.style.tutorial_title)
+                return inflater.inflate(R.layout.tutorial_slide5, container, true)
+            }
             else -> {
                 startActivity(Intent(this.context, OpeningScreen::class.java))
                 return null

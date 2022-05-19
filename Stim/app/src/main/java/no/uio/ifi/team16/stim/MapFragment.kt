@@ -78,7 +78,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
 
         //Bottom Sheet behavior
         bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet)
-        bottomSheetBehavior.setPeekHeight(230, true)
+        bottomSheetBehavior.setPeekHeight(400, true)
         bottomSheetBehavior.isDraggable = true
         bottomSheetBehavior.isHideable = false
 
@@ -199,8 +199,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
                     requireActivity()
                 )
             binding.recyclerView.adapter = adapter
-
-            bottomSheetBehavior.setPeekHeight(400, true)
             bottomSheetBehavior.isDraggable = true
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
 
@@ -284,6 +282,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
                 val site = markerMap[mark]
 
                 if (site != null) {
+                    closeKeyboard()
                     viewModel.setCurrentSite(site)
                     view?.findNavController()?.navigate(R.id.action_mapFragment_to_siteInfoFragment)
                     return true
@@ -323,6 +322,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
      * When an item in the recyclerview is clicked, navigate to that site
      */
     private fun adapterOnClick(site: Site) {
+        closeKeyboard()
         viewModel.setCurrentSite(site)
         view?.findNavController()?.navigate(R.id.action_mapFragment_to_siteInfoFragment)
     }
@@ -408,4 +408,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
             }
         return true // false will close it without animation
     }
+
+
 }

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_blue"
-    android:backgroundTint="#445878"
+    android:backgroundTint="#4B6083"
     android:backgroundTintMode="multiply"
     android:clickable="true"
     android:focusable="true"
@@ -19,7 +19,7 @@
         android:layout_centerInParent="true"
         android:fontFamily="@font/overwave"
         android:gravity="center"
-        android:text="@string/lagre_dine_favoritter"
+        android:text="@string/visualiser_smittetrykk"
         android:textColor="@color/white"
         android:textSize="50sp"
         android:layout_marginBottom="20dp" />
@@ -30,9 +30,9 @@
         android:layout_height="300dp"
         android:layout_centerInParent="true"
         android:src="@drawable/slide_4"
+        tools:ignore="ContentDescription"
         tools:layout_editor_absoluteX="56dp"
-        tools:layout_editor_absoluteY="129dp"
-        tools:ignore="ContentDescription" />
+        tools:layout_editor_absoluteY="129dp" />
 
     <TextView
         android:id="@+id/tutorial_text"
@@ -46,7 +46,20 @@
         android:layout_marginBottom="20dp"
         android:fontFamily="@font/montserrat_semibold"
         android:gravity="center"
-        android:text="@string/tutorial_slide_text_4"
+        android:text="@string/tutorial_slide_4_text"
+        android:textColor="@color/secondaryTextColor"
+        android:textSize="20sp"
+        tools:layout_editor_absoluteY="439dp" />
+
+    <TextView
+        android:id="@+id/tutorial_text2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tutorial_text"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/montserrat_semibold"
+        android:text="@string/tutorial_slide_5_text2"
         android:textColor="@color/secondaryTextColor"
         android:textSize="20sp"
         tools:layout_editor_absoluteY="439dp" />
@@ -89,9 +102,18 @@
             android:id="@+id/circle4"
             android:layout_width="15dp"
             android:layout_height="15dp"
+            android:layout_marginEnd="10dp"
             android:layout_toEndOf="@id/circle3"
             android:src="@drawable/darkcircle"
             tools:ignore="ContentDescription,ImageContrastCheck" />
+
+        <ImageView
+            android:id="@+id/circle5"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_toEndOf="@id/circle4"
+            android:src="@drawable/lightcircle"
+            tools:ignore="ContentDescription" />
 
     </RelativeLayout>
 

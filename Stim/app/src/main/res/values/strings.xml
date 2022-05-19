@@ -161,8 +161,11 @@
     <string name="tutorial_slide_2_text">Finn anlegg ved hjelp av navn eller kommunenummer i søkefeltet.</string>
     <string name="finn_fram_paa_kartet">Finn fram på kartet</string>
     <string name="tutorial_slide_3_text">Finn din kommune på kartet for å se alle anlegg i kommunen.</string>
+    <string name="visualiser_smittetrykk">Visualiser smittetrykk</string>
+    <string name="tutorial_slide_4_text">Trykk på knappen under søkefeltet for å se et heatmap over smittetrykk.</string>
     <string name="lagre_dine_favoritter">Lagre dine favoritter</string>
-    <string name="tutorial_slide_text_4">Legg til dine anlegg til favorittsiden ved å trykke på hjertet.</string>
+    <string name="tutorial_slide_5_text">Legg til dine anlegg til favorittsiden ved å trykke på hjertet.</string>
     <string name="current_infection">Nåværende smittepress:</string>
+    <string name="tutorial_slide_5_text2">Ps: dette kan ta litt tid</string>
 
 </resources>

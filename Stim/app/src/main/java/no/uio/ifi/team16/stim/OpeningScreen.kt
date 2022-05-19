@@ -24,7 +24,7 @@ class OpeningScreen : AppCompatActivity() {
                         putBoolean("NotFirst", true)
                         apply()
                     }
-                    startActivity(Intent(applicationContext, TutorialFragment::class.java))
+                    startActivity(Intent(applicationContext, TutorialActivity::class.java))
                 }
             }
         }, 3000)

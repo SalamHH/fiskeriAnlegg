@@ -5,21 +5,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_blue"
-    android:backgroundTint="@color/dark_skyblue"
+    android:backgroundTint="#425473"
     android:backgroundTintMode="multiply"
     android:clickable="true"
     android:focusable="true"
     android:focusableInTouchMode="true">
 
     <TextView
-        android:id="@+id/tutorial_title2"
+        android:id="@+id/tutorial_title5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@id/tutorial_img"
         android:layout_centerInParent="true"
         android:fontFamily="@font/overwave"
         android:gravity="center"
-        android:text="@string/sok_etter_noppdrettsanlegg"
+        android:text="@string/lagre_dine_favoritter"
         android:textColor="@color/white"
         android:textSize="50sp"
         android:layout_marginBottom="20dp" />
@@ -29,7 +29,7 @@
         android:layout_width="300dp"
         android:layout_height="300dp"
         android:layout_centerInParent="true"
-        android:src="@drawable/slide_2"
+        android:src="@drawable/slide_5"
         tools:layout_editor_absoluteX="56dp"
         tools:layout_editor_absoluteY="129dp"
         tools:ignore="ContentDescription" />
@@ -46,24 +46,25 @@
         android:layout_marginBottom="20dp"
         android:fontFamily="@font/montserrat_semibold"
         android:gravity="center"
-        android:text="@string/tutorial_slide_2_text"
+        android:text="@string/tutorial_slide_4_text"
         android:textColor="@color/secondaryTextColor"
         android:textSize="20sp"
         tools:layout_editor_absoluteY="439dp" />
 
     <RelativeLayout
+        android:id="@+id/circles"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="30dp"
-        android:layout_centerHorizontal="true">
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp">
 
         <ImageView
             android:id="@+id/circle1"
             android:layout_width="15dp"
             android:layout_height="15dp"
-            android:src="@drawable/lightcircle"
             android:layout_marginEnd="10dp"
+            android:src="@drawable/lightcircle"
             tools:ignore="ContentDescription" />
 
         <ImageView
@@ -72,16 +73,16 @@
             android:layout_height="15dp"
             android:layout_marginEnd="10dp"
             android:layout_toEndOf="@id/circle1"
-            android:src="@drawable/darkcircle"
-            tools:ignore="ContentDescription,ImageContrastCheck" />
+            android:src="@drawable/lightcircle"
+            tools:ignore="ContentDescription" />
 
         <ImageView
             android:id="@+id/circle3"
             android:layout_width="15dp"
             android:layout_height="15dp"
-            android:src="@drawable/lightcircle"
-            android:layout_toEndOf="@id/circle2"
             android:layout_marginEnd="10dp"
+            android:layout_toEndOf="@id/circle2"
+            android:src="@drawable/lightcircle"
             tools:ignore="ContentDescription" />
 
         <ImageView
@@ -98,12 +99,9 @@
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_toEndOf="@id/circle4"
-            android:src="@drawable/lightcircle"
+            android:src="@drawable/darkcircle"
             tools:ignore="ContentDescription" />
 
-
-
     </RelativeLayout>
-
 
 </RelativeLayout>

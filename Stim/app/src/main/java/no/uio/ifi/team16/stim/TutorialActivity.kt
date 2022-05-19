@@ -10,10 +10,10 @@ import androidx.viewpager2.widget.ViewPager2
  * Screen slide acivity manager. Manages the view pager.
  */
 
-class TutorialFragment : FragmentActivity() {
+class TutorialActivity : FragmentActivity() {
 
     companion object {
-        private const val PAGE_COUNT = 5
+        private const val PAGE_COUNT = 6
     }
 
     /**
@@ -46,7 +46,7 @@ class TutorialFragment : FragmentActivity() {
         }
     }
 
-    private inner class TutorialSlidePageAdapter(fa: TutorialFragment) : FragmentStateAdapter(fa) {
+    private inner class TutorialSlidePageAdapter(fa: TutorialActivity) : FragmentStateAdapter(fa) {
 
         override fun getItemCount(): Int = PAGE_COUNT
 
