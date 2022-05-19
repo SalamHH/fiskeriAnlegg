@@ -149,7 +149,7 @@
 
     <!-- mapfragment -->
     <string name="municipality_">Kommune:</string>
-    <string name="number_of_sites_found">Antall sites funnet:</string>
+    <string name="number_of_sites_found">Antall anlegg funnet:</string>
     <string name="loading">LOADING…</string>
     <string name="see_infection_pressure_on_map">Se smittepress på kartet</string>
     <string name="hide_infection_pressure_on_map">Skjul smittepress på kartet</string>
