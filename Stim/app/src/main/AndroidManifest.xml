@@ -21,7 +21,7 @@
             android:name=".OpeningScreen"
             android:exported="true"
             android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity">
+            tools:ignore="LockedOrientationActivity"
             android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -35,7 +35,7 @@
             android:windowSoftInputMode="stateHidden|adjustPan"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".TutorialFragment"
+            android:name=".TutorialActivity"
             android:screenOrientation="portrait"
             android:exported="true"
             android:noHistory="true"
