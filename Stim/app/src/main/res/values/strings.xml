@@ -15,8 +15,8 @@
     <!-- Drawer menu -->
     <string name="Map">Kart</string>
     <string name="Favorites">Favoritter</string>
-    <string name="how_to_STIM">Hvordan bruke STIM</string>
-    <string name="app_info">App Info</string>
+    <string name="how_to_STIM">Hvordan bruke Stim</string>
+    <string name="app_info">App-info</string>
     <string name="stim">STIM</string>
     <string name="blank">-----</string>
     <string name="general">GENERELT</string>
@@ -28,7 +28,7 @@
     <string name="bottomsheet_formatted_header">Liste over anlegg i kommune: %s</string>
 
     <!-- Weather fragment-->
-    <string name="weather_icon">Weather icon</string>
+    <string name="weather_icon">Vær-ikon</string>
     <string name="storm_forecast">STORMVARSEL</string>
     <string name="temperature">%.0f°</string>
     <string name="monday">Mandag</string>
@@ -88,7 +88,7 @@
     <string name="icons_for_infection">Ikoner for smittestatus</string>
     <string name="no_infectiouspressure_found">Fant ikke smittedata</string>
     <string name="No_infection_found">Veldig lav/ingen smitte</string>
-    <string name="Significant_infection_decrease">Signifikant smittemiskning</string>
+    <string name="Significant_infection_decrease">Signifikant smitteminsking</string>
     <string name="Low_infection">Lav/medium smitte</string>
     <string name="singificant_infectionincrease">Signifikant smitteøkning</string>
     <string name="high_infection">Høy smitte</string>
@@ -97,9 +97,9 @@
     <string name="NB_text">Du har ikke valgt noen favoritt anlegg enda…</string>
     <string name="NB_2_text">Følg stegene under for å legge til dine favoritter:</string>
     <string name="Content_description_step1">Steg en</string>
-    <string name="Step1_text">Trykk på menyen i øverste venstre hjørnet og velg Kart</string>
+    <string name="Step1_text">Trykk på menyen i øverste venstre hjørne og velg Kart</string>
     <string name="Content_description_step2">Steg to</string>
-    <string name="Step2_text">Søk etter anlegg ved å skrive kommunenummer eller navn på anlegget</string>
+    <string name="Step2_text">Søk etter anlegg ved å skrive kommune eller navn på anlegget</string>
     <string name="Content_description_step3">Steg tre</string>
     <string name="Step3_text">Trekk opp menyen fra bunn og trykk på hjerte ikonet for å lagre et anlegg</string>
     <string name="Infection_title">SMITTEDATA</string>
@@ -108,7 +108,7 @@
     <string name="Week_label">Uke Nr.</string>
     <string name="Information_title_infection">Informasjon om smittedata</string>
     <string name="information_alwaysvisible">Denne grafen viser til antall lakselus funnet i anlegget. For å se mer info om ulike statussymbol, klikk på symbolet lengre oppe. Finn all data i tabellen nedenfor.</string>
-    <string name="Information_hidden">Lakselus er en parasitt som suger ut blod fra laksen. På de fleste anlegg måles lakselus manuelt. En gang i måneden drar fiskehelsepersonell ut, plukker opp noen fisker og teller antall lus. Grensen for å måtte behandle går på 0.5 lus per fisk. For å fjerne lakselus benyttes det enten kjemikalier eller mekanisk fjerning. Denne prosessen er assosiert med en høy dødelighet. Parasitten er også veldig farlig for bevarelsen av villaksen i Norge, og det er det som gjør lakselusen spesielt skadelig. Laks i oppdrettsanlegg rømmer med parasitten og smitter dette over til villaksen, som skader populasjonen. Den bidrar også til at næringen taper millioner av dollar hvert år. Derfor ønsker man kontinuerlig monitorering for å identifisere de områdene med forhøyet lakselus smittetrykk som utgjør en uakseptabel risiko for dødeligheten til villaks.</string>
+    <string name="Information_hidden">Lakselus er en parasitt som suger ut blod fra laksen. På de fleste anlegg måles lakselus manuelt. En gang i måneden drar fiskehelsepersonell ut, plukker opp noen fisker og teller antall lus. Grensen for å måtte behandle går på 0.5 lus per fisk. For å fjerne lakselus benyttes det enten kjemikalier eller mekanisk fjerning. Denne prosessen er assosiert med en høy dødelighet. Parasitten er også veldig farlig for bevarelsen av villaksen i Norge, og det er det som gjør lakselusen spesielt skadelig. Laks i oppdrettsanlegg rømmer med parasitten og smitter dette over til villaksen, som skader populasjonen. Den bidrar også til at næringen taper millioner av kroner hvert år. Derfor ønsker man kontinuerlig monitorering for å identifisere de områdene med forhøyet lakselus smittetrykk som utgjør en uakseptabel risiko for dødeligheten til villaks.</string>
     <string name="Content_description_infectionarrow">Pil som utvider informasjonsvindu</string>
     <string name="Infectiondata">Smittedata</string>
     <string name="Suspition_PD_unknown">Mistanke PD ukjent:</string>
@@ -147,10 +147,10 @@
     <string name="timeInHours">Tid i timer</string>
     <string name="seeSalinity">Se Saltholdighet</string>
     <string name="seeWaterTemperature">Se Vanntemperatur</string>
-    <string name="currents_">Strømmninger:</string>
+    <string name="currents_">Strømninger:</string>
     <string name="currentDirection">Strømretning:</string>
-    <string name="current_velocity_direction">Current velocity direction</string>
-    <string name="info_about_watertemp_and_salinity">Informasjon om vanntemperatur og saltholdighetdata</string>
+    <string name="current_velocity_direction">Nåværende strømretning</string>
+    <string name="info_about_watertemp_and_salinity">Informasjon om vanntemperatur og saltholdighetsdata</string>
     <string name="infoAboutChart">Denne grafen viser til saltholdighet og vanntemperatur funnet i anlegget. For å endre grafen vist klikker du på knappen lenger oppe. Du kan også zoome inn og navigere grafen med touch. Nedenfor finner du tabeller med all data.</string>
     <string name="waterDataInformation">Vanndata er nyttig for å regulere fiskens helse. For kaldt vann og for mye strømninger kan for eksempel lede til vanskeligheter for å vokse. Resultat fra ny forskning ved Havforskningsinstituttet viser at vedvarende strømstyrke som smålaks opplever ikke bør overstige ca. 50 cm/s. Dette varierer derimot ut fra størrelsen på fisken, der stor laks tåler mindre enn liten. Vanntemperaturen påvirker laksen sin kapasitet til å svømme mot strømmen betydelig hvis temperaturen er 3°C i motsetning 8–23°C. Selv om laks vokser best ved 9–18°C kan da fint tåle langt lavere temperaturer, men da synker altså evnen til å håndtere sterk strøm. I tillegg påvirker vanntemperaturen utviklingen og dødeligheten av lakselus, der den øker i varmere temperaturer.</string>
     <string name="time">Tid</string>
@@ -175,7 +175,7 @@
     <string name="welcome_to_stim">Velkommen til Stim</string>
     <string name="tutorial_slide_1_text">Stim er en app som lar deg få oversikt over alle oppdrettsanlegg i Norge.</string>
     <string name="sok_etter_noppdrettsanlegg">Søk etter\noppdrettsanlegg</string>
-    <string name="tutorial_slide_2_text">Finn anlegg ved hjelp av navn eller kommunenummer i søkefeltet.</string>
+    <string name="tutorial_slide_2_text">Finn anlegg ved hjelp av navn eller kommune i søkefeltet.</string>
     <string name="finn_fram_paa_kartet">Finn fram på kartet</string>
     <string name="tutorial_slide_3_text">Finn din kommune på kartet for å se alle anlegg i kommunen.</string>
     <string name="visualiser_smittetrykk">Visualiser smittetrykk</string>
