@@ -28,8 +28,6 @@ data class InfectiousPressureTimeSeries(
     val dx: Float,                           //separation between points in x-direction
     val dy: Float                            //separation between points in y-direction, usually dx
 ) {
-    val TAG = "InfectiousPressureTimeSeries"
-
     //how concentrations at a given time are aggregated to a single float
     val aggregation: (FloatArray2D) -> Float = { arr -> meanAggregation(arr) }
 
@@ -78,16 +76,6 @@ data class InfectiousPressureTimeSeries(
         aggregation(currentConcentrations)
 
     /**
-     * get concentration(aggregated) at all times
-     *
-     * includes time in a separate array
-     */
-    /*fun getAggregatedConcentrationsAndTime(): Pair<Array<Int>, Array<Float>> = Pair(
-        weeks,
-        mapOverTime(aggregation)
-    )*/
-
-    /**
      * apply an action to the graphdata when it is available
      *
      * @param owner: owner of the lifecycle
@@ -125,32 +113,6 @@ data class InfectiousPressureTimeSeries(
             allWeeks.addAll(weeks)
             action(allWeeks, data)
         }
-
-    ///////////////
-    // UTILITIES //
-    ///////////////
-    /*override fun toString() =
-        "InfectiousPressureTimeSeries:" +
-                weeks.zip(concentrations).fold("\n") { accTotal, (date, concentration2D) ->
-                    accTotal + "week %2d: [".format(date) +
-                            concentration2D.fold("") { accGrid, concentrationRow ->
-                                accGrid + concentrationRow.fold("[") { accRow, concentration ->
-                                    accRow + "%5.2f, ".format(concentration)
-                                } + "], "
-                            } +
-                            "] -> " +
-                            "%9.7f".format(aggregation(concentration2D)) +
-                            "\n"
-                }*/
-
-    /**
-     * map each arrayFloat2D over time
-     * reified and inlined so that T can be inferred(in toTypedArray)
-     */
-    /*private inline fun <reified T> mapOverTime(reduction: (FloatArray2D) -> T): Array<T> =
-        concentrations.map { arr ->
-            reduction(arr)
-        }.toTypedArray()*/
 
     ////////////////////
     // AUTO-GENERATED //

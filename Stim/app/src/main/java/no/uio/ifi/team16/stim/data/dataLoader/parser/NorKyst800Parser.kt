@@ -6,12 +6,10 @@ import org.locationtech.proj4j.CRSFactory
 import org.locationtech.proj4j.CoordinateTransform
 import org.locationtech.proj4j.CoordinateTransformFactory
 
-/**
- * Welcome to regex hell!!
- */
+
 class NorKyst800Parser {
     companion object Parser {
-        val TAG = "NORKYST800PARSER"
+        const val TAG = "NORKYST800PARSER"
 
         ///////////////////////
         // REGEXES (REGEXI?) //
@@ -47,7 +45,7 @@ class NorKyst800Parser {
          * @param das: das response from opendap, as a string
          * @return map from variable name to variables attribute
          */
-        fun parseDas(das: String): Map<String, Sequence<Triple<String, String, String>>> =
+        private fun parseDas(das: String): Map<String, Sequence<Triple<String, String, String>>> =
             dasVariableRegex.findAll(das).associate { match ->
                 match.groupValues[1] to
                         dasAttributeRegex.findAll(match.groupValues[2]).map { attributeMatch ->
@@ -66,7 +64,7 @@ class NorKyst800Parser {
          * @param variableDas: attributes of a variable in the das response
          * @return map from attribute names to attribute type and value
          */
-        fun parseVariableAttributes(variableDas: Sequence<Triple<String, String, String>>): Map<String, Pair<String, String>> =
+        private fun parseVariableAttributes(variableDas: Sequence<Triple<String, String, String>>): Map<String, Pair<String, String>> =
             variableDas.associate { (type, name, value) ->
                 name to Pair(type, value)
             }
@@ -493,34 +491,6 @@ class NorKyst800Parser {
         // MAKE URLS //
         ///////////////
         /**
-         * make an url to get the data of a single variable with 4D data.
-         *
-         * @param baseUrl base url of dataset, usually retrieved by loadForecastURL().
-         * @param variableName name of variable to get
-         * @param xRange range of x-values to get from
-         * @param yRange range of y-values to get from
-         * @param depthRange depth as a range with format from:stride:to
-         * @param timeRange time as a range with format from:stride:to
-         */
-        fun makeSingle4DVariableUrl(
-            baseUrl: String,
-            variableName: String,
-            xRange: IntProgression,
-            yRange: IntProgression,
-            depthRange: IntProgression,
-            timeRange: IntProgression
-        ): String {
-            val xyString =
-                "[${xRange.reformatFSL()}][${yRange.reformatFSL()}]"
-            val dString = "[${depthRange.reformatFSL()}]"
-            val tString = "[${timeRange.reformatFSL()}]"
-            val tdxyString = tString + dString + xyString
-            return baseUrl +
-                    ".ascii?" +
-                    "$variableName.$variableName$tdxyString"
-        }
-
-        /**
          * make an url to get time and depth
          *
          * @param baseUrl base url of dataset, usually retrieved by loadForecastURL().
@@ -532,35 +502,6 @@ class NorKyst800Parser {
                     ".ascii?" +
                     "depth," +
                     "time"
-        }
-
-
-        /**
-         * make an url to get velocity
-         *
-         * @param baseUrl base url of dataset, usually retrieved by loadForecastURL().
-         * @param xRange range of x-values to get from
-         * @param yRange range of y-values to get from
-         * @param depthRange depth as a range with format from:stride:to
-         * @param timeRange time as a range with format from:stride:to
-         */
-        fun makeVelocityUrl(
-            baseUrl: String,
-            xRange: IntProgression,
-            yRange: IntProgression,
-            depthRange: IntProgression,
-            timeRange: IntProgression
-        ): String {
-            val xyString =
-                "[${xRange.reformatFSL()}][${yRange.reformatFSL()}]"
-            val dString = "[${depthRange.reformatFSL()}]"
-            val tString = "[${timeRange.reformatFSL()}]"
-            val tdxyString = tString + dString + xyString
-            return baseUrl +
-                    ".ascii?" +
-                    "u.u$tdxyString," +
-                    "v.v$tdxyString," +
-                    "w.w$tdxyString"
         }
 
         /**

@@ -361,41 +361,6 @@ class WaterFragment : StimFragment() {
                 }
             }
         }
-
-        // try to get from global data(must be loaded at some point!)
-        viewModel.getNorKyst800Data().observe(viewLifecycleOwner) {
-            if (!hasLoadedData) {
-                it?.apply {
-                    binding.temperatureTextview.text =
-                            getSorroundingTemperature(site.latLong, 0, 0)?.let { temp ->
-                                "%4.1f".format(temp) + "°"
-                            } ?: getString(R.string.no_info)
-                    binding.saltTextview.text =
-                            getSorroundingSalinity(site.latLong, 0, 0)?.let { salt ->
-
-                                "%4.1f".format(salt)
-                            } ?: getString(R.string.no_info)
-                    binding.Velocitytext.text =
-                            getSorroundingVelocity(site.latLong, 0, 0)?.let { velocity ->
-                                "%4.1f m/s".format(velocity)
-                            } ?: getString(R.string.no_info)
-                    val velocity = getVelocityDirectionInXYPlane(site.latLong, 0, 0)
-                    if (velocity != null) {
-                        setVelocityDirection(velocity)
-                    }
-                    hasLoadedData = true
-                } ?: run {
-                    Toast.makeText(
-                            context,
-                            getString(R.string.norkyst_global_load_error),
-                            Toast.LENGTH_LONG
-                    ).show()
-                    binding.temperatureTextview.text = getString(R.string.no_info)
-                    binding.saltTextview.text = getString(R.string.no_info)
-                    binding.Velocitytext.text = getString(R.string.no_info)
-                }
-            }
-        }
     }
 
 

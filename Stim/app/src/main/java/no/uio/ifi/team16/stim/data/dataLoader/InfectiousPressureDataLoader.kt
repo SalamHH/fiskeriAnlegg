@@ -4,7 +4,6 @@ import android.util.Log
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.coroutines.awaitString
 import no.uio.ifi.team16.stim.data.InfectiousPressure
-import no.uio.ifi.team16.stim.util.LatLong
 import no.uio.ifi.team16.stim.util.Options
 import no.uio.ifi.team16.stim.util.reformatFLS
 import no.uio.ifi.team16.stim.util.to2DFloatArray
@@ -63,7 +62,7 @@ open class InfectiousPressureDataLoader : THREDDSDataLoader() {
             return null
         }
 
-        return THREDDSLoad(firstEntry) { ncfile ->
+        return threddsLoad(firstEntry) { ncfile ->
             //make some extra ranges to access data
             val range2 = "${xRange.reformatFLS()},${yRange.reformatFLS()}"
             val range3 = "0,$range2"
@@ -80,65 +79,6 @@ open class InfectiousPressureDataLoader : THREDDSDataLoader() {
                 ?: throw NullPointerException("Failed to read variable <time> from infectiousPressure") //caught by THREDDSLOAD
             val dx = gridMapping.findAttribute("dx")?.numericValue?.toFloat()
                 ?: throw NullPointerException("Failed to read attribute <dx> from <gridMapping> from infectiousPressure") //caught by THREDDSLOAD
-
-            //make the infectiousPressure
-            InfectiousPressure(
-                (concentrations.read(range3).reduce(0) as ArrayFloat).to2DFloatArray(),
-                time.readScalarFloat(),
-                latLngToStereo,
-                dx * max(Options.infectiousPressureStepX, 1).toFloat(),
-                dx * max(Options.infectiousPressureStepY, 1).toFloat()
-            )
-        }
-    }
-
-    /**
-     * return data between latitude from/to, and latitude from/to, with given resolution.
-     * Uses minimum of given and possible resolution.
-     * crops to dataset if latitudes or longitudes exceed the dataset.
-     *
-     * @param latLongUpperLeft latlong of upper left corner in a box
-     * @param latLongLowerRight latlong of lower right corner in a box
-     * @param xStride stride between x coordinates
-     * @param yStride stride between y coordinates
-     * @return data of infectious pressure in the prescribed data range.
-     *
-     * @see THREDDSDataLoader.THREDDSLoad()
-     */
-    suspend fun load(
-        latLongUpperLeft: LatLong,
-        latLongLowerRight: LatLong,
-        xStride: Int,
-        yStride: Int
-    ): InfectiousPressure? {
-        val catalogEntries = loadEntryUrls() //fills catalogCache, blocks the current coroutine
-        return THREDDSLoad(catalogEntries?.firstOrNull() ?: return null) { ncfile ->
-            //make the projection
-            val gridMapping: Variable = ncfile.findVariable("grid_mapping")
-                ?: throw NullPointerException("Failed to read variable <gridMapping> from infectiousPressure") //caught by THREDDSLOAD
-            val latLngToStereo =
-                readAndMakeProjectionFromGridMapping(gridMapping) //can throw NullpointerException, caught by THREDDSLOAD
-
-            val (xRange, yRange) = geographicCoordinateToRange(
-                latLongUpperLeft,
-                latLongLowerRight,
-                xStride,
-                yStride,
-                latLngToStereo
-            )
-
-            //make some extra ranges to access data
-            val range2 = "${xRange.reformatFLS()},${yRange.reformatFLS()}"
-            val range3 = "0,$range2"
-
-            //lets make some infectious pressure
-            //Variables are data that are NOT READ YET. findVariable() is not null-safe
-            val concentrations: Variable = ncfile.findVariable("C10")
-                ?: throw NullPointerException("Failed to read variable <C10> from infectiousPressure")
-            val time: Variable = ncfile.findVariable("time")
-                ?: throw NullPointerException("Failed to read variable <time> from infectiousPressure")
-            val dx = gridMapping.findAttribute("dx")?.numericValue?.toFloat()
-                ?: throw NullPointerException("Failed to read attribute <dx> from <gridMapping> from infectiousPressure")
 
             //make the infectiousPressure
             InfectiousPressure(
@@ -180,7 +120,7 @@ open class InfectiousPressureDataLoader : THREDDSDataLoader() {
         xRange: IntProgression,
         yRange: IntProgression
     ): InfectiousPressure? {
-        return THREDDSLoad(url) { ncfile ->
+        return threddsLoad(url) { ncfile ->
             //make some extra ranges to access data
             val range2 = "${xRange.reformatFLS()},${yRange.reformatFLS()}"
             val range3 = "0,$range2"

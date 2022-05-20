@@ -85,3 +85,45 @@ fun DayOfWeek.toShortString(context: Context): String {
         DayOfWeek.SUNDAY -> context.getString(no.uio.ifi.team16.stim.R.string.shortSunday)
     }
 }
+
+//LIST EXTENSIONS
+/**
+ * from a sequence take every (stride) element
+ */
+fun <T> Sequence<T>.takeEvery(stride: Int): Sequence<T> =
+    this.filterIndexed { i, _ -> (i % stride == 0) }
+
+/**
+ * for the given sequence, take values in the given intProgression(range with stride)
+ */
+fun <T> Sequence<T>.takeRange(range: IntProgression): Sequence<T> =
+    drop(range.first).take(range.last - range.first).takeEvery(range.step)
+
+/**
+ * from a sequence take every (stride) eleemnt
+ */
+fun <T> List<T>.takeEvery(stride: Int): List<T> =
+    this.filterIndexed { i, _ -> (i % stride == 0) }
+
+/**
+ * for the given sequence, take values in the given intProgression(range with stride)
+ */
+fun <T> List<T>.takeRange(range: IntProgression): List<T> =
+    drop(range.first).take(range.last - range.first).takeEvery(range.step)
+
+/**
+ * same as Map.getOrPut, but if the put value resuls in null, don't put
+ *
+ * if the key exists, return its value
+ * if not, evaluate default,
+ *      if default succeeds(not null) put it in the cache, and return the value
+ *      if default fails (null), dont put anything in cache(get or put would put null in cache) and return null
+ * @see MutableMap.getOrPut
+ */
+inline fun <K, V> MutableMap<K, V>.getOrPutOrPass(key: K, default: () -> V?): V? =
+    getOrElse(key) {
+        default()?.let { value ->
+            this[key] = value
+            value
+        }
+    }

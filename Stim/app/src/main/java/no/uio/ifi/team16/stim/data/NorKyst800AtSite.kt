@@ -20,12 +20,14 @@ data class NorKyst800AtSite(
     val current: NorKyst800,
     val all: LiveData<NorKyst800?>
 ) {
-    val TAG = "NORKYST800AtSite"
+    companion object {
+        const val TAG = "NORKYST800AtSite"
+    }
 
-    val radius = Options.norKyst800AtSiteRadius
+    private val radius = Options.norKyst800AtSiteRadius
 
     //how concentrations at a given time are aggregated to a single float
-    val aggregation: (NullableFloatArray2D) -> Float? = { arr ->
+    private val aggregation: (NullableFloatArray2D) -> Float? = { arr ->
         meanAggregation(arr.flatten().filterNotNull().toFloatArray())
     }
 
@@ -68,13 +70,11 @@ data class NorKyst800AtSite(
                 "\tnorkyst: $current\n"
 
     fun getTemperature(): Float? = getTemperature(0, 0, 0, 0)
-    fun getTemperature(y: Int, x: Int): Float? = getTemperature(0, 0, y, x)
     private fun getTemperature(time: Int, depth: Int, y: Int, x: Int): Float? =
         current.temperature.get(time, depth, radius + y, radius + x)
             ?: averageOf(time, depth, current.temperature)
 
     fun getSalinity(): Float? = getSalinity(0, 0, 0, 0)
-    fun getSalinity(y: Int, x: Int): Float? = getSalinity(0, 0, y, x)
     private fun getSalinity(time: Int, depth: Int, y: Int, x: Int): Float? =
         current.salinity.get(time, depth, radius + y, radius + x)
             ?: averageOf(time, depth, current.salinity)
@@ -123,7 +123,7 @@ data class NorKyst800AtSite(
 
     fun getVelocity(): Float? = getVelocity(0, 0, 0, 0)
 
-    fun getVelocity(time: Int, depth: Int, y: Int, x: Int): Float? {
+    private fun getVelocity(time: Int, depth: Int, y: Int, x: Int): Float? {
         val u = current.velocity.first.get(time, depth, radius + y, radius + x)
             ?: averageOf(time, depth, current.velocity.first)
         val v = current.velocity.second.get(time, depth, radius + y, radius + x)
@@ -137,28 +137,6 @@ data class NorKyst800AtSite(
         }
     }
 
-    fun getVelocityVector(): Triple<Float, Float, Float>? =
-        getVelocityVector(0, 0, radius, radius)
-
-    fun getVelocityVector(time: Int, depth: Int, y: Int, x: Int): Triple<Float, Float, Float>? {
-        var u = current.velocity.first.get(time, depth, radius + y, radius + x)
-        var v = current.velocity.second.get(time, depth, radius + y, radius + x)
-        var w = current.velocity.third.get(time, depth, radius + y, radius + x)
-        if (u == null || v == null || w == null) {
-            u = averageOf(time, 0, current.velocity.first)
-            v = averageOf(time, 0, current.velocity.second)
-            w = averageOf(time, 0, current.velocity.third)
-            if (u == null || v == null || w == null) {
-                return null
-            }
-        }
-        return Triple(
-            u,
-            v,
-            w
-        )
-    }
-
     fun getVelocityDirectionInXYPlane(): Float? =
         getVelocityDirectionInXYPlane(0, 0, radius, radius)
 
@@ -167,8 +145,6 @@ data class NorKyst800AtSite(
             ?: averageOf(time, depth, current.velocity.first)
         val v = current.velocity.second.get(time, depth, radius + y, radius + x)
             ?: averageOf(time, depth, current.velocity.second)
-        //val w = norKyst800.velocity.third.get(time, depth, radius + y, radius + x)
-        //    ?: averageOf(time, depth, norKyst800.temperature) TODO add vertical component?
         return u?.let { _ ->
             v?.let { _ -> //return null if any of them null
                 Math.sqrt((u * u + v * v).toDouble()).toFloat()

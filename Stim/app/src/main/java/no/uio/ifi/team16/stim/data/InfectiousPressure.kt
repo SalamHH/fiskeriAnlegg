@@ -1,14 +1,13 @@
 package no.uio.ifi.team16.stim.data
 
-import android.util.Log
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.maps.android.heatmaps.WeightedLatLng
 import no.uio.ifi.team16.stim.util.*
 import org.locationtech.proj4j.CoordinateTransform
 import org.locationtech.proj4j.CoordinateTransformFactory
-import org.locationtech.proj4j.ProjCoordinate
-import kotlin.math.round
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.roundToInt
 
 //typealias FloatArray2D = Array<FloatArray>
@@ -21,30 +20,9 @@ class InfectiousPressure(
     val concentration: FloatArray2D, //Particle concentration, aggregated number of particles in grid cell
     val time: Float,               //seconds since 2000-01-01 00:00:00
     val projection: CoordinateTransform, //transforms between latlong and projection coordinates
-    val dx: Float, //x separation, in projection meters, between points
-    val dy: Float  //y separation, in projection meters, between points
+    private val dx: Float, //x separation, in projection meters, between points
+    private val dy: Float  //y separation, in projection meters, between points
 ) {
-    val TAG = "InfectiousPressure"
-
-    /**
-     * get cconcentration at the given latlong coordinate
-     * concentration is specified in grids, and we cannot simply find the concentration at the "closest"
-     * latitude longitude(because the closest latitude longitude is hard to find due to the curvature
-     * of earth), so we first map the latlng to eta and xi(points on the projection) from which we
-     * can find the closest projection coordinate easier(there is no curvature, so finding closest is "easy")
-     *
-     * concentration is defined inside a bounded grid, so coordinates outside this will not return
-     * valid results
-     * TODO: decide appropriate output, null? closest border concentration?
-     *
-     * @param latLong latitude-longitude coordinate we want to find concentration at
-     * @return concentration at specified lat long coordinate
-     */
-    fun getConcentration(latLong: LatLong): Float? {
-        val (row, column) = getClosestIndex(latLong)
-        return concentration.get(row, column)
-    }
-
     fun getHeatMapData(screenBound: LatLngBounds, n: Int): List<WeightedLatLng> {
         //make inverse projection, mapping from grid indexes to latlng
         val ctFactory = CoordinateTransformFactory()
@@ -75,18 +53,13 @@ class InfectiousPressure(
             Pair(x / 800, y / 800)
         }
 
-        val maxX = Math.min(northWestIndex.second.roundToInt(), Options.norKyst800XEnd - 1)
-        val minX = Math.max(southEastIndex.second.roundToInt(), 0)
-        val maxY = Math.min(northEastIndex.first.roundToInt(), Options.norKyst800YEnd - 1)
-        val minY = Math.max(southWestIndex.first.roundToInt(), 0)
+        val maxX = min(northWestIndex.second.roundToInt(), Options.norKyst800XEnd - 1)
+        val minX = max(southEastIndex.second.roundToInt(), 0)
+        val maxY = min(northEastIndex.first.roundToInt(), Options.norKyst800YEnd - 1)
+        val minY = max(southWestIndex.first.roundToInt(), 0)
 
         val xRange = IntProgression.fromClosedRange(minX, maxX, n)
         val yRange = IntProgression.fromClosedRange(minY, maxY, n)
-
-        Log.d(
-            TAG,
-            "MAKING HEATMAP ${xRange.first} - ${xRange.last} | ${xRange.step} ::::: ${yRange.first} - ${yRange.last} | ${yRange.step}"
-        )
 
         val dx = Options.defaultNorKyst800XStride * 800
         val dy = Options.defaultNorKyst800YStride * 800
@@ -113,29 +86,6 @@ class InfectiousPressure(
     ///////////////
     // UTILITIES //
     ///////////////
-    /**
-     * get the index in the dataset that is closest to the given latlong.
-     * The latlong is in one of the squares of the grid, and the indexes are
-     * the gridpoints closest to that latlong in the grid-cell
-     */
-    private fun getClosestIndex(latLong: LatLong): Pair<Int, Int> {
-        //map latLng to projection coordinates(eta, xi)
-        val (eta, xi) = project(latLong)
-        //divide by length between points, then round to get correct index
-        return Pair(round(eta / dy).toInt(), round(xi / dx).toInt())
-    }
-
-    /**
-     * project a latlng point to a point on the projection.
-     * in the thredds dataset, maps from latlong to eps, xi.
-     */
-    fun project(latLong: LatLong): Pair<Float, Float> =
-        ProjCoordinate(0.0, 0.0).let { p ->
-            projection.transform(ProjCoordinate(latLong.lng, latLong.lat), p)
-        }.let { p ->
-            Pair(p.y.toFloat(), p.x.toFloat())
-        }
-
     override fun toString() = "InfectiousPressure:" +
             "\nTime since 2000-01-01: ${time}, GridMapping: -----" +
             "\nConcentration:\n" +

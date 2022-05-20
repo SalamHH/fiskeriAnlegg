@@ -28,7 +28,6 @@ class MainActivityViewModel : ViewModel() {
     private val infectiousPressureRepository = InfectiousPressureRepository()
     private val infectiousPressureTimeSeriesRepository = InfectiousPressureTimeSeriesRepository()
     private val sitesRepository = SitesRepository()
-    private val norKyst800Repository = NorKyst800Repository()
     private val norKyst800AtSiteRepository = NorKyst800AtSiteRepository()
     private val addressRepository = AddressRepository()
     private val weatherRepository = WeatherRepository()
@@ -39,7 +38,6 @@ class MainActivityViewModel : ViewModel() {
     private val infectiousPressureTimeSeriesData = mutableMapOf<Site, MutableLiveData<InfectiousPressureTimeSeries?>>()
     private val municipalityData = MutableLiveData<Municipality?>()
     private val favouriteSitesData = MutableLiveData<MutableList<Site>?>()
-    private val norKyst800Data = MutableLiveData<NorKyst800?>()
     private val norKyst800AtSiteData = mutableMapOf<Site, MutableLiveData<NorKyst800AtSite?>>()
     private val currentSitesData = MutableLiveData<List<Site>?>()
     private val weatherData = MutableLiveData<WeatherForecast?>()
@@ -50,13 +48,6 @@ class MainActivityViewModel : ViewModel() {
      */
     fun getInfectiousPressureData(): LiveData<InfectiousPressure?> {
         return infectiousPressureData
-    }
-
-    /**
-     * Get NorKyst800-data to get water information
-     */
-    fun getNorKyst800Data(): LiveData<NorKyst800?> {
-        return norKyst800Data
     }
 
     /**
@@ -293,7 +284,6 @@ class MainActivityViewModel : ViewModel() {
         infectiousPressureRepository.clearCache()
         infectiousPressureTimeSeriesRepository.clearCache()
         sitesRepository.clearCache()
-        norKyst800Repository.clearCache()
         norKyst800AtSiteRepository.clearCache()
         addressRepository.clearCache()
         weatherRepository.clearCache()

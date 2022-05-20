@@ -32,10 +32,6 @@ import kotlin.math.roundToInt
 class InfectiousPressureTimeSeriesDataLoader : InfectiousPressureDataLoader() {
     private val TAG = "InfectiousPressureTimeSeriesDataLoader"
 
-    private val radius =
-        Options.siteRadius //amount of grid cells around the specified one to collect data from.
-
-
     /////////////
     // LOADERS //
     /////////////
@@ -92,7 +88,7 @@ class InfectiousPressureTimeSeriesDataLoader : InfectiousPressureDataLoader() {
         ///////////////////
         // FIRST DATASET //
         ///////////////////
-        val currentData = THREDDSLoad(firstEntry) { firstncfile ->
+        val currentData = threddsLoad(firstEntry) { firstncfile ->
             //get common data variables
             val gridMapping: Variable = firstncfile.findVariable("grid_mapping")
                 ?: run {
@@ -130,6 +126,8 @@ class InfectiousPressureTimeSeriesDataLoader : InfectiousPressureDataLoader() {
                 x = (yf / 800).roundToInt()
             }
 
+            val radius = Options.siteRadius
+
             minX = max(x - radius, 0)
             maxX = min(max(x + radius, 0), Options.norKyst800XEnd)
             minY = max(y - radius, 0)
@@ -146,7 +144,7 @@ class InfectiousPressureTimeSeriesDataLoader : InfectiousPressureDataLoader() {
             but this is more convenient, albeit less readable:/ Also, this keeps the first dataset
             open throughout opening all the others, which is unnecessary
             */
-        var historicalData = MutableLiveData<Pair<Array<Int>, FloatArray3D>>()
+        val historicalData = MutableLiveData<Pair<Array<Int>, FloatArray3D>>()
 
         Log.d(TAG, "loading historical data")
 
@@ -157,7 +155,7 @@ class InfectiousPressureTimeSeriesDataLoader : InfectiousPressureDataLoader() {
                     .takeRange(weeksRange)
                     .drop(0) //drop the first entry, already loaded
                     .mapIndexedNotNull { i, entryUrl -> //use mapAsync to load asynchronously, however the servers cannot handle parallell loads!
-                        THREDDSLoad(entryUrl) { ncfile ->
+                        threddsLoad(entryUrl) { ncfile ->
                             getDataFromFile(ncfile, minX, maxX, minY, maxY)
                         }?.let { data ->
                             Pair(
