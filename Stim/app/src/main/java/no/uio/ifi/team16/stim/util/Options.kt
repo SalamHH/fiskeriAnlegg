@@ -56,7 +56,7 @@ object Options {
     /**
      * How many weeks from now to load in a timeseries
      */
-    const val infectiousPressureTimeSeriesSpan = 20
+    const val infectiousPressureTimeSeriesSpan = 10
 
     /**
      * the amount of grids around the site to use in timeseriesdata,
