@@ -10,9 +10,8 @@ import androidx.fragment.app.DialogFragment
 import no.uio.ifi.team16.stim.R
 
 /**
- * Dialogfragment som forklarer de ulike statuslikonene for smittedata
+ * A simple dialog explaining the different icons for infection data
  */
-
 class InfectiousIconStatusDialogFragment : DialogFragment() {
 
     override fun onCreateView(

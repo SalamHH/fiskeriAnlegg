@@ -10,9 +10,8 @@ import androidx.fragment.app.DialogFragment
 import no.uio.ifi.team16.stim.R
 
 /**
- * Dialogfragment som viser at dataen som lastes ikke enda er tilgjenglig
+ * Dialog telling the user that some data is not yet ready
  */
-
 class NoDataStatusDialogFragment : DialogFragment() {
 
     override fun onCreateView(

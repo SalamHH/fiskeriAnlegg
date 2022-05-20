@@ -58,10 +58,11 @@
     <string name="currentInfection_format">%4.2f</string>
 
     <!-- site info -->
-    <string name="Location_placeholder">%f, %f</string>
+    <string name="Location_placeholder">%.4f, %.4f</string>
     <string name="Temperature_placeholder">%4.1f °</string>
     <string name="Salt_placeholder">%4.1f</string>
     <string name="Currents_placeholder">%4.1f m/s</string>
+    <string name="no_info">N/A</string>
 
     <!-- app info -->
     <string name="Appinfo_description">Stim er studentprosjekt utviklet for å støtte opp under den daglige driften til ansatte og fiskehelsepersonell ved oppdrettsanlegg i Norge</string>
@@ -142,6 +143,7 @@
     <string name="waterTemperature">Vanntemperatur:</string>
     <string name="waterSalinityLevel">Saltholdighet:</string>
     <string name="salinityChart">Graf over saltholdighet</string>
+    <string name="tempChart">Graf over vanntemperatur</string>
     <string name="timeInHours">Tid i timer</string>
     <string name="seeSalinity">Se Saltholdighet</string>
     <string name="seeWaterTemperature">Se Vanntemperatur</string>
@@ -154,6 +156,12 @@
     <string name="time">Tid</string>
     <string name="waterTemp">Vanntemperatur</string>
     <string name="salinity">Saltholdighet</string>
+    <string name="now">nåtid</string>
+    <string name="no_data_available">Ingen data tilgjengelig</string>
+    <string name="norkyst_local_load_error">Klarte ikke laste inn lokale NorKyst-data, vanninfo er utilgjengelig</string>
+    <string name="norkyst_global_load_error">Klarte ikke laste inn globale norkyst-data, vanninfo er utilgjengelig</string>
+    <string name="no_local_data">Ingen data i nærliggende områder</string>
+    <string name="no_data_loaded">Ingen data lastet inn ennå</string>
 
     <!-- mapfragment -->
     <string name="municipality_">Kommune:</string>

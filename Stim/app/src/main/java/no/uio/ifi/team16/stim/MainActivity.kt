@@ -15,7 +15,10 @@ import no.uio.ifi.team16.stim.util.Options
 
 class MainActivity : AppCompatActivity() {
 
-    private val TAG = "MainActivity"
+    companion object {
+        private const val TAG = "MainActivity"
+    }
+
     private val viewModel: MainActivityViewModel by viewModels()
     private lateinit var binding: ActivityMainBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -46,7 +49,7 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.navView.setupWithNavController(navController)
 
-        //initial load of data
+        // initial load of data
         viewModel.setPreferences(prefrences)
         viewModel.loadInfectiousPressure()
         viewModel.loadFavouriteSites()

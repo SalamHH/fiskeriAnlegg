@@ -1,7 +1,6 @@
 package no.uio.ifi.team16.stim.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,75 +24,58 @@ import no.uio.ifi.team16.stim.util.linestyle.InfectionLineStyle
 import java.time.ZonedDateTime
 import javax.inject.Inject
 
-
+/**
+ * Fragment showing infection at a site
+ * Also contains information on infection of ILA and PD.
+ */
 class InfectionFragment : StimFragment() {
 
     private val TAG = "INFECTIONFRAGMENT"
 
     private lateinit var binding: FragmentInfectionBinding
-    private val viewModel: MainActivityViewModel by activityViewModels()
     private lateinit var site: Site
+    private val viewModel: MainActivityViewModel by activityViewModels()
 
     @Inject
     lateinit var chartStyle: InfectionLineStyle
 
-    /**
-     * Fragment that displays infection of salmonlouse using a graph and a table.
-     * Also contains information on infection of ILA and PD.
-     */
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        Log.d(TAG, "oncreate")
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentInfectionBinding.inflate(inflater, container, false)
 
         //ANIMATION
-
-        val animation =
-            TransitionInflater.from(requireContext()).inflateTransition(android.R.transition.move)
+        val animation = TransitionInflater.from(requireContext()).inflateTransition(android.R.transition.move)
         sharedElementEnterTransition = animation
         sharedElementReturnTransition = animation
 
         //SITE
-
         site = viewModel.site ?: return binding.root
         binding.sitename.text = site.name
 
         chartStyle = InfectionLineStyle()
 
         //EXPANDABLE INFORMATION CARD
-
         binding.InformationCard.setOnClickListener {
             if (binding.infoTextExtra.visibility == View.VISIBLE) {
-                TransitionManager.beginDelayedTransition(
-                    binding.InformationCard,
-                    AutoTransition()
-                )
+                TransitionManager.beginDelayedTransition(binding.InformationCard, AutoTransition())
                 binding.infoTextExtra.visibility = View.GONE
                 binding.arrow.setImageResource(R.drawable.down_darkblue)
             } else {
-                TransitionManager.beginDelayedTransition(
-                    binding.InformationCard,
-                    AutoTransition()
-                )
+                TransitionManager.beginDelayedTransition(binding.InformationCard, AutoTransition())
                 binding.infoTextExtra.visibility = View.VISIBLE
                 binding.arrow.setImageResource(R.drawable.up_darkblue)
             }
         }
 
-        viewModel.getInfectiousPressureTimeSeriesData(site).observe(viewLifecycleOwner) {
-            it?.let { inf ->
+        viewModel.getInfectiousPressureTimeSeriesData(site).observe(viewLifecycleOwner) { timeSeries ->
+            timeSeries?.let { inf ->
                 //write current infectioninfo to texgtview
                 binding.infectionValue.text =
-                    getString(R.string.currentInfection_format).format(inf.getCurrentConcentration())
+                        getString(R.string.currentInfection_format).format(inf.getCurrentConcentration())
 
                 //make a graph when historical data is ready
                 inf.observeConcentrationsGraph(viewLifecycleOwner) { graph ->
                     val infectionData =
-                        graph.map { xy -> xy.y }.toTypedArray() //get contamination as separate list
+                            graph.map { xy -> xy.y }.toTypedArray() //get contamination as separate list
                     val weekList = graph.map { xy -> xy.x } //get weeks as separate list
 
                     //TABLE
@@ -106,19 +88,19 @@ class InfectionFragment : StimFragment() {
                     val statuscalculator = InfectionStatusCalculator(resources)
                     if (infectionData.isNotEmpty()) {
                         binding.infectionStatusText.text =
-                            statuscalculator.calculateInfectionStatusText(infectionData)
+                                statuscalculator.calculateInfectionStatusText(infectionData)
                         if (statuscalculator.calculateInfectionStatusIcon(infectionData) != null) {
                             binding.StatusIcon.setImageDrawable(
-                                statuscalculator.calculateInfectionStatusIcon(
-                                    infectionData
-                                )
+                                    statuscalculator.calculateInfectionStatusIcon(
+                                            infectionData
+                                    )
                             )
                             binding.StatusIcon.contentDescription =
-                                statuscalculator.calculateInfectionStatusText(infectionData)
+                                    statuscalculator.calculateInfectionStatusText(infectionData)
                         }
                     } else {
                         binding.infectionStatusText.text =
-                            resources.getText(R.string.no_infectiouspressure_found)
+                                resources.getText(R.string.no_infectiouspressure_found)
                     }
                 }
             }
@@ -136,17 +118,16 @@ class InfectionFragment : StimFragment() {
 
     private fun createInfectionChart(graph: List<Entry>, infectionData: Array<Float>) {
         val linedataset = LineDataSet(
-            graph,
-            CHART_LABEL
+                graph,
+                CHART_LABEL
         )
-        //set max of yaxis to max of loaded dataset
-        //THE BEZIER CURVE DOES NOT CONSERVE MIN / MAX OF INTERPOLATED POINTS, SO IT WILL CLIP!!
-        //TODO get interpolation(CUBIC BEZIER), and find min max of that, or change to linear(not bezier), or use max+1 min-1
+        // set max of y-axis to max of loaded dataset
+        // THE BEZIER CURVE DOES NOT CONSERVE MIN / MAX OF INTERPOLATED POINTS, SO IT WILL CLIP!!
         binding.infectionChart.apply {
             axisLeft.apply {
                 if (infectionData.isNotEmpty()) {
-                    axisMaximum =
-                        infectionData.maxOf { v -> v } + 1f //clipping might still occurr
+                    // clipping might still occur
+                    axisMaximum = infectionData.maxOf { v -> v } + 1f
                 }
             }
         }
@@ -157,29 +138,26 @@ class InfectionFragment : StimFragment() {
     }
 
     private fun createInfectionTable(
-        infectionData: Array<Float>,
-        weekList: List<Float>,
-        inflater: LayoutInflater,
-        container: ViewGroup?
+            infectionData: Array<Float>,
+            weekList: List<Float>,
+            inflater: LayoutInflater,
+            container: ViewGroup?
     ) {
         for (i in infectionData.indices) {
             val newRow = TableRow(requireContext())
             val view = inflater.inflate(R.layout.infection_table_row, container, false)
-            view.findViewById<TextView>(R.id.table_display_week).text =
-                String.format("%.0f", weekList[i])
-            view.findViewById<TextView>(R.id.table_display_float).text =
-                infectionData[i].toString()
+            view.findViewById<TextView>(R.id.table_display_week).text = String.format("%.0f", weekList[i])
+            view.findViewById<TextView>(R.id.table_display_float).text = infectionData[i].toString()
             view.layoutParams = TableRow.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
             )
             newRow.addView(view)
             binding.tablelayout.addView(newRow, 0)
             newRow.layoutParams = TableLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
             )
-            Log.d(TAG, "Row added: $i")
         }
     }
 
@@ -187,45 +165,48 @@ class InfectionFragment : StimFragment() {
         viewModel.getBarentsWatchData(site).observe(viewLifecycleOwner) {
             if (it?.listPD?.isNotEmpty() == true) {
                 binding.pdIcon.setImageDrawable(
-                    ResourcesCompat.getDrawable(
-                        resources,
-                        R.drawable.pd_bad,
-                        null
-                    )
+                        ResourcesCompat.getDrawable(
+                                resources,
+                                R.drawable.pd_bad,
+                                null
+                        )
                 )
                 binding.suspicionUnknowndate.text =
-                    checkIfDataExistAndFormat("pd_ukjent_mistankedato", it.listPD)
-                        ?: resources.getText(R.string.no_suspicion)
+                        checkIfDataExistAndFormat("pd_ukjent_mistankedato", it.listPD)
+                                ?: resources.getText(R.string.no_suspicion)
                 binding.suspicionSav2Date.text =
-                    checkIfDataExistAndFormat("pd_sav2_mistankedato", it.listPD)
-                        ?: resources.getText(R.string.no_suspicion)
+                        checkIfDataExistAndFormat("pd_sav2_mistankedato", it.listPD)
+                                ?: resources.getText(R.string.no_suspicion)
                 binding.suspicionSav3Date.text =
-                    checkIfDataExistAndFormat("pd_sav3_mistankedato", it.listPD)
-                        ?: resources.getText(R.string.no_suspicion)
+                        checkIfDataExistAndFormat("pd_sav3_mistankedato", it.listPD)
+                                ?: resources.getText(R.string.no_suspicion)
                 binding.provenUnknown.text = checkIfDataExistAndFormat("pd_ukjent_paavistdato", it.listPD)
-                    ?: resources.getText(R.string.not_proven)
+                        ?: resources.getText(R.string.not_proven)
                 binding.provenSav2Date.text = checkIfDataExistAndFormat("pd_sav2_paavistdato", it.listPD)
-                    ?: resources.getText(R.string.not_proven)
+                        ?: resources.getText(R.string.not_proven)
                 binding.provenSav3Date.text = checkIfDataExistAndFormat("pd_sav3_paavistdato", it.listPD)
-                    ?: resources.getText(R.string.not_proven)
+                        ?: resources.getText(R.string.not_proven)
             }
 
             if (it?.listILA?.isNotEmpty() == true) {
                 binding.ilaIcon.setImageDrawable(
-                    ResourcesCompat.getDrawable(
-                        resources,
-                        R.drawable.ila_bad,
-                        null
-                    )
+                        ResourcesCompat.getDrawable(
+                                resources,
+                                R.drawable.ila_bad,
+                                null
+                        )
                 )
                 binding.mistankeDato.text =
-                    checkIfDataExistAndFormat("mistankedato", it.listILA) ?: getText(R.string.no_suspicion)
+                        checkIfDataExistAndFormat("mistankedato", it.listILA) ?: getText(R.string.no_suspicion)
                 binding.paavistDato.text =
-                    checkIfDataExistAndFormat("paavistdato", it.listILA) ?: getText(R.string.not_proven)
+                        checkIfDataExistAndFormat("paavistdato", it.listILA) ?: getText(R.string.not_proven)
             }
         }
     }
 
+    /**
+     * Format a ZonedDateTime into a string on the format "1 JANUARY 1970"
+     */
     private fun format(time: ZonedDateTime?): String {
         val day = time?.dayOfMonth.toString()
         val month = time?.month.toString()
@@ -233,10 +214,12 @@ class InfectionFragment : StimFragment() {
         return "$day $month $year"
     }
 
-    private fun checkIfDataExistAndFormat(
-        input: String,
-        data: HashMap<String, String>
-    ): String? {
+    /**
+     * Extract a timestamp from the data and parse it if possible
+     * @param input a key in the data HashMap
+     * @param data either the listPD or listILA property of BarentsWatchAtSite
+     */
+    private fun checkIfDataExistAndFormat(input: String, data: HashMap<String, String>): String? {
         val dateString = data[input]
         if (dateString != null && dateString != "null") {
             val time = ZonedDateTime.parse(dateString)
@@ -248,5 +231,4 @@ class InfectionFragment : StimFragment() {
     companion object {
         const val CHART_LABEL = "INFECTION_CHART"
     }
-
 }

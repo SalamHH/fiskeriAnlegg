@@ -54,7 +54,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         savedInstanceState: Bundle?
     ): View {
         if (!checkLocationPermission()) {
-            requestPermission { hasPermission ->
+            requestLocationPermission { hasPermission ->
                 if (hasPermission) {
                     onLocationPermissionGranted()
                 }
@@ -84,7 +84,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         bottomSheetBehavior.isDraggable = true
         bottomSheetBehavior.isHideable = false
 
-        // Max height of bottom sheet is 80% of screen height
+        // Max height of bottom sheet is 85% of screen height
         val screenHeight = Resources.getSystem().displayMetrics.heightPixels
         bottomSheetBehavior.maxHeight = round(screenHeight * 0.85).toInt()
 
@@ -373,19 +373,17 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
      * Draw a heatmap of infectious pressure
      */
     private fun drawHeatmap(googleMap: GoogleMap): Boolean {
-        // INFECTIOUSPRESSURE HEATMAP
-        viewModel.getInfectiousPressureData()
-            .observe(viewLifecycleOwner) { infectiousPressure ->
-                val z = googleMap.cameraPosition.zoom
-                val screenBound = googleMap.projection.visibleRegion.latLngBounds
+        viewModel.getInfectiousPressureData().observe(viewLifecycleOwner) { infectiousPressure ->
+            val z = googleMap.cameraPosition.zoom
+            val screenBound = googleMap.projection.visibleRegion.latLngBounds
 
-                val n = if (z > 7) {
-                    1
-                } else {
-                    (1 + 20 * (z - 9.884714) / (4.992563 - 9.884714)).coerceAtLeast(1.0).toInt()
-                }
+            val n = if (z > 7) {
+                1
+            } else {
+                (1 + 20 * (z - 9.884714) / (4.992563 - 9.884714)).coerceAtLeast(1.0).toInt()
+            }
 
-                val scale = 50.0
+            val scale = 50.0
                 infectiousPressure?.let {
                     val data = it.getHeatMapData(screenBound, n)
                     if (data.isNotEmpty()) {

@@ -8,6 +8,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 
+/**
+ * Base class for all fragments in the app
+ */
 abstract class StimFragment : Fragment() {
 
     /**
@@ -25,7 +28,7 @@ abstract class StimFragment : Fragment() {
     /**
      * Ask for permission to show user location
      */
-    fun requestPermission(callback: (result: Boolean) -> Unit) {
+    fun requestLocationPermission(callback: (result: Boolean) -> Unit) {
         val contract = ActivityResultContracts.RequestMultiplePermissions()
         val request = registerForActivityResult(contract) { permissions ->
             when {

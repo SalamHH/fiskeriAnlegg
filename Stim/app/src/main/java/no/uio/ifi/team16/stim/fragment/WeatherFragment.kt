@@ -13,7 +13,7 @@ import no.uio.ifi.team16.stim.data.WeatherForecast
 import no.uio.ifi.team16.stim.databinding.FragmentWeatherBinding
 
 /**
- * Weather fragment
+ * Fragment showing weather and storm forecast
  */
 class WeatherFragment : StimFragment() {
 
@@ -23,8 +23,7 @@ class WeatherFragment : StimFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentWeatherBinding.inflate(inflater, container, false)
 
-        val animation =
-            TransitionInflater.from(requireContext()).inflateTransition(android.R.transition.move)
+        val animation = TransitionInflater.from(requireContext()).inflateTransition(android.R.transition.move)
         sharedElementEnterTransition = animation
         sharedElementReturnTransition = animation
 
@@ -37,17 +36,22 @@ class WeatherFragment : StimFragment() {
         return binding.root
     }
 
+    /**
+     * Called when the weather is ready to be displayed
+     */
     private fun onWeatherLoaded(forecast: WeatherForecast?) {
         forecast?.apply {
-            binding.dayText1.text = first.day.getTranslation(requireContext())
-            binding.dayText2.text = second.day.getTranslation(requireContext())
-            binding.dayText3.text = third.day.getTranslation(requireContext())
-            binding.dayText4.text = fourth.day.getTranslation(requireContext())
+            val context = requireContext()
 
-            binding.weatherIcon1.setImageDrawable(first.icon.asDrawable(requireContext()))
-            binding.weatherIcon2.setImageDrawable(second.icon.asDrawable(requireContext()))
-            binding.weatherIcon3.setImageDrawable(third.icon.asDrawable(requireContext()))
-            binding.weatherIcon4.setImageDrawable(fourth.icon.asDrawable(requireContext()))
+            binding.dayText1.text = first.day.getTranslation(context)
+            binding.dayText2.text = second.day.getTranslation(context)
+            binding.dayText3.text = third.day.getTranslation(context)
+            binding.dayText4.text = fourth.day.getTranslation(context)
+
+            binding.weatherIcon1.setImageDrawable(first.icon.asDrawable(context))
+            binding.weatherIcon2.setImageDrawable(second.icon.asDrawable(context))
+            binding.weatherIcon3.setImageDrawable(third.icon.asDrawable(context))
+            binding.weatherIcon4.setImageDrawable(fourth.icon.asDrawable(context))
 
             binding.temperatureView1.text = getString(R.string.temperature, first.temperature)
             binding.temperatureView2.text = getString(R.string.temperature, second.temperature)
@@ -55,12 +59,12 @@ class WeatherFragment : StimFragment() {
             binding.temperatureView4.text = getString(R.string.temperature, fourth.temperature)
 
             forecast.storm?.let { storm ->
-                var dayText = storm.day.getTranslation(requireContext())
+                var dayText = storm.day.getTranslation(context)
                 if (!storm.day.isToday()) {
                     dayText = getString(R.string.on) + " " + dayText
                 }
                 binding.stormForecastText.text =
-                    getString(R.string.storm_predicted, storm.strength, dayText.lowercase())
+                        getString(R.string.storm_predicted, storm.strength, dayText.lowercase())
                 Glide.with(requireActivity()).asGif().load(R.drawable.erstorm_animasjon).into(binding.stormanimation)
             } ?: run {
                 binding.stormForecastText.text = getString(R.string.no_storm)

@@ -46,7 +46,7 @@ class TutorialSlideFragment(private val slide: Int) : StimFragment() {
                 return inflater.inflate(R.layout.tutorial_slide5, container, true)
             }
             else -> {
-                startActivity(Intent(this.context, OpeningScreen::class.java))
+                startActivity(Intent(context, OpeningScreen::class.java))
                 return null
             }
         }

@@ -14,7 +14,9 @@ import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.databinding.FragmentFavoriteSitesBinding
 import no.uio.ifi.team16.stim.io.adapter.RecycleViewAdapter
 
-
+/**
+ * Fragment showing a list of the user's favourite sites
+ */
 class FavoriteSitesFragment : StimFragment() {
 
     private lateinit var binding: FragmentFavoriteSitesBinding
@@ -24,36 +26,36 @@ class FavoriteSitesFragment : StimFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentFavoriteSitesBinding.inflate(inflater, container, false)
 
-        /********************
-         *  RECYCLEVIEW *
-         ********************/
-
         val adapter = RecycleViewAdapter(listOf(), listOf(), this::adapterOnClick, this::favoriteOnClick, requireActivity())
         binding.recyclerview.adapter = adapter
 
-        //observe municipality
         viewModel.getFavouriteSitesData().observe(viewLifecycleOwner) { sites ->
-
             if (sites != null) {
                 adapter.sites = sites
                 adapter.favs = sites
                 adapter.notifyDataSetChanged()
             }
-            binding.noFavoriteSites.isVisible = sites?.size == 0
+            binding.noFavoriteSites.isVisible = sites.isNullOrEmpty()
         }
         return binding.root
     }
 
-    /*
-    When an item in the RecyclerView is clicked it updates the viewModels currentSite to the Site that was clicked
-    and then it navigates to the fragment that fetches this Site and displays information about it */
-    private fun adapterOnClick(site : Site) {
+    /**
+     * Called when a site is pressed in the list
+     */
+    private fun adapterOnClick(site: Site) {
         viewModel.site = site
         view?.findNavController()?.navigate(R.id.action_favoriteSitesFragment_to_siteInfoFragment)
     }
 
-    private fun favoriteOnClick(site : Site, checked : Boolean) {
-        if (checked) viewModel.registerFavouriteSite(site)
-        else viewModel.removeFavouriteSite(site)
+    /**
+     * Called when the user clicks on the favourite button
+     */
+    private fun favoriteOnClick(site: Site, checked: Boolean) {
+        if (checked) {
+            viewModel.registerFavouriteSite(site)
+        } else {
+            viewModel.removeFavouriteSite(site)
+        }
     }
 }
