@@ -132,6 +132,7 @@ class WaterFragment : StimFragment() {
     private fun setSalinityChart() {
         binding.salinityChart.visibility = View.VISIBLE
         binding.watertempChart.visibility = View.GONE
+        binding.salinityChartHeader.text = getString(R.string.salinityChart)
 
         saltChartStyle = SalinityLineStyle()
 
@@ -175,6 +176,7 @@ class WaterFragment : StimFragment() {
     private fun setTemperatureChart() {
         binding.salinityChart.visibility = View.GONE
         binding.watertempChart.visibility = View.VISIBLE
+        binding.salinityChartHeader.text = getString(R.string.tempChart)
 
         tempChartStyle = TemperatureLineStyle()
 
