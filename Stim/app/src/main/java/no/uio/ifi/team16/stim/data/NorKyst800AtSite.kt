@@ -35,15 +35,6 @@ data class NorKyst800AtSite(
     // AGGREGATORS //
     /////////////////
     /**
-     * return max value of a 2D array
-     */
-    private fun maxAggregation(array: FloatArray): Float? =
-        if (array.isEmpty())
-            null
-        else
-            array.maxOf { i -> i }
-
-    /**
      * return mean value of a 2D array
      */
     private fun meanAggregation(array: FloatArray): Float? =
@@ -51,15 +42,6 @@ data class NorKyst800AtSite(
             null
         else
             array.sum() / array.size
-
-    /**
-     * return sum of a 2D array
-     */
-    private fun sumAggregation(array: FloatArray): Float? =
-        if (array.isEmpty())
-            null
-        else
-            array.sum()
 
     ///////////////
     // UTILITIES //
@@ -69,15 +51,13 @@ data class NorKyst800AtSite(
                 "\tsite: $siteId\n" +
                 "\tnorkyst: $current\n"
 
-    fun getTemperature(): Float? = getTemperature(0, 0, 0, 0)
-    private fun getTemperature(time: Int, depth: Int, y: Int, x: Int): Float? =
-        current.temperature.get(time, depth, radius + y, radius + x)
-            ?: averageOf(time, depth, current.temperature)
+    fun getTemperature(): Float? =
+        current.temperature.get(0, 0, radius, radius)
+            ?: averageOf(current.temperature)
 
-    fun getSalinity(): Float? = getSalinity(0, 0, 0, 0)
-    private fun getSalinity(time: Int, depth: Int, y: Int, x: Int): Float? =
-        current.salinity.get(time, depth, radius + y, radius + x)
-            ?: averageOf(time, depth, current.salinity)
+    fun getSalinity(): Float? =
+        current.salinity.get(0, 0, radius, radius)
+            ?: averageOf(current.salinity)
 
     /**
      * return a graph(List of Entry) of salinity over time(hours)
@@ -120,34 +100,26 @@ data class NorKyst800AtSite(
             }
         }
 
-
-    fun getVelocity(): Float? = getVelocity(0, 0, 0, 0)
-
-    private fun getVelocity(time: Int, depth: Int, y: Int, x: Int): Float? {
-        val u = current.velocity.first.get(time, depth, radius + y, radius + x)
-            ?: averageOf(time, depth, current.velocity.first)
-        val v = current.velocity.second.get(time, depth, radius + y, radius + x)
-            ?: averageOf(time, depth, current.velocity.second)
-        //val w = norKyst800.velocity.third.get(time, depth, radius + y, radius + x)
-        //    ?: averageOf(time, depth, norKyst800.temperature) TODO add vertical component?
-        return u?.let { uu ->
-            v?.let { vv ->
-                Math.sqrt((u * u + v * v).toDouble()).toFloat()
+    fun getVelocity(): Float? {
+        val u = current.velocity.first.get(0, 0, radius, radius)
+            ?: averageOf(current.velocity.first)
+        val v = current.velocity.second.get(0, 0, radius, radius)
+            ?: averageOf(current.velocity.second)
+        return u?.let {
+            v?.let {
+                kotlin.math.sqrt((u * u + v * v).toDouble()).toFloat()
             }
         }
     }
 
-    fun getVelocityDirectionInXYPlane(): Float? =
-        getVelocityDirectionInXYPlane(0, 0, radius, radius)
-
-    private fun getVelocityDirectionInXYPlane(time: Int, depth: Int, y: Int, x: Int): Float? {
-        val u = current.velocity.first.get(time, depth, radius + y, radius + x)
-            ?: averageOf(time, depth, current.velocity.first)
-        val v = current.velocity.second.get(time, depth, radius + y, radius + x)
-            ?: averageOf(time, depth, current.velocity.second)
+    fun getVelocityDirectionInXYPlane(): Float? {
+        val u = current.velocity.first.get(0, 0, radius, radius)
+            ?: averageOf(current.velocity.first)
+        val v = current.velocity.second.get(0, 0, radius, radius)
+            ?: averageOf(current.velocity.second)
         return u?.let { _ ->
             v?.let { _ -> //return null if any of them null
-                Math.sqrt((u * u + v * v).toDouble()).toFloat()
+                kotlin.math.sqrt((u * u + v * v).toDouble()).toFloat()
             }
         }
     }
@@ -160,8 +132,8 @@ data class NorKyst800AtSite(
      *
      * Used when getters find null, so we get all sorrounnding entries and average them to get a meaningful result
      */
-    private fun averageOf(time: Int, depth: Int, arr: NullableFloatArray4D): Float? =
-        arr[time][depth]
+    private fun averageOf(arr: NullableFloatArray4D): Float? =
+        arr[0][0]
             .flatMap { row -> row.toList() } //flatten
             .filterNotNull() //take out null
             .let { elements -> //with the flattened array of non-null values

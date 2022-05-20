@@ -20,20 +20,17 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.util.*
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.ranges.IntProgression.Companion.fromClosedRange
-import kotlin.time.ExperimentalTime
-import kotlin.time.measureTimedValue
 
 /**
  * Dataloader for loading NorKyst800 data around a specified site
  **/
 class NorKyst800AtSiteDataLoader {
     companion object {
-        private const val TAG = "NorKyst800AtSiteDataLoader"
+        const val TAG = "NorKyst800AtSiteDataLoader"
     }
 
     //the catalog url is assumed to be time-invariant. Here all entries are listed.
@@ -52,7 +49,7 @@ class NorKyst800AtSiteDataLoader {
         val forecastUrl = forecastUrlCache ?: run {
             val url = loadForecastUrl() ?: run {
                 Log.e(
-                    Companion.TAG,
+                    TAG,
                     "Failed to load the forecast URL from the catalog, is the catalog URL correct?"
                 )
                 return null
@@ -61,10 +58,10 @@ class NorKyst800AtSiteDataLoader {
             //parse out date of forecast url
             url
         }
-        Log.d(Companion.TAG, "loading forecast date")
+        Log.d(TAG, "loading forecast date")
         val forecastDate = parseDateFromForecastUrl(forecastUrl) ?: return null
         val currentDate = LocalDate.now()
-        Log.d(Companion.TAG, "got forecast date $forecastDate")
+        Log.d(TAG, "got forecast date $forecastDate")
 
         val historicalUrl = forecastUrlIntoHistoricalUrl(forecastUrl)
 
@@ -74,13 +71,13 @@ class NorKyst800AtSiteDataLoader {
         //if the forecast date is (<=) the current date, use the forecast url, otherwise use the historical url
 
         val currentUrl = if (forecastDate <= currentDate) {
-            Log.d(Companion.TAG, "loading current from an")
+            Log.d(TAG, "loading current from an")
             historicalUrl
         } else {
-            Log.d(Companion.TAG, "loading current from fc")
+            Log.d(TAG, "loading current from fc")
             forecastUrl
         }
-        Log.d(Companion.TAG, "at index $hourOfDay")
+        Log.d(TAG, "at index $hourOfDay")
 
         //start an async load of all the available data
         val allData = MutableLiveData<NorKyst800>()
@@ -113,7 +110,7 @@ class NorKyst800AtSiteDataLoader {
      * large we do it in two separate requests.
      *
      * @param site site to load around
-     * @param url url to load from
+     * @param baseUrl base url to load from
      *
      * @return Norkyst800 data in the given range
      */
@@ -230,7 +227,7 @@ class NorKyst800AtSiteDataLoader {
      * large we do it in two separate requests.
      *
      * @param site site to load around
-     * @param url url to load from
+     * @param baseUrl url to load from
      *
      * @return Norkyst800 data in the given range
      */
@@ -320,7 +317,7 @@ class NorKyst800AtSiteDataLoader {
             floatArrayOf(0f),
             salinity,
             temperature,
-            floatArrayOf(0f), //TODO might need to fix
+            floatArrayOf(0f),
             velocity,
             projection
         )
@@ -329,28 +326,25 @@ class NorKyst800AtSiteDataLoader {
     ///////////////
     // UTILITIES //
     ///////////////
-    @OptIn(ExperimentalTime::class)
     private suspend fun requestData(url: String, name: String): String? {
-        val (string, elapsed) = measureTimedValue {
-            Log.d(Companion.TAG, "Loading $name response from $url")
-            Fuel.get(url).awaitStringResult().onError { error ->
-                Log.e(
-                    Companion.TAG,
-                    "Failed to load norkyst800data - $name from $url due to:\n $error"
-                )
-                return null
-            }.getOrElse { err ->
-                Log.e(
-                    Companion.TAG,
-                    "Unable to get NorKyst800-$name data from get request on $url. Is the URL correct? $err"
-                )
-                return null
-            }
+        Log.d(TAG, "Loading $name response from $url")
+        val string = Fuel.get(url).awaitStringResult().onError { error ->
+            Log.e(
+                TAG,
+                "Failed to load norkyst800data - $name from $url due to:\n $error"
+            )
+            return null
+        }.getOrElse { err ->
+            Log.e(
+                TAG,
+                "Unable to get NorKyst800-$name data from get request on $url. Is the URL correct? $err"
+            )
+            return null
         }
-        Log.d(Companion.TAG, "Loaded $name response from $url in $elapsed")
+
 
         if (string.isEmpty()) {
-            Log.e(Companion.TAG, "Empty $name response")
+            Log.e(TAG, "Empty $name response")
             return null
         }
 
@@ -367,7 +361,7 @@ class NorKyst800AtSiteDataLoader {
     private suspend fun loadForecastUrl(): String? = try {
         Fuel.get(catalogUrl).awaitString()
     } catch (e: Exception) {
-        Log.e(Companion.TAG, "Unable to retrieve NorKyst800 catalog due to", e)
+        Log.e(TAG, "Unable to retrieve NorKyst800 catalog due to", e)
         null
     }?.let { responseStr -> //regex out the url with .fc. in it
         forecastUrlRegex.find(responseStr)?.let { match ->
@@ -375,7 +369,7 @@ class NorKyst800AtSiteDataLoader {
                     match.groupValues[1]  //if there is a match, the group (entry[1]) is guaranteed to exist
         } ?: run { //"catch" unsucssessfull parse
             Log.e(
-                Companion.TAG,
+                TAG,
                 "Failed to parse out the forecast URL from\n ${responseStr}\n with regex $forecastUrlRegex,\n returning null"
             )
             null
@@ -385,9 +379,9 @@ class NorKyst800AtSiteDataLoader {
     private val forecastDateRegex =
         Regex(""".*fc\.(.*?)\.nc.*""")
     private val forecastDateFormatter = DateTimeFormatter.ofPattern("yyyyMMddHH")
-    private suspend fun parseDateFromForecastUrl(fc: String): LocalDate? =
+    private fun parseDateFromForecastUrl(fc: String): LocalDate? =
         forecastDateRegex.find(fc)?.let { match ->
-            Log.d(Companion.TAG, "parsing ${match.groupValues[1]}")
+            Log.d(TAG, "parsing ${match.groupValues[1]}")
             LocalDate.parse(match.groupValues[1], forecastDateFormatter)
         }
 

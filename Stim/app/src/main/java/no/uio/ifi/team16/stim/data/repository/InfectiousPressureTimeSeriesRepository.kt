@@ -12,8 +12,7 @@ import kotlin.ranges.IntProgression.Companion.fromClosedRange
  *
  * The repository can load data and return data or return cached data
  */
-class InfectiousPressureTimeSeriesRepository() {
-    private val TAG = "InfectiousPressureTimeSeriesRepository"
+class InfectiousPressureTimeSeriesRepository {
     private val dataSource = InfectiousPressureTimeSeriesDataLoader()
     private var cache: MutableMap<Int, InfectiousPressureTimeSeries> = mutableMapOf()
 
@@ -32,25 +31,6 @@ class InfectiousPressureTimeSeriesRepository() {
             dataSource.load(site, fromClosedRange(0, weeksFromNow, 1))
         }
     }
-
-    /**
-     * get infectious pressure timeseries data at a given site.
-     *
-     * if the cache is not up to date(dirty), load the data anew,
-     * otherwise just return the data in the cache.
-     *
-     * @param site site to load data around
-     * @param weekRange range of weeks(from the current week!) to load from
-     * @return mocked, cached or newly loaded data.
-     */
-    suspend fun getDataAtSite(
-        site: Site,
-        weekRange: IntProgression
-    ): InfectiousPressureTimeSeries? =
-        cache.getOrPutOrPass(site.nr) {
-            dataSource.load(site, weekRange)
-        }
-
 
     ///////////////
     // UTILITIES //

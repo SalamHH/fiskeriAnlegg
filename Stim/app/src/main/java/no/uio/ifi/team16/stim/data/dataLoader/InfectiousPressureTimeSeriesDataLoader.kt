@@ -75,7 +75,6 @@ class InfectiousPressureTimeSeriesDataLoader : InfectiousPressureDataLoader() {
         //attributes common to all files
         var dx = 800f
         var dy = 800f
-        var shape: Pair<Int, Int> = Pair(0, 0)
         var y: Int
         var x: Int
         var minX = 0
@@ -179,7 +178,6 @@ class InfectiousPressureTimeSeriesDataLoader : InfectiousPressureDataLoader() {
             currentData.first,
             currentData.second,
             historicalData,
-            shape,
             dx,
             dy
         )

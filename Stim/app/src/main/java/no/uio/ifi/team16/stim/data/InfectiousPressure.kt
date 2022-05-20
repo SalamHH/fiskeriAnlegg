@@ -20,8 +20,6 @@ class InfectiousPressure(
     val concentration: FloatArray2D, //Particle concentration, aggregated number of particles in grid cell
     val time: Float,               //seconds since 2000-01-01 00:00:00
     val projection: CoordinateTransform, //transforms between latlong and projection coordinates
-    private val dx: Float, //x separation, in projection meters, between points
-    private val dy: Float  //y separation, in projection meters, between points
 ) {
     fun getHeatMapData(screenBound: LatLngBounds, n: Int): List<WeightedLatLng> {
         //make inverse projection, mapping from grid indexes to latlng

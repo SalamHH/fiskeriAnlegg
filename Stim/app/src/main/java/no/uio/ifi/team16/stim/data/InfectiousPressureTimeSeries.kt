@@ -24,7 +24,6 @@ data class InfectiousPressureTimeSeries(
     MutableLiveData<
             Pair<Array<Int>, FloatArray3D>
             >, //historical data, concentrations and corresponding week-numbers
-    val concentrationShape: Pair<Int, Int>,  //shape of each 2D array. Can be inferred from concentrations, but unsafe
     val dx: Float,                           //separation between points in x-direction
     val dy: Float                            //separation between points in y-direction, usually dx
 ) {
@@ -35,16 +34,6 @@ data class InfectiousPressureTimeSeries(
     // AGGREGATORS //
     /////////////////
     /**
-     * return max value of a 2D array
-     */
-    private fun maxAggregation(array: FloatArray2D): Float =
-        array.maxOf { concentrationRow ->
-            concentrationRow.maxOf { concentration ->
-                concentration
-            }
-        }
-
-    /**
      * return mean value of a 2D array
      */
     private fun meanAggregation(array: FloatArray2D): Float =
@@ -54,15 +43,6 @@ data class InfectiousPressureTimeSeries(
             } / concentrationRow.size
         } / array.size
 
-    /**
-     * return sum of a 2D array
-     */
-    private fun sumAggregation(array: FloatArray2D): Float =
-        array.fold(0f) { sum, concentrationRow ->
-            sum + concentrationRow.fold(0f) { rowSum, concentration ->
-                rowSum + concentration
-            }
-        }
 
     /////////////////////////
     // CONVENIENCE-GETTERS //

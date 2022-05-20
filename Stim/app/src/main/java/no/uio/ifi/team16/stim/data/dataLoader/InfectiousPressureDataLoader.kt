@@ -9,7 +9,6 @@ import no.uio.ifi.team16.stim.util.reformatFLS
 import no.uio.ifi.team16.stim.util.to2DFloatArray
 import ucar.ma2.ArrayFloat
 import ucar.nc2.Variable
-import kotlin.math.max
 import kotlin.ranges.IntProgression.Companion.fromClosedRange
 
 /**
@@ -47,7 +46,7 @@ open class InfectiousPressureDataLoader : THREDDSDataLoader() {
      * @param yRange range of y-coordinates to get
      * @return data of infectious pressure in the prescribed data range.
      *
-     * @see THREDDSDataLoader.THREDDSLoad()
+     * @see THREDDSDataLoader.threddsLoad()
      */
     suspend fun load(
         xRange: IntProgression,
@@ -77,16 +76,12 @@ open class InfectiousPressureDataLoader : THREDDSDataLoader() {
                 ?: throw NullPointerException("Failed to read variable <C10> from infectiousPressure") //caught by THREDDSLOAD
             val time: Variable = ncfile.findVariable("time")
                 ?: throw NullPointerException("Failed to read variable <time> from infectiousPressure") //caught by THREDDSLOAD
-            val dx = gridMapping.findAttribute("dx")?.numericValue?.toFloat()
-                ?: throw NullPointerException("Failed to read attribute <dx> from <gridMapping> from infectiousPressure") //caught by THREDDSLOAD
 
             //make the infectiousPressure
             InfectiousPressure(
                 (concentrations.read(range3).reduce(0) as ArrayFloat).to2DFloatArray(),
                 time.readScalarFloat(),
-                latLngToStereo,
-                dx * max(Options.infectiousPressureStepX, 1).toFloat(),
-                dx * max(Options.infectiousPressureStepY, 1).toFloat()
+                latLngToStereo
             )
         }
     }
@@ -113,9 +108,9 @@ open class InfectiousPressureDataLoader : THREDDSDataLoader() {
      * @param yRange range of y-coordinates to get
      * @return data of infectious pressure in the prescribed data range.
      *
-     * @see THREDDSDataLoader.THREDDSLoad()
+     * @see THREDDSDataLoader.threddsLoad()
      */
-    suspend fun load(
+    fun load(
         url: String,
         xRange: IntProgression,
         yRange: IntProgression
@@ -136,16 +131,12 @@ open class InfectiousPressureDataLoader : THREDDSDataLoader() {
                 ?: throw NullPointerException("Failed to read variable <C10> from infectiousPressure") //caught by THREDDSLOAD
             val time: Variable = ncfile.findVariable("time")
                 ?: throw NullPointerException("Failed to read variable <time> from infectiousPressure") //caught by THREDDSLOAD
-            val dx = gridMapping.findAttribute("dx")?.numericValue?.toFloat()
-                ?: throw NullPointerException("Failed to read attribute <dx> from <gridMapping> from infectiousPressure") //caught by THREDDSLOAD
 
             //make the infectiousPressure
             InfectiousPressure(
                 (concentrations.read(range3).reduce(0) as ArrayFloat).to2DFloatArray(),
                 time.readScalarFloat(),
-                latLngToStereo,
-                dx * max(Options.infectiousPressureStepX, 1).toFloat(),
-                dx * max(Options.infectiousPressureStepY, 1).toFloat()
+                latLngToStereo
             )
         }
     }
