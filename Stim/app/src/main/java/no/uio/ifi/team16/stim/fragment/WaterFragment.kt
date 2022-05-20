@@ -1,4 +1,4 @@
-package no.uio.ifi.team16.stim
+package no.uio.ifi.team16.stim.fragment
 
 import android.content.Context
 import android.os.Bundle
@@ -18,9 +18,14 @@ import androidx.transition.TransitionManager
 import com.github.mikephil.charting.components.LimitLine
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import no.uio.ifi.team16.stim.MainActivityViewModel
+import no.uio.ifi.team16.stim.R
 import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.databinding.FragmentWaterBinding
-import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
+import no.uio.ifi.team16.stim.util.formatter.TempValueFormatter
+import no.uio.ifi.team16.stim.util.formatter.TimeValueFormatter
+import no.uio.ifi.team16.stim.util.linestyle.SalinityLineStyle
+import no.uio.ifi.team16.stim.util.linestyle.TemperatureLineStyle
 import no.uio.ifi.team16.stim.util.toShortString
 import java.text.SimpleDateFormat
 import java.time.Instant

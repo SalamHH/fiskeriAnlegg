@@ -1,4 +1,4 @@
-package no.uio.ifi.team16.stim
+package no.uio.ifi.team16.stim.fragment
 
 import android.os.Bundle
 import android.view.*
@@ -9,10 +9,11 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
+import no.uio.ifi.team16.stim.MainActivityViewModel
+import no.uio.ifi.team16.stim.R
 import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.data.WeatherForecast
 import no.uio.ifi.team16.stim.databinding.FragmentSiteInfoBinding
-import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 import no.uio.ifi.team16.stim.util.InfectionStatusCalculator
 
 class SiteInfoFragment : StimFragment() {
@@ -143,9 +144,15 @@ class SiteInfoFragment : StimFragment() {
                 if (storm.day.isToday()) {
                     binding.stormSignal.text = getString(R.string.storm_today)
                 } else {
-                    binding.stormSignal.text = getString(R.string.storm_at, storm.day.getTranslation(requireContext()))
+                    binding.stormSignal.text =
+                        getString(R.string.storm_at, storm.day.getTranslation(requireContext()))
                 }
-                binding.stormWeather.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.storm, null))
+                binding.stormWeather.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.storm, null
+                    )
+                )
             }
         }
     }

@@ -1,4 +1,4 @@
-package no.uio.ifi.team16.stim
+package no.uio.ifi.team16.stim.fragment
 
 import android.Manifest
 import android.content.Context

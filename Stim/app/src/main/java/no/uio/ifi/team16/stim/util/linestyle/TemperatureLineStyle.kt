@@ -1,4 +1,4 @@
-package no.uio.ifi.team16.stim
+package no.uio.ifi.team16.stim.util.linestyle
 
 import android.content.Context
 import androidx.core.content.ContextCompat
@@ -9,6 +9,7 @@ import com.github.mikephil.charting.components.LimitLine
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.highlight.Highlight
+import no.uio.ifi.team16.stim.R
 import javax.inject.Inject
 
 /**

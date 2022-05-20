@@ -1,4 +1,4 @@
-package no.uio.ifi.team16.stim
+package no.uio.ifi.team16.stim.fragment
 
 import android.annotation.SuppressLint
 import android.content.res.Resources
@@ -16,11 +16,12 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.maps.android.heatmaps.HeatmapTileProvider
+import no.uio.ifi.team16.stim.MainActivityViewModel
+import no.uio.ifi.team16.stim.R
 import no.uio.ifi.team16.stim.data.Municipality
 import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.databinding.FragmentMapBinding
 import no.uio.ifi.team16.stim.io.adapter.RecycleViewAdapter
-import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 import no.uio.ifi.team16.stim.util.LatLong
 import kotlin.math.round
 import kotlin.math.roundToInt

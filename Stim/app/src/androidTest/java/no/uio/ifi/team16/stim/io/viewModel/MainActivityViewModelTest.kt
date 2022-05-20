@@ -2,6 +2,7 @@ package no.uio.ifi.team16.stim.io.viewModel
 
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
+import no.uio.ifi.team16.stim.MainActivityViewModel
 import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.util.Options
 import org.junit.Assert.*

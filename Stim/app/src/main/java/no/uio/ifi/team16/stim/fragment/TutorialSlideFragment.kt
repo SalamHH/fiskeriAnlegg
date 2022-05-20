@@ -1,4 +1,4 @@
-package no.uio.ifi.team16.stim
+package no.uio.ifi.team16.stim.fragment
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import no.uio.ifi.team16.stim.OpeningScreen
+import no.uio.ifi.team16.stim.R
 
 /**
  * Fragment that displays the tutorial layouts based on position.

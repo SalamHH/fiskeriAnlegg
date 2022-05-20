@@ -1,4 +1,4 @@
-package no.uio.ifi.team16.stim.io.viewModel
+package no.uio.ifi.team16.stim
 
 import android.content.SharedPreferences
 import androidx.lifecycle.LiveData

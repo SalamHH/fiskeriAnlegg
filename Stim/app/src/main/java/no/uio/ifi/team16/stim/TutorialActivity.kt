@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import no.uio.ifi.team16.stim.fragment.TutorialSlideFragment
 
 /**
  * Screen slide acivity manager. Manages the view pager.

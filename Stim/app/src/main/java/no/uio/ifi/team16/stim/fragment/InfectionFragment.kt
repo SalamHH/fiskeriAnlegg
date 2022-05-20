@@ -1,4 +1,4 @@
-package no.uio.ifi.team16.stim
+package no.uio.ifi.team16.stim.fragment
 
 import android.os.Bundle
 import android.util.Log
@@ -16,11 +16,13 @@ import androidx.transition.TransitionManager
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import no.uio.ifi.team16.stim.MainActivityViewModel
+import no.uio.ifi.team16.stim.R
 import no.uio.ifi.team16.stim.data.BarentsWatchAtSite
 import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.databinding.FragmentInfectionBinding
-import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 import no.uio.ifi.team16.stim.util.InfectionStatusCalculator
+import no.uio.ifi.team16.stim.util.linestyle.InfectionLineStyle
 import java.time.ZonedDateTime
 import javax.inject.Inject
 

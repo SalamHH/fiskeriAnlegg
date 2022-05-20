@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/mapFragment"
-        android:name="no.uio.ifi.team16.stim.MapFragment"
+        android:name="no.uio.ifi.team16.stim.fragment.MapFragment"
         android:label="">
         <action
             android:id="@+id/action_mapFragment_to_siteInfoFragment"
@@ -16,7 +16,7 @@
 
     <fragment
         android:id="@+id/favoriteSitesFragment"
-        android:name="no.uio.ifi.team16.stim.FavoriteSitesFragment"
+        android:name="no.uio.ifi.team16.stim.fragment.FavoriteSitesFragment"
         android:label="Favoritter" >
         <action
             android:id="@+id/action_favoriteSitesFragment_to_siteInfoFragment"
@@ -25,7 +25,7 @@
 
     <fragment
         android:id="@+id/siteInfoFragment"
-        android:name="no.uio.ifi.team16.stim.SiteInfoFragment"
+        android:name="no.uio.ifi.team16.stim.fragment.SiteInfoFragment"
         android:label=""
         tools:layout="@layout/fragment_site_info" >
         <action
@@ -42,15 +42,15 @@
 
     <fragment
         android:id="@+id/weatherFragment"
-        android:name="no.uio.ifi.team16.stim.WeatherFragment"
+        android:name="no.uio.ifi.team16.stim.fragment.WeatherFragment"
         tools:layout="@layout/fragment_weather" />
     <fragment
         android:id="@+id/waterFragment"
-        android:name="no.uio.ifi.team16.stim.WaterFragment"
+        android:name="no.uio.ifi.team16.stim.fragment.WaterFragment"
         tools:layout="@layout/fragment_water" />
     <fragment
         android:id="@+id/infectionFragment"
-        android:name="no.uio.ifi.team16.stim.InfectionFragment"
+        android:name="no.uio.ifi.team16.stim.fragment.InfectionFragment"
         tools:layout="@layout/fragment_infection" />
     <activity
         android:id="@+id/tutorialFragment"
@@ -59,7 +59,7 @@
         tools:layout="@layout/fragment_tutorial" />
     <fragment
         android:id="@+id/appInfoFragment"
-        android:name="no.uio.ifi.team16.stim.AppInfoFragment"
+        android:name="no.uio.ifi.team16.stim.fragment.AppInfoFragment"
         android:label="App Info"
         tools:layout="@layout/fragment_app_info" />
 

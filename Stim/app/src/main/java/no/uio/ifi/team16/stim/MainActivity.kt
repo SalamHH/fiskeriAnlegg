@@ -11,7 +11,6 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
 import no.uio.ifi.team16.stim.databinding.ActivityMainBinding
-import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 import no.uio.ifi.team16.stim.util.Options
 
 class MainActivity : AppCompatActivity() {

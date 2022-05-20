@@ -1,4 +1,4 @@
-package no.uio.ifi.team16.stim
+package no.uio.ifi.team16.stim.fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View

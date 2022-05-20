@@ -1,4 +1,4 @@
-package no.uio.ifi.team16.stim
+package no.uio.ifi.team16.stim.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,9 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.transition.TransitionInflater
 import com.bumptech.glide.Glide
+import no.uio.ifi.team16.stim.MainActivityViewModel
+import no.uio.ifi.team16.stim.R
 import no.uio.ifi.team16.stim.data.WeatherForecast
 import no.uio.ifi.team16.stim.databinding.FragmentWeatherBinding
-import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 
 /**
  * Weather fragment

@@ -1,4 +1,4 @@
-package no.uio.ifi.team16.stim
+package no.uio.ifi.team16.stim.util.formatter
 
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.data.Entry

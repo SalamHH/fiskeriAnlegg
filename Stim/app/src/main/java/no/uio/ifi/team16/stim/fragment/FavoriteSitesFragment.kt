@@ -1,4 +1,4 @@
-package no.uio.ifi.team16.stim
+package no.uio.ifi.team16.stim.fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -8,10 +8,11 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
+import no.uio.ifi.team16.stim.MainActivityViewModel
+import no.uio.ifi.team16.stim.R
 import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.databinding.FragmentFavoriteSitesBinding
 import no.uio.ifi.team16.stim.io.adapter.RecycleViewAdapter
-import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
 
 
 class FavoriteSitesFragment : StimFragment() {
