@@ -25,7 +25,6 @@ import no.uio.ifi.team16.stim.util.LatLong
 import kotlin.math.round
 import kotlin.math.roundToInt
 
-
 /**
  * Map fragment
  */
@@ -40,9 +39,9 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
     private lateinit var binding: FragmentMapBinding
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
     private var locationClient: FusedLocationProviderClient? = null
+    private var tileOverlay: TileOverlay? = null
     private val viewModel: MainActivityViewModel by activityViewModels()
     private var mapReady = false
-    private var mapBounds: CameraPosition? = null
     private var zoomLevel = 12F
     private val markerMap: MutableMap<Marker, Site> = mutableMapOf()
     private var usingHeatmap = false
@@ -65,10 +64,12 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
 
         binding = FragmentMapBinding.inflate(layoutInflater)
 
-        val mapFragment = SupportMapFragment.newInstance()
-        activity?.supportFragmentManager?.beginTransaction()?.add(R.id.mapView, mapFragment)?.commit()
-
-        mapFragment.getMapAsync(this)
+        if (!mapReady) {
+            // map not created yet, initialize it
+            val mapFragment = childFragmentManager.findFragmentById(R.id.mapView) as SupportMapFragment
+            requireActivity().supportFragmentManager.beginTransaction().add(R.id.mapView, mapFragment).commit()
+            mapFragment.getMapAsync(this)
+        }
 
         // Observe municipality
         viewModel.getMunicipalityData().observe(viewLifecycleOwner, this::onMunicipalityUpdate)
@@ -82,6 +83,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         bottomSheetBehavior.isDraggable = true
         bottomSheetBehavior.isHideable = false
 
+        // Max height of bottom sheet is 80% of screen height
         val screenHeight = Resources.getSystem().displayMetrics.heightPixels
         bottomSheetBehavior.maxHeight = round(screenHeight * 0.8).toInt()
 
@@ -148,14 +150,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
     }
 
     /**
-     * Called when the fragment goes out of focus
-     */
-    override fun onDestroyView() {
-        super.onDestroyView()
-        mapBounds = map.cameraPosition
-    }
-
-    /**
      * Called when the map is visible
      */
     override fun onMapReady(googleMap: GoogleMap) {
@@ -168,13 +162,8 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         map.uiSettings.isMyLocationButtonEnabled = false
         map.setOnCameraMoveStartedListener(this::onCameraMoveStarted)
 
-        mapBounds?.let { bounds ->
-            // Move to last camera position
-            val update = CameraUpdateFactory.newCameraPosition(bounds)
-            map.moveCamera(update)
-        } ?: run {
-            map.moveCamera(getInitialCameraPosition())
-        }
+        // Move camera to initial position (southern Norway)
+        map.moveCamera(getInitialCameraPosition())
 
         if (checkLocationPermission()) {
             map.isMyLocationEnabled = true
@@ -314,7 +303,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         }
         if (usingHeatmap) {
             drawHeatmap(map)
-            Log.d(TAG, "AAAAAAAAAAAAAAAAAAAAAAAA")
         }
     }
 
@@ -339,7 +327,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
     }
 
     /**
-     * Hent kartposisjon som viser sør-Norge
+     * Get a view of southern Norway
      */
     private fun getInitialCameraPosition(): CameraUpdate {
         val coordinates = LatLng(61.42888648306541, 8.68770383298397)
@@ -376,8 +364,9 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         }
     }
 
-    private var tileOverlay: TileOverlay? = null
-
+    /**
+     * Draw a heatmap of infectious pressure
+     */
     private fun drawHeatmap(googleMap: GoogleMap): Boolean {
         // INFECTIOUSPRESSURE HEATMAP
         viewModel.getInfectiousPressureData()
@@ -408,6 +397,4 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
             }
         return true // false will close it without animation
     }
-
-
 }
