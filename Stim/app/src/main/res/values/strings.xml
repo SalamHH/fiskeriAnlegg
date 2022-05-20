@@ -2,9 +2,8 @@
     <string name="app_name">Stim</string>
 
     <!-- Recycleview for sites -->
-    <string name="site_name">Site_name</string>
     <string name="site_location">Kommune: %s</string>
-    <string name="visual_of_the_location_of_the_site">Visual of the site location</string>>
+    <string name="visual_of_the_location_of_the_site">Oversiktsbilde av anlegget</string>
 
     <!-- Fragment site info -->
     <string name="salt">SALT.</string>

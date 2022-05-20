@@ -298,7 +298,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
      */
     private fun adapterOnClick(site: Site) {
         closeKeyboard()
-        viewModel.setCurrentSite(site)
+        viewModel.site = site
         view?.findNavController()?.navigate(R.id.action_mapFragment_to_siteInfoFragment)
     }
 
@@ -310,7 +310,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
 
         if (site != null) {
             closeKeyboard()
-            viewModel.setCurrentSite(site)
+            viewModel.site = site
             view?.findNavController()?.navigate(R.id.action_mapFragment_to_siteInfoFragment)
             return true
         }

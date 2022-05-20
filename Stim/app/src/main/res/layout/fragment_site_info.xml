@@ -71,7 +71,7 @@
                 android:layout_marginTop="50dp"
                 android:fontFamily="@font/overwave"
                 android:gravity="center_horizontal"
-                android:text="@string/site_name"
+                android:text="@string/blank"
                 android:textColor="@color/colorAccent"
                 android:textSize="45sp" />
 

@@ -19,13 +19,13 @@
 
         <ImageView
             android:id="@+id/imageView_overview"
-            android:scaleType="fitXY"
             android:layout_width="800dp"
             android:layout_height="200dp"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:background="@color/cardview_dark_background"
             android:contentDescription="@string/visual_of_the_location_of_the_site"
+            android:scaleType="fitXY"
             app:srcCompat="@android:drawable/ic_menu_gallery" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -44,11 +44,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
+                android:fontFamily="@font/montserrat_semibold"
                 android:gravity="start"
-                android:text="@string/site_name"
+                android:text="@string/blank"
                 android:textColor="@color/primaryTextColor"
                 android:textSize="25sp"
-                android:fontFamily="@font/montserrat_semibold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 

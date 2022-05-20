@@ -92,7 +92,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat_bold"
                 android:gravity="center"
-                android:text="@string/site_name"
+                android:text="@string/blank"
                 android:textColor="@color/primaryTextColor"
                 app:layout_constraintTop_toBottomOf="@id/weatherHeaderText"
                 tools:ignore="TextContrastCheck" />
