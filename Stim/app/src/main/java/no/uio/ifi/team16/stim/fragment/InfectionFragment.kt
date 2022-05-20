@@ -60,7 +60,7 @@ class InfectionFragment : StimFragment() {
 
         //SITE
 
-        site = viewModel.getCurrentSite() ?: return binding.root
+        site = viewModel.site ?: return binding.root
         binding.sitename.text = site.name
 
         chartStyle = InfectionLineStyle()

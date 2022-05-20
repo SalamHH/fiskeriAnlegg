@@ -1,6 +1,7 @@
 package no.uio.ifi.team16.stim
 
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,12 +18,17 @@ import no.uio.ifi.team16.stim.util.Options
  */
 class MainActivityViewModel : ViewModel() {
 
+    /**
+     * A reference to the site that the user is currently looking at
+     */
+    var site: Site? = null
+
     private lateinit var preferences: SharedPreferences
 
     //REPOSITORIES
     private val infectiousPressureRepository = InfectiousPressureRepository()
     private val infectiousPressureTimeSeriesRepository = InfectiousPressureTimeSeriesRepository()
-    private val sitesRepository = SitesRepository() //municipalities, favourite sites
+    private val sitesRepository = SitesRepository()
     private val norKyst800Repository = NorKyst800Repository()
     private val norKyst800AtSiteRepository = NorKyst800AtSiteRepository()
     private val addressRepository = AddressRepository()
@@ -31,8 +37,7 @@ class MainActivityViewModel : ViewModel() {
 
     //MUTABLE LIVE DATA
     private val infectiousPressureData = MutableLiveData<InfectiousPressure?>()
-    private val infectiousPressureTimeSeriesData: MutableMap<Site, MutableLiveData<InfectiousPressureTimeSeries?>> =
-        mutableMapOf()
+    private val infectiousPressureTimeSeriesData = mutableMapOf<Site, MutableLiveData<InfectiousPressureTimeSeries?>>()
     private val municipalityData = MutableLiveData<Municipality?>()
     private val favouriteSitesData = MutableLiveData<MutableList<Site>?>()
     private val norKyst800Data = MutableLiveData<NorKyst800?>()
@@ -41,57 +46,88 @@ class MainActivityViewModel : ViewModel() {
     private val weatherData = MutableLiveData<WeatherForecast?>()
     private val barentsWatchData = mutableMapOf<Site, MutableLiveData<BarentsWatchAtSite?>>()
 
-    ///////////// used to get the mutablelivedata, which again is probably used
-    // GETTERS // to attach listeners etc in activities.
-    /////////////
-    //note that for maps, getting on a value of the map, say site or municipalitycode,
-    //will create a mutablelivedata at the entry if there is none.
+    /**
+     * Get infectious pressure data for the heatmap
+     */
     fun getInfectiousPressureData(): LiveData<InfectiousPressure?> {
         return infectiousPressureData
     }
 
+    /**
+     * Get NorKyst800-data to get water information
+     */
     fun getNorKyst800Data(): LiveData<NorKyst800?> {
         return norKyst800Data
     }
 
+    /**
+     * Get NorKyst800-data specific to a site
+     * @param site the site to observe info for
+     */
     fun getNorKyst800AtSiteData(site: Site): LiveData<NorKyst800AtSite?> {
         return norKyst800AtSiteData.getOrPut(site) {
             MutableLiveData()
         }
     }
 
+    /**
+     * Get the current municipality loaded for viewing in the map
+     */
     fun getMunicipalityData(): LiveData<Municipality?> {
         return municipalityData
     }
 
+    /**
+     * Get the weather at a site
+     * @see loadWeatherAtSite
+     */
     fun getWeatherData(): LiveData<WeatherForecast?> {
         return weatherData
     }
 
+    /**
+     * Get infectious pressure over time for displaying in a graph
+     */
     fun getInfectiousPressureTimeSeriesData(site: Site): LiveData<InfectiousPressureTimeSeries?> {
         return infectiousPressureTimeSeriesData.getOrPut(site) {
             MutableLiveData()
         }
     }
 
+    /**
+     * Get the user's favourite sites
+     */
     fun getFavouriteSitesData(): LiveData<MutableList<Site>?> {
         return favouriteSitesData
     }
 
-    fun loadPrefrences(prefs: SharedPreferences) {
+    /**
+     * Saves a SharedPreferences instance for usage in all fragments
+     */
+    fun setPreferences(prefs: SharedPreferences) {
         preferences = prefs
     }
 
-    fun getCurrentSitesData(): LiveData<List<Site>?> {///nyyy
+    /**
+     * Gets the result of a map search
+     */
+    fun getCurrentSitesData(): LiveData<List<Site>?> {
         return currentSitesData
     }
 
-    fun getBarentsWatchData(site: Site): LiveData<BarentsWatchAtSite?> {///nyyy
+    /**
+     * Get BarentsWatch data about infection at a site
+     * @param site the site to retrieve infection at
+     */
+    fun getBarentsWatchData(site: Site): LiveData<BarentsWatchAtSite?> {
         return barentsWatchData.getOrPut(site) {
             MutableLiveData()
         }
     }
 
+    /**
+     * Loads infectious pressure data into memory. Only needs to be called once in the app lifecycle
+     */
     fun loadInfectiousPressure() {
         viewModelScope.launch(Dispatchers.IO) {
             val loaded = infectiousPressureRepository.getDefault()
@@ -99,6 +135,10 @@ class MainActivityViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Load the infectious pressure at a given site
+     * @param site the site to load infectious pressure at
+     */
     fun loadInfectiousPressureTimeSeriesAtSite(site: Site) {
         viewModelScope.launch(Dispatchers.IO) {
             infectiousPressureTimeSeriesData.getOrPut(site) {
@@ -107,11 +147,15 @@ class MainActivityViewModel : ViewModel() {
                 infectiousPressureTimeSeriesRepository.getDataAtSite(
                     site,
                     Options.infectiousPressureTimeSeriesSpan
-                ) //either loaded, retrieved from cache or faked
+                )
             )
         }
     }
 
+    /**
+     * Load water information spesific to a site
+     * @param site the site to load info at
+     */
     fun loadNorKyst800AtSite(site: Site) {
         viewModelScope.launch(Dispatchers.IO) {
             norKyst800AtSiteData.getOrPut(site) {
@@ -122,6 +166,10 @@ class MainActivityViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Load BarentsWatch data about infection at a site
+     * @param site the site to load infection data at
+     */
     fun loadBarentsWatch(site: Site) {
         viewModelScope.launch(Dispatchers.IO) {
             barentsWatchData.getOrPut(site) {
@@ -133,24 +181,31 @@ class MainActivityViewModel : ViewModel() {
     }
 
     /**
-     * Load the 100 first sited from the given municipality
+     * Load sites in a given municipality
+     * @param municipalityCode the municipality code, which is a string of 4 numbers ie. 0313
      */
     private fun loadSitesAtMunicipality(municipalityCode: String) {
+        Log.e("MainActivityViewModel", "laster municipalitycode: $municipalityCode")
         viewModelScope.launch(Dispatchers.IO) {
             val loaded = sitesRepository.getMunicipality(municipalityCode)
-            //invokes the observer
             municipalityData.postValue(loaded)
         }
     }
 
+    /**
+     * Read the user's favourite sites from persistent storage (disk)
+     */
     fun loadFavouriteSites() {
         viewModelScope.launch(Dispatchers.IO) {
             val loaded = sitesRepository.getFavouriteSites(preferences.getStringSet(Options.FAVOURITES, null))
-            //invokes the observer
             favouriteSitesData.postValue(loaded)
         }
     }
 
+    /**
+     * Fetch the weather forecast at a site
+     * @param site the site to load weather at
+     */
     fun loadWeatherAtSite(site: Site) {
         viewModelScope.launch(Dispatchers.IO) {
             val forecast = weatherRepository.getWeatherForecast(site)
@@ -158,6 +213,9 @@ class MainActivityViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Fetch sites at a location. This fetches sites in the municipality of the location
+     */
     fun loadSitesAtLocation(location: LatLong) {
         viewModelScope.launch(Dispatchers.IO) {
             val municipalityNr = addressRepository.getMunicipalityNr(location)
@@ -171,6 +229,7 @@ class MainActivityViewModel : ViewModel() {
      * Processes a search string from the map.
      * input is numeric -> searches by municipality number
      * if not, searches municipality name first, then by site name
+     * @param query whatever the user typed into the search box in the map
      */
     fun doMapSearch(query: String) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -191,18 +250,10 @@ class MainActivityViewModel : ViewModel() {
         }
     }
 
-    //Methods for communicating chosen Site between fragments
-
-    private var site: Site? = null
-
-    fun setCurrentSite(new: Site) {
-        site = new
-    }
-
-    fun getCurrentSite(): Site? {
-        return site
-    }
-
+    /**
+     * Save a site as a favourite
+     * @param site the site to save
+     */
     fun registerFavouriteSite(site: Site) {
         favouriteSitesData.value.let { favouriteSites ->
             favouriteSites?.add(site)
@@ -218,6 +269,10 @@ class MainActivityViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Remove a site from the favourites
+     * @param site the site to remove
+     */
     fun removeFavouriteSite(site: Site) {
         favouriteSitesData.value.let { favouriteSites ->
             favouriteSites?.remove(site)

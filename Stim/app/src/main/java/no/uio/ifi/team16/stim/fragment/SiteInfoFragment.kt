@@ -37,7 +37,7 @@ class SiteInfoFragment : StimFragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentSiteInfoBinding.inflate(inflater, container, false)
-        site = viewModel.getCurrentSite() ?: return binding.root
+        site = viewModel.site ?: return binding.root
 
         //Check if site is favorited
         if (viewModel.getFavouriteSitesData().value?.contains(site) == true) checkIfFavorite = true

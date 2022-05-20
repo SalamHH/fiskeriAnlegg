@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
         binding.navView.setupWithNavController(navController)
 
         //initial load of data
-        viewModel.loadPrefrences(prefrences)
+        viewModel.setPreferences(prefrences)
         viewModel.loadInfectiousPressure()
         viewModel.loadFavouriteSites()
     }

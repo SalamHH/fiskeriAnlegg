@@ -48,7 +48,7 @@ class FavoriteSitesFragment : StimFragment() {
     When an item in the RecyclerView is clicked it updates the viewModels currentSite to the Site that was clicked
     and then it navigates to the fragment that fetches this Site and displays information about it */
     private fun adapterOnClick(site : Site) {
-        viewModel.setCurrentSite(site)
+        viewModel.site = site
         view?.findNavController()?.navigate(R.id.action_favoriteSitesFragment_to_siteInfoFragment)
     }
 

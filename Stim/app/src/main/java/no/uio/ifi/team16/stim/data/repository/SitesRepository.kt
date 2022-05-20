@@ -5,9 +5,7 @@ import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.data.dataLoader.SitesDataLoader
 
 /**
- * Repository for municipality.
- *
- * The cache maps a municipalitynumber to a collection of municipality
+ * Repository for sites.
  */
 class SitesRepository {
     private val dataSource = SitesDataLoader()
@@ -18,12 +16,12 @@ class SitesRepository {
     private val municipalityCache: MutableMap<String, Municipality?> = mutableMapOf()
 
     /**
-     * Maps sitename to list of sites
+     * Maps site name to list of sites
      */
     private val nameCache: MutableMap<String, MutableSet<Site>?> = mutableMapOf()
 
     /**
-     * Maps sitenr to site object
+     * Maps site number to site object
      */
     private val siteNrCache: MutableMap<Int, Site?> = mutableMapOf()
 
@@ -31,6 +29,8 @@ class SitesRepository {
      * Load the municipality at the given municipalitycode
      */
     suspend fun getMunicipality(municipalityCode: String): Municipality? {
+
+        // start by checking cache
         var municipality = municipalityCache[municipalityCode]
         if (municipality != null) {
             if (municipality.sites.isEmpty()) {
@@ -38,19 +38,27 @@ class SitesRepository {
             }
             return municipality
         }
+
+        // nothing in cache, load from the API
         municipality = dataSource.loadDataByMunicipalityCode(municipalityCode)
 
         if (municipality != null) {
+            // sites found, cache them for later
             municipalityCache[municipalityCode] = municipality
             for (site in municipality.sites) {
                 siteNrCache[site.nr] = site
             }
         } else {
+            // this municipality has no sites, save that so we don't check again later
             municipalityCache[municipalityCode] = Municipality(municipalityCode, emptyList())
         }
         return municipality
     }
 
+    /**
+     * Get a site object for each of the user's favourites
+     * @param favourites a set of site IDs that the user has marked as favourite
+     */
     suspend fun getFavouriteSites(favourites: Set<String>?): MutableList<Site> {
         val list = mutableListOf<Site>()
         favourites?.forEach { siteNr ->
@@ -60,10 +68,16 @@ class SitesRepository {
         return list
     }
 
+    /**
+     * Search for all sites matching a name
+     * @param name the name of a site
+     * @return a list of all matching sites, or null if none found
+     */
     suspend fun getSitesByName(name: String): List<Site>? {
+        // check cache first
         val sites = nameCache[name]
         if (sites != null) {
-            return sites.toList()
+            return if (sites.isEmpty()) null else sites.toList()
         }
         val sitesList = dataSource.loadSitesByName(name)
 
@@ -74,6 +88,9 @@ class SitesRepository {
             for (site in sitesList) {
                 siteNrCache[site.nr] = site
             }
+        } else {
+            // no sites found for this name, save this so we don't check API again
+            nameCache[name] = mutableSetOf()
         }
 
         return sitesList

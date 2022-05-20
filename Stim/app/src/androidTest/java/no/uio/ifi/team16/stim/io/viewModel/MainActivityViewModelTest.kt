@@ -56,7 +56,7 @@ class MainActivityViewModelTest {
         // Sett opp sharedPreferences
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         val sharedPreferences = appContext.getSharedPreferences(Options.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
-        viewModel.loadPrefrences(sharedPreferences)
+        viewModel.setPreferences(sharedPreferences)
         viewModel.loadFavouriteSites()
 
         val site = getTestSite()

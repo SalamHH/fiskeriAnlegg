@@ -28,7 +28,7 @@ class WeatherFragment : StimFragment() {
         sharedElementEnterTransition = animation
         sharedElementReturnTransition = animation
 
-        val site = viewModel.getCurrentSite() ?: return binding.root
+        val site = viewModel.site ?: return binding.root
         binding.sitename.text = site.name
 
         viewModel.getWeatherData().observe(viewLifecycleOwner, this::onWeatherLoaded)
