@@ -133,7 +133,7 @@
 
     <!-- waterInfo fragment -->
     <string name="waterTemperature">Vanntemperatur:</string>
-    <string name="waterSalinityLevel">Saltholdighet i vannet:</string>
+    <string name="waterSalinityLevel">Saltholdighet:</string>
     <string name="salinityChart">Graf over saltholdighet</string>
     <string name="timeInHours">Tid i timer</string>
     <string name="seeSalinity">Se Saltholdighet</string>

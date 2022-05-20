@@ -105,25 +105,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="5dp"
+                android:padding="15dp"
                 app:layout_constraintTop_toBottomOf="@id/sitename">
 
                 <!-- infoboxes -->
 
-                <GridLayout
-                    android:id="@+id/infoBoxes"
-                    android:layout_width="wrap_content"
+                <!-- Salinity chart -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:columnCount="2"
-                    android:orientation="horizontal"
-                    android:rowCount="1">
+                    android:orientation="horizontal">
 
                     <!-- Water temperature card-->
                     <androidx.cardview.widget.CardView
                         android:id="@+id/tempratureInfoCard"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         app:cardBackgroundColor="@color/colorAccent"
                         app:cardCornerRadius="10dp"
                         app:cardElevation="5dp"
@@ -132,10 +131,9 @@
                         app:cardUseCompatPadding="true">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_margin="5dp"
-                            android:layout_marginTop="10dp"
                             android:gravity="center"
                             android:orientation="horizontal">
 
@@ -144,10 +142,10 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="10dp"
+                                android:fontFamily="@font/montserrat_light"
                                 android:gravity="center_horizontal"
                                 android:text="@string/waterTemperature"
                                 android:textColor="@color/primaryTextColor"
-                                android:fontFamily="@font/montserrat_light"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
@@ -187,8 +185,9 @@
                     <!-- Salt card-->
                     <androidx.cardview.widget.CardView
                         android:id="@+id/saltInfoCard"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         app:cardBackgroundColor="@color/colorAccent"
                         app:cardCornerRadius="10dp"
                         app:cardElevation="5dp"
@@ -197,7 +196,7 @@
                         app:cardUseCompatPadding="true">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_gravity="center_horizontal"
                             android:layout_margin="5dp"
@@ -210,9 +209,9 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_horizontal"
+                                android:fontFamily="@font/montserrat_light"
                                 android:text="@string/waterSalinityLevel"
                                 android:textColor="@color/primaryTextColor"
-                                android:fontFamily="@font/montserrat_light"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
@@ -248,9 +247,19 @@
 
                     </androidx.cardview.widget.CardView>
 
-                </GridLayout>
+                </LinearLayout>
+                <GridLayout
+                    android:id="@+id/infoBoxes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:columnCount="2"
+                    android:orientation="horizontal"
+                    android:rowCount="1">
 
-                <!-- Salinity chart -->
+
+
+                </GridLayout>
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/salintyInfoCard"
@@ -342,21 +351,20 @@
 
                 </androidx.cardview.widget.CardView>
 
-                <GridLayout
+                <LinearLayout
                     android:id="@+id/VelocityBoxes"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:columnCount="2"
-                    android:orientation="horizontal"
-                    android:rowCount="1">
+                    android:orientation="horizontal">
 
 
                     <!-- Water temperature card-->
                     <androidx.cardview.widget.CardView
                         android:id="@+id/VelocityCard"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1.6"
                         app:cardBackgroundColor="@color/colorAccent"
                         app:cardCornerRadius="10dp"
                         app:cardElevation="5dp"
@@ -365,7 +373,7 @@
                         app:cardUseCompatPadding="true">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_margin="5dp"
                             android:layout_marginTop="10dp"
@@ -421,8 +429,9 @@
                     <!-- Water temperature card-->
                     <androidx.cardview.widget.CardView
                         android:id="@+id/VelocityDirectionCard"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         app:cardBackgroundColor="@color/colorAccent"
                         app:cardCornerRadius="10dp"
                         app:cardElevation="5dp"
@@ -431,7 +440,7 @@
                         app:cardUseCompatPadding="true">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_margin="5dp"
                             android:layout_marginTop="10dp"
@@ -484,7 +493,7 @@
 
                     </androidx.cardview.widget.CardView>
 
-                </GridLayout>
+                </LinearLayout>
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/InformationCard"

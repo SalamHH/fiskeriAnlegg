@@ -10,7 +10,7 @@ class OpeningScreen : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.opening_screen)
-        window.statusBarColor = getColor(R.color.skyblue)
+        window.statusBarColor = getColor(R.color.dark_skyblue)
 
         val preferences = getSharedPreferences(Options.SHARED_PREFERENCES_KEY, MODE_PRIVATE)
         val editor = preferences.edit()
