@@ -30,8 +30,6 @@ import javax.inject.Inject
  */
 class InfectionFragment : StimFragment() {
 
-    private val TAG = "INFECTIONFRAGMENT"
-
     private lateinit var binding: FragmentInfectionBinding
     private lateinit var site: Site
     private val viewModel: MainActivityViewModel by activityViewModels()
@@ -52,6 +50,12 @@ class InfectionFragment : StimFragment() {
         binding.sitename.text = site.name
 
         chartStyle = InfectionLineStyle()
+
+        binding.infectionChart.apply {
+            setNoDataText(getString(R.string.no_data_available))
+            setNoDataTextColor(R.color.primaryTextColor)
+            setNoDataTextTypeface(ResourcesCompat.getFont(requireContext(), R.font.montserrat_semibold))
+        }
 
         //EXPANDABLE INFORMATION CARD
         binding.InformationCard.setOnClickListener {

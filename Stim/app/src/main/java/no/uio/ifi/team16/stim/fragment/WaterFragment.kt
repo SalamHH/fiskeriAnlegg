@@ -9,6 +9,7 @@ import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.activityViewModels
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionInflater
@@ -65,6 +66,18 @@ class WaterFragment : StimFragment() {
 
         site = viewModel.site ?: return binding.root
         binding.sitename.text = site.name
+
+        binding.salinityChart.apply {
+            setNoDataText(getString(R.string.no_data_available))
+            setNoDataTextColor(R.color.primaryTextColor)
+            setNoDataTextTypeface(ResourcesCompat.getFont(requireContext(), R.font.montserrat_semibold))
+        }
+
+        binding.watertempChart.apply {
+            setNoDataText(getString(R.string.no_data_available))
+            setNoDataTextColor(R.color.primaryTextColor)
+            setNoDataTextTypeface(ResourcesCompat.getFont(requireContext(), R.font.montserrat_semibold))
+        }
 
         binding.InformationCard.setOnClickListener {
             // If the CardView is already expanded, set its visibility
