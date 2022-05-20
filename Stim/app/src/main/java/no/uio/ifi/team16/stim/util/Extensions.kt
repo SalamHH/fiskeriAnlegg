@@ -1,8 +1,10 @@
 package no.uio.ifi.team16.stim.util
 
+import android.content.Context
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import java.time.DayOfWeek
 
 ///////////
 // ASYNC //
@@ -70,4 +72,16 @@ fun IntProgression.reformatFLS(): String {
  */
 fun IntProgression.reformatFSL(): String {
     return "${this.first}:${this.step}:${this.last}"
+}
+
+fun DayOfWeek.toShortString(context: Context): String {
+    return when (this) {
+        DayOfWeek.MONDAY -> context.getString(no.uio.ifi.team16.stim.R.string.shortMonday)
+        DayOfWeek.TUESDAY -> context.getString(no.uio.ifi.team16.stim.R.string.shortTuesday)
+        DayOfWeek.WEDNESDAY -> context.getString(no.uio.ifi.team16.stim.R.string.shortWednesday)
+        DayOfWeek.THURSDAY -> context.getString(no.uio.ifi.team16.stim.R.string.shortThursday)
+        DayOfWeek.FRIDAY -> context.getString(no.uio.ifi.team16.stim.R.string.shortFriday)
+        DayOfWeek.SATURDAY -> context.getString(no.uio.ifi.team16.stim.R.string.shortSaturday)
+        DayOfWeek.SUNDAY -> context.getString(no.uio.ifi.team16.stim.R.string.shortSunday)
+    }
 }

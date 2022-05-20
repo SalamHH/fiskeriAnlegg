@@ -21,8 +21,10 @@ import com.github.mikephil.charting.data.LineDataSet
 import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.databinding.FragmentWaterBinding
 import no.uio.ifi.team16.stim.io.viewModel.MainActivityViewModel
+import no.uio.ifi.team16.stim.util.toShortString
 import java.text.SimpleDateFormat
 import java.time.Instant
+import java.time.ZoneId
 import java.util.*
 import javax.inject.Inject
 
@@ -204,6 +206,21 @@ class WaterFragment : Fragment() {
                             //find hours from 1970 to now
                             val currentHour = Instant.now().epochSecond.toFloat() / 3600
                             addLimitLine(LimitLine(currentHour, "nåtid"))
+                            //add lines for each change of weekday in dataset
+                            temperatureChart.forEach { e ->
+                                val valueDate =
+                                    Instant.ofEpochSecond(3600 * e.x.toLong()).atZone(
+                                        ZoneId.systemDefault()
+                                    )
+                                if (valueDate.hour == 0) {
+                                    addLimitLine(
+                                        LimitLine(
+                                            valueDate.toEpochSecond().toFloat() / 3600,
+                                            valueDate.dayOfWeek.toShortString(context)
+                                        )
+                                    )
+                                }
+                            }
                             setDrawLimitLinesBehindData(true)
                             moveViewToX(currentHour) //start at current time, showing values after
                         }

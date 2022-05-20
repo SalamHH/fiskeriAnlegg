@@ -118,21 +118,7 @@ enum class Weekday(private val num: Int) {
         }
     }
 
-    fun getShortTranslation(context: Context): String {
-        if (isToday()) {
-            return context.getString(R.string.today)
-        }
 
-        return when (this) {
-            MONDAY -> context.getString(R.string.shortMonday)
-            TUESDAY -> context.getString(R.string.shortTuesday)
-            WEDNESDAY -> context.getString(R.string.shortWednesday)
-            THURSDAY -> context.getString(R.string.shortThursday)
-            FRIDAY -> context.getString(R.string.shortFriday)
-            SATURDAY -> context.getString(R.string.shortSaturday)
-            SUNDAY -> context.getString(R.string.shortSunday)
-        }
-    }
 
     companion object {
 

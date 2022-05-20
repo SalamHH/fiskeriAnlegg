@@ -8,21 +8,12 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 class TimeValueFormatter : ValueFormatter() {
-
     private val formatter = DateTimeFormatter.ofPattern("HH")
-
     private val secInAnHour = 60 * 60
-
     override fun getAxisLabel(value: Float, axis: AxisBase?): String {
         val valueDate =
             Instant.ofEpochSecond(secInAnHour * value.toLong()).atZone(ZoneId.systemDefault())
-        val valueDay = Instant.ofEpochSecond(secInAnHour * value.toLong())
-            .atZone(ZoneId.systemDefault()).dayOfWeek.toString()
-        //return if (valueDate.hour == 0) {
-        return valueDate.format(formatter) + ":00 " + valueDay
-        // else {
-        //    valueDate.format(formatter) + ":00"
-        //}
+        return valueDate.format(formatter) + ":00 "
     }
 
     // override this for e.g. LineChart or ScatterChart
