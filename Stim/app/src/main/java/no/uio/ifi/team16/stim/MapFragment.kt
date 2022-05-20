@@ -116,13 +116,13 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.map_toolbar, menu)
-        val mSearch = menu.findItem(R.id.search)
-        val mSearchView = mSearch.actionView as SearchView
-        mSearchView.queryHint = "Søk her"
-        mSearchView.setIconifiedByDefault(false)
-        mSearchView.setBackgroundResource(R.drawable.searchbar_background)
+        val search = menu.findItem(R.id.search)
+        val searchView = search.actionView as SearchView
+        searchView.queryHint = getString(R.string.search_here)
+        searchView.setIconifiedByDefault(false)
+        searchView.setBackgroundResource(R.drawable.searchbar_background)
 
-        mSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             /**
              * Called when the user searches for something
              */
@@ -158,9 +158,9 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
 
         map.setOnCameraMoveListener(this::onCameraMove)
         map.setOnCameraIdleListener(this::onCameraIdle)
+        map.setOnCameraMoveStartedListener(this::onCameraMoveStarted)
         map.setMapStyle(MapStyleOptions.loadRawResourceStyle(requireContext(), R.raw.map_style))
         map.uiSettings.isMyLocationButtonEnabled = false
-        map.setOnCameraMoveStartedListener(this::onCameraMoveStarted)
 
         // Move camera to initial position (southern Norway)
         map.moveCamera(getInitialCameraPosition())
@@ -264,22 +264,8 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
             }
         }
 
+        map.setOnInfoWindowClickListener(this::onMarkerClick)
         binding.openHeaderBottomsheet.infoText.text = sites?.size.toString()
-
-        map.setOnMarkerClickListener(object : GoogleMap.OnMarkerClickListener {
-            override fun onMarkerClick(mark: Marker): Boolean {
-                val site = markerMap[mark]
-
-                if (site != null) {
-                    closeKeyboard()
-                    viewModel.setCurrentSite(site)
-                    view?.findNavController()?.navigate(R.id.action_mapFragment_to_siteInfoFragment)
-                    return true
-                }
-
-                return false
-            }
-        })
     }
 
     /**
@@ -313,6 +299,22 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         closeKeyboard()
         viewModel.setCurrentSite(site)
         view?.findNavController()?.navigate(R.id.action_mapFragment_to_siteInfoFragment)
+    }
+
+    /**
+     * Called when a marker is clicked
+     */
+    private fun onMarkerClick(marker: Marker): Boolean {
+        val site = markerMap[marker]
+
+        if (site != null) {
+            closeKeyboard()
+            viewModel.setCurrentSite(site)
+            view?.findNavController()?.navigate(R.id.action_mapFragment_to_siteInfoFragment)
+            return true
+        }
+
+        return false
     }
 
     /**
