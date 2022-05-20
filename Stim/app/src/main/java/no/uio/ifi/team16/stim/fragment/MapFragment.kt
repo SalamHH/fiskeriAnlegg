@@ -374,7 +374,6 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
      * Draw a heatmap of infectious pressure
      */
     private fun drawHeatmap(googleMap: GoogleMap) {
-        Log.e(TAG, "drawing heatmpa asfkadpiovjalisfjfvl<ds ")
         viewModel.getInfectiousPressureData().observe(viewLifecycleOwner) { infectiousPressure ->
             val z = googleMap.cameraPosition.zoom
             val screenBound = googleMap.projection.visibleRegion.latLngBounds
