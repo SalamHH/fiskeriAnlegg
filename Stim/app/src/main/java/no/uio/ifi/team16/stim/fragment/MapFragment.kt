@@ -49,9 +49,9 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
     private var doSiteSearchOnMovement = true
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View {
         if (!checkLocationPermission()) {
             requestLocationPermission { hasPermission ->
@@ -90,13 +90,13 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
 
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         val adapter =
-            RecycleViewAdapter(
-                listOf(),
-                listOf(),
-                this::adapterOnClick,
-                this::favoriteOnClick,
-                requireActivity()
-            )
+                RecycleViewAdapter(
+                        listOf(),
+                        listOf(),
+                        this::adapterOnClick,
+                        this::favoriteOnClick,
+                        requireActivity()
+                )
         binding.recyclerView.adapter = adapter
 
         setHasOptionsMenu(true)
@@ -181,13 +181,13 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
         if (sites != null) {
             onSiteUpdate(sites)
             val adapter =
-                RecycleViewAdapter(
-                    sites,
-                    listOf(),
-                    this::adapterOnClick,
-                    this::favoriteOnClick,
-                    requireActivity()
-                )
+                    RecycleViewAdapter(
+                            sites,
+                            listOf(),
+                            this::adapterOnClick,
+                            this::favoriteOnClick,
+                            requireActivity()
+                    )
             binding.recyclerView.adapter = adapter
             bottomSheetBehavior.isDraggable = true
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
@@ -234,11 +234,11 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
                 }
             }
             val adapter = RecycleViewAdapter(
-                municipality.sites,
-                favSites,
-                this::adapterOnClick,
-                this::favoriteOnClick,
-                requireActivity()
+                    municipality.sites,
+                    favSites,
+                    this::adapterOnClick,
+                    this::favoriteOnClick,
+                    requireActivity()
             )
             binding.recyclerView.adapter = adapter
 
@@ -374,6 +374,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
      */
     private fun drawHeatmap(googleMap: GoogleMap): Boolean {
         viewModel.getInfectiousPressureData().observe(viewLifecycleOwner) { infectiousPressure ->
+            Log.e(TAG, "observing inf pres $infectiousPressure")
             val z = googleMap.cameraPosition.zoom
             val screenBound = googleMap.projection.visibleRegion.latLngBounds
 
@@ -384,20 +385,20 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
             }
 
             val scale = 50.0
-                infectiousPressure?.let {
-                    val data = it.getHeatMapData(screenBound, n)
-                    if (data.isNotEmpty()) {
-                        tileOverlay?.remove()
-                        val heatMapProvider = HeatmapTileProvider.Builder()
+            infectiousPressure?.let {
+                val data = it.getHeatMapData(screenBound, n)
+                if (data.isNotEmpty()) {
+                    tileOverlay?.remove()
+                    val heatMapProvider = HeatmapTileProvider.Builder()
                             .weightedData(data) // load our weighted data
                             .radius((scale).roundToInt()) // finn måte å gjøre om til 800x800 m
                             .build()
-                        tileOverlay = googleMap.addTileOverlay(
+                    tileOverlay = googleMap.addTileOverlay(
                             TileOverlayOptions().tileProvider(heatMapProvider)
-                        )
-                    }
+                    )
                 }
             }
+        }
         return true // false will close it without animation
     }
 }
