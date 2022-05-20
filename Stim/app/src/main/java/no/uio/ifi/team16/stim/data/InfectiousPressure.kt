@@ -22,6 +22,8 @@ class InfectiousPressure(
     val projection: CoordinateTransform, //transforms between latlong and projection coordinates
 ) {
     /**
+     * get data for the heatmap
+     *
      * @param screenBound: LatLngBounds of the units screen
      * @param n: stride between datapoints, larger n means less data.
      * a n of 1 means using all data in the screenbound

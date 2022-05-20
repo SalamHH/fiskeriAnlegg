@@ -1,10 +1,12 @@
 package no.uio.ifi.team16.stim.util
 
 import android.content.Context
+import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import java.time.DayOfWeek
+import java.time.ZonedDateTime
 
 ///////////
 // ASYNC //
@@ -98,9 +100,17 @@ fun <T> List<T>.takeRange(range: IntProgression): List<T> =
  * @see MutableMap.getOrPut
  */
 inline fun <K, V> MutableMap<K, V>.getOrPutOrPass(key: K, default: () -> V?): V? =
-    getOrElse(key) {
-        default()?.let { value ->
-            this[key] = value
-            value
+        getOrElse(key) {
+            default()?.let { value ->
+                this[key] = value
+                value
+            }
         }
-    }
+
+fun ZonedDateTime.closestHour(): Int {
+
+    val minutes = this.minute
+    val hour = this.hour
+    Log.d("CL", minutes.toString())
+    return if (minutes < 30) hour else (hour + 1).mod(24)
+}

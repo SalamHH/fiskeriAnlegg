@@ -22,6 +22,7 @@ import no.uio.ifi.team16.stim.databinding.FragmentInfectionBinding
 import no.uio.ifi.team16.stim.util.InfectionStatusCalculator
 import no.uio.ifi.team16.stim.util.linestyle.InfectionLineStyle
 import java.time.ZonedDateTime
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -147,10 +148,13 @@ class InfectionFragment : StimFragment() {
             inflater: LayoutInflater,
             container: ViewGroup?
     ) {
+        val currentWeek = Calendar.getInstance(Locale.getDefault()).get(Calendar.WEEK_OF_YEAR)
         for (i in infectionData.indices) {
             val newRow = TableRow(requireContext())
             val view = inflater.inflate(R.layout.infection_table_row, container, false)
-            view.findViewById<TextView>(R.id.table_display_week).text = String.format("%.0f", weekList[i])
+
+            view.findViewById<TextView>(R.id.table_display_week).text = String.format("%.0f", (currentWeek - weekList[i] - 1).mod(52.0))
+
             view.findViewById<TextView>(R.id.table_display_float).text = infectionData[i].toString()
             view.layoutParams = TableRow.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,

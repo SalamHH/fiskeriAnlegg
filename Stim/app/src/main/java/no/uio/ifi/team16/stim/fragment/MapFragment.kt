@@ -373,10 +373,9 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
     /**
      * Draw a heatmap of infectious pressure
      */
-    private fun drawHeatmap(googleMap: GoogleMap): Boolean {
+    private fun drawHeatmap(googleMap: GoogleMap) {
         Log.e(TAG, "drawing heatmpa asfkadpiovjalisfjfvl<ds ")
         viewModel.getInfectiousPressureData().observe(viewLifecycleOwner) { infectiousPressure ->
-            Log.e(TAG, "observing inf pres $infectiousPressure")
             val z = googleMap.cameraPosition.zoom
             val screenBound = googleMap.projection.visibleRegion.latLngBounds
 
@@ -401,6 +400,5 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
                 }
             }
         }
-        return true // false will close it without animation
     }
 }

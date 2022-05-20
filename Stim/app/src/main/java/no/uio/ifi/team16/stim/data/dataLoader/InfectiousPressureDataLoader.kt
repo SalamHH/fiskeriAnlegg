@@ -111,6 +111,7 @@ open class InfectiousPressureDataLoader : THREDDSDataLoader() {
                 ?: throw NullPointerException("Failed to read variable <time> from infectiousPressure") //caught by THREDDSLOAD
 
             //make the infectiousPressure
+            Log.d("LOADER", "MADE!")
             InfectiousPressure(
                 (concentrations.read(range3).reduce(0) as ArrayFloat).to2DFloatArray(),
                 time.readScalarFloat(),
