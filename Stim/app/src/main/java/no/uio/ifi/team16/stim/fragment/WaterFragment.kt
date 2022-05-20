@@ -68,13 +68,13 @@ class WaterFragment : StimFragment() {
         binding.sitename.text = site.name
 
         binding.salinityChart.apply {
-            setNoDataText(getString(R.string.no_data_available))
+            setNoDataText(getString(R.string.loading))
             setNoDataTextColor(R.color.primaryTextColor)
             setNoDataTextTypeface(ResourcesCompat.getFont(requireContext(), R.font.montserrat_semibold))
         }
 
         binding.watertempChart.apply {
-            setNoDataText(getString(R.string.no_data_available))
+            setNoDataText(getString(R.string.loading))
             setNoDataTextColor(R.color.primaryTextColor)
             setNoDataTextTypeface(ResourcesCompat.getFont(requireContext(), R.font.montserrat_semibold))
         }
@@ -138,7 +138,6 @@ class WaterFragment : StimFragment() {
         viewModel.getNorKyst800AtSiteData(site).observe(viewLifecycleOwner) { norkAtSite ->
             norkAtSite?.observeSalinityAtSurfaceAsGraph(viewLifecycleOwner) { salinityChart ->
                 if (salinityChart.isNotEmpty()) {
-
                     val linedatasetSalinity = LineDataSet(salinityChart, getString(R.string.salinity))
 
                     binding.salinityChart.apply {
@@ -161,6 +160,9 @@ class WaterFragment : StimFragment() {
 
                     binding.salinityChartHeader.text = getString(R.string.salinityChart)
                     salinityChartPressed = true
+                } else {
+                    binding.salinityChart.setNoDataText(getString(R.string.no_data_available))
+                    binding.salinityChart.invalidate()
                 }
             }
         }
@@ -218,6 +220,9 @@ class WaterFragment : StimFragment() {
 
                     binding.salinityChartHeader.text = getString(R.string.tempChart)
                     salinityChartPressed = false
+                } else {
+                    binding.watertempChart.setNoDataText(getString(R.string.no_data_available))
+                    binding.watertempChart.invalidate()
                 }
             }
         }
