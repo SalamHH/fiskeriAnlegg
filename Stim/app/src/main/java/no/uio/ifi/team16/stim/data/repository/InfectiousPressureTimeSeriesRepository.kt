@@ -3,6 +3,7 @@ package no.uio.ifi.team16.stim.data.repository
 import no.uio.ifi.team16.stim.data.InfectiousPressureTimeSeries
 import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.data.dataLoader.InfectiousPressureTimeSeriesDataLoader
+import no.uio.ifi.team16.stim.util.getOrPutOrPass
 import kotlin.ranges.IntProgression.Companion.fromClosedRange
 
 /**
@@ -14,6 +15,10 @@ import kotlin.ranges.IntProgression.Companion.fromClosedRange
  */
 class InfectiousPressureTimeSeriesRepository {
     private val dataSource = InfectiousPressureTimeSeriesDataLoader()
+
+    /**
+     * Maps sitenr to InfectiousPressureTimeSeries at that site
+     */
     private var cache: MutableMap<Int, InfectiousPressureTimeSeries> = mutableMapOf()
 
     /**
@@ -35,23 +40,6 @@ class InfectiousPressureTimeSeriesRepository {
     ///////////////
     // UTILITIES //
     ///////////////
-    /**
-     * same as Map.getOrPut, but if the put value resuls in null, don't put
-     *
-     * if the key exists, return its value
-     * if not, evaluate default,
-     *      if default succeeds(not null) put it in the cache, and return the value
-     *      if default fails (null), dont put anything in cache(get or put would put null in cache) and return null
-     * @see MutableMap.getOrPut
-     */
-    private inline fun <K, V> MutableMap<K, V>.getOrPutOrPass(key: K, default: () -> V?): V? =
-        getOrElse(key) {
-            default()?.let { value ->
-                this[key] = value
-                value
-            }
-        }
-
     /**
      * Empties the cache. Call this in case of low memory warning
      */

@@ -14,8 +14,7 @@ import kotlin.ranges.IntProgression.Companion.fromClosedRange
 /**
  * DataLoader for infectious pressure data.
  *
- * Data is loaded through load(...) and returned as an InfectiousPressure, with the
- * concentration of salmon louse represented as a grid.
+ * Used to load InfectiousPressure Objects, which are used to show heatMap data.
  **/
 open class InfectiousPressureDataLoader : THREDDSDataLoader() {
     private val TAG = "InfectiousPressureDataLoader"
@@ -61,29 +60,7 @@ open class InfectiousPressureDataLoader : THREDDSDataLoader() {
             return null
         }
 
-        return threddsLoad(firstEntry) { ncfile ->
-            //make some extra ranges to access data
-            val range2 = "${xRange.reformatFLS()},${yRange.reformatFLS()}"
-            val range3 = "0,$range2"
-            //make the projection
-            val gridMapping: Variable = ncfile.findVariable("grid_mapping")
-                ?: throw NullPointerException("Failed to read variable <gridMapping> from infectiousPressure") //caught by THREDDSLOAD
-            val latLngToStereo =
-                readAndMakeProjectionFromGridMapping(gridMapping) //can throw NullpointerException, caught by THREDDSLOAD
-            //lets make some infectious pressure
-            //Variables are data that are NOT READ YET. findVariable() is not null-safe
-            val concentrations: Variable = ncfile.findVariable("C10")
-                ?: throw NullPointerException("Failed to read variable <C10> from infectiousPressure") //caught by THREDDSLOAD
-            val time: Variable = ncfile.findVariable("time")
-                ?: throw NullPointerException("Failed to read variable <time> from infectiousPressure") //caught by THREDDSLOAD
-
-            //make the infectiousPressure
-            InfectiousPressure(
-                (concentrations.read(range3).reduce(0) as ArrayFloat).to2DFloatArray(),
-                time.readScalarFloat(),
-                latLngToStereo
-            )
-        }
+        return load(firstEntry, xRange, yRange)
     }
 
     /**
@@ -101,9 +78,10 @@ open class InfectiousPressureDataLoader : THREDDSDataLoader() {
         }
 
     /**
-     * load from a specified url. Used in testing.
-     * Not used in general since the other loads are able to slice from the server-side
+     * load from a specified url.
+     * Also used in testing.
      *
+     * @param url range of x-coordinates to get
      * @param xRange range of x-coordinates to get
      * @param yRange range of y-coordinates to get
      * @return data of infectious pressure in the prescribed data range.

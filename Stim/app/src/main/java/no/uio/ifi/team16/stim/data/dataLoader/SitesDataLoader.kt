@@ -14,12 +14,7 @@ import no.uio.ifi.team16.stim.util.capitalizeEachWord
 import org.json.JSONArray
 
 /**
- * Load Municipality
- *
- * Shortcomings:
- * The municipality API can only respond with at moost 100 municipality at a time,
- * hopefully we will not need more than that, but otherwise we will have to merge
- * several responses into a single response
+ * Load data from kartverkets API
  */
 class SitesDataLoader {
     companion object {

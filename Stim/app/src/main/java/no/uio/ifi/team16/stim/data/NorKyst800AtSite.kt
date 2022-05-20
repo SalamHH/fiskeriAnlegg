@@ -11,14 +11,13 @@ import no.uio.ifi.team16.stim.util.get
 /**
  * Class representing NorKyst800 data at a specific site.
  *
- * Note that this norkyst, contrary to the "general one" is relatively indexed when asking for temperature etc
- * That is, if you ask for getTempperature(x=-1,y=-1) you ge the temperature in the grid cell to the
- * SOUTHWEST of the site.
+ * loading and parsing of the data is slow, so current data is loaded separately in a small as possible request,
+ * while the historical and forecast data is loaded in a separate request, hence the LiveData wrapper.
  */
 data class NorKyst800AtSite(
-    val siteId: Int,
-    val current: NorKyst800,
-    val all: LiveData<NorKyst800?>
+    val siteId: Int,               //id of site
+    val current: NorKyst800,       //data at current time
+    val all: LiveData<NorKyst800?> //forecast and historical data, loaded separately from current data
 ) {
     companion object {
         const val TAG = "NORKYST800AtSite"

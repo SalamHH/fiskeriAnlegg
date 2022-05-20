@@ -17,28 +17,28 @@ class NorKyst800Parser {
         //finds attribute data start, captures dimensions(group 0,1,2,3) and data(group 4)
         //only read the attribute itself, not the mappings included. i.e. starts with attribute.attribute
         private val dataRegex: (String) -> Regex = { str ->
-            Regex("$str(?:\\[(.*?)\\])(?:\\[(.*?)\\])(?:\\[(.*?)\\])(?:\\[(.*?)\\])\\n((?:.*\\n)+?)\\n")
+            Regex("$str\\[(.*?)]\\[(.*?)]\\[(.*?)]\\[(.*?)]\\n((?:.*\\n)+?)\\n")
         }
 
         //parse 1D data, which has a slightly different format
         private val dataRegex1D: (String) -> Regex = { str ->
-            Regex("$str(?:\\[(.*?)\\])?(?:\\[(.*?)\\])?(?:\\[(.*?)\\])?(?:\\[(.*?)\\])?\\n(.*\\n)*?\\n")
+            Regex("$str(?:\\[(.*?)])?(?:\\[(.*?)])?(?:\\[(.*?)])?(?:\\[(.*?)])?\\n(.*\\n)*?\\n")
         }
 
         //finds start of a row, captures the row contents
-        private val arrayRowRegex = Regex("""(?:\[.*?\]\[.*?\]\[.*?\])?(?:, )?(.+?)\n""")
+        private val arrayRowRegex = Regex("""(?:\[.*?]\[.*?]\[.*?])?(?:, )?(.+?)\n""")
 
         //capture a single entry (in a row)
         private val entryRegex = Regex(""" ?(.+?)(?:,|$)""")
 
         //capture a variable and its list of attributes of das-response
-        private val dasVariableRegex = Regex("""    (.*?) \{\n((?:.*\n)*?) *?\}""")
-        private val dasAttributeRegex = Regex("""        (.+?) (.+?) (.+);""")
+        private val dasVariableRegex = Regex(""" {4}(.*?) \{\n((?:.*\n)*?) *?}""")
+        private val dasAttributeRegex = Regex(""" {8}(.+?) (.+?) (.+);""")
         /////////////
         // PARSING //
         /////////////
         /**
-         * Takes a DAS response(from opendap), and parses its variables and their attributes toa map, mapping
+         * Takes a DAS response(from opendap), and parses its variables and their attributes to a map, mapping
          * the variables name to a sequence of that variable attributes. Each attribute is represented
          * as a triple, the first being the attributes type, the second its name, and the third its value.
          *
@@ -120,11 +120,15 @@ class NorKyst800Parser {
          * parse an attribute with given type and value
          *
          * this function is not exhaustive, but sufficient.
+         *
+         * @param type: type to parse attribute as, as string
+         * @param attr: attribute-value as a string
+         * @return The attribute, parsed as specified type
          */
         private fun parseFSOAttributeAs(type: String, attr: String): Number? =
             when (type) {
-                "Float32" -> attr.toFloat()
-                "Int16" -> attr.toInt()
+                "Float32" -> attr.toFloatOrNull()
+                "Int16" -> attr.toIntOrNull()
                 else -> run {
                     Log.w(
                         TAG,
@@ -134,6 +138,12 @@ class NorKyst800Parser {
                 }
             }
 
+        /**
+         * Parse time and depth response-string to 1D arrays
+         *
+         * @param timeAndDepthString: time and depth response from norkyst800 response
+         * @return time, and depth arrays as a pair
+         */
         fun parseTimeAndDepth(timeAndDepthString: String): Pair<FloatArray1D, FloatArray1D>? {
             val depth =
                 make1DFloatArrayOf("depth", timeAndDepthString)
@@ -155,10 +165,20 @@ class NorKyst800Parser {
             )
         }
 
-        fun parseDAS(dasString: String): Pair<
+        /**
+         * parse out the interesting attributes from the DAS response.
+         *
+         * Uses default values if unable to parse
+         *
+         * @param dasString das response from opendap as a string
+         * @return a pair of
+         *         A list of the FSO for each(interesting) attribute, and
+         *         the projection of the dataset
+         */
+        fun parseFSOAndProjectionFromDAS(dasString: String): Pair<
                 List<Triple<Number, Number, Number>>,
                 CoordinateTransform
-                >? {
+                > {
             //make a map from variable names to strings of their attributes
             val variablesToAttributes = parseDas(dasString)
             //make FSOs(Fillvalue, Scale, Offset)s
@@ -239,6 +259,15 @@ class NorKyst800Parser {
             )
         }
 
+        /**
+         * given a OPENDAP data-string, parse out its data to an array of nullable values,
+         * using scaling, offset and fillvalues
+         *
+         * @param dataString ascii response of data to parse
+         * @param dataFSO, Fillvalue, Scale and Offset, as a triple of Numbers
+         * @param name, name of attribue, used for debugging
+         * @return 4D array of Nullable Floats
+         */
         suspend fun parseNullable4DArrayFrom(
             dataString: String,
             dataFSO: Triple<Number, Number, Number>,
@@ -258,6 +287,16 @@ class NorKyst800Parser {
             return data
         }
 
+        /**
+         * given a OPENDAP data-string of velocity, parse out its data to arrays of nullable values,
+         * using scaling, offset and fillvalues
+         *
+         * @param velocityString ascii response of velocitydata (u, v and w)
+         * @param uFSO, Fillvalue, Scale and Offset of u
+         * @param vFSO, Fillvalue, Scale and Offset of v
+         * @param wFSO, Fillvalue, Scale and Offset of w
+         * @return a triple of 4D array of Nullable Floats, representing velocity in all 3 direcitons
+         */
         suspend fun parseVelocity(
             velocityString: String,
             uFSO: Triple<Number, Number, Number>,
@@ -300,8 +339,12 @@ class NorKyst800Parser {
         /**
          * try to parse out a 1D FloatArray from an ascii opendap response,
          * returns null if any parsing fails.
+         *
+         * @param attribute name of attribute to parse out
+         * @param response entire ascii response from opendap
+         * @return array of Floats with the attributes values.
          */
-        fun make1DFloatArrayOf(attribute: String, response: String): FloatArray? =
+        private fun make1DFloatArrayOf(attribute: String, response: String): FloatArray? =
             dataRegex1D(attribute).find(response, 0)?.let { match ->
                 //parse dimensions
                 val dT = match.groupValues.getOrNull(1)?.toInt() ?: run {
@@ -313,7 +356,6 @@ class NorKyst800Parser {
                     Log.e(TAG, "Failed to read <data-section> from 1DArray")
                     return null
                 }
-
                 //match all rows, for each one parse out entries
                 val dataSequence = arrayRowRegex.findAll(dataString, 0).map { rowMatch ->
                     entryRegex.findAll(rowMatch.groupValues.getOrElse(1) { "" }, 0)
@@ -337,8 +379,13 @@ class NorKyst800Parser {
          * try to parse out a 4D intarray from an ascii opendap response,
          * returns null if any parsing fails.
          * The array contains null where the data is not available(ie where there are filler values)
+         *
+         * @param attribute name of attribute to parse out
+         * @param response entire ascii response from opendap
+         * @param fso, FillValue, Scale and Offset of the attribute (parsed from DAS response)
+         * @return 4D array of nullable floats
          */
-        suspend fun makeNullable4DFloatArrayOf(
+        private suspend fun makeNullable4DFloatArrayOf(
             attribute: String,
             response: String,
             fso: Triple<Number, Number, Number>
@@ -346,20 +393,12 @@ class NorKyst800Parser {
             dataRegex(attribute).find(response, 0)?.let { match ->
                 val (fillValue, scale, offset) = fso
                 //parse dimensions
-                val dT = match.groupValues.getOrNull(1)?.toInt() ?: run {
-                    Log.e(TAG, "Failed to read <time-dimension-size> from 4DArray")
-                    return null
-                }
                 val dD = match.groupValues.getOrNull(2)?.toInt() ?: run {
                     Log.e(TAG, "Failed to read <depth-dimension-size> from 4DArray")
                     return null
                 }
                 val dY = match.groupValues.getOrNull(3)?.toInt() ?: run {
                     Log.e(TAG, "Failed to read <y-dimension-size> from 4DArray")
-                    return null
-                }
-                val dX = match.groupValues.getOrNull(4)?.toInt() ?: run {
-                    Log.e(TAG, "Failed to read <x-dimension-size> from 4DArray")
                     return null
                 }
                 //parse the data
@@ -368,15 +407,24 @@ class NorKyst800Parser {
                     return null
                 }
                 //read the rows of ints, apply scale, offset and fillvalues to get the floats
-                readRowsOf4DIntArray(dT, dD, dY, dX, dataString, scale, offset, fillValue)
+                readRowsOf4DIntArray(dD, dY, dataString, scale, offset, fillValue)
             }
 
 
         /**
          * for some reason the velocity w variable has a double as a fillervalue,
-         * so we have to make an entirely separate function for it. Yay!
+         * so we have to make an entirely separate function for it.
+         *
+         * try to parse out a 4D intarray from an ascii opendap response,
+         * returns null if any parsing fails.
+         * The array contains null where the data is not available(ie where there are filler values)
+         *
+         * @param attribute name of attribute to parse out
+         * @param response entire ascii response from opendap
+         * @param fso, FillValue, Scale and Offset of the attribute (parsed from DAS response)
+         * @return 4D array of nullable floats
          */
-        suspend fun makeNullable4DFloatArrayOfW(
+        private suspend fun makeNullable4DFloatArrayOfW(
             attribute: String,
             response: String,
             fso: Triple<Number, Number, Number>
@@ -384,20 +432,12 @@ class NorKyst800Parser {
             dataRegex(attribute).find(response, 0)?.let { match ->
                 val (fillValue, scale, offset) = fso
                 //parse dimensions
-                val dT = match.groupValues.getOrNull(1)?.toInt() ?: run {
-                    Log.e(TAG, "Failed to read <time-dimension-size> from 4DArray")
-                    return null
-                }
                 val dD = match.groupValues.getOrNull(2)?.toInt() ?: run {
                     Log.e(TAG, "Failed to read <depth-dimension-size> from 4DArray")
                     return null
                 }
                 val dY = match.groupValues.getOrNull(3)?.toInt() ?: run {
                     Log.e(TAG, "Failed to read <y-dimension-size> from 4DArray")
-                    return null
-                }
-                val dX = match.groupValues.getOrNull(4)?.toInt() ?: run {
-                    Log.e(TAG, "Failed to read <x-dimension-size> from 4DArray")
                     return null
                 }
                 //parse the data
@@ -408,7 +448,7 @@ class NorKyst800Parser {
 
                 //val dataSequence = readRowsOf4DFloatArray(dataString, scale, offset, fillValue)
 
-                readRowsOf4DFloatArray(dT, dD, dY, dX, dataString, scale, offset, fillValue)
+                readRowsOf4DFloatArray(dD, dY, dataString, scale, offset, fillValue)
             }
 
 
@@ -417,12 +457,17 @@ class NorKyst800Parser {
         /////////////////////////////
         /**
          * read a string of 4D data of ints to a 4D array of floats(after applying scale and offset)
+         *
+         * @param dD depth dimension-size
+         * @param dY y dimension-
+         * @param str string to parse
+         * @param scale scale to apply to values
+         * @param offset offset to apply to values
+         * @param fillValue values to set to null when parsing
          */
         private suspend fun readRowsOf4DIntArray(
-            dT: Int,
             dD: Int,
             dY: Int,
-            dX: Int,
             str: String,
             scale: Number,
             offset: Number,
@@ -451,15 +496,19 @@ class NorKyst800Parser {
                         }.toTypedArray()
                 }.toTypedArray()
 
-
         /**
          * read a string of 4D data of floats to a 4D array of floats(after applying scale and offset)
+         *
+         * @param dD depth dimension-size
+         * @param dY y dimension-
+         * @param str string to parse
+         * @param scale scale to apply to values
+         * @param offset offset to apply to values
+         * @param fillValue values to set to null when parsing
          */
         private suspend fun readRowsOf4DFloatArray(
-            dT: Int,
             dD: Int,
             dY: Int,
-            dX: Int,
             str: String,
             scale: Number,
             offset: Number,
@@ -506,6 +555,9 @@ class NorKyst800Parser {
 
         /**
          * given a baseurl, return an url that gives the DAS of the dataset
+         *
+         * @param baseUrl baseurl
+         * @return url to get das response
          */
         fun makeDasUrl(baseUrl: String): String {
             return "$baseUrl.das?"
@@ -519,6 +571,7 @@ class NorKyst800Parser {
          * @param yRange range of y-values to get from
          * @param depthRange depth as a range with format from:stride:to
          * @param timeRange time as a range with format from:stride:to
+         * @return url to get response with all the interesting variables
          */
         fun makeFullDataUrl(
             baseUrl: String,

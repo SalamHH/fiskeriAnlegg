@@ -10,17 +10,21 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 
-//typealias FloatArray2D = Array<FloatArray>
-//typealias FloatArray3D = Array<FloatArray2D>
-
 /**
  * Class representing infectious pressure over a grid at a given time.
+ *
+ * Used to make a heatmap. For data at a given site InfectiousPressureTimeSeries
  */
 class InfectiousPressure(
-    val concentration: FloatArray2D, //Particle concentration, aggregated number of particles in grid cell
-    val time: Float,               //seconds since 2000-01-01 00:00:00
+    val concentration: FloatArray2D,     //Particle concentration, aggregated number of particles in grid cell
+    val time: Float,                     //seconds since 2000-01-01 00:00:00
     val projection: CoordinateTransform, //transforms between latlong and projection coordinates
 ) {
+    /**
+     * @param screenBound: LatLngBounds of the units screen
+     * @param n: stride between datapoints, larger n means less data.
+     * a n of 1 means using all data in the screenbound
+     */
     fun getHeatMapData(screenBound: LatLngBounds, n: Int): List<WeightedLatLng> {
         //make inverse projection, mapping from grid indexes to latlng
         val ctFactory = CoordinateTransformFactory()

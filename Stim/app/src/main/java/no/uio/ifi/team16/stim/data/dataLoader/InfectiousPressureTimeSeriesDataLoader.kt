@@ -27,7 +27,6 @@ import kotlin.math.roundToInt
  *
  * Generally this type of infectiouspressure will be for a specific site, and at a site we are interested
  * in a few squares around that site, so the shape of this data will be something like time.length()x3x3
- *
  */
 class InfectiousPressureTimeSeriesDataLoader : InfectiousPressureDataLoader() {
     private val TAG = "InfectiousPressureTimeSeriesDataLoader"
@@ -41,6 +40,9 @@ class InfectiousPressureTimeSeriesDataLoader : InfectiousPressureDataLoader() {
      * Note that the weeksrange are weeks from now, and not specific weeks!
      * The amount of grid points around a site to get is specified in Options, through Options.siteRadius
      *
+     * The most current dataset is opened, and at the same time a coroutine is launced to load the
+     * older datasets.
+     *
      * @param site: the site to load infectiousPressure at
      * @param weeksRange: an intprogression of weeks from now, to get. fromClosedRange(2,13,3)
      *                    corresponds to week 2, till week 13 with a stride of 3 FROM NOW, and will
@@ -53,12 +55,9 @@ class InfectiousPressureTimeSeriesDataLoader : InfectiousPressureDataLoader() {
     ): InfectiousPressureTimeSeries? {
         /*
         first, load the entries in the catalog, then use the first enty in the catalog to get the data
-        that is common for all datasets. After this we open the datasets corresponding to weeksRange,
-        and use these to make the infectiousPressureTimeseries.
+        that is common for all datasets.
+
          */
-
-
-        //val latLng = site.latLong
 
         //load name of all entries in catalog
         val catalogEntries = loadEntryUrls()?.toList() ?: run {
@@ -135,25 +134,15 @@ class InfectiousPressureTimeSeriesDataLoader : InfectiousPressureDataLoader() {
             getDataFromFile(firstncfile, minX, maxX, minY, maxY)
         } ?: return null
 
-
-        /*
-            all common data parsed, now open each dataset. Note the mapasync which uses coroutines.
-            this is done in the scope of the first load so as to get the variables from this load,
-            we could probably just return the desired data from the first load, or store it in the enclosing scope
-            but this is more convenient, albeit less readable:/ Also, this keeps the first dataset
-            open throughout opening all the others, which is unnecessary
-            */
+        ////////////////////
+        // OLDER DATASETS //
+        ////////////////////
         val historicalData = MutableLiveData<Pair<Array<Int>, FloatArray3D>>()
-
-        Log.d(TAG, "loading historical data")
-
         CoroutineScope(Dispatchers.IO).launch(Dispatchers.IO) {
-            Log.d(TAG, "LAUNCHED historical data!!")
             historicalData.postValue(
                 catalogEntries
                     .takeRange(weeksRange)
-                    .drop(0) //drop the first entry, already loaded
-                    .mapIndexedNotNull { i, entryUrl -> //use mapAsync to load asynchronously, however the servers cannot handle parallell loads!
+                    .mapIndexedNotNull { i, entryUrl ->
                         threddsLoad(entryUrl) { ncfile ->
                             getDataFromFile(ncfile, minX, maxX, minY, maxY)
                         }?.let { data ->
@@ -171,8 +160,6 @@ class InfectiousPressureTimeSeriesDataLoader : InfectiousPressureDataLoader() {
             )
         }
 
-        Log.d(TAG, "beyond historical data")
-
         return InfectiousPressureTimeSeries(
             site.nr,
             currentData.first,
@@ -183,6 +170,16 @@ class InfectiousPressureTimeSeriesDataLoader : InfectiousPressureDataLoader() {
         )
     }
 
+    /**
+     * get weeknumber and concentration from a gvien ncfile of infectiouspressure
+     *
+     * @param ncfile: ncfile of infectiousPressure
+     * @param minX minimum x index to load from
+     * @param maxX maximum x index to load from
+     * @param minY minimum y index to load from
+     * @param maxY maximum y index to load from
+     * @return week and associated infectiouspressure as a 2D array
+     */
     private fun getDataFromFile(
         ncfile: NetcdfDataset,
         minX: Int,

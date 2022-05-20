@@ -9,18 +9,20 @@ import ucar.ma2.InvalidRangeException
 import ucar.nc2.Variable
 import ucar.nc2.dataset.NetcdfDataset
 import java.io.IOException
-import kotlin.time.ExperimentalTime
 
 /**
  * ABSTRACT CLASS FOR THREDDS DATALOADERS
- * should be inherited by InfectiousPressureDataLoader and NorKyst800DataLoader
  *
- * Handles common methods between the infectiouspressure and norkyst800 thredds datasources.
+ * Handles common methods for THREDDS datasources, specifically infectiouspressure. Not
+ * used by Norkyst800AtSite since another loading procedure is used
  *
- * Mostly used to convert coordinates to ranges, and to check if data is up to date
+ * Used to read projecting from a netcdfVariable and to load from a thredds catalog.
  */
 abstract class THREDDSDataLoader {
-    private val TAG = "THREDDSDataLoader"
+    companion object {
+        const val TAG = "THREDDSDataLoader"
+    }
+
     private val maxX = 901
     private val maxY = 2601
     protected val separation = 800  //separation(in meters) between points(in real life)
@@ -42,20 +44,12 @@ abstract class THREDDSDataLoader {
      * @param action: action to perform on the opened file, must return a representation of the data
      * @return the result of the action on the netcdf file, f.ex. an infectiousPressure-object
      */
-    @OptIn(ExperimentalTime::class)
     inline fun <D> threddsLoad(url: String, action: (NetcdfDataset) -> D?): D? {
-        val TAG = "THREDDSLOADER"
         var ncfile: NetcdfDataset? = null
         var data: D? = null
         try {
-            Log.d(TAG, "OPENING $url")
-            val (value, elapsed) = kotlin.time.measureTimedValue {
-                ncfile = NetcdfDataset.openDataset(url) ?: return null
-                Log.d(TAG, "OPENDAP URL OPENED")
-                action(ncfile!!) //is not changed outside scope => guaranteed non-null. can remove if not timed
-            }
-            data = value
-            Log.d(TAG, "loaded $url and parsed it in $elapsed")
+            ncfile = NetcdfDataset.openDataset(url) ?: return null
+            data = action(ncfile)
         } catch (e: IOException) {
             Log.e("ERROR", e.toString())
         } catch (e: InvalidRangeException) {

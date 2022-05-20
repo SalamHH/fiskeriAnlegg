@@ -41,11 +41,18 @@ class NorKyst800AtSiteDataLoader {
     /////////////
     // LOADERS //
     /////////////
-
+    /**
+     * Load Norkyst800AtSite at a given site
+     *
+     * Load data at current time, and run an asynchronous load of the rest of the data(forecast and historical)
+     *
+     * @param site site to load around
+     * @return Norkyst800AtSite representing data around specified site
+     */
     suspend fun load(
         site: Site
     ): NorKyst800AtSite? {
-        //get the forecast utl from the catalo, caching the result.
+        //get the forecast utl from the catalog, caching the result.
         val forecastUrl = forecastUrlCache ?: run {
             val url = loadForecastUrl() ?: run {
                 Log.e(
@@ -54,30 +61,25 @@ class NorKyst800AtSiteDataLoader {
                 )
                 return null
             }
-            forecastUrlCache = url
+            forecastUrlCache = url //cache the forecast url, we dont need to cache the catalog!
             //parse out date of forecast url
             url
         }
-        Log.d(TAG, "loading forecast date")
+
         val forecastDate = parseDateFromForecastUrl(forecastUrl) ?: return null
         val currentDate = LocalDate.now()
-        Log.d(TAG, "got forecast date $forecastDate")
 
         val historicalUrl = forecastUrlIntoHistoricalUrl(forecastUrl)
 
         //the current data is in either historical or forecast dataset.
-        //if the clock is past 17, it is in the historical one, otherwise it is in the forecast.
         val hourOfDay = Instant.now().atZone(ZoneId.systemDefault()).hour
         //if the forecast date is (<=) the current date, use the forecast url, otherwise use the historical url
 
         val currentUrl = if (forecastDate <= currentDate) {
-            Log.d(TAG, "loading current from an")
             historicalUrl
         } else {
-            Log.d(TAG, "loading current from fc")
             forecastUrl
         }
-        Log.d(TAG, "at index $hourOfDay")
 
         //start an async load of all the available data
         val allData = MutableLiveData<NorKyst800>()
@@ -120,12 +122,12 @@ class NorKyst800AtSiteDataLoader {
         //////////////////////
         // DAS / ATTRIBUTES //
         //////////////////////
-        val (FSOs, projection) = NorKyst800Parser.parseDAS(
+        val (FSOs, projection) = NorKyst800Parser.parseFSOAndProjectionFromDAS(
             requestData(
                 NorKyst800Parser.makeDasUrl(baseUrl),
                 "das"
             ) ?: return null
-        ) ?: return null
+        )
         val salinityFSO = FSOs[0]
         val temperatureFSO = FSOs[1]
         val uFSO = FSOs[2]
@@ -220,7 +222,12 @@ class NorKyst800AtSiteDataLoader {
 
 
     /**
-     * Get NorKyst800AtSite data at the given site.
+     * A version of loadWithUrl where we get the data at a single timeindex.
+     * Used to make a small as possible request for current data.
+     *
+     * @see loadWithUrl
+     *
+     * Get NorKyst800 data at the given site.
      *
      * First we have to load the catalog(unless previously loaded and cached). Then we have to load
      * the das of the data(attributes of variables). Finally we load the data itself, but beacuse the response is
@@ -235,12 +242,12 @@ class NorKyst800AtSiteDataLoader {
         //////////////////////
         // DAS / ATTRIBUTES //
         //////////////////////
-        val (FSOs, projection) = NorKyst800Parser.parseDAS(
+        val (FSOs, projection) = NorKyst800Parser.parseFSOAndProjectionFromDAS(
             requestData(
                 NorKyst800Parser.makeDasUrl(baseUrl),
                 "das"
             ) ?: return null
-        ) ?: return null
+        )
         val salinityFSO = FSOs[0]
         val temperatureFSO = FSOs[1]
         val uFSO = FSOs[2]
@@ -326,6 +333,9 @@ class NorKyst800AtSiteDataLoader {
     ///////////////
     // UTILITIES //
     ///////////////
+    /**
+     * request data from the given url, using the name parameter for debug
+     */
     private suspend fun requestData(url: String, name: String): String? {
         Log.d(TAG, "Loading $name response from $url")
         val string = Fuel.get(url).awaitStringResult().onError { error ->
@@ -354,6 +364,8 @@ class NorKyst800AtSiteDataLoader {
     /**
      * load the thredds catalog for the norkyst800 dataset, then return the URL
      * for the forecast data(which changes periodically)
+     *
+     * Note that the catalog is not cached, but the url for the forecast is
      */
     private val forecastUrlRegex =
         Regex("""'catalog\.html\?dataset=norkyst800m_1h_files/(.*?\.fc\..*?)'""")
@@ -385,7 +397,7 @@ class NorKyst800AtSiteDataLoader {
             LocalDate.parse(match.groupValues[1], forecastDateFormatter)
         }
 
-    //replace .fc. with .an.
+    //replace .fc. with .an. in url, giving the historical data url form the forecast one
     private fun forecastUrlIntoHistoricalUrl(fcast: String): String =
         fcast.replace(".fc.", ".an.")
 

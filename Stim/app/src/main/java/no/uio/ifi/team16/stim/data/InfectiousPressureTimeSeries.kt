@@ -1,7 +1,7 @@
 package no.uio.ifi.team16.stim.data
 
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
 import com.github.mikephil.charting.data.Entry
 import no.uio.ifi.team16.stim.util.FloatArray2D
 import no.uio.ifi.team16.stim.util.FloatArray3D
@@ -13,21 +13,22 @@ import no.uio.ifi.team16.stim.util.FloatArray3D
  * but several neighbors, the aggregate function makes all the cells at a single moment in time into
  * a single datapoint.
  *
- * In most cases the most appropriate type of aggregation might be mean, max or sum.
- * currently using sum
+ * loading of the data is slow, so current data is loaded separately in a small as possible request,
+ * while the historical data is loaded in a separate request, hence the mutableLiveData wrapper.
  */
 data class InfectiousPressureTimeSeries(
-    val siteId: Int,
-    val currentWeek: Int,
-    val currentConcentrations: FloatArray2D,
+    val siteId: Int,                         //id of site
+    val currentWeek: Int,                    //week the currentConcentrations hold for
+    val currentConcentrations: FloatArray2D, //concentration at current week
     val historicalData:
-    MutableLiveData<
+    LiveData<
             Pair<Array<Int>, FloatArray3D>
-            >, //historical data, concentrations and corresponding week-numbers
+            >,                               //historical data, concentrations and corresponding week-numbers
+    //loaded asynchronously so that currentdata can be available immedeately
     val dx: Float,                           //separation between points in x-direction
     val dy: Float                            //separation between points in y-direction, usually dx
 ) {
-    //how concentrations at a given time are aggregated to a single float
+    //how concentrations at a given time are aggregated to a single float. Here mean is used
     val aggregation: (FloatArray2D) -> Float = { arr -> meanAggregation(arr) }
 
     /////////////////

@@ -79,6 +79,14 @@ class BarentsWatchDataLoader {
         return result.toString()
     }
 
+    /**
+     * load data at the given site with a token
+     *
+     * @param site site to load data at
+     * @param token token from the barentswatch API to use in authentication
+     * @see getToken
+     * @return Disease data from the barentswatch API at the given site
+     */
     suspend fun loadData(site: Site, token: BarentsWatchToken): BarentsWatchAtSite? {
 
         val listPD = getPdList(site, token) ?: return null
