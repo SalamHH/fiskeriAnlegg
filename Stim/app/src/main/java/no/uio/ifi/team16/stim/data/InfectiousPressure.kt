@@ -1,5 +1,6 @@
 package no.uio.ifi.team16.stim.data
 
+import android.util.Log
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.maps.android.heatmaps.WeightedLatLng
@@ -26,6 +27,7 @@ class InfectiousPressure(
      * a n of 1 means using all data in the screenbound
      */
     fun getHeatMapData(screenBound: LatLngBounds, n: Int): List<WeightedLatLng> {
+        Log.d("HEATMAPP", "making heatmpasdfkjfvkwjnfvwfv data")
         //make inverse projection, mapping from grid indexes to latlng
         val ctFactory = CoordinateTransformFactory()
         val stereoCRT = projection.targetCRS
@@ -63,20 +65,22 @@ class InfectiousPressure(
         val xRange = IntProgression.fromClosedRange(minX, maxX, n)
         val yRange = IntProgression.fromClosedRange(minY, maxY, n)
 
+        Log.d("HEATMAPPPPP", "n=$n, xrange $xRange, $yRange")
+
         val dx = Options.defaultNorKyst800XStride * 800
         val dy = Options.defaultNorKyst800YStride * 800
         return concentration.get(xRange, yRange)
-            .flatMapIndexed { x, row -> //get at surface(0), current time.flatMapIndexed { y, row ->
-                row.mapIndexed { y, entry ->
-                    WeightedLatLng(
-                        inverseProjection.projectXY(
-                            Pair(
-                                (yRange.first + yRange.step * y) * dy.toFloat(),  //from index to meters along gridproj
-                                (xRange.first + xRange.step * x) * dx.toFloat()
-                            )
-                        ).let { latLong ->
-                            LatLng(latLong.lat, latLong.lng)
-                        },
+                .flatMapIndexed { x, row -> //get at surface(0)
+                    row.mapIndexed { y, entry ->
+                        WeightedLatLng(
+                                inverseProjection.projectXY(
+                                        Pair(
+                                                (yRange.first + yRange.step * y) * dy.toFloat(),  //from index to meters along gridproj
+                                                (xRange.first + xRange.step * x) * dx.toFloat()
+                                        )
+                                ).let { latLong ->
+                                    LatLng(latLong.lat, latLong.lng)
+                                },
                         entry.toDouble()
                     )
                 }

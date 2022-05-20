@@ -289,6 +289,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
             viewModel.loadSitesAtLocation(center)
         }
         if (usingHeatmap) {
+            tileOverlay?.remove()
             drawHeatmap(map)
         }
     }
@@ -373,6 +374,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
      * Draw a heatmap of infectious pressure
      */
     private fun drawHeatmap(googleMap: GoogleMap): Boolean {
+        Log.e(TAG, "drawing heatmpa asfkadpiovjalisfjfvl<ds ")
         viewModel.getInfectiousPressureData().observe(viewLifecycleOwner) { infectiousPressure ->
             Log.e(TAG, "observing inf pres $infectiousPressure")
             val z = googleMap.cameraPosition.zoom
