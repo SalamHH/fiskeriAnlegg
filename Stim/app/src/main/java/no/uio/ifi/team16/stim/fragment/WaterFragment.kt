@@ -41,7 +41,6 @@ import kotlin.math.roundToLong
 class WaterFragment : StimFragment() {
 
     companion object {
-        const val MILLIS_PER_HOUR = 3600000
         const val SECONDS_PER_HOUR = 3600
     }
 

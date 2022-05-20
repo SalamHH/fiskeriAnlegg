@@ -1,4 +1,4 @@
-package no.uio.ifi.team16.stim.io.adapter
+package no.uio.ifi.team16.stim.util
 
 import android.content.Context
 import android.view.LayoutInflater

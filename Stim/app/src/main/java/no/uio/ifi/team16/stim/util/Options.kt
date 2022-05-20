@@ -19,9 +19,9 @@ object Options {
     private const val defaultNorKyst800TimeEnd = 0 //only load current time
     const val norKyst800XEnd = 901
     const val norKyst800YEnd = 2601
-    var defaultNorKyst800XRange = fromClosedRange(0, norKyst800XEnd, defaultNorKyst800XStride)
-    var defaultNorKyst800YRange = fromClosedRange(0, norKyst800YEnd, defaultNorKyst800YStride)
-    var defaultNorKyst800DepthRange =
+    private var defaultNorKyst800XRange = fromClosedRange(0, norKyst800XEnd, defaultNorKyst800XStride)
+    private var defaultNorKyst800YRange = fromClosedRange(0, norKyst800YEnd, defaultNorKyst800YStride)
+    private var defaultNorKyst800DepthRange =
             fromClosedRange(0, defaultNorKyst800DepthEnd, defaultNorKyst800DepthStride)
     private var defaultNorKyst800TimeRange =
             fromClosedRange(0, defaultNorKyst800TimeEnd, defaultNorKyst800TimeStride)

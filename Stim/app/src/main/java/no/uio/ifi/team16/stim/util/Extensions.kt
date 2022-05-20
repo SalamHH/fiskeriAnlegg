@@ -67,18 +67,6 @@ fun DayOfWeek.toShortString(context: Context): String {
 
 //LIST EXTENSIONS
 /**
- * from a sequence take every (stride) element
- */
-fun <T> Sequence<T>.takeEvery(stride: Int): Sequence<T> =
-    this.filterIndexed { i, _ -> (i % stride == 0) }
-
-/**
- * for the given sequence, take values in the given intProgression(range with stride)
- */
-fun <T> Sequence<T>.takeRange(range: IntProgression): Sequence<T> =
-    drop(range.first).take(range.last - range.first).takeEvery(range.step)
-
-/**
  * from a sequence take every (stride) eleemnt
  */
 fun <T> List<T>.takeEvery(stride: Int): List<T> =

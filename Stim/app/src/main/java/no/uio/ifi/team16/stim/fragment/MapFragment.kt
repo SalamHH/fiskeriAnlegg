@@ -21,8 +21,8 @@ import no.uio.ifi.team16.stim.R
 import no.uio.ifi.team16.stim.data.Municipality
 import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.databinding.FragmentMapBinding
-import no.uio.ifi.team16.stim.io.adapter.RecycleViewAdapter
 import no.uio.ifi.team16.stim.util.LatLong
+import no.uio.ifi.team16.stim.util.RecycleViewAdapter
 import kotlin.math.round
 import kotlin.math.roundToInt
 

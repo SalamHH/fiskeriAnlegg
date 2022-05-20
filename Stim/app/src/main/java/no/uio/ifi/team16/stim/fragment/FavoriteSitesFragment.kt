@@ -12,7 +12,7 @@ import no.uio.ifi.team16.stim.MainActivityViewModel
 import no.uio.ifi.team16.stim.R
 import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.databinding.FragmentFavoriteSitesBinding
-import no.uio.ifi.team16.stim.io.adapter.RecycleViewAdapter
+import no.uio.ifi.team16.stim.util.RecycleViewAdapter
 
 /**
  * Fragment showing a list of the user's favourite sites
