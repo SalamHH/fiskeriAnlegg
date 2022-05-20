@@ -11,29 +11,32 @@ class NorKyst800Parser {
     companion object Parser {
         const val TAG = "NORKYST800PARSER"
 
-        ///////////////////////
-        // REGEXES (REGEXI?) //
-        ///////////////////////
+        /////////////
+        // REGEXES //
+        /////////////
         //finds attribute data start, captures dimensions(group 0,1,2,3) and data(group 4)
         //only read the attribute itself, not the mappings included. i.e. starts with attribute.attribute
+        /**
+         * Androidstudio gives warnings for these regexes, but their fixes ARE NOT CORRECT.
+         */
         private val dataRegex: (String) -> Regex = { str ->
-            Regex("$str\\[(.*?)]\\[(.*?)]\\[(.*?)]\\[(.*?)]\\n((?:.*\\n)+?)\\n")
+            Regex("$str(?:\\[(.*?)\\])(?:\\[(.*?)\\])(?:\\[(.*?)\\])(?:\\[(.*?)\\])\\n((?:.*\\n)+?)\\n")
         }
 
         //parse 1D data, which has a slightly different format
         private val dataRegex1D: (String) -> Regex = { str ->
-            Regex("$str(?:\\[(.*?)])?(?:\\[(.*?)])?(?:\\[(.*?)])?(?:\\[(.*?)])?\\n(.*\\n)*?\\n")
+            Regex("$str(?:\\[(.*?)\\])?(?:\\[(.*?)\\])?(?:\\[(.*?)\\])?(?:\\[(.*?)\\])?\\n(.*\\n)*?\\n")
         }
 
         //finds start of a row, captures the row contents
-        private val arrayRowRegex = Regex("""(?:\[.*?]\[.*?]\[.*?])?(?:, )?(.+?)\n""")
+        private val arrayRowRegex = Regex("""(?:\[.*?\]\[.*?\]\[.*?\])?(?:, )?(.+?)\n""")
 
         //capture a single entry (in a row)
         private val entryRegex = Regex(""" ?(.+?)(?:,|$)""")
 
         //capture a variable and its list of attributes of das-response
-        private val dasVariableRegex = Regex(""" {4}(.*?) \{\n((?:.*\n)*?) *?}""")
-        private val dasAttributeRegex = Regex(""" {8}(.+?) (.+?) (.+);""")
+        private val dasVariableRegex = Regex("""    (.*?) \{\n((?:.*\n)*?) *?\}""")
+        private val dasAttributeRegex = Regex("""        (.+?) (.+?) (.+);""")
         /////////////
         // PARSING //
         /////////////
