@@ -61,7 +61,6 @@ class InfectiousPressure(
 
         val dx = Options.defaultNorKyst800XStride * 800
         val dy = Options.defaultNorKyst800YStride * 800
-        //todo: optimize
         return concentration.get(xRange, yRange)
             .flatMapIndexed { x, row -> //get at surface(0), current time.flatMapIndexed { y, row ->
                 row.mapIndexed { y, entry ->

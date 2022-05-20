@@ -38,7 +38,7 @@ class TemperatureLineStyle @Inject constructor() {
                 LimitLine(
                     0f,
                     "nåtid"
-                ) //TODO ok this is not ENTIRELY correct, due to some rounding etc
+                )
             )
             setDrawLimitLinesBehindData(true)
             setDrawGridLinesBehindData(true)
