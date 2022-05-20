@@ -151,12 +151,13 @@
     <!-- mapfragment -->
     <string name="municipality_">Kommune:</string>
     <string name="number_of_sites_found">Antall anlegg:</string>
-    <string name="loading">LOADING…</string>
+    <string name="loading">Laster inn…</string>
     <string name="see_infection_pressure_on_map">Se smittepress på kartet</string>
     <string name="hide_infection_pressure_on_map">Skjul smittepress på kartet</string>
+    <string name="search_here">Søk her</string>
 
     <!-- tutorial carusell -->
-    <string name="welcome_to_stim">Velkommen til stim</string>
+    <string name="welcome_to_stim">Velkommen til Stim</string>
     <string name="tutorial_slide_1_text">Stim er en app som lar deg få oversikt over alle oppdrettsanlegg i Norge.</string>
     <string name="sok_etter_noppdrettsanlegg">Søk etter\noppdrettsanlegg</string>
     <string name="tutorial_slide_2_text">Finn anlegg ved hjelp av navn eller kommunenummer i søkefeltet.</string>
@@ -164,11 +165,8 @@
     <string name="tutorial_slide_3_text">Finn din kommune på kartet for å se alle anlegg i kommunen.</string>
     <string name="visualiser_smittetrykk">Visualiser smittetrykk</string>
     <string name="tutorial_slide_4_text">Trykk på knappen under søkefeltet for å se et heatmap over smittetrykk.</string>
-    <string name="tutorial_slide_4_text2">Ps: dette kan ta litt tid</string>
+    <string name="tutorial_slide_4_text2">PS: dette kan ta litt tid</string>
     <string name="lagre_dine_favoritter">Lagre dine favoritter</string>
     <string name="tutorial_slide_5_text">Legg til dine anlegg til favorittsiden ved å trykke på hjertet.</string>
     <string name="current_infection">Nåværende smittepress:</string>
-
-
-
 </resources>
