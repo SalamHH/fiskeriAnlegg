@@ -1,7 +1,6 @@
 package no.uio.ifi.team16.stim
 
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -185,7 +184,6 @@ class MainActivityViewModel : ViewModel() {
      * @param municipalityCode the municipality code, which is a string of 4 numbers ie. 0313
      */
     private fun loadSitesAtMunicipality(municipalityCode: String) {
-        Log.e("MainActivityViewModel", "laster municipalitycode: $municipalityCode")
         viewModelScope.launch(Dispatchers.IO) {
             val loaded = sitesRepository.getMunicipality(municipalityCode)
             municipalityData.postValue(loaded)

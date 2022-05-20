@@ -18,7 +18,6 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import no.uio.ifi.team16.stim.MainActivityViewModel
 import no.uio.ifi.team16.stim.R
-import no.uio.ifi.team16.stim.data.BarentsWatchAtSite
 import no.uio.ifi.team16.stim.data.Site
 import no.uio.ifi.team16.stim.databinding.FragmentInfectionBinding
 import no.uio.ifi.team16.stim.util.InfectionStatusCalculator
@@ -195,19 +194,19 @@ class InfectionFragment : StimFragment() {
                     )
                 )
                 binding.suspicionUnknowndate.text =
-                    checkIfDataExistAndFormat("pd_ukjent_mistankedato", it)
+                    checkIfDataExistAndFormat("pd_ukjent_mistankedato", it.listPD)
                         ?: resources.getText(R.string.no_suspicion)
                 binding.suspicionSav2Date.text =
-                    checkIfDataExistAndFormat("pd_sav2_mistankedato", it)
+                    checkIfDataExistAndFormat("pd_sav2_mistankedato", it.listPD)
                         ?: resources.getText(R.string.no_suspicion)
                 binding.suspicionSav3Date.text =
-                    checkIfDataExistAndFormat("pd_sav3_mistankedato", it)
+                    checkIfDataExistAndFormat("pd_sav3_mistankedato", it.listPD)
                         ?: resources.getText(R.string.no_suspicion)
-                binding.provenUnknown.text = checkIfDataExistAndFormat("pd_ukjent_paavistdato", it)
+                binding.provenUnknown.text = checkIfDataExistAndFormat("pd_ukjent_paavistdato", it.listPD)
                     ?: resources.getText(R.string.not_proven)
-                binding.provenSav2Date.text = checkIfDataExistAndFormat("pd_sav2_paavistdato", it)
+                binding.provenSav2Date.text = checkIfDataExistAndFormat("pd_sav2_paavistdato", it.listPD)
                     ?: resources.getText(R.string.not_proven)
-                binding.provenSav3Date.text = checkIfDataExistAndFormat("pd_sav3_paavistdato", it)
+                binding.provenSav3Date.text = checkIfDataExistAndFormat("pd_sav3_paavistdato", it.listPD)
                     ?: resources.getText(R.string.not_proven)
             }
 
@@ -219,8 +218,10 @@ class InfectionFragment : StimFragment() {
                         null
                     )
                 )
-                binding.mistankeDato.text = checkIfDataExistAndFormat("mistankedato", it)
-                binding.paavistDato.text = checkIfDataExistAndFormat("paavistdato", it)
+                binding.mistankeDato.text =
+                    checkIfDataExistAndFormat("mistankedato", it.listILA) ?: getText(R.string.no_suspicion)
+                binding.paavistDato.text =
+                    checkIfDataExistAndFormat("paavistdato", it.listILA) ?: getText(R.string.not_proven)
             }
         }
     }
@@ -232,13 +233,13 @@ class InfectionFragment : StimFragment() {
         return "$day $month $year"
     }
 
-
     private fun checkIfDataExistAndFormat(
         input: String,
-        barrentsdata: BarentsWatchAtSite
+        data: HashMap<String, String>
     ): String? {
-        if (barrentsdata.listPD[input] != "null") {
-            val time = ZonedDateTime.parse(barrentsdata.listPD[input])
+        val dateString = data[input]
+        if (dateString != null && dateString != "null") {
+            val time = ZonedDateTime.parse(dateString)
             return format(time)
         }
         return null

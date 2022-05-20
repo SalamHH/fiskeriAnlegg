@@ -86,7 +86,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
 
         // Max height of bottom sheet is 80% of screen height
         val screenHeight = Resources.getSystem().displayMetrics.heightPixels
-        bottomSheetBehavior.maxHeight = round(screenHeight * 0.8).toInt()
+        bottomSheetBehavior.maxHeight = round(screenHeight * 0.85).toInt()
 
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         val adapter =
@@ -361,7 +361,9 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
                 if (location != null) {
                     val latLng = LatLng(location.latitude, location.longitude)
                     map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel))
-                    onCameraIdle()
+
+                    val position = LatLong(location.latitude, location.longitude)
+                    viewModel.loadSitesAtLocation(position)
                 }
             }
         }
