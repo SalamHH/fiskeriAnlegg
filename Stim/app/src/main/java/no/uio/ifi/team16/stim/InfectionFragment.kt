@@ -86,7 +86,8 @@ class InfectionFragment : StimFragment() {
         viewModel.getInfectiousPressureTimeSeriesData(site).observe(viewLifecycleOwner) {
             it?.let { inf ->
                 //write current infectioninfo to texgtview
-                binding.infectionValue.text = "%4.2f".format(inf.getCurrentConcentration())
+                binding.infectionValue.text =
+                    getString(R.string.currentInfection_format).format(inf.getCurrentConcentration())
 
                 //make a graph when historical data is ready
                 inf.observeConcentrationsGraph(viewLifecycleOwner) { graph ->

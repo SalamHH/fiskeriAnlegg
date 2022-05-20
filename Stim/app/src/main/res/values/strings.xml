@@ -56,6 +56,7 @@
     <!-- infection -->
     <string name="no_suspicion">Ingen mistanke</string>
     <string name="not_proven">Ikke påvist</string>
+    <string name="currentInfection_format">%4.2f</string>
 
     <!-- site info -->
     <string name="Location_placeholder">%f, %f</string>

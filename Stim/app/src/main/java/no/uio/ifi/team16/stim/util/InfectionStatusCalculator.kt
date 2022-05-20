@@ -16,16 +16,16 @@ class InfectionStatusCalculator(val resources: Resources) {
      */
     fun calculateInfectionStatusText(infectiondata: Array<Float>): String {
 
-        if (infectiondata.lastIndex > 1 && infectiondata.average() > Options.infectionExists) {
+        if (infectiondata.size > 2 && infectiondata.average() > Options.infectionExists) {
             //sjekker om det er signifikant økning/miskning på de siste 3 datapunktene
-            val lastThree = arrayOf(
-                infectiondata[infectiondata.lastIndex - 2],
-                infectiondata[infectiondata.lastIndex - 1],
-                infectiondata[infectiondata.lastIndex]
+            val firstThree = arrayOf(
+                infectiondata[0],
+                infectiondata[1],
+                infectiondata[2]
             )
-            return if (lastThree.average() - infectiondata.average() > Options.increase) {
+            return if (firstThree.average() - infectiondata.average() > Options.increase) {
                 "Signifikant økning i lakselussmitte"
-            } else if (infectiondata.average() - lastThree.average() > Options.decrease) {
+            } else if (infectiondata.average() - firstThree.average() > Options.decrease) {
                 "Signifikant minskning i lakselussmitte"
             } else {
                 return if (infectiondata.average() > Options.high) {
@@ -43,20 +43,20 @@ class InfectionStatusCalculator(val resources: Resources) {
      * Method that calculates current infection status as an drawable
      */
     fun calculateInfectionStatusIcon(infectiondata: Array<Float>): Drawable? {
-        if (infectiondata.lastIndex > 1 && infectiondata.average() > Options.infectionExists) {
+        if (infectiondata.size > 2 && infectiondata.average() > Options.infectionExists) {
             //sjekker om det er signifikant økning/miskning på de siste 3 datapunktene
-            val lastThree = arrayOf(
-                infectiondata[infectiondata.lastIndex - 2],
-                infectiondata[infectiondata.lastIndex - 1],
-                infectiondata[infectiondata.lastIndex]
+            val firstThree = arrayOf(
+                infectiondata[0],
+                infectiondata[1],
+                infectiondata[2]
             )
-            return if (lastThree.average() - infectiondata.average() > Options.increase) {
+            return if (firstThree.average() - infectiondata.average() > Options.increase) {
                 ResourcesCompat.getDrawable(
                     resources,
                     R.drawable.arrow_up,
                     null
                 )
-            } else if (infectiondata.average() - lastThree.average() > Options.decrease) {
+            } else if (infectiondata.average() - firstThree.average() > Options.decrease) {
                 ResourcesCompat.getDrawable(
                     resources,
                     R.drawable.arrow_down,

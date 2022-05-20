@@ -41,6 +41,7 @@ class InfectionLineStyle @Inject constructor() {
             position = XAxis.XAxisPosition.BOTTOM
             typeface = ResourcesCompat.getFont(context, R.font.montserrat_bold)
             textSize = 12F
+            valueFormatter = WeekValueFormatter()
         }
 
         // following section defines how the user may interact with the chart
