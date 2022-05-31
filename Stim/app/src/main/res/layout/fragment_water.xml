@@ -396,15 +396,16 @@
 
                             <ImageView
                                 android:id="@+id/VelocityIcon"
-                                android:layout_width="70dp"
-                                android:layout_height="70dp"
-                                android:maxHeight="70dp"
+                                android:layout_width="60dp"
+                                android:layout_height="60dp"
+                                android:maxHeight="50dp"
                                 android:padding="10dp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toStartOf="@+id/Velocitytext"
                                 app:layout_constraintHorizontal_bias="0.5"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@id/Velocityheader"
+                                app:layout_constraintVertical_bias="0.0"
                                 app:srcCompat="@drawable/stromning_icon"
                                 app:tint="@color/orange"
                                 tools:ignore="ContentDescription" />
@@ -416,7 +417,7 @@
                                 android:gravity="center_vertical"
                                 android:text="@string/blank"
                                 android:textColor="@color/primaryTextColor"
-                                android:textSize="30sp"
+                                android:textSize="26sp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintHorizontal_bias="0.5"
@@ -463,10 +464,10 @@
 
                             <ImageView
                                 android:id="@+id/VelocityDirectionIcon"
-                                android:layout_width="70dp"
-                                android:layout_height="70dp"
+                                android:layout_width="60dp"
+                                android:layout_height="60dp"
                                 android:maxHeight="70dp"
-                                android:padding="10dp"
+                                android:padding="5dp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toStartOf="@+id/VelocityDirectionArrow"
                                 app:layout_constraintHorizontal_bias="0.5"
