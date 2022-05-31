@@ -39,6 +39,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
     private lateinit var map: GoogleMap
     private lateinit var binding: FragmentMapBinding
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+    private var searchView: SearchView? = null
     private var locationClient: FusedLocationProviderClient? = null
     private var tileOverlay: TileOverlay? = null
     private val viewModel: MainActivityViewModel by activityViewModels()
@@ -147,6 +148,7 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
             }
         })
 
+        this.searchView = searchView
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -267,6 +269,8 @@ class MapFragment : StimFragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveLi
 
         map.setOnInfoWindowClickListener(this::onMarkerClick)
         binding.openHeaderBottomsheet.infoText.text = sites?.size.toString()
+        searchView?.setQuery("", false)
+        searchView?.clearFocus()
     }
 
     /**
