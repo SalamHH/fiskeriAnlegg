@@ -31,11 +31,11 @@ import kotlin.ranges.IntProgression.Companion.fromClosedRange
 class NorKyst800AtSiteDataLoader {
     companion object {
         const val TAG = "NorKyst800AtSiteDataLoader"
+        const val TIMEOUT = 120000
     }
 
     //the catalog url is assumed to be time-invariant. Here all entries are listed.
-    private val catalogUrl =
-        "https://thredds.met.no/thredds/catalog/fou-hi/norkyst800m-1h/catalog.html"
+    private val catalogUrl = "https://thredds.met.no/thredds/catalog/fou-hi/norkyst800m-1h/catalog.html"
     private var forecastUrlCache: String? = null
 
     /////////////
@@ -338,20 +338,13 @@ class NorKyst800AtSiteDataLoader {
      */
     private suspend fun requestData(url: String, name: String): String? {
         Log.d(TAG, "Loading $name response from $url")
-        val string = Fuel.get(url).awaitStringResult().onError { error ->
-            Log.e(
-                TAG,
-                "Failed to load norkyst800data - $name from $url due to:\n $error"
-            )
+        val string = Fuel.get(url).timeoutRead(TIMEOUT).awaitStringResult().onError { error ->
+            Log.e(TAG, "Failed to load norkyst800data - $name from $url due to:\n $error")
             return null
         }.getOrElse { err ->
-            Log.e(
-                TAG,
-                "Unable to get NorKyst800-$name data from get request on $url. Is the URL correct? $err"
-            )
+            Log.e(TAG, "Unable to get NorKyst800-$name data from get request on $url. Is the URL correct? $err")
             return null
         }
-
 
         if (string.isEmpty()) {
             Log.e(TAG, "Empty $name response")
